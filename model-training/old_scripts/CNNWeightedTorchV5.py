@@ -1,0 +1,449 @@
+import torch
+import torch.nn as nn
+from torch.utils.data import TensorDataset, DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from tqdm import tqdm
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+cuda_available = torch.cuda.is_available()
+
+######################################################################
+# Changes from V1;
+# NOTE Constant changes on V5 to get things to work
+
+# NOTE *** Using learning rate sheduler starting at lr = 1e-3 ***
+# 1. Changed paths to use uncertainty without mean removed
+# 2. Did not remove uncertainty clamping; was necessary to prevent nan loss
+# 3. No longer taking log
+# 4. Normalized uncertainty by 10 cm/s instead of cit_std (~7 cm/s)
+# 5. Used MSE loss fumction for weighted loss instead of NRMSE
+
+# NOTE - try not doing weighted average on next run (large flag values could be messing up)
+# NOTE - OR try removing flag values on next run, with weighted average,
+# * When removing flag values - try normalizing by speed
+# * Reference NSIDC documentation regarding flag values
+######################################################################
+
+###################
+# LOG OF ATTEMPTS #
+###################
+
+# 1.    - Changed loss function to MSE
+#       - Scaled uncertainty by 10
+# NO
+#
+# 2.    - Changed from r = 0 (uncertaint) at nan points to 2000
+# NO
+# 3.    - Changed from r = 0 (uncertainty) at nan points to 2000
+#       - Changed from cit_std to 100 cm/s for uncertainty scaling
+# NO
+# 4.    - Changed from weighted average to mean for mse
+#       - Removed flag values
+#       - Back to scaling uncertainty by 10
+# NO
+# 5.    - Like 4, but set nan uncertainty to 0.01
+# NO
+# 6.    - Like 5, but back to nrmse
+# NO
+# 7.    - Like 6, but back to nan uncertainty points to 2000
+# NO
+# 8.    - Like 7, but using mse and not squaring r
+#       - https://ieeexplore.ieee.org/document/11016121
+# NO
+# 9.    - Like 8, but normalize the weights by the mean for mean of 1
+# NO
+# 10.   - Used NRMSE with weighted average
+#       - Normalized weights
+#       - nan points 0.01
+# NO
+# 11.   - NRMSE 
+#       - Like 10, but set nan points to 1e6
+#       - Back to normalizing r by speed std
+#       - Normalized weights by mean
+# NO
+# 12.   - Try 11, but with MSE
+# NO
+# 13.   - Check for bugs, try w = 1/(log(r)**2) (that worked)
+# YES
+# 14.   - Check for w = 1/log(r)
+# YES
+# 15.   - Try NRMSE without normalizing weights
+#       - NO
+# 16.   - Try using average uncertainty to fill nans
+#       - NO
+# 18.   - ...Try MSE with weighted average
+#       - NO
+# 19.   - Try MSE with weighted average, squaring weights
+
+# ... SOME TINKERING WITH WEIGHTS AND LOSS FUNCTIONS ...
+#       - NO
+
+# 20. BACK TO FIND TYPOS IN CNNProcessInputs.py
+#   - **NOTE when running all files in bash script sequence, will not terminate with error**
+#   - So files were not updated by process scripts after typos
+#   - not assigning r properly - double referenced and used before assignment (typo)
+#   - deleting uit before getting shape indices
+#   - CHANGES:
+#       - Removed flag values (-1000 where r > 1000)
+#       - Set uncertainty at nan to 1e3
+# * It's running now - with epoch 1/50 Train Loss: 2.2727 and Val Loss: 2.2954 and looks to be converging
+# * epoch 1/50 showing nonzero u Pred(Val) Avg:-0.0329 and v Pred(val) Avg: -0.0020 
+
+
+
+######################################################################
+# ****************************************************************** #
+######################################################################
+
+START_YEAR = 1992
+END_YEAR = 2020
+HEM = 'sh'
+VERSION = 'weightedtorchV5'
+
+PATH_SOURCE = "/home/jbassham/jack/data/sh/inputs_v5/cnn_inputs"
+PATH_DEST = "/home/jbassham/jack/data/sh/outputs_v5"
+
+# Create destination path if it doesn't exist
+os.makedirs(PATH_DEST, exist_ok=True)
+
+def set_seed(seed=42):
+    torch.manual_seed(seed) # PyTorch Reproducibility
+    torch.cuda.manual_seed(seed) # Required if using GPU
+    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
+    torch.backends.cudnn.benchmark = False # Paired with above
+
+    return
+
+class WeightedCNN(nn.Module):
+    """
+    CNN architecture taken directly from Hoffman et al. (2023)
+    
+    """
+
+    def __init__(self, in_channels, out_channels, height, width):
+        super().__init__()
+
+        self.out_channels = out_channels
+        self.height = height
+        self.width = width
+
+        # Convolutional layers
+        self.layer1 = nn.Conv2d(in_channels, 7, kernel_size=3, stride=1, padding='same')
+        self.layer2 = nn.Conv2d(7, 14, kernel_size=3, stride=1, padding='same')
+        self.layer3 = nn.Conv2d(14, 28, kernel_size=3, stride=1, padding='same')
+        self.layer4 = nn.Conv2d(28, 56, kernel_size=3, stride=1, padding='same')
+        self.layer5 = nn.Conv2d(56, 112, kernel_size=3, stride=1, padding='same')
+
+        # Pooling, activation, dropout
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(p=0.2)
+
+        # Dynamically compute flattened size using dummy input
+        with torch.no_grad():
+            dummy_input = torch.zeros(1, in_channels, height, width)
+            dummy_out = self.forward_features(dummy_input)
+            flat_size = dummy_out.view(1, -1).shape[1]
+
+        # Final fully connected layer
+        self.fc = nn.Linear(flat_size, out_channels * height * width)
+
+    def forward_features(self, x):
+        x = self.relu(self.layer1(x))
+        x = self.pool(x)
+        x = self.relu(self.layer2(x))
+        x = self.pool(x)
+        x = self.relu(self.layer3(x))
+        x = self.pool(x)
+        x = self.relu(self.layer4(x))
+        x = self.pool(x)
+        x = self.relu(self.layer5(x))
+        x = self.pool(x)
+        x = self.dropout(x)
+        return x
+
+    def forward(self, x):
+        x = self.forward_features(x)
+        x = torch.flatten(x, start_dim=1)
+        x = self.fc(x)
+        x = x.view(-1, self.out_channels, self.height, self.width)
+        return x
+    
+
+# # NOTE 
+# # 2. Change from mean to weighted average (dividing by sum(w))
+def WeightedNRMSEloss(pred, true, r, eps=1e-4):
+
+    # # Set NaN weights to zero (ignore in loss)
+    # w = torch.where(torch.isnan(r), torch.tensor(0.0, device = r.device, dtype = r.dtype), (1 / r + eps))  
+
+    # Compute weights
+    w = 1 / (r + eps)  # [B, C, H, W]
+
+    # DO NOT NORMALIZE, OR NORMALIZE BY THE MEAN OF THE VALID POINTS ONLY
+    # TO AVOID INFLATION OF WEIGHTS
+
+    # IF THIS WORKS, TRY NORMALIZING BY VALUES NOT FLAGGED, AND LEAVING
+    # THE FLAGGED VALUES IN!
+
+    # # # Normalize weights so mean is 1
+    # w = w / torch.mean(w)
+
+    # Compute square error
+    se = (pred - true) ** 2                     # Square error [B, C, H, W]
+
+    # Muliply square error by weights (batchwise)
+    wse = w * se                                # [B, C, H, W]
+
+    # Compute weighted mean for mse
+    mse = torch.sum(wse) / (torch.sum(w) + eps)
+
+    # Compute mean for mse
+    # mse = torch.mean(wse)        
+
+    # Compute the square root for rmse
+    rmse = torch.sqrt(mse)
+
+    # Normalize by standard deviation of true values
+    nrmse = rmse / (torch.std(true, unbiased = False) + eps)
+
+    return nrmse
+
+
+
+# # NOTE 
+# # 1. Change weights from 1/r to 1/(log(r)**2)
+# # 2. Change from mean to weighted average (dividing by )
+# def logWeightedNRMSEloss(pred, true, r, eps=1e-4):
+    
+#     # Compute weights
+#     w = 1 / (torch.log(r + eps) ** 2 + eps)
+
+#     # Compute square error
+#     se = (pred - true) ** 2                     # Square error [B, C, H, W]
+
+#     # Muliply square error by weights (batchwise)
+#     wse = w * se                                # [B, C, H, W]
+
+#     # Compute mse as weighted average
+#     mse = torch.sum(wse) / torch.sum(w)
+
+#     rmse = torch.sqrt(mse)
+
+#     # Normalize by standard deviation of true values
+#     nrmse = rmse / (torch.std(true, unbiased = False) + eps)
+
+#     return nrmse
+
+# def WeightedMSEloss(pred, true, r, eps=1e-4):
+    
+#     # Compute weights
+#     w = 1 / (r + eps)
+
+#     # Normalize weights by the mean
+#     # NOTE loss scale remains comparable, normalizes to mean of 1 for 
+#     # NOTE closed form LR is not sensitive to absolute scaling of the weights, just relative
+#     # NOTE Weighted CNN is sensitive to Absolute scale, however
+#     # due to gradient based optimization - if the uncertainty is large, and the weights are small, 
+#     # than the gradients are small and the optimizer makes little or no progress
+#     # NOTE bottom line - loss scale needs to stay reasonable so we normalize
+    
+#     w = w / torch.mean(w)
+
+#     # Compute square error
+#     se = (pred - true) ** 2                     # Square error [B, C, H, W]
+
+#     # Muliply square error by weights (batchwise)
+#     wse = w * se                                # [B, C, H, W]
+
+#     # Compute weight mean for mse
+#     mse = torch.sum(wse) / torch.sum(w)
+
+#     return mse
+
+def plot_weighted_losses(num_epochs, train_losses, val_losses, model):
+    epochs = np.arange(1, num_epochs + 1)
+
+    
+    plt.figure()
+    plt.plot(epochs, train_losses, label = 'Train')
+    plt.plot(epochs, val_losses, label = 'Validation')
+    plt.xlabel('Epochs')
+    plt.ylabel('Weighted MSE Loss')
+    plt.legend()
+    plt.title(f"{model}")
+
+    plt.savefig(os.path.join(PATH_DEST, f'losses_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.png'))
+
+    # plt.show()
+
+    return
+
+def main():
+
+    # Set random seed for reproducibility
+    set_seed(42)
+
+    # Load input data
+    fstr = f"{HEM}_{START_YEAR}_{END_YEAR}"
+    x_train, y_train, r_train = torch.load(os.path.join(PATH_SOURCE,f'train_{fstr}.pt'))
+    x_val, y_val, r_val = torch.load(os.path.join(PATH_SOURCE,f'val_{fstr}.pt'))
+    x_test, y_test, r_test = torch.load(os.path.join(PATH_SOURCE,f'test_{fstr}.pt'))
+
+    print("Input Data Loaded")
+
+    # Use cuda if available
+    use_cuda = torch.cuda.is_available()
+    if use_cuda:
+        device = torch.device("cuda")
+        print('Using CUDA')
+    else:
+        device = torch.device("cpu")
+        print('USING CPU')
+
+
+    # Move tensors to device
+    x_train, y_train, r_train = x_train.to(device), y_train.to(device), r_train.to(device)
+    x_val, y_val, r_val = x_val.to(device), y_val.to(device), r_val.to(device)
+    x_test, y_test, r_test = x_test.to(device), y_test.to(device), r_test.to(device)
+
+    # Define batch size
+    batch_size = 365 # 365, Hoffman
+
+    # Create Tensor Datasets
+    trainData = DataLoader(TensorDataset(x_train, y_train, r_train), batch_size=batch_size, shuffle=True)
+    valData = DataLoader(TensorDataset(x_val, y_val, r_val), batch_size=batch_size, shuffle=True)
+    testData = DataLoader(TensorDataset(x_test, y_test, r_test), batch_size=batch_size, shuffle=False)
+
+    print("Tensor datasets created")
+
+    # Get input and output shapes for model
+    _, n_in, ny, nx = x_train.shape
+    n_out = y_train.shape[1]
+
+    # Complile model
+    model = WeightedCNN(n_in, n_out, ny, nx).to(device)
+
+    print('model compiled')
+
+    # Apply Xavier initialization to match TensorFlow default
+    def init_weights(m):
+        if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+            # Apply Xavier unniform to weights of Conv2d and Linear layers (TensorFlow default)
+            nn.init.xavier_uniform_(m.weight)
+            # Initialize bias to zero (TensorFlow default)
+            if m.bias is not None:
+                nn.init.zeros_(m.bias)
+
+        return
+
+    # Apply 
+    model.apply(init_weights)
+
+    print('Xavier initialization complete') 
+
+    # Define regularization
+    weight_decay = 1e-4 # L2 Norm Regularization, changed from 0.01 in TensorFlow
+    # NOTE TensorFLow multiplies Regularization by 0.05 0.01*0.05 -> 5e-4
+
+    # Define Learning Rate
+    # changed from 1e-3 in TensorFlow
+    # NOTE changed back for scheduler
+    lr = 1e-4
+
+    # Initialize optimizer with weight decay (l2 regularization)
+    optimizer = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=weight_decay)
+
+    # scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
+
+    # Define number of epochs
+    num_epochs = 50 # Hoffman
+
+    # Initialize losses
+    train_losses = []
+    val_losses = []
+
+    # Train model
+    for epoch in range(num_epochs):
+        model.train()
+        train_loss = 0
+        for xb, yb, rb in tqdm(trainData, desc=f"Train Epoch {epoch+1}/{num_epochs}", leave=False):
+            # print(torch.isnan(xb).any(), torch.isinf(xb).any())
+            optimizer.zero_grad()
+            preds = model(xb)
+            loss = WeightedNRMSEloss(preds, yb, rb)
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+
+        model.eval()
+        val_loss = 0
+        all_val_preds = []
+        for xb, yb, rb in tqdm(valData, desc=f"Val   Epoch {epoch+1}/{num_epochs}", leave=False):
+            with torch.no_grad():
+                preds = model(xb)
+                all_val_preds.append(preds.cpu())
+
+                loss = WeightedNRMSEloss(preds, yb, rb)
+                val_loss += loss.item()
+
+        avg_train = train_loss / len(trainData)
+        avg_val   = val_loss   / len(valData)
+
+        train_losses.append(avg_train)
+        val_losses.append(avg_val)
+
+
+        print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {avg_train:.4f} - Val Loss: {avg_val:.4f}")
+
+        # # Step the scheduler
+        # scheduler.step(avg_val)
+
+        # # Print learning rate
+        # for param_group in optimizer.param_groups:
+        #     print(f"Epoch {epoch+1}: Learning Rate = {param_group['lr']}")
+
+        # Test u and v preds
+        all_val_preds = torch.cat(all_val_preds, dim=0)
+
+        avg_u_pred = all_val_preds[:,0,:,:].mean().item()
+        avg_v_pred = all_val_preds[:,1,:,:].mean().item()
+        print(f"Epoch {epoch+1}/{num_epochs} - u Pred (Val) Avg: {avg_u_pred:.4f} - v Pred (Val) Avg: {avg_v_pred:.4f}")
+
+    # Plot losses
+    plot_weighted_losses(num_epochs, train_losses, val_losses, f"CNN{VERSION}")
+
+    # Save model weights
+    fnam = f'CNNweights_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.pth'
+    torch.save(model.state_dict(), os.path.join(PATH_DEST,fnam))
+
+    print('Model weights saved')
+
+    # Evaluate trained model
+    model.eval()
+
+    # Get predictions on test set
+    all_preds = []
+    all_targets = []
+
+    with torch.no_grad():
+        for xb, yb, rb in testData:
+            preds = model(xb)
+            all_preds.append(preds.cpu().numpy())
+            all_targets.append(yb.cpu().numpy())
+
+    # Concatenate all batches
+    y_pred = np.concatenate(all_preds, axis=0)
+    y_true = np.concatenate(all_targets, axis=0)
+
+    # Save to .npz
+    fnam = f"CNNPreds_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.npz"
+    np.savez(os.path.join(PATH_DEST, fnam), y_pred = y_pred, y_true = y_true)
+
+    print("Predictions saved")
+
+    return
+
+if __name__ == "__main__":
+    main()
