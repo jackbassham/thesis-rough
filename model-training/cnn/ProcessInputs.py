@@ -126,7 +126,7 @@ def main():
     # Save data splits
 
     # Create destination path for inputs, if it doesn't exist
-    PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'cnn_inputs')
+    PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'cnn-inputs')
     
     # Get absolute path to data destination directory
     PATH_DEST = os.path.abspath(PATH_DEST)
