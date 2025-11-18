@@ -11,9 +11,6 @@ START_YEAR = 1992
 END_YEAR = 2020
 HEM = 'sh'
 
-PATH_SOURCE = "/home/jbassham/jack/data/sh/inputs"
-PATH_DEST = PATH_SOURCE
-
 # Set random seed for reproducibility
 
 def set_seed(seed=42):
@@ -30,7 +27,7 @@ def main():
     script_dir = os.path.dirname(__file__)
 
     # Navigate to data source directory from current path
-    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data')
+    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', 'HEM')
 
     # Get absolute path to data source directory
     PATH_SOURCE = os.path.abspath(PATH_SOURCE)
@@ -125,30 +122,31 @@ def main():
     x_val, y_val, r_val = x[val_idx], y[val_idx], r[val_idx]
     x_test, y_test, r_test = x[test_idx], y[test_idx], r[test_idx]
 
-    # Save data splits
-    pnam = f"cnn_inputs"
-    save_path = os.path.join(PATH_DEST, pnam)
 
-    # Create destination path if it doesn't exist
-    os.makedirs(save_path, exist_ok=True)
+    # Save data splits
+
+    # Create destination path for inputs, if it doesn't exist
+    dir_name = "cnn_inputs"
+    PATH_DEST = os.path.join(PATH_SOURCE, dir_name)
+    os.makedirs(PATH_DEST, exist_ok=True)
 
     fstr = f"{HEM}_{START_YEAR}_{END_YEAR}"
 
-    torch.save((x_train, y_train, r_train), os.path.join(save_path, f'train_{fstr}.pt'))
-    torch.save((x_val, y_val, r_val), os.path.join(save_path, f'val_{fstr}.pt'))
-    torch.save((x_test, y_test, r_test), os.path.join(save_path, f'test_{fstr}.pt'))
+    torch.save((x_train, y_train, r_train), os.path.join(PATH_DEST, f'train_{fstr}.pt'))
+    torch.save((x_val, y_val, r_val), os.path.join(PATH_DEST, f'val_{fstr}.pt'))
+    torch.save((x_test, y_test, r_test), os.path.join(PATH_DEST, f'test_{fstr}.pt'))
 
-    print(f"Train, Validation, and Test splits saved at {save_path}")
+    print(f"Train, Validation, and Test splits saved at {PATH_DEST}")
 
     np.savez_compressed(
-    os.path.join(save_path, f"indices_land_{fstr}.npz"),
+    os.path.join(PATH_DEST, f"indices_land_{fstr}.npz"),
     train_idx=train_idx,
     val_idx=val_idx,
     test_idx=test_idx,
     land_mask = land_mask
 )
     
-    print(f"Train, Validation, and Test indices saved at {save_path}")
+    print(f"Train, Validation, and Test indices saved at {PATH_DEST}")
 
     return
 
