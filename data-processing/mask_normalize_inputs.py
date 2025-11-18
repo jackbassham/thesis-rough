@@ -17,11 +17,10 @@ def main():
     script_dir = os.path.dirname(__file__)
 
     # Navigate to data source directory from current path
-    PATH_SOURCE = os.path.join(script_dir, '..', 'data')
+    PATH_SOURCE = os.path.join(script_dir, '..', HEM, 'data')
 
     # Get absolute path to data source directory
     PATH_SOURCE = os.path.abspath(PATH_SOURCE)
-
 
     # Extract variables
     fnam = f"motion_ppv4_latlon_{HEM}_{START_YEAR}_{END_YEAR}.npz"
