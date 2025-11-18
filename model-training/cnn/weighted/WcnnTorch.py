@@ -23,13 +23,13 @@ HEM = 'sh'
 script_dir = os.path.dirname(__file__)
 
 # Navigate to data source directory from current path
-PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM, 'cnn-inputs')
+PATH_SOURCE = os.path.join(script_dir, '..', '..', '..', 'data', HEM, 'cnn-inputs')
 
 # Get absolute path to data source directory
 PATH_SOURCE = os.path.abspath(PATH_SOURCE)
 
 # Define destination path for inputs
-PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'outputs', 'cnn', 'weighted')
+PATH_DEST = os.path.join(script_dir, '..', '..', '..', 'data', HEM, 'outputs', 'cnn', 'weighted')
 
 # Get absolute path to data destination directory
 PATH_DEST = os.path.abspath(PATH_DEST)
