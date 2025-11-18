@@ -1,0 +1,19 @@
+# Raw data formats
+**.nc
+**.cdf
+**.csv
+
+
+# Trainign variables
+**.npz
+
+# Model weights
+**.pth
+
+# Figures
+**.jpeg
+**.png
+**.
+
+# Jupyter Notebook checkpoints
+**.ipynb_checkpoints
