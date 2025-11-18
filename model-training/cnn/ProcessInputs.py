@@ -11,7 +11,7 @@ START_YEAR = 1992
 END_YEAR = 2020
 HEM = 'sh'
 
-PATH_SOURCE = "/home/jbassham/jack/data/sh/inputs_v6"
+PATH_SOURCE = "/home/jbassham/jack/data/sh/inputs"
 PATH_DEST = PATH_SOURCE
 
 # Set random seed for reproducibility
@@ -25,6 +25,15 @@ def set_seed(seed=42):
     return
 
 def main():
+
+    # Get current script directory path
+    script_dir = os.path.dirname(__file__)
+
+    # Navigate to data source directory from current path
+    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data')
+
+    # Get absolute path to data source directory
+    PATH_SOURCE = os.path.abspath(PATH_SOURCE)
 
     # Set random seed for reproducibility
     set_seed(42)
