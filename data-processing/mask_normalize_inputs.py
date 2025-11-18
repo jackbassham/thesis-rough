@@ -7,23 +7,29 @@ import os
 # 1. KEEP FLAG VALUES in uncertainty!
 #########################################################
 
-PATH_SOURCE = "/home/jbassham/jack/data/sh"
-PATH_DEST = "/home/jbassham/jack/data/sh/inputs_v6"
-
 START_YEAR = 1992
 END_YEAR = 2020
 HEM = 'sh'
 
 def main():
-    
-    # Extract variables
 
+    # Get current script directory path
+    script_dir = os.path.dirname(__file__)
+
+    # Navigate to data source directory from current path
+    PATH_SOURCE = os.path.join(script_dir, '..', 'data')
+
+    # Get absolute path to data source directory
+    PATH_SOURCE = os.path.abspath(PATH_SOURCE)
+
+
+    # Extract variables
     fnam = f"motion_ppv4_latlon_{HEM}_{START_YEAR}_{END_YEAR}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
     ui = data['u'] # zonal ice velocity
     vi = data['v'] # meridional ice velocity
-    r = data['error']
-    lat = data['lat']
+    r = data['error'] # ice velocity uncertainty (same for u and v)
+    lat = data['lat'] 
     lon = data['lon']
     time = data['time']
 
@@ -31,7 +37,7 @@ def main():
 
     fnam = f"con_nimbus7_latlon_{HEM}_{START_YEAR}_{END_YEAR}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
-    ic = data['ic']# zonal ice velocity
+    ic = data['ic']# ice concentration
 
     print('Concentration Loaded')
 
@@ -160,7 +166,9 @@ def main():
     print(f"   {uwt_std:.3f} cm/s, {vwt_std:.3f} cm/s, {icy_std:.3f}")
     print('')
 
-    # Create destination path if it doesn't exist
+
+    # Create destination path for inputs if it doesn't exist
+    PATH_DEST = os.path.join(PATH_SOURCE, 'inputs')
     os.makedirs(PATH_DEST, exist_ok=True)
     
     # Save normalized input variables
