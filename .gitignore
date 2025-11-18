@@ -9,11 +9,12 @@
 
 # Model weights
 **.pth
+**.pt
 
 # Figures
 **.jpeg
 **.png
-**.
+**
 
 # Jupyter Notebook checkpoints
 **.ipynb_checkpoints
