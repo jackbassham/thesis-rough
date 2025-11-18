@@ -19,13 +19,24 @@ START_YEAR = 1992
 END_YEAR = 2020
 HEM = 'sh'
 
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
 
+# Navigate to data source directory from current path
+PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM, 'cnn-inputs')
 
-# NOTE V7 output (for MSE loss)
-PATH_DEST = "/home/jbassham/jack/data/sh/outputs_v7"
+# Get absolute path to data source directory
+PATH_SOURCE = os.path.abspath(PATH_SOURCE)
 
-# Create destination path if it doesn't exist
+# Define destination path for inputs
+PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'outputs', 'cnn', 'weighted')
+
+# Get absolute path to data destination directory
+PATH_DEST = os.path.abspath(PATH_DEST)
+
+# Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
+
 
 def set_seed(seed=42):
     torch.manual_seed(seed) # PyTorch Reproducibility
@@ -140,19 +151,6 @@ def plot_weighted_losses(num_epochs, train_losses, val_losses, model):
     return
 
 def main():
-
-    # Get current script directory path
-    script_dir = os.path.dirname(__file__)
-
-    # Navigate to data source directory from current path
-    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM, 'inputs')
-
-    # Get absolute path to data source directory
-    PATH_SOURCE = os.path.abspath(PATH_SOURCE)
-
-    # Create destination path for inputs, if it doesn't exist
-    PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'outputs', 'cnn', 'weighted')
-    os.makedirs(PATH_DEST, exist_ok=True)
 
     # Set random seed for reproducibility
     set_seed(42)

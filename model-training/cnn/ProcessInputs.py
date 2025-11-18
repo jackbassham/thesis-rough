@@ -27,7 +27,7 @@ def main():
     script_dir = os.path.dirname(__file__)
 
     # Navigate to data source directory from current path
-    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM)
+    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM, 'inputs')
 
     # Get absolute path to data source directory
     PATH_SOURCE = os.path.abspath(PATH_SOURCE)
@@ -126,8 +126,10 @@ def main():
     # Save data splits
 
     # Create destination path for inputs, if it doesn't exist
-    dir_name = "cnn_inputs"
-    PATH_DEST = os.path.join(PATH_SOURCE, dir_name)
+    PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'cnn_inputs')
+    
+    # Get absolute path to data destination directory
+    PATH_DEST = os.path.abspath(PATH_DEST)
     os.makedirs(PATH_DEST, exist_ok=True)
 
     fstr = f"{HEM}_{START_YEAR}_{END_YEAR}"
