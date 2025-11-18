@@ -18,10 +18,8 @@ cuda_available = torch.cuda.is_available()
 START_YEAR = 1992
 END_YEAR = 2020
 HEM = 'sh'
-VERSION = 'weightedtorchV7'
 
-# NOTE Using V6 inputs
-PATH_SOURCE = "/home/jbassham/jack/data/sh/inputs_v6/cnn_inputs"
+
 
 # NOTE V7 output (for MSE loss)
 PATH_DEST = "/home/jbassham/jack/data/sh/outputs_v7"
@@ -135,13 +133,26 @@ def plot_weighted_losses(num_epochs, train_losses, val_losses, model):
     plt.legend()
     plt.title(f"{model}")
 
-    plt.savefig(os.path.join(PATH_DEST, f'losses_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.png'))
+    plt.savefig(os.path.join(PATH_DEST, f'losses_{HEM}_{START_YEAR}_{END_YEAR}.png'))
 
     # plt.show()
 
     return
 
 def main():
+
+    # Get current script directory path
+    script_dir = os.path.dirname(__file__)
+
+    # Navigate to data source directory from current path
+    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM, 'inputs')
+
+    # Get absolute path to data source directory
+    PATH_SOURCE = os.path.abspath(PATH_SOURCE)
+
+    # Create destination path for inputs, if it doesn't exist
+    PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'outputs', 'cnn', 'weighted')
+    os.makedirs(PATH_DEST, exist_ok=True)
 
     # Set random seed for reproducibility
     set_seed(42)
@@ -273,10 +284,10 @@ def main():
         print(f"Epoch {epoch+1}/{num_epochs} - u Pred (Val) Avg: {avg_u_pred:.4f} - v Pred (Val) Avg: {avg_v_pred:.4f}")
 
     # Plot losses
-    plot_weighted_losses(num_epochs, train_losses, val_losses, f"CNN{VERSION}")
+    plot_weighted_losses(num_epochs, train_losses, val_losses, f"CNN")
 
     # Save model weights
-    fnam = f'CNNweights_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.pth'
+    fnam = f'CNNweights_{HEM}_{START_YEAR}_{END_YEAR}.pth'
     torch.save(model.state_dict(), os.path.join(PATH_DEST,fnam))
 
     print('Model weights saved')
@@ -299,7 +310,7 @@ def main():
     y_true = np.concatenate(all_targets, axis=0)
 
     # Save to .npz
-    fnam = f"CNNPreds_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.npz"
+    fnam = f"CNNPreds_{HEM}_{START_YEAR}_{END_YEAR}.npz"
     np.savez(os.path.join(PATH_DEST, fnam), y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
