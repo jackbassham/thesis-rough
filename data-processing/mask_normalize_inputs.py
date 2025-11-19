@@ -11,16 +11,22 @@ START_YEAR = 1992
 END_YEAR = 2020
 HEM = 'sh'
 
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
+
+# Define regrid data source directory relative to current
+PATH_SOURCE = os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+
+# Get absolute path to source directory
+PATH_SOURCE = os.path.abspath(PATH_SOURCE)
+
+# Define destination path for masked normalized inputs
+PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'masked-normalized')
+
+# Create destination path if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
+
 def main():
-
-    # Get current script directory path
-    script_dir = os.path.dirname(__file__)
-
-    # Navigate to data source directory from current path
-    PATH_SOURCE = os.path.join(script_dir, '..', 'data', HEM)
-
-    # Get absolute path to data source directory
-    PATH_SOURCE = os.path.abspath(PATH_SOURCE)
 
     # Extract variables
     fnam = f"motion_ppv4_latlon_{HEM}_{START_YEAR}_{END_YEAR}.npz"
@@ -164,11 +170,6 @@ def main():
     print("'uwt_bar', 'vwt_bar', and 'icy_bar' normalized by respective standard devations:")
     print(f"   {uwt_std:.3f} cm/s, {vwt_std:.3f} cm/s, {icy_std:.3f}")
     print('')
-
-
-    # Create destination path for inputs if it doesn't exist
-    PATH_DEST = os.path.join(PATH_SOURCE, 'inputs')
-    os.makedirs(PATH_DEST, exist_ok=True)
     
     # Save normalized input variables
     fnam = f'inputs_normalized_{HEM}_{START_YEAR}_{END_YEAR}.npz'
