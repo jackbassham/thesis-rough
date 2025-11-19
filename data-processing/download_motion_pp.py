@@ -16,8 +16,17 @@ BASE_URL = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vec
 # Enter file (end of url) with placeholder {year}
 FNAM = "icemotion_daily_{HEM}_25km_{year}0101_{year}1231_v4.1.nc"
 
-# Define download destination path
-PATH_DEST = "/home/jbassham/jack/data/nh"
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
+
+# Define data download destination path relative to current
+PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'raw')
+
+# Get absolute path to data download destination directory
+PATH_DEST = os.path.abspath(PATH_DEST)
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
 
 # Enter years to download
 START_YEAR = 1992

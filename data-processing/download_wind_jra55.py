@@ -8,13 +8,15 @@ import sys
 #  ***credit source here***  
 
 
-HEM = "global" # Hemisphere 'nh' or 'sh'
+HEM = "nh" # Hemisphere 'nh' or 'sh'
 
-# NOTE WEDDELL SEA BOUNDS
+# Enter bounds for lat and lon (deg)
+
+# NOTE SOUTHERN OCEAN BOUNDS
 # LAT_LIMITS = [-80, -62] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
 # LON_LIMITS = [-180,180] # Enter West to East (coverage -180 W to 180E)
 
-# # Enter bounds for lat and lon (deg) # ESE228 - replicating Hoffman
+# NOTE ARCTIC BOUNDS (REPLICATING HOFFMAN)
 LAT_LIMITS = [60, 90] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
 LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
 
@@ -25,8 +27,17 @@ PATH_SOURCE = "/project_shared/jra55/"
 FNAM_U = "jra55_u10m_{year}"
 FNAM_V = "jra55_v10m_{year}"
 
-# Define download destination path
-PATH_DEST = "/home/jbassham/jack/data/ece228/year"
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
+
+# Define data download destination path relative to current
+PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'raw')
+
+# Get absolute path to data download destination directory
+PATH_DEST = os.path.abspath(PATH_DEST)
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
 
 # NOTE 1989 on Mazloff Server has 366 days not 365 (doesn't line up with lear year rule)
 

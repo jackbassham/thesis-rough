@@ -24,8 +24,17 @@ BASE_URL = "https://n5eil01u.ecs.nsidc.org/PM/NSIDC-0051.002/{date}/"
 # Enter file (end of URL) with placeholder {year}
 FNAM = "NSIDC0051_SEAICE_PS_{hem}25km_{date}_v2.0.nc"
 
-# Define download destination path
-PATH_DEST = "/home/jbassham/jack/data/nh"
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
+
+# Define data download destination path relative to current
+PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'raw')
+
+# Get absolute path to data download destination directory
+PATH_DEST = os.path.abspath(PATH_DEST)
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
 
 # Enter years to download
 START_YEAR = 1992
