@@ -13,17 +13,9 @@
 # CHOOSING PARAMETERS:
 #   Change global variables under GLOBAL CONFIG section to 
 #   configure data subset parameters
+#   NOTE: Do not include spaces when assigining variables
 #
-# NOTE - LATITUDE LONGITUDE BOUNDS FOR REPLICATION
 #
-# SOUTHERN OCEAN BOUNDS
-# LAT_LIMITS = "-80, -62" # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-# LON_LIMITS = "-180, 180" # Enter West to East (coverage -180 W to 180E)
-#
-# ARCTIC BOUNDS
-# LAT_LIMITS = "60, 90" 
-# LON_LIMITS = "-180, 180"
-# 
 # USAGE:
 #   # Initialize script
 #   chmod +x run-data-processing.sh
@@ -32,23 +24,39 @@
 #   ./run-data-processing.sh
 #
 #
+# NOTE: LATITUDE LONGITUDE BOUNDS FOR REPLICATION
+#
+# SOUTHERN OCEAN BOUNDS
+# LAT_LIMITS = "-80, -62" # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
+# LON_LIMITS = "-180, 180" # Enter West to East (coverage -180 W to 180E)
+#
+# ARCTIC BOUNDS
+# LAT_LIMITS = "60, 90" 
+# LON_LIMITS = "-180, 180"
+#
+# NOTE: TEMPORAL RANGE FOR REPLICATION
+# START_YEAR = 1992
+# END_YEAR = 2020
+#
+#
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # GLOBAL CONFIG
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define northern or southern hemisphere
-export HEM = "nh" # "nh" or "sh"
+export HEM="nh" # "nh" or "sh"
 
 # Define latitude longitude bounds
-export LAT_LIMITS = "60, 90" # "lower (Northern), upper (Northern)", (coverage 29.7N to 90N or -90S to -37S)
-export LON_LIMITS = "-180, 180"  # "Western, Eastern", (coverage -180 W to 180E)
+# NOTE: Limits are in quotes, separated by comma
+export LAT_LIMITS="60, 90" # "lower (Northern), upper (Northern)", (coverage 29.7N to 90N or -90S to -37S)
+export LON_LIMITS="-180, 180"  # "Western, Eastern", (coverage -180 W to 180E)
 
 # Define grid resolution
-export RESOLUTION = 25 # km
+export RESOLUTION=25 # km
 
 # Define temporal range
-export START_YEAR = 1992 # minimum 1989
-export END_YEAR = 2020
+export START_YEAR=1992 # minimum 1989
+export END_YEAR=2020
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # RUN SCRIPTS
@@ -101,5 +109,3 @@ if ! python mask_normalize_inputs.py; then
     echo "ERROR: Failed to run mask_normalize_inputs.py"
     exit 1
 fi
-
-echo "3. Starting Mask, Normalization"
