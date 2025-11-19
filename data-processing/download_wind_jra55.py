@@ -20,7 +20,7 @@ HEM = "nh" # Hemisphere 'nh' or 'sh'
 LAT_LIMITS = [60, 90] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
 LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
 
-# Define file source path
+# Define file source path (Mazloff Lab Servers)
 PATH_SOURCE = "/project_shared/jra55/"
 
 # Define file source names for u and v vector components 

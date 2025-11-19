@@ -25,17 +25,15 @@ RESOLUTION = 25 # grid resolution (km)
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
 
-# Define raw data directory source path relative to current
-PATH_SOURCE = os.path.join(script_dir, '..', 'data', HEM, 'raw')
-
-# Get absolute path to source directory
-PATH_SOURCE = os.path.abspath(PATH_SOURCE)
+# Define absolute raw data directory source path relative to current
+PATH_SOURCE = os.path.abspath(
+    os.path.join(script_dir, '..', 'data', HEM, 'raw')
+)
 
 # Define regrid data destination path relative to current
-PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'regrid')
-
-# Get absolute path to destination directory
-PATH_DEST = os.path.abspath(PATH_DEST)
+PATH_DEST = os.path.abspath(
+    os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+)
 
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
