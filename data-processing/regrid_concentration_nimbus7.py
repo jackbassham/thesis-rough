@@ -45,9 +45,6 @@ PATH_SOURCE = os.path.join(script_dir, '..', 'data', HEM, 'raw')
 # Get absolute path to source directory
 PATH_SOURCE = os.path.abspath(PATH_SOURCE)
 
-# Create the direectory if it doesn't already exist
-os.makedirs(PATH_SOURCE, exist_ok=True)
-
 # Define regrid data destination path relative to current
 PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'regrid')
 
