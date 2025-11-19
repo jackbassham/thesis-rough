@@ -15,7 +15,6 @@
 #   configure data subset parameters
 #   NOTE: Do not include spaces when assigining variables
 #
-#
 # USAGE:
 #   # Initialize script
 #   chmod +x run-data-processing.sh
@@ -27,16 +26,16 @@
 # NOTE: LATITUDE LONGITUDE BOUNDS FOR REPLICATION
 #
 # SOUTHERN OCEAN BOUNDS
-# LAT_LIMITS = "-80, -62" # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-# LON_LIMITS = "-180, 180" # Enter West to East (coverage -180 W to 180E)
+# LAT_LIMITS="-80, -62" # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
+# LON_LIMITS="-180, 180" # Enter West to East (coverage -180 W to 180E)
 #
 # ARCTIC BOUNDS
-# LAT_LIMITS = "60, 90" 
-# LON_LIMITS = "-180, 180"
+# LAT_LIMITS="60, 90" 
+# LON_LIMITS="-180, 180"
 #
 # NOTE: TEMPORAL RANGE FOR REPLICATION
-# START_YEAR = 1992
-# END_YEAR = 2020
+# START_YEAR=1992
+# END_YEAR=2020
 #
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
