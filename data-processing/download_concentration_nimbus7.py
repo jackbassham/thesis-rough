@@ -13,16 +13,34 @@ import xarray as xr # With h5netcdf
 # Data saved as time series in .npz file
 # ***credit source here***
 
-HEM = "nh" # Hemisphere (sh or nh)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Enter NASA Earthdata Login Credentials
-USER = "jbassham"
-PASS = "guJdib-huczi6-jimsuh"
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
+
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
+
+# Nasa Earthdata login credentials for download
+USER = os.getenv("USER") # username
+PASS = os.getenv("PASS") # password
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Remaining global variables defined here
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# List of possible sensor names for variables in files
+VAR_NAMES = ['F08_ICECON', 'F11_ICECON', 'F13_ICECON', 'F17_ICECON']
 
 # Enter base download url (leaving off file from path) 
 BASE_URL = "https://n5eil01u.ecs.nsidc.org/PM/NSIDC-0051.002/{date}/"
 # Enter file (end of URL) with placeholder {year}
 FNAM = "NSIDC0051_SEAICE_PS_{hem}25km_{date}_v2.0.nc"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
@@ -34,13 +52,6 @@ PATH_DEST = os.path.abspath(
 
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
-
-# Enter years to download
-START_YEAR = 1992
-END_YEAR = 2020
-
-# List possible variable names (they vary accross days)
-VAR_NAMES = ['F08_ICECON', 'F11_ICECON', 'F13_ICECON', 'F17_ICECON']
 
 def main():
 

@@ -7,25 +7,33 @@ import sys
 # JRA55 README here: ""***""
 #  ***credit source here***  
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-HEM = "nh" # Hemisphere 'nh' or 'sh'
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
 
-# Enter bounds for lat and lon (deg)
+# NOTE 1989 on Mazloff Server has 366 days not 365 (doesn't line up with leap year rule)
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
-# NOTE SOUTHERN OCEAN BOUNDS
-# LAT_LIMITS = [-80, -62] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-# LON_LIMITS = [-180,180] # Enter West to East (coverage -180 W to 180E)
+LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
+LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
 
-# NOTE ARCTIC BOUNDS (REPLICATING HOFFMAN)
-LAT_LIMITS = [60, 90] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
-
-# Define file source path (Mazloff Lab Servers)
-PATH_SOURCE = "/project_shared/jra55/"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Remaining global variables defined here
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define file source names for u and v vector components 
 FNAM_U = "jra55_u10m_{year}"
 FNAM_V = "jra55_v10m_{year}"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define file source path (Mazloff Lab Servers)
+PATH_SOURCE = "/project_shared/jra55/"
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
@@ -37,13 +45,6 @@ PATH_DEST = os.path.abspath(
 
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
-
-# NOTE 1989 on Mazloff Server has 366 days not 365 (doesn't line up with lear year rule)
-
-# Enter years to download
-START_YEAR = 2019
-END_YEAR = 2020
-
 
 def main():
 

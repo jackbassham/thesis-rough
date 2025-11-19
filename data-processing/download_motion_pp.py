@@ -4,17 +4,32 @@ import os
 import requests
 import xarray as xr
 
-HEM = "nh" # Hemisphere (nh or sh)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Enter NASA Earthdata Login Credentials
-USER = "jbassham"
-PASS = "guJdib-huczi6-jimsuh"
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
+
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
+
+# Nasa Earthdata login credentials for download
+USER = os.getenv("USER") # username
+PASS = os.getenv("PASS") # password
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Remaining global variables defined here
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Enter base download url (leaving off file from path) 
 BASE_URL = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vectors_v4/{hem}/daily/"
 
 # Enter file (end of url) with placeholder {year}
 FNAM = "icemotion_daily_{HEM}_25km_{year}0101_{year}1231_v4.1.nc"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
@@ -26,10 +41,6 @@ PATH_DEST = os.path.abspath(
 
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
-
-# Enter years to download
-START_YEAR = 1992
-END_YEAR = 2020
 
 def main():
 
