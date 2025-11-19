@@ -116,3 +116,5 @@ if ! python mask_normalize_inputs.py; then
     echo "ERROR: Failed to run mask_normalize_inputs.py"
     exit 1
 fi
+
+exit 0
