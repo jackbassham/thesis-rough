@@ -36,8 +36,26 @@ URL_GRID = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_a
 USER = "jbassham"
 PASS = "guJdib-huczi6-jimsuh"
 
-# Enter data source path
-PATH_SOURCE = "/home/jbassham/jack/data/nh"
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
+
+# Define data download destination path relative to current
+PATH_SOURCE = os.path.join(script_dir, '..', 'data', HEM, 'raw')
+
+# Get absolute path to data download destination directory
+PATH_SOURCE = os.path.abspath(PATH_SOURCE)
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_SOURCE, exist_ok=True)
+
+# Define data download destination path relative to current
+PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+
+# Get absolute path to data download destination directory
+PATH_DEST = os.path.abspath(PATH_DEST)
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
 
 # Enter data file to regrid
 FNAM = "con_nimbus7_ps_{HEM}_{START_YEAR}_{END_YEAR}.npz"

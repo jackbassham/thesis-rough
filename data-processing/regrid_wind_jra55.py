@@ -9,24 +9,39 @@ import os
 # JRA55 README here: ""***""
 #  ***credit source here***  
 
-HEM = "global" # Hemisphere sh or nh
+HEM = "nh" # Hemisphere sh or nh
 HEM_DEST = "nh"
 
-# NOTE WEDDELL SEA BOUNDS
+# NOTE SOUTHERN OCEAN BOUNDS
 # LAT_LIMITS = [-80, -62] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-# LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
+# LON_LIMITS = [-180,180] # Enter West to East (coverage -180 W to 180E)
 
-# # Enter bounds for lat and lon (deg)
+# NOTE ARCTIC BOUNDS (REPLICATING HOFFMAN)
 LAT_LIMITS = [60, 90] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
 LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
 
 RESOLUTION = 25 # grid resolution (km)
 
-# Enter data source path
-PATH_SOURCE = "/home/jbassham/jack/data/ece228/year"
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
 
-# Enter data destination path
-PATH_DEST = PATH_SOURCE
+# Define data download destination path relative to current
+PATH_SOURCE = os.path.join(script_dir, '..', 'data', HEM, 'raw')
+
+# Get absolute path to data download destination directory
+PATH_SOURCE = os.path.abspath(PATH_SOURCE)
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_SOURCE, exist_ok=True)
+
+# Define data download destination path relative to current
+PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+
+# Get absolute path to data download destination directory
+PATH_DEST = os.path.abspath(PATH_DEST)
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
 
 # Enter years to regrid (must be consistent with .npy downloaded)
 START_YEAR = 2019
