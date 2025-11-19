@@ -30,11 +30,10 @@ FNAM_V = "jra55_v10m_{year}"
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
 
-# Define data download destination path relative to current
-PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'raw')
-
-# Get absolute path to data download destination directory
-PATH_DEST = os.path.abspath(PATH_DEST)
+# Define data absolute download destination path relative to current
+PATH_DEST = os.path.abspath(
+    os.path.join(script_dir, '..', 'data', HEM, 'raw')
+)
 
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
