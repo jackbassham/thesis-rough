@@ -11,8 +11,8 @@
 #   NOTE: CNN needs additional at '../model-training/cnn/ProcessInputs.py'
 # 
 # CHOOSING PARAMETERS:
-#   Change global variables under GLOBAL CONFIG section to 
-#   configure data subset parameters
+#   Global variables are defined under GLOBAL CONFIG section, to 
+#   configure data subset parameters. Python scripts read these via os.getenv() for reproducibility.
 #   NOTE: Do not include spaces when assigining variables
 #
 # USAGE:
@@ -60,6 +60,14 @@ export END_YEAR=2020
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # RUN SCRIPTS
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Print global variable selections
+ok "Loaded global configuration:"
+echo "  HEM           = $HEM"
+echo "  LAT_LIMITS    = $LAT_LIMITS"
+echo "  LON_LIMITS    = $LON_LIMITS"
+echo "  RESOLUTION    = $RESOLUTION km"
+echo "  YEARS         = $START_YEAR - $END_YEAR"
 
 echo "1. Starting Downloads"
 
