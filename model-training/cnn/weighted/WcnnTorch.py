@@ -282,7 +282,7 @@ def main():
         print(f"Epoch {epoch+1}/{num_epochs} - u Pred (Val) Avg: {avg_u_pred:.4f} - v Pred (Val) Avg: {avg_v_pred:.4f}")
 
     # Plot losses
-    plot_weighted_losses(num_epochs, train_losses, val_losses, f"CNN")
+    plot_weighted_losses(num_epochs, train_losses, val_losses, f"Weighted CNN")
 
     # Save model weights
     fnam = f'CNNweights_{HEM}_{START_YEAR}_{END_YEAR}.pth'
