@@ -9,20 +9,30 @@ import os
 # Vector rotation from vertical/horizontal to N/E from:
 ## https://nsidc.org/data/user-resources/help-center/how-convert-horizontal-and-vertical-components-east-and-north
 
-# Hemisphere 'sh' or 'nh'
-HEM = "nh"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Enter years to regrid (must be consitent with .npz downloaded)
-START_YEAR = 1992
-END_YEAR = 2020
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
 
-# NOTE SOUTHERN OCEAN BOUNDS
-# LAT_LIMITS = [-80, -62] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-# LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
-# NOTE ARCTIC BOUNDS
-LAT_LIMITS = [60, 90] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
+LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
+LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
+
+RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
+
+# Nasa Earthdata login credentials for download
+USER = os.getenv("USER") # username
+PASS = os.getenv("PASS") # password
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define file name to regrid
+FNAM = "motion_ppv4_EASE_{HEM}_{START_YEAR}_{END_YEAR}.npz"
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
@@ -40,10 +50,6 @@ PATH_DEST = os.path.abspath(
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
 
-# Enter file name (end of URL) with placeholders
-FNAM = "motion_ppv4_EASE_{HEM}_{START_YEAR}_{END_YEAR}.npz"
-
-RESOLUTION = 25 # Grid resolution, consistent with polar pathfinder velocities (km)
 
 def main():
 

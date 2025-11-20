@@ -12,29 +12,34 @@ import xarray as xr # With h5netcdf
 # Processes entire time series from .npz file downloaded using '01_con_nimbus7_dload.py'
 # ***credit source here***
 
-# Hemisphere (sh or nh)
-HEM = "nh"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Enter years to regrid (must be consitent with .npz downloaded)
-START_YEAR = 1992
-END_YEAR = 2020
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
 
-# NOTE SOUTHERN OCEAN BOUNDS 
-# LAT_LIMITS = [-80, -62] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-# LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
-# NOTE ARCTIC BOUNDS 
-LAT_LIMITS = [60, 90] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
+LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
+LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
 
-RESOLUTION = 25 # Grid resolution, consistent with polar pathfinder velocities (km)
+RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
 
+# Nasa Earthdata login credentials for download
+USER = os.getenv("USER") # username
+PASS = os.getenv("PASS") # password
 
-# Enter URL for Polar Stereographic 25km resolution lat lon grid
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Remaining global variables defined here
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Enter valid URL for Polar Stereographic 25km resolution lat lon grid
 URL_GRID = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_anc_grid_info/NSIDC0771_LatLon_PS_{grid}25km_v1.1.nc"
-# Enter NASA Earthdata Login Credentials
-USER = "jbassham"
-PASS = "guJdib-huczi6-jimsuh"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)

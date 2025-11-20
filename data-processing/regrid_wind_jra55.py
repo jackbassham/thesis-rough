@@ -9,18 +9,26 @@ import os
 # JRA55 README here: ""***""
 #  ***credit source here***  
 
-HEM = "nh" # Hemisphere sh or nh
-HEM_DEST = "nh"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# NOTE SOUTHERN OCEAN BOUNDS
-# LAT_LIMITS = [-80, -62] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-# LON_LIMITS = [-180,180] # Enter West to East (coverage -180 W to 180E)
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
 
-# NOTE ARCTIC BOUNDS (REPLICATING HOFFMAN)
-LAT_LIMITS = [60, 90] # Enter South to North (coverage 29.7N to 90N or -90S to -37S)
-LON_LIMITS = [-180, 180] # Enter West to East (coverage -180 W to 180E)
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
-RESOLUTION = 25 # grid resolution (km)
+LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
+LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
+
+RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define data file name to regrid
+FNAM = f"wind_JRA55_gaussian_{HEM}_{START_YEAR}_{END_YEAR}.npz"
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
@@ -37,13 +45,6 @@ PATH_DEST = os.path.abspath(
 
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
-
-# Enter years to regrid (must be consistent with .npy downloaded)
-START_YEAR = 2019
-END_YEAR = 2020
-
-# Enter data file to regrid
-FNAM = f"wind_JRA55_gaussian_{HEM}_{START_YEAR}_{END_YEAR}.npz"
 
 def main():
 

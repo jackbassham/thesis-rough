@@ -33,9 +33,10 @@ PASS = os.getenv("PASS") # password
 # List of possible sensor names for variables in files
 VAR_NAMES = ['F08_ICECON', 'F11_ICECON', 'F13_ICECON', 'F17_ICECON']
 
-# Enter base download url (leaving off file from path) 
+# Enter valid base download URL (leaving off file from path) 
 BASE_URL = "https://n5eil01u.ecs.nsidc.org/PM/NSIDC-0051.002/{date}/"
-# Enter file (end of URL) with placeholder {year}
+
+# Enter valid file name (end of URL string)
 FNAM = "NSIDC0051_SEAICE_PS_{hem}25km_{date}_v2.0.nc"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

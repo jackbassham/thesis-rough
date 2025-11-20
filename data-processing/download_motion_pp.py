@@ -21,10 +21,10 @@ PASS = os.getenv("PASS") # password
 # Remaining global variables defined here
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Enter base download url (leaving off file from path) 
+# Enter valid base download URL (leaving off file from path) 
 BASE_URL = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vectors_v4/{hem}/daily/"
 
-# Enter file (end of url) with placeholder {year}
+# Enter valid file name (end of URL string)
 FNAM = "icemotion_daily_{HEM}_25km_{year}0101_{year}1231_v4.1.nc"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
