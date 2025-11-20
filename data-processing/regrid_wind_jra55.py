@@ -82,7 +82,6 @@ def main():
 
     # Create new filename
     fnam = FNAM.replace("gaussian", "latlon") # Replace grid identifier
-    fnam = fnam.replace(HEM, HEM_DEST) # Replace hemisphere identifier
     
     # Save regrided lat lon data
     np.savez_compressed(os.path.join(PATH_DEST, fnam), u = u_new, v = v_new, time = time, lat = lat_new, lon = lon_new)
