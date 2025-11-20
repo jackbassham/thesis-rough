@@ -16,6 +16,9 @@
 #   NOTE: Do not include spaces when assigining variables
 #
 # USAGE:
+#   # Navigate to 'data-processing' directory
+#   cd data-processing
+#
 #   # Initialize script
 #   chmod +x run-data-processing.sh
 # 
