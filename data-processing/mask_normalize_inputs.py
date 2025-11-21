@@ -7,24 +7,43 @@ import os
 # 1. KEEP FLAG VALUES in uncertainty!
 #########################################################
 
-START_YEAR = 1992
-END_YEAR = 2020
-HEM = 'sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
+
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
+
+LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
+LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
+
+RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define data file name to regrid
+FNAM = f"wind_JRA55_gaussian_{HEM}_{START_YEAR}_{END_YEAR}.npz"
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
 
-# Define regrid data source directory relative to current
-PATH_SOURCE = os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+# Define absolute raw data directory source path relative to current
+PATH_SOURCE = os.path.abspath(
+    os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+)
 
-# Get absolute path to source directory
-PATH_SOURCE = os.path.abspath(PATH_SOURCE)
+# Define masked normalized data destination path relative to current
+PATH_DEST = os.path.abspath(
+    os.path.join(script_dir, '..', 'data', HEM, 'masked-normalized')
+)
 
-# Define destination path for masked normalized inputs
-PATH_DEST = os.path.join(script_dir, '..', 'data', HEM, 'masked-normalized')
-
-# Create destination path if it doesn't already exist
+# Create the directory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
+
 
 def main():
 
