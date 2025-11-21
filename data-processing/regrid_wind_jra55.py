@@ -87,15 +87,16 @@ def main():
     np.savez_compressed(os.path.join(PATH_DEST, fnam), u = u_new, v = v_new, time = time, lat = lat_new, lon = lon_new)
     print(f"Variables Saved at path {PATH_DEST}/{fnam}")
 
-    speed_new = np.sqrt(u_new**2 + v_new**2) # lat lon wind speed (m/s)
-    speed_old = np.sqrt(u_old**2 + v_old**2) # EASE wind speed (m/s)
+    # speed_new = np.sqrt(u_new**2 + v_new**2) # lat lon wind speed (m/s)
+    # speed_old = np.sqrt(u_old**2 + v_old**2) # EASE wind speed (m/s)
 
-    # Compare regrid and old speed
-    fnam = fnam.replace(".npz", "_speed_grid_compare.mp4")
-    save_path = os.path.join(PATH_DEST,fnam)
-    compare_grids(speed_new, lat_new, lon_new, speed_old, lat_old, lon_old, 
-            LAT_LIMITS, LON_LIMITS, time = time, main_title = "Wind Speed",
-            save_path = save_path)  
+    # # Compare regrid and old speed
+    # fnam = fnam.replace(".npz", "_speed_grid_compare.mp4")
+    # save_path = os.path.join(PATH_DEST,fnam)
+    # compare_grids(speed_new, lat_new, lon_new, speed_old, lat_old, lon_old, 
+    #         LAT_LIMITS, LON_LIMITS, time = time, main_title = "Wind Speed",
+    #         save_path = save_path)  
+    
     return
     
 
