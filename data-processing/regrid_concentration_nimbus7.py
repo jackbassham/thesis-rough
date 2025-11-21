@@ -60,8 +60,6 @@ os.makedirs(PATH_DEST, exist_ok=True)
 # Enter data file to regrid
 FNAM = "con_nimbus7_ps_{HEM}_{START_YEAR}_{END_YEAR}.npz"
 
-# Enter destination path
-PATH_DEST = PATH_SOURCE
 
 def main():
     
