@@ -77,6 +77,8 @@ echo "  LON_LIMITS    = $LON_LIMITS"
 echo "  RESOLUTION    = $RESOLUTION km"
 echo "  YEARS         = $START_YEAR - $END_YEAR"
 
+
+
 echo "1. Starting Downloads"
 
 echo "Starting download_concentration_nimbus7.py..."
@@ -116,6 +118,7 @@ if ! python regrid_motion_pp.py; then
     echo "ERROR: Failed to run regrid_motion_pp.py"
     exit 1
 fi
+
 
 echo "3. Starting Mask, Normalization"
 
