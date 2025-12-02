@@ -17,7 +17,7 @@ cuda_available = torch.cuda.is_available()
 
 START_YEAR = 1992
 END_YEAR = 2020
-HEM = 'sh'
+HEM = 'nh'
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
