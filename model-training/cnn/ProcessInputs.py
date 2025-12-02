@@ -9,7 +9,7 @@ import os
 
 START_YEAR = 1992
 END_YEAR = 2020
-HEM = 'sh'
+HEM = 'nh'
 
 # Set random seed for reproducibility
 
@@ -27,7 +27,7 @@ def main():
     script_dir = os.path.dirname(__file__)
 
     # Navigate to data source directory from current path
-    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM, 'inputs')
+    PATH_SOURCE = os.path.join(script_dir, '..', '..', 'data', HEM, 'masked-normalized')
 
     # Get absolute path to data source directory
     PATH_SOURCE = os.path.abspath(PATH_SOURCE)
