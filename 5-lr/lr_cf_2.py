@@ -3,7 +3,7 @@ from numpy import linalg as LA
 import os
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
+# Get global variables from master 'train-models-all.sh'
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 HEM = os.getenv("HEM") # Hemisphere (sh or nh)
