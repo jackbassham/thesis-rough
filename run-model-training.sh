@@ -56,59 +56,52 @@ echo " "
 
 
 # Print global variable selections
-ok "Loaded global configuration:"
+ok "Global variables:"
 echo "  HEM           = $HEM"
 echo "  YEARS         = $START_YEAR - $END_YEAR"
 echo " "
 
+echo "Starting ML Model Training"
+echo " "
 
-echo "1. Starting Downloads"
+# echo "1. Starting Persistance"
 
-echo "Starting download_concentration_nimbus7.py..."
-if ! python download_concentration_nimbus7.py; then 
-    echo "ERROR: Failed to run download_concentration_nimbus7.py"
+echo "2. Training Linear Regression"
+echo "Running '5-lr/lr_cf.py'"
+echo " "
+if ! python 5-lr/lr_cf.py; then
+    echo "ERROR: Failed to run lr_cf.py"
     exit 1
 fi
 
-echo "Finished download_concentration_nimbus7.py, Starting download_wind_jra55.py..."
-if ! python download_wind_jra55.py; then 
-    echo "ERROR: Failed to run download_wind_jra55.py"
+echo "3. Training Weighted Linear Regression"
+echo "Running '6-wlr/wlr_cf.py'"
+echo " "
+if ! python 6-wlr/wlr_cf.py; then
+    echo "ERROR: Failed to run wlr_cf.py"
     exit 1
 fi
 
-echo "Finished download_wind_jra55.py, Starting download_motion_pp.py..."
-if ! python download_motion_pp.py; then 
-    echo "ERROR: Failed to run download_motion_pp.py"
+echo "4. Training CNN"
+echo "Running '7-cnn/cnn_cf.py'"
+echo " "
+if ! python 7-cnn/cnn_cf.py; then
+    echo "ERROR: Failed to run cnn_cf.py"
     exit 1
 fi
 
-echo "2. Starting Regrid"
-
-echo "Starting regrid_concentration_nimbus7.py..."
-if ! python regrid_concentration_nimbus7.py; then 
-    echo "ERROR: Failed to run regrid_concentration_nimbus7.py"
+echo "5. Training Weigghted CNN"
+echo "Running '8-wcnn/wcnn_cf.py'"
+echo " "
+if ! python 8-wcnn/wcnn_cf.py; then
+    echo "ERROR: Failed to run wcnn_cf.py"
     exit 1
 fi
 
-echo "Finished regrid_concentration_nimbus7.py, Starting regrid_wind_jra55.py..."
-if ! python regrid_wind_jra55.py; then 
-    echo "ERROR: Failed to run regrid_wind_jra55.py"
-    exit 1
-fi
+echo "Model Training Complete!"
+echo " "
 
-echo "Finished regrid_wind_jra55.py, Starting regrid_motion_pp.py..."
-if ! python regrid_motion_pp.py; then 
-    echo "ERROR: Failed to run regrid_motion_pp.py"
-    exit 1
-fi
-
-
-echo "3. Starting Mask, Normalization"
-
-echo "Starting mask_normalize_inputs.py..."
-if ! python mask_normalize_inputs.py; then 
-    echo "ERROR: Failed to run mask_normalize_inputs.py"
-    exit 1
-fi
+echo "All outputs saved with timestamp: $TIMESTAMP"
+echo " "
 
 exit 0
