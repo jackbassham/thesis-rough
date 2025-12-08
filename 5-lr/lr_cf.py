@@ -13,6 +13,8 @@ END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
 TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
 
+TIMESTAMP_MODEL = os.getenv("TIMESTAMP_MODEL") # timestamp version of the model
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Paths to data directories defined here
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +45,7 @@ PATH_DEST = os.path.abspath(
         'model-output',
         'lr', 
         HEM,
-        TIMESTAMP_IN)
+        TIMESTAMP_MODEL)
 )
 
 # Create the directory if it doesn't already exist
@@ -130,7 +132,8 @@ def lr_gridwise(invars):
 def main():
     
     # Load input variable file
-    fnam = 'inputs_normalized_nh_1992_2020.npz'
+    fnam = f'inputs_normalized_{HEM}_{START_YEAR}_{END_YEAR}_{TIMESTAMP_IN}.npz'
+
     data = np.load(os.path.join(PATH_SOURCE, fnam))
     
     # Unpack input variables from .npz file
@@ -146,16 +149,21 @@ def main():
     print("Input Variables Loaded")
 
     # Run regression
-    m, fit, true = lr_gridwise(invars)
+    m, pred, true = lr_gridwise(invars)
 
     print("All Points Complete")
 
-    # Save output
-    fnam = 'lr_gridwise_v1_ece228.npz'
+    # Save coefficients
+    fnam = f'coef_lr_cf_{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}'
 
-    np.savez(os.path.join(PATH_DEST, fnam), m = m, fit = fit, true = true)
+    print(f"LR coefficients saved at: \n {PATH_DEST}/{fnam}")
+
+    # Save predictions
+    fnam = f'pred_lr_cf_{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}'
+
+    np.savez(os.path.join(PATH_DEST, fnam), m = m, pred = pred, true = true)
     
-    print(f"LR outputs saved at: \n {PATH_DEST}/{fnam}")
+    print(f"LR predictions saved at: \n {PATH_DEST}/{fnam}")
 
     return
 
