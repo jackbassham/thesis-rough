@@ -7,13 +7,52 @@ import os
 import matplotlib.pyplot as plt
 cuda_available = torch.cuda.is_available()
 
-START_YEAR = 1992
-END_YEAR = 2020
-HEM = 'sh'
-VERSION = 'torchV1'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master 'run-data-processing.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PATH_SOURCE = "/home/jbassham/jack/data/sh/inputs_v2/cnn_inputs"
-PATH_DEST = "/home/jbassham/jack/data/sh/outputs_v2"
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
+
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
+
+TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
+
+# Define path to input data (pytorch tensors); relative to current
+PATH_SOURCE = os.path.abspath(
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        'cnn-input', 
+        HEM,
+        TIMESTAMP_IN)
+)
+
+# Create the directory if it doesn't already exist
+os.makedirs(PATH_SOURCE, exist_ok=True)
+
+# Define model output data input path; relative to current
+PATH_DEST = os.path.abspath(
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        'model-output',
+        'cnn', 
+        HEM,
+        TIMESTAMP_IN)
+)
+
+# Create the directory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
 
 def set_seed(seed=42):
     torch.manual_seed(seed) # PyTorch Reproducibility
