@@ -1,0 +1,39 @@
+/* DATA DESCRIPTION:
+Citation:	Dorschel, Boris; Hehemann, Laura; Viquerat, Sacha; Warnke, Fynn; Dreutter, Simon; Schulze Tenberge, Yvonne; Accettella, Daniela; An, Lu; Barrios, Felipe; Bazhenova, Evgenia A; Black, Jenny; Bohoyo, Fernando; Davey, Craig; de Santis, Laura; Escutia Dotti, Carlota; Frémand, Alice C; Fretwell, Peter T; Gales, Jenny A; Gao, Jinyao; Gasperini, Luca; Greenbaum, Jamin S; Henderson Jencks, Jennifer; Hogan, Kelly A; Hong, Jong Kuk; Jakobsson, Martin; Jensen, Laura; Kool, Johnathan; Larin, Sergei; Larter, Robert D; Leitchenkov, German L; Loubrieu, Benoît; Mackay, Kevin; Mayer, Larry; Millan, Romain; Morlighem, Mathieu; Navidad, Francisco; Nitsche, Frank-Oliver; Nogi, Yoshifumi; Pertuisot, Cécile; Post, Alexandra L; Pritchard, Hamish D; Purser, Autun; Rebesco, Michele; Rignot, Eric; Roberts, Jason L; Rovere, Marzia; Ryzhov, Ivan; Sauli, Chiara; Schmitt, Thierry; Silvano, Alessandro; Smith, Jodie E; Snaith, Helen; Tate, Alex J; Tinto, Kirsty; Vandenbossche, Philippe; Weatherall, Pauline; Wintersteller, Paul; Yang, Chunguo; Zhang, Tao; Arndt, Jan Erik (2022): The International Bathymetric Chart of the Southern Ocean Version 2 (IBCSO v2) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.937574
+Abstract:	The International Bathymetric Chart of the Southern Ocean Version 2 (IBCSO v2) is a digital bathymetric model (DBM) for the area south of 50° S with special emphasis on the bathymetry of the Southern Ocean. IBCSO v2 has a resolution of 500 m × 500 m in a Polar Stereographic projection (EPSG: 9354). The total data coverage of the seafloor is 23.79% with a multibeam-only data coverage of 22.32%. The remaining 1.47% include singlebeam and other data. IBCSO v2 is the most authoritative seafloor map of the area south of 50°S.
+	IBCSO is a regional mapping project of the General Bathymetric Chart of the Ocean (GEBCO) supported by the Nippon Foundation – GEBCO Seabed 2030 Project. GEBCO is a project under the auspices of the International Hydrographic Organization (IHO) and the Intergovernmental Oceanographic Commission (IOC) with the goal to produce the authoritative map of the world's oceans. The IBCSO Project is also an integral part of the Antarctic research community and an expert group of the Scientific Committee on Antarctic Research (SCAR). For further information about the IBCSO Project, please visit http://www.ibcso.org.
+Supplement to:	Dorschel, Boris; Hehemann, Laura; Viquerat, Sacha; Warnke, Fynn; Dreutter, Simon; Schulze Tenberge, Yvonne; Accettella, Daniela; An, Lu; Barrios, Felipe; Bazhenova, Evgenia A; Black, Jenny; Bohoyo, Fernando; Davey, Craig; de Santis, Laura; Escutia Dotti, Carlota; Frémand, Alice C; Fretwell, Peter T; Gales, Jenny A; Gao, Jinyao; Gasperini, Luca; Greenbaum, Jamin S; Henderson Jencks, Jennifer; Hogan, Kelly A; Hong, Jong Kuk; Jakobsson, Martin; Jensen, Laura; Kool, Johnathan; Larin, Sergei; Larter, Robert D; Leitchenkov, German L; Loubrieu, Benoît; Mackay, Kevin; Mayer, Larry; Millan, Romain; Morlighem, Mathieu; Navidad, Francisco; Nitsche, Frank-Oliver; Nogi, Yoshifumi; Pertuisot, Cécile; Post, Alexandra L; Pritchard, Hamish D; Purser, Autun; Rebesco, Michele; Rignot, Eric; Roberts, Jason L; Rovere, Marzia; Ryzhov, Ivan; Sauli, Chiara; Schmitt, Thierry; Silvano, Alessandro; Smith, Jodie E; Snaith, Helen; Tate, Alex J; Tinto, Kirsty; Vandenbossche, Philippe; Weatherall, Pauline; Wintersteller, Paul; Yang, Chunguo; Zhang, Tao; Arndt, Jan Erik (2022): The International Bathymetric Chart of the Southern Ocean Version 2. Scientific Data, 9(1), 275, https://doi.org/10.1038/s41597-022-01366-7
+Project(s):	Marine Geophysics @ AWI (AWI_GeoPhy) (URI: https://www.awi.de/en/science/geosciences/geophysics.html)
+	The Nippon Foundation - GEBCO Seabed 2030 Project (Seabed2030) (URI: https://seabed2030.org/)
+Coverage:	MEDIAN LATITUDE: -70.000000 * MEDIAN LONGITUDE: 0.000000 * SOUTH-BOUND LATITUDE: -90.000000 * WEST-BOUND LONGITUDE: 0.000000 * NORTH-BOUND LATITUDE: -50.000000 * EAST-BOUND LONGITUDE: 0.000000
+Event(s):	IBCSO_v2_extent * LATITUDE START: -90.000000 * LONGITUDE START: 0.000000 * LATITUDE END: -50.000000 * LONGITUDE END: 0.000000 * LOCATION: Antarctica
+Comment:	Email addresses IBCSO@awi.de, southern-ocean@seabed2030.org, infobathy@awi.de
+Parameter(s):	Projection (Projection) * PI: Dorschel, Boris (https://orcid.org/0000-0002-3495-5927, boris.dorschel@awi.de)
+	Description (Description) * PI: Dorschel, Boris (https://orcid.org/0000-0002-3495-5927, boris.dorschel@awi.de)
+	Image (IMAGE) * PI: Dorschel, Boris (https://orcid.org/0000-0002-3495-5927, boris.dorschel@awi.de)
+	Image (File Size) [Bytes] (IMAGE (Size)) * PI: Dorschel, Boris (https://orcid.org/0000-0002-3495-5927, boris.dorschel@awi.de)
+	Binary Object (Binary) * PI: Dorschel, Boris (https://orcid.org/0000-0002-3495-5927, boris.dorschel@awi.de)
+	Binary Object (File Size) [Bytes] (Binary (Size)) * PI: Dorschel, Boris (https://orcid.org/0000-0002-3495-5927, boris.dorschel@awi.de)
+Change history:	2024-08-22T07:58:06 - File IBSCO_v2_rev1_digital_chart.pdf was added
+License:	Creative Commons Attribution 4.0 International (CC-BY-4.0) (URI: https://creativecommons.org/licenses/by/4.0/)
+Status:	Curation Level: Basic curation (URI: https://wiki.pangaea.de/wiki/Curation_levels)
+Size:	52 data points
+Files:	All files referred to in data matrix can be downloaded in one go as ZIP <https://download.pangaea.de/dataset/937574/allfiles.zip> or TAR <https://download.pangaea.de/dataset/937574/allfiles.tar> (PANGAEA user account required). To download single files, use the filename from data matrix appended to "https://download.pangaea.de/dataset/937574/files/".
+*/
+Projection	Description	IMAGE	IMAGE (Size) [Bytes]	Binary	Binary (Size) [Bytes]
+	IBSCO v2 ref1 digital chart			IBSCO_v2_rev1_digital_chart.pdf	16.2 MBytes
+	IBSCO v2 digital chart			IBSCO_v2_digital_chart.pdf	48.8 MBytes
+IBCSO projection	IBCSO v2 ice-surface	IBCSO_v2_ice-surface.tif	151.5 MBytes	IBCSO_v2_ice-surface.nc	703.4 MBytes
+WGS84	IBCSO v2 ice-surface	IBCSO_v2_ice-surface_WGS84.tif	54.5 MBytes	IBCSO_v2_ice-surface_WGS84.nc	242.6 MBytes
+IBCSO projection	IBCSO v2 ice-surface RGB	IBCSO_v2_ice-surface_RGB.tif	161.9 MBytes		
+IBCSO projection	IBCSO v2 bed	IBCSO_v2_bed.tif	160.9 MBytes	IBCSO_v2_bed.nc	703.4 MBytes
+WGS84	IBCSO v2 bed	IBCSO_v2_bed_WGS84.tif	60.8 MBytes	IBCSO_v2_bed_WGS84.nc	242.6 MBytes
+IBCSO projection	IBCSO v2 bed RGB	IBCSO_v2_bed_RGB.tif	170 MBytes		
+IBCSO projection	IBCSO v2 RID	IBCSO_v2_RID.tif	23.3 MBytes	IBCSO_v2_RID.nc	703.4 MBytes
+WGS84	IBCSO v2 RID	IBCSO_v2_RID_WGS84.tif	9.2 MBytes	IBCSO_v2_RID_WGS84.nc	242.6 MBytes
+	IBCSO v2 RID metadata			IBCSO_v2_metadata.xlsx	60.4 kBytes
+IBCSO projection	IBCSO v2 TID	IBCSO_v2_TID.tif	14.7 MBytes	IBCSO_v2_TID.nc	703.4 MBytes
+WGS84	IBCSO v2 TID	IBCSO_v2_TID_WGS84.tif	5.9 MBytes	IBCSO_v2_TID_WGS84.nc	242.6 MBytes
+IBCSO projection	IBCSO v2 coverage			IBCSO_v2_coverage.gpkg	595.5 MBytes
+WGS84	IBCSO v2 coverage WGS84			IBCSO_v2_coverage_WGS84.gpkg	595.5 MBytes
+	Definition of projection			IBCSO.prj	2 kBytes
