@@ -3,13 +3,53 @@ import torch
 import numpy as np
 import os
 
-####################################################
-# Same as original, just changes source to inputs_v4
-####################################################
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from master '<  >.sh'
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-START_YEAR = 1992
-END_YEAR = 2020
-HEM = 'nh'
+HEM = os.getenv("HEM") # Hemisphere (sh or nh)
+
+START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
+END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
+
+TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
+
+TIMESTAMP_OUT = os.getenv("TIMESTAMP_OUT") # timestamp version of inputs processed here
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Paths to data directories defined here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Get current script directory path
+script_dir = os.path.dirname(__file__)
+
+# Define masked & normalized input data path; relative to current
+PATH_SOURCE = os.path.abspath(
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        'mask-norm', 
+        HEM,
+        TIMESTAMP_IN)
+)
+
+# Create the directory if it doesn't already exist
+os.makedirs(PATH_SOURCE, exist_ok=True)
+
+# Define model output data input path; relative to current
+PATH_DEST = os.path.abspath(
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        'cnn-input',
+        HEM,
+        TIMESTAMP_OUT)
+)
+
+# Create the directory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
 
 # Set random seed for reproducibility
 
@@ -132,16 +172,26 @@ def main():
     PATH_DEST = os.path.abspath(PATH_DEST)
     os.makedirs(PATH_DEST, exist_ok=True)
 
-    fstr = f"{HEM}_{START_YEAR}_{END_YEAR}"
+    end_str = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP}"
 
-    torch.save((x_train, y_train, r_train), os.path.join(PATH_DEST, f'train_{fstr}.pt'))
-    torch.save((x_val, y_val, r_val), os.path.join(PATH_DEST, f'val_{fstr}.pt'))
-    torch.save((x_test, y_test, r_test), os.path.join(PATH_DEST, f'test_{fstr}.pt'))
+    torch.save(
+        (x_train, y_train, r_train), 
+        os.path.join(PATH_DEST, f'train_{end_str}.pt')
+        )
+    torch.save(
+        (x_val, y_val, r_val), 
+        os.path.join(PATH_DEST, 
+        f'val_{end_str}.pt')
+        )
+    torch.save((x_test, y_test, r_test), 
+        os.path.join(PATH_DEST, 
+        f'test_{end_str}.pt')
+        )
 
     print(f"Train, Validation, and Test splits saved at {PATH_DEST}")
 
     np.savez_compressed(
-    os.path.join(PATH_DEST, f"indices_land_{fstr}.npz"),
+    os.path.join(PATH_DEST, f"indices_cnn{HEM}{START_YEAR}{END_YEAR}.npz"),
     train_idx=train_idx,
     val_idx=val_idx,
     test_idx=test_idx,
