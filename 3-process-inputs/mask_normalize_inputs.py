@@ -2,11 +2,6 @@ import gc
 import numpy as np
 import os
 
-#########################################################
-# NOTE Adapted from ProcessInputsUncertaintyV5.ipynb with changes;
-# 1. KEEP FLAG VALUES in uncertainty!
-#########################################################
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Get global variables from master 'run-data-processing.sh'
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,24 +16,42 @@ LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to Ea
 
 RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
 
+TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
+
+TIMESTAMP_OUT = os.getenv("TIMESTAMP_OUT") # timestamp version of inputs processed here
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Additonal global variables here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
+FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Paths to data directories defined here
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Define data file name to regrid
-FNAM = f"wind_JRA55_gaussian_{HEM}_{START_YEAR}_{END_YEAR}.npz"
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
 
 # Define absolute raw data directory source path relative to current
 PATH_SOURCE = os.path.abspath(
-    os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        HEM, 
+        'regrid')
 )
 
 # Define masked normalized data destination path relative to current
 PATH_DEST = os.path.abspath(
-    os.path.join(script_dir, '..', 'data', HEM, 'masked-normalized')
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        HEM, 
+        'mask-norm')
 )
 
 # Create the directory if it doesn't already exist
@@ -47,8 +60,9 @@ os.makedirs(PATH_DEST, exist_ok=True)
 
 def main():
 
+
     # Extract variables
-    fnam = f"motion_ppv4_latlon_{HEM}_{START_YEAR}_{END_YEAR}.npz"
+    fnam = f"motion_ppv4_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
     ui = data['u'] # zonal ice velocity
     vi = data['v'] # meridional ice velocity
@@ -59,13 +73,13 @@ def main():
 
     print('Ice Velocity, Uncertainty Loaded')
 
-    fnam = f"con_nimbus7_latlon_{HEM}_{START_YEAR}_{END_YEAR}.npz"
+    fnam = f"con_nimbus7_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
     ic = data['ic']# ice concentration
 
     print('Concentration Loaded')
 
-    fnam = f"wind_JRA55_latlon_{HEM}_{START_YEAR}_{END_YEAR}.npz"
+    fnam = f"wind_JRA55_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
     uw = data['u']
     vw = data['v']
@@ -78,7 +92,6 @@ def main():
 
     print('Variable Files Loaded')
     print('')
-
 
     # Mask ice concentration
     ic_raw = np.round(ic * 250) # raw value ice concentration (NSIDC)
