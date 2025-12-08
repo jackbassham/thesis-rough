@@ -51,6 +51,13 @@ PATH_DEST = os.path.abspath(
 # Create the directory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Additonal global variables here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
+FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
+
 # Set random seed for reproducibility
 
 def set_seed(seed=42):
