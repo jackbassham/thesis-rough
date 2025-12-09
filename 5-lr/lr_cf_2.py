@@ -168,12 +168,12 @@ def lr_test(invars, m):
         for ix in range(nx):
 
             # Filter inputs to valid indices
-            uit_f, vit_f, uat_f, vat_f, icy_f = [var[:,iy,ix] for var in invars]
+            uit_f, vit_f, uat_f, vat_f, ciy_f = [var[:,iy,ix] for var in invars]
 
             # Convert to complex
             zit = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
             zat = uat_f + vat_f*1j # Complex 'today' wind vector
-            zciy = icy_f + 0*1j # Complex 'yesterday' ice concentration
+            zciy = ciy_f + 0*1j # Complex 'yesterday' ice concentration
             
             # Store true complex ice velocity vectors at valid points
             true_all[:, iy, ix] = zit
