@@ -156,7 +156,11 @@ def main():
 
     # Save time series data as npz variables
     fnam = f"con_nimbus7_ps_{HEM}{START_YEAR}{END_YEAR}"
-    np.savez_compressed(os.path.join(PATH_DEST, fnam), ci = ci_total, time = time_total, var_names = var_names_total, allow_pickle = True)
+    np.savez_compressed(os.path.join(PATH_DEST, fnam), 
+                        ci = ci_total, 
+                        time = time_total, 
+                        var_names = var_names_total, 
+                        allow_pickle = True)
 
     print(f"Variables Saved at path {PATH_DEST + fnam}.npz")
 
