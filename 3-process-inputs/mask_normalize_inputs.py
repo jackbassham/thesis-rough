@@ -60,27 +60,26 @@ os.makedirs(PATH_DEST, exist_ok=True)
 
 def main():
 
-
-    # Extract variables
+    # Load in variables
     fnam = f"motion_ppv4_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+
     ui = data['u'] # zonal ice velocity
     vi = data['v'] # meridional ice velocity
-    r = data['error'] # ice velocity uncertainty (same for u and v)
-    lat = data['lat'] 
-    lon = data['lon']
-    time = data['time']
+    ri = data['error'] # ice velocity uncertainty (same for u and v)
 
     print('Ice Velocity, Uncertainty Loaded')
 
     fnam = f"con_nimbus7_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+
     ci = data['ci']# ice concentration
 
     print('Concentration Loaded')
 
     fnam = f"wind_JRA55_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+
     ua = data['u']
     va = data['v']
 
@@ -105,18 +104,12 @@ def main():
 
     print('Raw concentration masked based on NSIDC masks.')
 
-    # Delete unused from memory
-    del ui, vi, ua, va, ci, time, r
-    gc.collect()
-
-    print("Data shifted for 'present' and 'previous' days")
-
     # Create list of input variables
-    invars = [uit, vit, rt, uat, vat, ciy]
+    invars = [ui, vi, ri, ua, va, ci]
 
     # Mask spatial indices with concentration less than .15, NaN concentration
     # NOTE keeping flag values for ice velocity uncertainties
-    mask = (cit <= .15) | (np.isnan(cit))
+    mask = (ci <= .15) | (np.isnan(ci))
 
     # NaN out points meeting mask condition
     invars_masked = [np.where(mask, np.nan, var) for var in invars]
@@ -138,27 +131,27 @@ def main():
     global_stds = [np.nanstd(var) for var in invars_masked]
 
     # Unpacked masked variables
-    uit_masked, vit_masked, rt_masked, uat_masked, vat_masked, ciy_masked = invars_masked
+    ui_masked, vi_masked, ri_masked, ua_masked, va_masked, ci_masked = invars_masked
 
     # Delete unused arrays from memory
     del invars
-    del uit, vit, uat, vat, cit, ciy
+    del ui, vi, ri, ua, va, ci
     gc.collect()
 
     # Unpack statistics
-    uit_bar, vit_bar, _, uat_bar, vat_bar, ciy_bar = grid_means
+    ui_bar, vi_bar, _, ua_bar, va_bar, ci_bar = grid_means
 
-    _, _, _, uat_std, vat_std, ciy_std = global_stds
+    _, _, _, ua_std, va_std, ci_std = global_stds
 
     # Delete unused arrays from memory
     del _
     gc.collect()
 
     # Calculate speed
-    cit = np.sqrt(uit_masked ** 2 + vit_masked ** 2)
+    Ui = np.sqrt(ui_masked ** 2 + vi_masked ** 2)
 
     # Get standard deviation of speed for normalization
-    cit_std = np.nanstd(cit)
+    Ui_std = np.nanstd(Ui)
 
     # Delete unused arrays from memory
     del invars_masked, grid_means, global_stds
@@ -167,28 +160,28 @@ def main():
     # Normalize ice velocity and uncertainty by ice speed global standard deviation 
     # (z-score normalization)
 
-    uitn = (uit_masked - uit_bar) / cit_std
-    vitn = (vit_masked - vit_bar) / cit_std
+    ui_norm = (ui_masked - ui_bar) / Ui_std
+    vi_norm = (vi_masked - vi_bar) / Ui_std
 
     print("'uit_bar', 'vit_bar' normalized by 'cit_std:'")
-    print(f"   {cit_std:.3f} cm/s")
+    print(f"   {Ui_std:.3f} cm/s")
     print('')
 
     # Normalize uncertainty by standard deviation of speed
-    rtn = rt_masked / cit_std
+    ri_norm = ri_masked / Ui_std
 
-    print(f"'rt' scaled by {cit_std:.3f} cm/s:")
+    print(f"'rt' scaled by {Ui_std:.3f} cm/s:")
     print('')
 
     # Normalize remaning variables
-    uatn = (uat_masked - uat_bar) / uat_std
+    ua_norm = (ua_masked - ua_bar) / ua_std
 
-    vatn = (vat_masked - vat_bar) / vat_std
+    va_norm = (va_masked - va_bar) / va_std
 
-    ciyn = (ciy_masked - ciy_bar) / ciy_std
+    ci_norm = (ci_masked - ci_bar) / ci_std
 
     print("'uat_bar', 'vat_bar', and 'ciy_bar' normalized by respective standard devations:")
-    print(f"   {uat_std:.3f} cm/s, {vat_std:.3f} cm/s, {ciy_std:.3f}")
+    print(f"   {ua_std:.3f} cm/s, {va_std:.3f} cm/s, {ci_std:.3f}")
     print('')
     
     # Save normalized input variables
@@ -196,10 +189,10 @@ def main():
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
-        uitn = uitn, vitn = vitn, 
-        rtn = rtn, 
-        uatn = uatn, vatn = vatn,
-        ciyn = ciyn
+        ui = ui_norm, vi = vi_norm, 
+        ri = ri_norm, 
+        ua = ua_norm, va = va_norm,
+        ci_norm = ci_norm
         )
 
     print(f"Normalized inputs saved at: \n {PATH_DEST}/{fnam}")
@@ -210,38 +203,14 @@ def main():
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
-        uit_bar = uit_bar, vit_m = vit_bar,
-        uat_bar = uat_bar, vat_m = vat_bar, 
-        ciy_m = ciy_bar,
-        cit_std = cit_std,
-        uat_std = uat_std, vat_std = vat_std, 
-        ciy_std = ciy_std
+        ui_bar = ui_bar, vi_bar = vi_bar,
+        ua_bar = ua_bar, va_bar = va_bar, 
+        ci_bar = ci_bar,
+        ua_std = ua_std, va_std = va_std, 
+        ci_std = ci_std
     )
 
     print(f"Stats for normalizing saved at: \n {PATH_DEST}/{fnam}")
-
-    # Save dates
-
-    fnam = f'time_today_{FSTR_END_OUT}.npz'
-
-    np.savez(
-        os.path.join(PATH_DEST, fnam),
-        time_today = tt
-    )
-
-    print(f"'Present day' time saved at: \n {PATH_DEST}/{fnam}")
-    
-    fnam = f'lat_lon_{FSTR_END_OUT}.npz'
-
-    np.savez(
-        os.path.join(PATH_DEST, fnam),
-        lat = lat,
-        lon = lon
-    )
-
-    print(f"Lat Lon vars saved at: \n {PATH_DEST}/{fnam}")
-
-    return
 
 if __name__ == "__main__":
     main()
