@@ -24,7 +24,7 @@ TIMESTAMP_OUT = os.getenv("TIMESTAMP_OUT") # timestamp version of inputs process
 # Additonal global variables here
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
+FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}"
 FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,7 +204,7 @@ def main():
     print('')
     
     # Save normalized input variables
-    fnam = f'inputs_normalized_{HEM}_{START_YEAR}_{END_YEAR}.npz'
+    fnam = f'inputs_normalized_{FSTR_END_OUT}.npz'
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
@@ -218,7 +218,7 @@ def main():
 
     # Save statistics for normalization
 
-    fnam = f'stats_for_normalization_{HEM}_{START_YEAR}_{END_YEAR}.npz'
+    fnam = f'stats_for_normalization_{FSTR_END_OUT}.npz'
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
@@ -234,7 +234,7 @@ def main():
 
     # Save dates
 
-    fnam = f'time_today_{HEM}_{START_YEAR}_{END_YEAR}.npz'
+    fnam = f'time_today_{FSTR_END_OUT}.npz'
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
@@ -243,7 +243,7 @@ def main():
 
     print(f"'Present day' time saved at: \n {PATH_DEST}/{fnam}")
     
-    fnam = f'lat_lon_{HEM}_{START_YEAR}_{END_YEAR}.npz'
+    fnam = f'lat_lon_{FSTR_END_OUT}.npz'
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
