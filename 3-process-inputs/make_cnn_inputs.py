@@ -104,7 +104,7 @@ def main():
     print("Input Variables Loaded")
 
     # Get dimensions
-    nt, ny, nx = np.shape(ui) # time, latitude, longitude
+    nt, nlat, nlon = np.shape(ui) # time, latitude, longitude
 
     # Convert NaN values in inputs to zero
     ui_filt = np.nan_to_num(ui, 0)
@@ -151,8 +151,8 @@ def main():
     n_out = 2
 
     # Initialize PyTorch Tensors (batch, channels, height, width)
-    x = torch.zeros((nt, n_in, ny, nx), dtype = torch.float32) # Features
-    y = torch.zeros((nt, n_out, ny, nx), dtype = torch.float32) # Targets
+    x = torch.zeros((nt, n_in, nlat, nlon), dtype = torch.float32) # Features
+    y = torch.zeros((nt, n_out, nlat, nlon), dtype = torch.float32) # Targets
 
     # Fill feature arrays
     x[:, 0, :, :] = torch.from_numpy(ua_t0) # Zonal Wind, present day
