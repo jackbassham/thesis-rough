@@ -32,19 +32,29 @@ PASS = os.getenv("PASS") # password
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define file name to regrid
-FNAM = "motion_ppv4_EASE_{HEM}_{START_YEAR}_{END_YEAR}.npz"
+FNAM = "motion_ppv4_EASE_{HEM}{START_YEAR}{END_YEAR}.npz"
 
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
 
 # Define absolute raw data directory source path relative to current
 PATH_SOURCE = os.path.abspath(
-    os.path.join(script_dir, '..', 'data', HEM, 'raw')
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        HEM, 
+        'raw')
 )
 
 # Define regrid data destination path relative to current
 PATH_DEST = os.path.abspath(
-    os.path.join(script_dir, '..', 'data', HEM, 'regrid')
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        HEM, 
+        'regrid')
 )
 
 # Create the direectory if it doesn't already exist
