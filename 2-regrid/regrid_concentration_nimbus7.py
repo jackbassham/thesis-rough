@@ -100,7 +100,7 @@ def main():
         data = np.load(os.path.join(PATH_SOURCE, filename), allow_pickle=True)
 
         # Attempt to access variables
-        ic_old = data['ic'] # ice concentration on gaussian grid
+        ci_old = data['ci'] # ice concentration on gaussian grid
         time = data['time'] # time series dates dt64
         var_names = data['var_names'] # variable names, based on sensors
 
@@ -118,7 +118,7 @@ def main():
 
     # Initialize data arrays for current year
     dims = (len(time), len(lat_new), len(lon_new))
-    ic_new = np.zeros(dims) # ice concentation (part coverage 0 to 1)
+    ci_new = np.zeros(dims) # ice concentation (part coverage 0 to 1)
 
     # Iterate through gridpoints
     for i in range(dims[2]):
@@ -129,19 +129,19 @@ def main():
             jjj = jj[j,i]
             
             # Extract data from nearest neighbor index
-            ic_new[:,j,i] = ic_old[:,jjj,iii]
+            ci_new[:,j,i] = ci_old[:,jjj,iii]
 
     # Create new filename for regrided lat lon data
     fnam = filename.replace("ps", "latlon")
     
     # Save regrided lat lon data
-    np.savez_compressed(os.path.join(PATH_DEST, fnam), ic = ic_new, time = time, lat = lat_new, lon = lon_new, var_names = var_names)
+    np.savez_compressed(os.path.join(PATH_DEST, fnam), ci = ci_new, time = time, lat = lat_new, lon = lon_new, var_names = var_names)
     print(f"Variables Saved at path {PATH_DEST}/{fnam}")
 
     # # Compare regrid and old ice concentration
     # fnam = fnam.replace(".npz", "_grid_compare.mp4")
     # save_path = os.path.join(PATH_DEST,fnam)
-    # compare_grids(ic_new, lat_new, lon_new, ic_old, lat_old, lon_old,  
+    # compare_grids(ci_new, lat_new, lon_new, ci_old, lat_old, lon_old,  
     #            LAT_LIMITS, LON_LIMITS, time = time, main_title = "Ice Concentration", save_path = save_path)
   
     return
