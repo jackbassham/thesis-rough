@@ -75,14 +75,14 @@ def main():
 
     fnam = f"con_nimbus7_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
-    ic = data['ic']# ice concentration
+    ci = data['ci']# ice concentration
 
     print('Concentration Loaded')
 
     fnam = f"wind_JRA55_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
-    uw = data['u']
-    vw = data['v']
+    ua = data['u']
+    va = data['v']
 
     print('Wind Loaded')
 
@@ -94,41 +94,41 @@ def main():
     print('')
 
     # Mask ice concentration
-    ic_raw = np.round(ic * 250) # raw value ice concentration (NSIDC)
+    ci_raw = np.round(ci * 250) # raw value ice concentration (NSIDC)
 
     # NSIDC Masks 
     # 251 pole hole
     # 252 unused data
     # 253 coastline
     # 254 land
-    ic = np.where((ic_raw == 251) | (ic_raw == 252) | (ic_raw == 253) | (ic_raw == 254), np.nan, ic)
+    ci = np.where((ci_raw == 251) | (ci_raw == 252) | (ci_raw == 253) | (ci_raw == 254), np.nan, ci)
 
     print('Raw concentration masked based on NSIDC masks.')
 
     # Shift present day parameters forward one day, for one point Middle Weddell
     uit = ui[1:,:,:]
     vit = vi[1:,:,:]
-    uwt = uw[1:,:,:]
-    vwt = vw[1:,:,:]
-    ict = ic[1:,:,:]
+    uat = ua[1:,:,:]
+    vat = va[1:,:,:]
+    cit = ci[1:,:,:]
     tt = time[1:]
     rt = r[1:,:,:]
 
     # Remove last day from previous day parameters
-    icy = ic[:-1,:,:]
+    ciy = ci[:-1,:,:]
 
     # Delete unused from memory
-    del ui, vi, uw, vw, ic, time, r
+    del ui, vi, ua, va, ci, time, r
     gc.collect()
 
     print("Data shifted for 'present' and 'previous' days")
 
     # Create list of input variables
-    invars = [uit, vit, rt, uwt, vwt, icy]
+    invars = [uit, vit, rt, uat, vat, ciy]
 
     # Mask spatial indices with concentration less than .15, NaN concentration
     # NOTE keeping flag values for ice velocity uncertainties
-    mask = (ict <= .15) | (np.isnan(ict))
+    mask = (cit <= .15) | (np.isnan(cit))
 
     # NaN out points meeting mask condition
     invars_masked = [np.where(mask, np.nan, var) for var in invars]
@@ -150,17 +150,17 @@ def main():
     global_stds = [np.nanstd(var) for var in invars_masked]
 
     # Unpacked masked variables
-    uit_masked, vit_masked, rt_masked, uwt_masked, vwt_masked, icy_masked = invars_masked
+    uit_masked, vit_masked, rt_masked, uat_masked, vat_masked, ciy_masked = invars_masked
 
     # Delete unused arrays from memory
     del invars
-    del uit, vit, uwt, vwt, ict, icy
+    del uit, vit, uat, vat, cit, ciy
     gc.collect()
 
     # Unpack statistics
-    uit_bar, vit_bar, _, uwt_bar, vwt_bar, icy_bar = grid_means
+    uit_bar, vit_bar, _, uat_bar, vat_bar, ciy_bar = grid_means
 
-    _, _, _, uwt_std, vwt_std, icy_std = global_stds
+    _, _, _, uat_std, vat_std, ciy_std = global_stds
 
     # Delete unused arrays from memory
     del _
@@ -193,14 +193,14 @@ def main():
     print('')
 
     # Normalize remaning variables
-    uwtn = (uwt_masked - uwt_bar) / uwt_std
+    uatn = (uat_masked - uat_bar) / uat_std
 
-    vwtn = (vwt_masked - vwt_bar) / vwt_std
+    vatn = (vat_masked - vat_bar) / vat_std
 
-    icyn = (icy_masked - icy_bar) / icy_std
+    ciyn = (ciy_masked - ciy_bar) / ciy_std
 
-    print("'uwt_bar', 'vwt_bar', and 'icy_bar' normalized by respective standard devations:")
-    print(f"   {uwt_std:.3f} cm/s, {vwt_std:.3f} cm/s, {icy_std:.3f}")
+    print("'uat_bar', 'vat_bar', and 'ciy_bar' normalized by respective standard devations:")
+    print(f"   {uat_std:.3f} cm/s, {vat_std:.3f} cm/s, {ciy_std:.3f}")
     print('')
     
     # Save normalized input variables
@@ -210,8 +210,8 @@ def main():
         os.path.join(PATH_DEST, fnam),
         uitn = uitn, vitn = vitn, 
         rtn = rtn, 
-        uwtn = uwtn, vwtn = vwtn,
-        icyn = icyn
+        uatn = uatn, vatn = vatn,
+        ciyn = ciyn
         )
 
     print(f"Normalized inputs saved at: \n {PATH_DEST}/{fnam}")
@@ -223,11 +223,11 @@ def main():
     np.savez(
         os.path.join(PATH_DEST, fnam),
         uit_bar = uit_bar, vit_m = vit_bar,
-        uwt_bar = uwt_bar, vwt_m = vwt_bar, 
-        icy_m = icy_bar,
+        uat_bar = uat_bar, vat_m = vat_bar, 
+        ciy_m = ciy_bar,
         cit_std = cit_std,
-        uwt_std = uwt_std, vwt_std = vwt_std, 
-        icy_std = icy_std
+        uat_std = uat_std, vat_std = vat_std, 
+        ciy_std = ciy_std
     )
 
     print(f"Stats for normalizing saved at: \n {PATH_DEST}/{fnam}")

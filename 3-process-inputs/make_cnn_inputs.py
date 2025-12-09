@@ -83,7 +83,7 @@ def main():
     rt = data['rtn']
     uwt = data['uwtn']
     vwt = data['vwtn']
-    icy = data['icyn']
+    ciy = data['ciyn']
 
     print("Input Variables Loaded")
 
@@ -98,7 +98,7 @@ def main():
     vit_filt = np.nan_to_num(vit, 0)
     uwt_filt = np.nan_to_num(uwt, 0)
     vwt_filt = np.nan_to_num(vwt, 0)
-    icy_filt = np.nan_to_num(icy, 0)
+    ciy_filt = np.nan_to_num(ciy, 0)
 
     print("Input NaNs Converted to 0")
 
@@ -108,7 +108,7 @@ def main():
     print("Uncertainty NaNs Converted to 1000")
 
     # Delete arrays to free memory
-    del uit, vit, uwt, vwt, icy, rt
+    del uit, vit, uwt, vwt, ciy, rt
     gc.collect() 
 
     # Extract time (dates)
@@ -131,7 +131,7 @@ def main():
     # Fill feature arrays
     x[:, 0, :, :] = torch.from_numpy(uwt_filt) # Zonal Wind, Today
     x[:, 1, :, :] = torch.from_numpy(vwt_filt) # Meridional Wind, Today
-    x[:, 2, :, :] = torch.from_numpy(icy_filt) # Ice Concentration, Yesterday
+    x[:, 2, :, :] = torch.from_numpy(ciy_filt) # Ice Concentration, Yesterday
 
     # Fill target arrays
     y[:, 0, :, :] = torch.from_numpy(uit_filt) # Zonal Ice Velocity, Today
