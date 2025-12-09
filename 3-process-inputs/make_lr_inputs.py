@@ -57,7 +57,7 @@ PATH_DEST = os.path.abspath(
         script_dir, 
         '..', 
         'data', 
-        'cnn-input',
+        'lr-input',
         HEM,
         TIMESTAMP_OUT)
 )
@@ -208,7 +208,7 @@ def main():
     # Save split indices
 
     np.savez_compressed(
-    os.path.join(PATH_DEST, f"split_indices_cnn_{FSTR_END_OUT}.npz"),
+    os.path.join(PATH_DEST, f"split_indices_lr_{FSTR_END_OUT}.npz"),
     train_idx=train_idx,
     val_idx=val_idx,
     test_idx=test_idx
