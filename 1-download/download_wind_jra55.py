@@ -95,7 +95,14 @@ def main():
 
     # Save time series data as npz variables
     fnam = f"wind_JRA55_gaussian_{HEM}{START_YEAR}{END_YEAR}"
-    np.savez_compressed(os.path.join(PATH_DEST, fnam), u = u_total, v = v_total, time = time, lat = lat, lon = lon)
+
+    np.savez_compressed(
+        os.path.join(PATH_DEST, fnam), 
+        u = u_total, 
+        v = v_total, 
+        time = time, 
+        lat = lat, 
+        lon = lon)
     
     print(f"Variables Saved at path {PATH_DEST}/{fnam}.npz")
     
