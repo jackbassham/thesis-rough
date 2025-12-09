@@ -74,7 +74,7 @@ def main():
         # Attempt to access variables
         u_old = data['u'] # horizontal ice velocity (cm/s)
         v_old = data['v'] # vertical ice velocity (cm/s)
-        error_old = data['error'] # ice motion error estinamtes
+        r_old = data['r'] # ice motion error estinamtes
         lat_old = data['lat'] # EASE latitude shaped [x,y]
         lon_old = data['lon'] # EASE longitude shaped [x,y]
         time = data['time'] # time series dates dt64
@@ -100,7 +100,7 @@ def main():
     dims = (len(time), len(lat_new), len(lon_new))
     u_new = np.zeros(dims) # zonal ice velocity
     v_new = np.zeros(dims) # meridional ice velocity
-    error_new = np.zeros(dims) # icemotion error estimates
+    r_new = np.zeros(dims) # icemotion error estimates
 
     # Iterate through gridpoints
     for i in range(dims[2]):
@@ -124,14 +124,22 @@ def main():
                 print("Error: Enter HEM nh or sh")
             
             # Extract data from nearest neighbor index
-            error_new[:,j,i] = error_old[:,jjj,iii]
+            r_new[:,j,i] = r_old[:,jjj,iii]
 
     # Create new filename for regrided lat lon data
     fnam = filename.replace("EASE", "latlon")
     path = os.path.join(PATH_DEST, fnam)
 
     # Save time series data as npz variables
-    np.savez_compressed(path, u = u_new, v = v_new, error = error_new, time = time, lat = lat_new, lon = lon_new)
+    np.savez_compressed(
+        path, 
+        u = u_new, 
+        v = v_new, 
+        r = r_new, 
+        time = time, 
+        lat = lat_new, 
+        lon = lon_new)
+
     print(f"Variables Saved at path {path}")
 
     # NOTE due to vector rotation from horizontal/ vertical to Zonal/ Meridional
