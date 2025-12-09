@@ -70,7 +70,7 @@ def main():
     end_date = datetime(END_YEAR, 12, 31)
 
     # Initialize lists for time series variables
-    ic_total = [] # Ice Concentration
+    ci_total = [] # Ice Concentration
     time_total = [] # Dates
     var_names_total = [] # Variable names (vary by day)
 
@@ -112,7 +112,7 @@ def main():
                     # Extract data for varaiable name
                     if name in ds:
                         # Extract data for varibale name
-                        ic = ds[name].values
+                        ci = ds[name].values
                         # Append variable name to list
                         var_names_total.append(name)
         
@@ -122,7 +122,7 @@ def main():
                 
                 # If name is still not found
                 if not found_name:
-                        ic = np.nan
+                        ci = np.nan
                         var_names_total.append(None)
                         print(f"NO DATA FOR {date}, ICECON NaN")
                         # Log missing data
@@ -135,7 +135,7 @@ def main():
 
         # If unsuccessful set variable to nan for day
         else:
-            ic = np.nan
+            ci = np.nan
             var_names_total.append(None)
             time_total.append(date)
 
@@ -144,7 +144,7 @@ def main():
                 log.write(f"{date}, NO DATA.\n")
 
         # Append ice concentration data to time series list
-        ic_total.append(ic)
+        ci_total.append(ci)
 
         print(f'{date} retrieved')
 
@@ -152,11 +152,11 @@ def main():
         date += timedelta(days=1)
 
     # Concatenate concentration data along time dimension
-    ic_total = np.concatenate(ic_total, axis = 0)
+    ci_total = np.concatenate(ci_total, axis = 0)
 
     # Save time series data as npz variables
     fnam = f"con_nimbus7_ps_{HEM}{START_YEAR}{END_YEAR}"
-    np.savez_compressed(os.path.join(PATH_DEST, fnam), ic = ic_total, time = time_total, var_names = var_names_total, allow_pickle = True)
+    np.savez_compressed(os.path.join(PATH_DEST, fnam), ci = ci_total, time = time_total, var_names = var_names_total, allow_pickle = True)
 
     print(f"Variables Saved at path {PATH_DEST + fnam}.npz")
 
