@@ -141,6 +141,9 @@ def main():
     # Define number of output channels
     n_out = 2
 
+    # Get data dimensions
+    nt, nlat, nlon = np.shape(ui_t0) # time, latitude, longitude
+
     # Initialize PyTorch Tensors (batch, channels, height, width)
     x = np.zeros((nt, n_in, nlat, nlon)) # Features
     y = np.zeros((nt, n_out, nlat, nlon)) # Targets

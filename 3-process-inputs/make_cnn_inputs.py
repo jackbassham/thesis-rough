@@ -103,9 +103,6 @@ def main():
 
     print("Input Variables Loaded")
 
-    # Get dimensions
-    nt, nlat, nlon = np.shape(ui) # time, latitude, longitude
-
     # Convert NaN values in inputs to zero
     ui_filt = np.nan_to_num(ui, 0)
     vi_filt = np.nan_to_num(vi, 0)
@@ -149,6 +146,9 @@ def main():
 
     # Define number of output channels
     n_out = 2
+
+    # Get data dimensions
+    nt, nlat, nlon = np.shape(ui_t0) # time, latitude, longitude
 
     # Initialize PyTorch Tensors (batch, channels, height, width)
     x = torch.zeros((nt, n_in, nlat, nlon), dtype = torch.float32) # Features
