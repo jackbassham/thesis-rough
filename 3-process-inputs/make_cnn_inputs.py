@@ -81,8 +81,8 @@ def main():
     uit = data['uitn']
     vit = data['vitn']
     rt = data['rtn']
-    uwt = data['uwtn']
-    vwt = data['vwtn']
+    uat = data['uatn']
+    vat = data['vatn']
     ciy = data['ciyn']
 
     print("Input Variables Loaded")
@@ -96,8 +96,8 @@ def main():
     # Convert NaN values in inputs to zero
     uit_filt = np.nan_to_num(uit, 0)
     vit_filt = np.nan_to_num(vit, 0)
-    uwt_filt = np.nan_to_num(uwt, 0)
-    vwt_filt = np.nan_to_num(vwt, 0)
+    uat_filt = np.nan_to_num(uat, 0)
+    vat_filt = np.nan_to_num(vat, 0)
     ciy_filt = np.nan_to_num(ciy, 0)
 
     print("Input NaNs Converted to 0")
@@ -108,7 +108,7 @@ def main():
     print("Uncertainty NaNs Converted to 1000")
 
     # Delete arrays to free memory
-    del uit, vit, uwt, vwt, ciy, rt
+    del uit, vit, uat, vat, ciy, rt
     gc.collect() 
 
     # Extract time (dates)
@@ -129,8 +129,8 @@ def main():
     y = torch.zeros((nt, n_out, ny, nx), dtype = torch.float32) # Targets
 
     # Fill feature arrays
-    x[:, 0, :, :] = torch.from_numpy(uwt_filt) # Zonal Wind, Today
-    x[:, 1, :, :] = torch.from_numpy(vwt_filt) # Meridional Wind, Today
+    x[:, 0, :, :] = torch.from_numpy(uat_filt) # Zonal Wind, Today
+    x[:, 1, :, :] = torch.from_numpy(vat_filt) # Meridional Wind, Today
     x[:, 2, :, :] = torch.from_numpy(ciy_filt) # Ice Concentration, Yesterday
 
     # Fill target arrays
@@ -170,26 +170,24 @@ def main():
     PATH_DEST = os.path.abspath(PATH_DEST)
     os.makedirs(PATH_DEST, exist_ok=True)
 
-    end_str = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP}"
-
     torch.save(
         (x_train, y_train, r_train), 
-        os.path.join(PATH_DEST, f'train_{end_str}.pt')
+        os.path.join(PATH_DEST, f'train_{FSTR_END_OUT}.pt')
         )
     torch.save(
         (x_val, y_val, r_val), 
         os.path.join(PATH_DEST, 
-        f'val_{end_str}.pt')
+        f'val_{FSTR_END_OUT}.pt')
         )
     torch.save((x_test, y_test, r_test), 
         os.path.join(PATH_DEST, 
-        f'test_{end_str}.pt')
+        f'test_{FSTR_END_OUT}.pt')
         )
 
     print(f"Train, Validation, and Test splits saved at {PATH_DEST}")
 
     np.savez_compressed(
-    os.path.join(PATH_DEST, f"indices_cnn{HEM}{START_YEAR}{END_YEAR}.npz"),
+    os.path.join(PATH_DEST, f"indices_cnn_{FSTR_END_OUT}.npz"),
     train_idx=train_idx,
     val_idx=val_idx,
     test_idx=test_idx,
