@@ -189,39 +189,34 @@ def main():
     x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
     x_test, y_test, r_test = x[test_idx], y[test_idx], ri_t0[test_idx]
 
-
-    # Save data splits
-
-    # Create destination path for inputs, if it doesn't exist
-    PATH_DEST = os.path.join(script_dir, '..', '..', 'data', HEM, 'cnn-inputs')
-    
-    # Get absolute path to data destination directory
-    PATH_DEST = os.path.abspath(PATH_DEST)
-    os.makedirs(PATH_DEST, exist_ok=True)
+    # Save splits
 
     torch.save(
         (x_train, y_train, r_train), 
         os.path.join(PATH_DEST, f'train_{FSTR_END_OUT}.pt')
         )
+    
     torch.save(
         (x_val, y_val, r_val), 
-        os.path.join(PATH_DEST, 
-        f'val_{FSTR_END_OUT}.pt')
+        os.path.join(PATH_DEST, f'val_{FSTR_END_OUT}.pt')
         )
-    torch.save((x_test, y_test, r_test), 
-        os.path.join(PATH_DEST, 
-        f'test_{FSTR_END_OUT}.pt')
+
+    torch.save(
+        (x_test, y_test, r_test), 
+        os.path.join(PATH_DEST, f'test_{FSTR_END_OUT}.pt')
         )
 
     print(f"Train, Validation, and Test splits saved at {PATH_DEST}")
 
+    # Save split indices
+
     np.savez_compressed(
-    os.path.join(PATH_DEST, f"indices_cnn_{FSTR_END_OUT}.npz"),
+    os.path.join(PATH_DEST, f"split_indices_cnn_{FSTR_END_OUT}.npz"),
     train_idx=train_idx,
     val_idx=val_idx,
     test_idx=test_idx,
     land_mask = land_mask
-)
+    )
     
     print(f"Train, Validation, and Test indices saved at {PATH_DEST}")
 
