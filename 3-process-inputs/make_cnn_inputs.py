@@ -90,7 +90,7 @@ def main():
     set_seed(42)
 
     # Load in normalized data
-    fnam = f'inputs_normalized_{FSTR_END_IN}.npz'
+    fnam = f'masked_normalized_{FSTR_END_IN}.npz'
     data = np.load(os.path.join(PATH_SOURCE, fnam))
 
     # Unpack input variables from .npz file

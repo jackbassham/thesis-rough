@@ -185,7 +185,7 @@ def main():
     print('')
     
     # Save normalized input variables
-    fnam = f'inputs_normalized_{FSTR_END_OUT}.npz'
+    fnam = f'masked_normalized_{FSTR_END_OUT}.npz'
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
