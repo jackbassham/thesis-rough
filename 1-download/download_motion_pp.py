@@ -36,7 +36,12 @@ script_dir = os.path.dirname(__file__)
 
 # Define absolute data download destination path relative to current
 PATH_DEST = os.path.abspath(
-    os.path.join(script_dir, '..', 'data', HEM, 'raw')
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        HEM, 
+        'raw')
 )
 
 # Create the direectory if it doesn't already exist
