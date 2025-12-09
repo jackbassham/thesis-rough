@@ -105,18 +105,6 @@ def main():
 
     print('Raw concentration masked based on NSIDC masks.')
 
-    # Shift present day parameters forward one day, for one point Middle Weddell
-    uit = ui[1:,:,:]
-    vit = vi[1:,:,:]
-    uat = ua[1:,:,:]
-    vat = va[1:,:,:]
-    cit = ci[1:,:,:]
-    tt = time[1:]
-    rt = r[1:,:,:]
-
-    # Remove last day from previous day parameters
-    ciy = ci[:-1,:,:]
-
     # Delete unused from memory
     del ui, vi, ua, va, ci, time, r
     gc.collect()
