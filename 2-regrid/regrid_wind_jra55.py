@@ -100,7 +100,8 @@ def main():
         v = v_new, 
         time = time, 
         lat = lat_new, 
-        lon = lon_new)
+        lon = lon_new
+        )
     
     print(f"Variables Saved at path {PATH_DEST}/{fnam}")
 
