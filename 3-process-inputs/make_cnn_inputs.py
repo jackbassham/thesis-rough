@@ -160,8 +160,8 @@ def main():
     x[:, 2, :, :] = torch.from_numpy(ci_t1) # Ice Concentration, previous day
 
     # Fill target arrays
-    y[:, 0, :, :] = torch.from_numpy(ui_t0) # Zonal Ice Velocity, Today
-    y[:, 1, :, :] = torch.from_numpy(vi_t0) # Meridional Ice Velocity, Today
+    y[:, 0, :, :] = torch.from_numpy(ui_t0) # Zonal Ice Velocity, present day
+    y[:, 1, :, :] = torch.from_numpy(vi_t0) # Meridional Ice Velocity, present day
 
     print("Feature and Target Arrays filled")
 
