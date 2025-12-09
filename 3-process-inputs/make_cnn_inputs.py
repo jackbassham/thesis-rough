@@ -102,9 +102,6 @@ def main():
 
     print("Input Variables Loaded")
 
-    # Get landmask (where always nan) (USE LATER FOR PLOTTING!)
-    land_mask = np.all(np.isnan(ui), axis = 0)
-
     # Get dimensions
     nt, ny, nx = np.shape(ui) # time, latitude, longitude
 
@@ -142,7 +139,7 @@ def main():
     time_t0 = time[1:]
 
     # Create previous day parameters (t1) by removing last day
-    ci_t1 = ci[:-1,:,:]
+    ci_t1 = ci_filt[:-1,:,:]
 
     print('Present, Previous day parameters created')
 
@@ -213,11 +210,10 @@ def main():
     os.path.join(PATH_DEST, f"split_indices_cnn_{FSTR_END_OUT}.npz"),
     train_idx=train_idx,
     val_idx=val_idx,
-    test_idx=test_idx,
-    land_mask = land_mask
+    test_idx=test_idx
     )
     
-    print(f"Train, Validation, and Test indices saved at {PATH_DEST}")
+    print(f"Split indices saved at {PATH_DEST}")
 
     return
 
