@@ -135,7 +135,14 @@ def main():
     fnam = filename.replace("ps", "latlon")
     
     # Save regrided lat lon data
-    np.savez_compressed(os.path.join(PATH_DEST, fnam), ci = ci_new, time = time, lat = lat_new, lon = lon_new, var_names = var_names)
+    np.savez_compressed(
+        os.path.join(PATH_DEST, fnam), 
+        ci = ci_new, 
+        time = time, 
+        lat = lat_new, 
+        lon = lon_new, 
+        var_names = var_names)
+
     print(f"Variables Saved at path {PATH_DEST}/{fnam}")
 
     # # Compare regrid and old ice concentration
