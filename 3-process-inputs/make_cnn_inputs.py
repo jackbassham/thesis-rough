@@ -136,7 +136,6 @@ def main():
     vi_t0 = vi_filt[1:,:,:]
     ua_t0 = ua_filt[1:,:,:]
     va_t0 = va_filt[1:,:,:]
-    ci_t0 = ci_filt[1:,:,:]
     ri_t0 = ri_filt[1:,:,:]
 
     # Create present day (t0) time coordinate variable by shifting forward one day
