@@ -14,6 +14,8 @@ END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
 TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
 
+TIMESTAMP_COORD = os.getenv("TIMESTAMP_COORD") # timestamp version of coordinate data
+
 TIMESTAMP_OUT = os.getenv("TIMESTAMP_OUT") # timestamp version of inputs processed here
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,6 +34,18 @@ PATH_SOURCE = os.path.abspath(
         'mask-norm', 
         HEM,
         TIMESTAMP_IN)
+)
+
+# Define path to coordinate variables
+PATH_COORD = os.path.abspath(
+    os.path.join(
+        script_dir,
+        '..',
+        'data',
+        'coordinates',
+        HEM,
+        TIMESTAMP_COORD
+    )
 )
 
 # Create the directory if it doesn't already exist
@@ -57,6 +71,7 @@ os.makedirs(PATH_DEST, exist_ok=True)
 
 FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
 FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
+FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
 
 # Set random seed for reproducibility
 
@@ -73,50 +88,64 @@ def main():
     # Set random seed for reproducibility
     set_seed(42)
 
-    # Load input variable file
-    fnam = f'inputs_normalized_{HEM}_{START_YEAR}_{END_YEAR}.npz'
+    # Load in normalized data
+    fnam = f'inputs_normalized_{FSTR_END_IN}.npz'
     data = np.load(os.path.join(PATH_SOURCE, fnam))
 
     # Unpack input variables from .npz file
-    uit = data['uitn']
-    vit = data['vitn']
-    rt = data['rtn']
-    uat = data['uatn']
-    vat = data['vatn']
-    ciy = data['ciyn']
+    ui = data['ui']
+    vi = data['vi']
+    ri = data['ri']
+    ua = data['ua']
+    va = data['va']
+    ci = data['ci']
 
     print("Input Variables Loaded")
 
     # Get landmask (where always nan) (USE LATER FOR PLOTTING!)
-    land_mask = np.all(np.isnan(uit), axis = 0)
+    land_mask = np.all(np.isnan(ui), axis = 0)
 
     # Get dimensions
-    nt, ny, nx = np.shape(uit) # time, latitude, longitude
+    nt, ny, nx = np.shape(ui) # time, latitude, longitude
 
     # Convert NaN values in inputs to zero
-    uit_filt = np.nan_to_num(uit, 0)
-    vit_filt = np.nan_to_num(vit, 0)
-    uat_filt = np.nan_to_num(uat, 0)
-    vat_filt = np.nan_to_num(vat, 0)
-    ciy_filt = np.nan_to_num(ciy, 0)
+    ui_filt = np.nan_to_num(ui, 0)
+    vi_filt = np.nan_to_num(vi, 0)
+    ua_filt = np.nan_to_num(ua, 0)
+    va_filt = np.nan_to_num(va, 0)
+    ci_filt = np.nan_to_num(ci, 0)
 
     print("Input NaNs Converted to 0")
 
     # Convert NaN values in uncertainty to 1000 (flag)
-    rt_filt = np.where(np.isnan(rt), 1e3, rt)
+    ri_filt = np.where(np.isnan(ri), 1e3, ri)
 
     print("Uncertainty NaNs Converted to 1000")
 
     # Delete arrays to free memory
-    del uit, vit, uat, vat, ciy, rt
+    del ui, vi, ua, va, ci, ri
     gc.collect() 
 
     # Extract time (dates)
-    fnam = f"time_today_{HEM}_{START_YEAR}_{END_YEAR}.npz"
-    data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
-    tt = data['time_today']
+    fnam = f"coordinates_{FSTR_END_COORD}.npz"
+    data = np.load(os.path.join(PATH_COORD, fnam), allow_pickle=True)
+    time = data['time']
 
-    print("Time Loaded")
+    # Create present day parameters (t0) by shifting forward one day
+    ui_t0 = ui_filt[1:,:,:]
+    vi_t0 = vi_filt[1:,:,:]
+    ua_t0 = ua_filt[1:,:,:]
+    va_t0 = va_filt[1:,:,:]
+    ci_t0 = ci_filt[1:,:,:]
+    ri_t0 = ri_filt[1:,:,:]
+
+    # Create present day (t0) time coordinate variable by shifting forward one day
+    time_t0 = time[1:]
+
+    # Create previous day parameters (t1) by removing last day
+    ci_t1 = ci[:-1,:,:]
+
+    print('Present, Previous day parameters created')
 
     # Define number of input channels
     n_in = 3
@@ -129,36 +158,36 @@ def main():
     y = torch.zeros((nt, n_out, ny, nx), dtype = torch.float32) # Targets
 
     # Fill feature arrays
-    x[:, 0, :, :] = torch.from_numpy(uat_filt) # Zonal Wind, Today
-    x[:, 1, :, :] = torch.from_numpy(vat_filt) # Meridional Wind, Today
-    x[:, 2, :, :] = torch.from_numpy(ciy_filt) # Ice Concentration, Yesterday
+    x[:, 0, :, :] = torch.from_numpy(ua_t0) # Zonal Wind, present day
+    x[:, 1, :, :] = torch.from_numpy(va_t0) # Meridional Wind, present day
+    x[:, 2, :, :] = torch.from_numpy(ci_t1) # Ice Concentration, previous day
 
     # Fill target arrays
-    y[:, 0, :, :] = torch.from_numpy(uit_filt) # Zonal Ice Velocity, Today
-    y[:, 1, :, :] = torch.from_numpy(vit_filt) # Meridional Ice Velocity, Today
+    y[:, 0, :, :] = torch.from_numpy(ui_t0) # Zonal Ice Velocity, Today
+    y[:, 1, :, :] = torch.from_numpy(vi_t0) # Meridional Ice Velocity, Today
 
     print("Feature and Target Arrays filled")
 
     # Reshape uncertainty
-    r = torch.from_numpy(rt_filt)
-    r = r.unsqueeze(1) # [nt, 1, ny, nx]
+    ri_t0 = torch.from_numpy(ri_t0)
+    ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, ny, nx]
 
-    years = tt.astype('datetime64[Y]').astype(int) + 1970
+    years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 
-    # Define ranges
+    # Define split mask based on years
     train_mask = (years >= 1992) & (years <= 2016)
     val_mask   = (years >= 2017) & (years <= 2018)
     test_mask  = (years >= 2019) & (years <= 2020)
 
-    # Get indices
+    # Get split indices
     train_idx = np.where(train_mask)[0]
     val_idx   = np.where(val_mask)[0]
     test_idx  = np.where(test_mask)[0]
 
     # Fill train, validation, and test data arrays
-    x_train, y_train, r_train = x[train_idx], y[train_idx], r[train_idx]
-    x_val, y_val, r_val = x[val_idx], y[val_idx], r[val_idx]
-    x_test, y_test, r_test = x[test_idx], y[test_idx], r[test_idx]
+    x_train, y_train, r_train = x[train_idx], y[train_idx], ri_t0[train_idx]
+    x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
+    x_test, y_test, r_test = x[test_idx], y[test_idx], ri_t0[test_idx]
 
 
     # Save data splits
