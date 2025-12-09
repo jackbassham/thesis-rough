@@ -115,7 +115,7 @@ def main():
     # Save time series data as npz variables
     fnam = f"motion_ppv4_EASE_{HEM}{START_YEAR}{END_YEAR}"
     path = os.path.join(PATH_DEST, fnam)
-    np.savez_compressed(path , u = u_total, v = v_total, error = r_total, time = time_total, lat = lat, lon = lon)
+    np.savez_compressed(path , u = u_total, v = v_total, r = r_total, time = time_total, lat = lat, lon = lon)
     print(f"Variables Saved at path {path}.npz")
 
     return  
