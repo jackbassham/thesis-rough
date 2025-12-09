@@ -102,7 +102,8 @@ def main():
         v = v_total, 
         time = time, 
         lat = lat, 
-        lon = lon)
+        lon = lon
+    )
     
     print(f"Variables Saved at path {PATH_DEST}/{fnam}.npz")
     

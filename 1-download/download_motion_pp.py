@@ -123,7 +123,8 @@ def main():
         r = r_total, 
         time = time_total, 
         lat = lat, 
-        lon = lon)
+        lon = lon
+    )
 
     print(f"Variables Saved at path {path}.npz")
 

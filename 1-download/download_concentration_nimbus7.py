@@ -161,7 +161,8 @@ def main():
         ci = ci_total, 
         time = time_total, 
         var_names = var_names_total, 
-        allow_pickle = True)
+        allow_pickle = True
+    )
 
     print(f"Variables Saved at path {PATH_DEST + fnam}.npz")
 
