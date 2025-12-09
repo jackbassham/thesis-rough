@@ -40,7 +40,12 @@ script_dir = os.path.dirname(__file__)
 
 # Define data absolute download destination path relative to current
 PATH_DEST = os.path.abspath(
-    os.path.join(script_dir, '..', 'data', HEM, 'raw')
+    os.path.join(
+        script_dir, 
+        '..', 
+        'data', 
+        HEM, 
+        'raw')
 )
 
 # Create the direectory if it doesn't already exist
@@ -88,10 +93,10 @@ def main():
     u_total = np.concatenate(u_total, axis = 0)
     v_total = np.concatenate(v_total, axis = 0)
 
-        
     # Save time series data as npz variables
-    fnam = f"wind_JRA55_gaussian_{HEM}_{START_YEAR}_{END_YEAR}"
+    fnam = f"wind_JRA55_gaussian_{HEM}{START_YEAR}{END_YEAR}"
     np.savez_compressed(os.path.join(PATH_DEST, fnam), u = u_total, v = v_total, time = time, lat = lat, lon = lon)
+    
     print(f"Variables Saved at path {PATH_DEST}/{fnam}.npz")
     
     return
