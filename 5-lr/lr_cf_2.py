@@ -81,19 +81,19 @@ def lr_train(invars):
     vit = invars[1]
 
     # Get dimensions for output arrays
-    nt, ny, nx = np.shape(invars[0])
+    nt, nlat, nlon = np.shape(invars[0])
       
     # Initialize output arrays
-    true_all = np.full((nt, ny, nx), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
-    fit_all = np.full((nt, ny, nx), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
-    m_all = np.zeros((3, ny, nx), dtype = complex) # Complex model parameters (mean, complex 'yesterday' wind, complex 'yesterday' concentration)
+    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
+    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
+    m_all = np.zeros((3, nlat, nlon), dtype = complex) # Complex model parameters (mean, complex 'yesterday' wind, complex 'yesterday' concentration)
     
     # Iterate through each latitude, longitude gridpoint
-    for iy in range(ny):
-        for ix in range(nx):
+    for ilat in range(nlat):
+        for ilon in range(nlon):
 
             # Skip over land points
-            if np.all(np.logical_or(np.isnan(uit[:,iy,ix]), np.isnan(vit[:,iy,ix]))):
+            if np.all(np.logical_or(np.isnan(uit[:,ilat,ilon]), np.isnan(vit[:,ilat,ilon]))):
                 continue
 
             else:
@@ -101,16 +101,16 @@ def lr_train(invars):
                     # Handle missing data
                     
                     # Initialize mask for valid values
-                    true_mask = np.ones_like(uit[:,iy,ix], dtype=bool) # 1 = True = Inclusion
+                    true_mask = np.ones_like(uit[:,ilat,ilon], dtype=bool) # 1 = True = Inclusion
 
                     # Set 'True' for indices with nan values, 'False' for valid
-                    inan = np.logical_or(np.isnan(uit[:,iy,ix]), np.isnan(vit[:,iy,ix]))
+                    inan = np.logical_or(np.isnan(uit[:,ilat,ilon]), np.isnan(vit[:,ilat,ilon]))
 
                     # Set NaN indices to False (Exclusion) (~ inverts 'True' where nan to 'False')
                     true_mask = ~inan
 
                     # Filter inputs to valid indices and unpack input list
-                    uit_f, vit_f, uat_f, vat_f, ciy_f = [var[true_mask,iy,ix] for var in invars]
+                    uit_f, vit_f, uat_f, vat_f, ciy_f = [var[true_mask,ilat,ilon] for var in invars]
 
                     # Convert to complex
                     zit = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
@@ -118,7 +118,7 @@ def lr_train(invars):
                     zciy = ciy_f + ciy_f*1j # Complex 'yesterday' ice concentration
                     
                     # Store true complex ice velocity vectors at valid points
-                    true_all[true_mask, iy, ix] = zit
+                    true_all[true_mask, ilat, ilon] = zit
 
                     # Define gram matrix
                     G = np.ones(((len(zit), 3)), dtype = complex) # first column constant (1)
@@ -133,20 +133,20 @@ def lr_train(invars):
                     m = (LA.inv((G.conj().T @ G))) @ G.conj().T @ d
 
                     # Save model parameters
-                    for i in range(len(m)):
-                        m_all[i, iy, ix] = m[i]
+                    for im in range(len(m)):
+                        m_all[im, ilat, ilon] = m[im]
 
                     # Calculate fit
                     fit = G @ m
                     
                     # Store predicted complex ice velocity vectors at valid points
-                    fit_all[true_mask, iy, ix] = fit
+                    fit_all[true_mask, ilat, ilon] = fit
 
                 except Exception as e:
-                    print(f"Error at iy={iy}, ix={ix}: {e}")
+                    print(f"Error at lat={ilat}, lon={ilon}: {e}")
 
 
-        print(f'iy {iy} complete')
+        print(f'lat {ilat} complete')
         
     return m_all, fit_all, true_all
 
@@ -157,18 +157,18 @@ def lr_test(invars, m):
     vit = invars[1]
 
     # Get dimensions for output arrays
-    nt, ny, nx = np.shape(invars[0])
+    nt, nlat, nlon = np.shape(invars[0])
       
     # Initialize output arrays
-    true_all = np.full((nt, ny, nx), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
-    pred_all = np.full((nt, ny, nx), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
+    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
+    pred_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
     
     # Iterate through each latitude, longitude gridpoint
-    for iy in range(ny):
-        for ix in range(nx):
+    for ilat in range(nlat):
+        for ilon in range(nlon):
 
             # Filter inputs to valid indices
-            uit_f, vit_f, uat_f, vat_f, ciy_f = [var[:,iy,ix] for var in invars]
+            uit_f, vit_f, uat_f, vat_f, ciy_f = [var[:,ilat,ilon] for var in invars]
 
             # Convert to complex
             zit = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
@@ -176,7 +176,7 @@ def lr_test(invars, m):
             zciy = ciy_f + 0*1j # Complex 'yesterday' ice concentration
             
             # Store true complex ice velocity vectors at valid points
-            true_all[:, iy, ix] = zit
+            true_all[:, ilat, ilon] = zit
 
             # Define gram matrix
             G = np.ones(((len(zit), 3)), dtype = complex) # first column constant (1)
@@ -184,15 +184,15 @@ def lr_test(invars, m):
             G[:,1] = zat # Complex wind, today
             G[:,2] = zciy # Complex ice concentration, yesterday
 
-            m_grid = m[:,iy,ix]
+            m_grid = m[:,ilat,ilon]
 
             # Calculate fit
             pred = G @ m_grid
             
             # Store predicted complex ice velocity vectors at valid points
-            pred_all[:, iy, ix] = pred
+            pred_all[:, ilat, ilon] = pred
 
-        print(f'iy {iy} complete')
+        print(f'ilat {ilat} complete')
         
     return pred_all, true_all
 
