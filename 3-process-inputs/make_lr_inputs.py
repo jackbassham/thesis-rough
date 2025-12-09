@@ -106,15 +106,6 @@ def main():
     # Get dimensions
     nt, nlat, nlon = np.shape(ui) # time, latitude, longitude
 
-    # Convert NaN values in inputs to zero
-    ui_filt = np.nan_to_num(ui, 0)
-    vi_filt = np.nan_to_num(vi, 0)
-    ua_filt = np.nan_to_num(ua, 0)
-    va_filt = np.nan_to_num(va, 0)
-    ci_filt = np.nan_to_num(ci, 0)
-
-    print("Input NaNs Converted to 0")
-
     # Convert NaN values in uncertainty to 1000 (flag)
     ri_filt = np.where(np.isnan(ri), 1e3, ri)
 
