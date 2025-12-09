@@ -25,7 +25,7 @@ PASS = os.getenv("PASS") # password
 BASE_URL = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vectors_v4/{hem}/daily/"
 
 # Enter valid file name (end of URL string)
-FNAM = "icemotion_daily_{HEM}_25km_{year}0101_{year}1231_v4.1.nc"
+END_URL = "icemotion_daily_{HEM}_25km_{year}0101_{year}1231_v4.1.nc"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Paths to data directories defined here
@@ -59,7 +59,7 @@ def main():
     base_url = BASE_URL.format(hem = hem)
 
     # Download lat and lon variables from one year
-    fnam = FNAM.format(HEM = HEM, year = END_YEAR)
+    fnam = END_URL.format(HEM = HEM, year = END_YEAR)
 
     # Concatenate entire url from base and filename
     url = base_url + fnam
@@ -82,7 +82,7 @@ def main():
     # Iterate through years
     for year in do_years:
         # Enter filename to download for each year in loop
-        fnam = FNAM.format(year=year, HEM = HEM)
+        fnam = END_URL.format(year=year, HEM = HEM)
 
         url = base_url + fnam
 
@@ -113,7 +113,7 @@ def main():
     time_total = np.array([np.datetime64(t) for t in time_total])
 
     # Save time series data as npz variables
-    fnam = f"motion_ppv4_EASE_{HEM}_{START_YEAR}_{END_YEAR}"
+    fnam = f"motion_ppv4_EASE_{HEM}{START_YEAR}{END_YEAR}"
     path = os.path.join(PATH_DEST, fnam)
     np.savez_compressed(path , u = u_total, v = v_total, error = error_total, time = time_total, lat = lat, lon = lon)
     print(f"Variables Saved at path {path}.npz")
