@@ -73,7 +73,7 @@ def main():
     # Initialize lists for time series data
     u_total = []
     v_total = []
-    error_total = []
+    r_total = []
     time_total = []
 
     # Define years to process (np.arrange() exclusive of last value)
@@ -91,13 +91,13 @@ def main():
         with xr.open_dataset(temp) as data:
             u = data['u'].values                             # horizontal sea ice velocity [t, y, x], cm/s
             v = data['v'].values                             # vertical sea ice velocity [t, y, x], cm/s 
-            error = data['icemotion_error_estimate'].values  # Ice motion error estimates [t, y, x]
+            r = data['icemotion_error_estimate'].values      # Ice motion uncertainty [t, y, x], cm/s
             time = data['time']  
             
         # Append year's data to list
         u_total.append(u)
         v_total.append(v)
-        error_total.append(error)
+        r_total.append(r)
         time_total.append(time)
 
         # Confirm download
@@ -106,7 +106,7 @@ def main():
     # Concatenate lists of data along time dimension
     u_total = np.concatenate(u_total, axis = 0)
     v_total = np.concatenate(v_total, axis = 0)
-    error_total = np.concatenate(error_total, axis = 0)
+    r_total = np.concatenate(r_total, axis = 0)
     time_total = np.concatenate(time_total, axis = 0)
 
     # Convert time variable to numpy.datetime64 datatype
@@ -115,7 +115,7 @@ def main():
     # Save time series data as npz variables
     fnam = f"motion_ppv4_EASE_{HEM}{START_YEAR}{END_YEAR}"
     path = os.path.join(PATH_DEST, fnam)
-    np.savez_compressed(path , u = u_total, v = v_total, error = error_total, time = time_total, lat = lat, lon = lon)
+    np.savez_compressed(path , u = u_total, v = v_total, error = r_total, time = time_total, lat = lat, lon = lon)
     print(f"Variables Saved at path {path}.npz")
 
     return  
