@@ -63,12 +63,12 @@ def main():
     # Unpack input variables from .npz file
     uit = data['uitn'] # zonal ice velocity, present day, normalized
     vit = data['vitn'] # meridional ice velocity, present day, normalized
-    uwt = data['uwtn'] # zonal wind velocity, present day, normalized
-    vwt = data['vwtn'] # meridional wind velocity, present day, normalized
-    icy = data['icyn'] # ice concentration, previous day, normalized
+    uat = data['uatn'] # zonal wind velocity, present day, normalized
+    vat = data['vatn'] # meridional wind velocity, present day, normalized
+    ciy = data['ciyn'] # ice concentration, previous day, normalized
 
     # Pack input variables into list
-    invars = [uit, vit, uwt, vwt, icy]
+    invars = [uit, vit, uat, vat, ciy]
 
     print("Input Variables Loaded")
 
@@ -110,24 +110,24 @@ def lr_train(invars):
                     true_mask = ~inan
 
                     # Filter inputs to valid indices and unpack input list
-                    uit_f, vit_f, uwt_f, vwt_f, icy_f = [var[true_mask,iy,ix] for var in invars]
+                    uit_f, vit_f, uat_f, vat_f, ciy_f = [var[true_mask,iy,ix] for var in invars]
 
                     # Convert to complex
-                    it_c = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
-                    wt_c = uwt_f + vwt_f*1j # Complex 'today' wind vector
-                    icy_c = icy_f + icy_f*1j # Complex 'yesterday' ice concentration
+                    zit = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
+                    zat = uat_f + vat_f*1j # Complex 'today' wind vector
+                    zciy = ciy_f + ciy_f*1j # Complex 'yesterday' ice concentration
                     
                     # Store true complex ice velocity vectors at valid points
-                    true_all[true_mask, iy, ix] = it_c
+                    true_all[true_mask, iy, ix] = zit
 
                     # Define gram matrix
-                    G = np.ones(((len(it_c), 3)), dtype = complex) # first column constant (1)
+                    G = np.ones(((len(zit), 3)), dtype = complex) # first column constant (1)
 
-                    G[:,1] = wt_c # Complex wind, today
-                    G[:,2] = icy_c # Complex ice concentration, yesterday
+                    G[:,1] = zat # Complex wind, today
+                    G[:,2] = zciy # Complex ice concentration, yesterday
 
                     # Define data matrix
-                    d = it_c.T
+                    d = zit.T
 
                     # Solve for model parameters
                     m = (LA.inv((G.conj().T @ G))) @ G.conj().T @ d
@@ -168,21 +168,21 @@ def lr_test(invars, m):
         for ix in range(nx):
 
             # Filter inputs to valid indices
-            uit_f, vit_f, uwt_f, vwt_f, icy_f = [var[:,iy,ix] for var in invars]
+            uit_f, vit_f, uat_f, vat_f, icy_f = [var[:,iy,ix] for var in invars]
 
             # Convert to complex
-            it_c = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
-            wt_c = uwt_f + vwt_f*1j # Complex 'today' wind vector
-            icy_c = icy_f + 0*1j # Complex 'yesterday' ice concentration
+            zit = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
+            zat = uat_f + vat_f*1j # Complex 'today' wind vector
+            zciy = icy_f + 0*1j # Complex 'yesterday' ice concentration
             
             # Store true complex ice velocity vectors at valid points
-            true_all[:, iy, ix] = it_c
+            true_all[:, iy, ix] = zit
 
             # Define gram matrix
-            G = np.ones(((len(it_c), 3)), dtype = complex) # first column constant (1)
+            G = np.ones(((len(zit), 3)), dtype = complex) # first column constant (1)
 
-            G[:,1] = wt_c # Complex wind, today
-            G[:,2] = icy_c # Complex ice concentration, yesterday
+            G[:,1] = zat # Complex wind, today
+            G[:,2] = zciy # Complex ice concentration, yesterday
 
             m_grid = m[:,iy,ix]
 
