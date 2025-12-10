@@ -88,9 +88,6 @@ def main():
         os.path.join(PATH_DEST, f"lr_preds_{FSTR_END_MODEL}")
     )
 
-
-
-
     return
 
 def lr_train(x_train, y_train):
