@@ -43,8 +43,7 @@ PATH_COORD = os.path.abspath(
         'data',
         'coordinates',
         HEM,
-        TIMESTAMP_COORD
-    )
+        TIMESTAMP_COORD)
 )
 
 # Define model output data input path; relative to current
