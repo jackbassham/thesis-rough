@@ -18,6 +18,8 @@ END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
 TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
 
+TIMESTAMP_MODEL = os.getenv("TIMESTAMP_MODEL") # timestamp version of model run
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Paths to data directories defined here
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,9 +38,6 @@ PATH_SOURCE = os.path.abspath(
         TIMESTAMP_IN)
 )
 
-# Create the directory if it doesn't already exist
-os.makedirs(PATH_SOURCE, exist_ok=True)
-
 # Define model output data path; relative to current
 PATH_DEST = os.path.abspath(
     os.path.join(
@@ -48,7 +47,7 @@ PATH_DEST = os.path.abspath(
         'model-output',
         'cnn', 
         HEM,
-        TIMESTAMP_IN)
+        TIMESTAMP_MODEL)
 )
 
 # Create the directory if it doesn't already exist
