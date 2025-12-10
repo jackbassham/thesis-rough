@@ -73,20 +73,7 @@ FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
 FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
 
 
-# Set random seed for reproducibility
-
-def set_seed(seed=42):
-    torch.manual_seed(seed) # PyTorch Reproducibility
-    torch.cuda.manual_seed(seed) # Required if using GPU
-    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
-    torch.backends.cudnn.benchmark = False # Paired with above
-
-    return
-
 def main():
-
-    # Set random seed for reproducibility
-    set_seed(42)
 
     # Load in normalized data
     fnam = f'masked_normalized_{FSTR_END_IN}.npz'
