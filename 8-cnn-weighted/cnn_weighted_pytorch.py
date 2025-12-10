@@ -40,9 +40,6 @@ PATH_SOURCE = os.path.abspath(
         TIMESTAMP_IN)
 )
 
-# Create the directory if it doesn't already exist
-os.makedirs(PATH_SOURCE, exist_ok=True)
-
 # Define model output data path; relative to current
 PATH_DEST = os.path.abspath(
     os.path.join(
@@ -50,10 +47,13 @@ PATH_DEST = os.path.abspath(
         '..', 
         'data', 
         'model-output',
-        'cnn', 
+        'cnn-weighted', 
         HEM,
         TIMESTAMP_MODEL)
 )
+
+# Create the directory if it doesn't already exist
+os.makedirs(PATH_SOURCE, exist_ok=True)
 
 def set_seed(seed=42):
     torch.manual_seed(seed) # PyTorch Reproducibility
