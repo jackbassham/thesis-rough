@@ -89,18 +89,6 @@ def main():
 
     print("Input Variables Loaded")
 
-    # Get dimensions
-    nt, nlat, nlon = np.shape(ui) # time, latitude, longitude
-
-    # Convert NaN values in uncertainty to 1000 (flag)
-    ri_filt = np.where(np.isnan(ri), 1e3, ri)
-
-    print("Uncertainty NaNs Converted to 1000")
-
-    # Delete arrays to free memory
-    del ui, vi, ua, va, ci, ri
-    gc.collect() 
-
     # Extract time (dates)
     fnam = f"coordinates_{FSTR_END_COORD}.npz"
     data = np.load(os.path.join(PATH_COORD, fnam), allow_pickle=True)
@@ -111,7 +99,7 @@ def main():
     vi_t0 = vi[1:,:,:]
     ua_t0 = ua[1:,:,:]
     va_t0 = va[1:,:,:]
-    ri_t0 = ri_filt[1:,:,:]
+    ri_t0 = ri[1:,:,:]
 
     # Create present day (t0) time coordinate variable by shifting forward one day
     time_t0 = time[1:]
