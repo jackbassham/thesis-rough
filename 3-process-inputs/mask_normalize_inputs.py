@@ -57,7 +57,6 @@ PATH_DEST = os.path.abspath(
 # Create the directory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
 
-
 def main():
 
     # Load in variables
@@ -66,7 +65,7 @@ def main():
 
     ui = data['u'] # zonal ice velocity
     vi = data['v'] # meridional ice velocity
-    ri = data['error'] # ice velocity uncertainty (same for u and v)
+    ri = data['r'] # ice velocity uncertainty (same for u and v)
 
     print('Ice Velocity, Uncertainty Loaded')
 
