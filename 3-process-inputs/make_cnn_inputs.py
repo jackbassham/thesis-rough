@@ -48,9 +48,6 @@ PATH_COORD = os.path.abspath(
     )
 )
 
-# Create the directory if it doesn't already exist
-os.makedirs(PATH_SOURCE, exist_ok=True)
-
 # Define model output data input path; relative to current
 PATH_DEST = os.path.abspath(
     os.path.join(
