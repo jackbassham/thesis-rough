@@ -91,11 +91,10 @@ def lr_train(x_train, y_train):
     va_t0 = x_train[:,1,:,:]
     ci_t1 = x_train[:,2,:,:]
     
-      
     # Initialize output arrays
-    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
-    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
-    m_all = np.zeros((nin, nlat, nlon), dtype = complex) # Complex model parameters (mean, complex 'yesterday' wind, complex 'yesterday' concentration)
+    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
+    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
+    m_all = np.zeros((nin, nlat, nlon), dtype = complex) # lr coefficients (mean, present day wind, present day concentration), complex
     
     # Iterate through each latitude, longitude gridpoint
     for ilat in range(nlat):
@@ -142,10 +141,10 @@ def lr_train(x_train, y_train):
                     # Define data matrix
                     d = zi_t0.T
 
-                    # Solve for model parameters
+                    # Solve for lr coefficients
                     m = (LA.inv((G.conj().T @ G))) @ G.conj().T @ d
 
-                    # Save model parameters
+                    # Save lr coefficients
                     for im in range(len(m)):
                         m_all[im, ilat, ilon] = m[im]
 
@@ -158,12 +157,33 @@ def lr_train(x_train, y_train):
                 except Exception as e:
                     print(f"Error at lat={ilat}, lon={ilon}: {e}")
 
-
         print(f'lat {ilat} complete')
         
     return m_all, fit_all, true_all
 
-def lr_test(invars, m):
+def lr_test(x_test, y_test, m):
+
+    # Get number of input channels for gram matrix
+    _, nin, _, _ = np.shape(x_test)
+   
+    # Get dimensions for output arrays
+    nt, _, nlat, nlon = np.shape(y_test)
+
+    # Unpack target arrays
+    ui_t0 = y_test[:,0,:,:]
+    vi_t0 = y_test[:,1,:,:]
+
+    # Unpack feature arrays
+    ua_t0 = x_test[:,0,:,:]
+    va_t0 = x_test[:,1,:,:]
+    ci_t1 = x_test[:,2,:,:]
+    
+    # Initialize output arrays
+    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
+    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
+    m_all = np.zeros((nin, nlat, nlon), dtype = complex) # lr coefficients
+
+    
 
     # Get ice velocity for nan filtering
     uit = invars[0]
