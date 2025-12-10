@@ -51,41 +51,49 @@ PATH_DEST = os.path.abspath(
 # Create the directory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Additional global variables here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
+FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
 
 def main():
     
-    # Define input variable file name
-    fnam = f'mask_norm_{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}.npz' # masked & normalized data  
-    
-    # Load input variables
-    data = np.load(os.path.join(PATH_SOURCE, fnam))
+    # Load in training data
+    data = np.load(os.path.join(PATH_SOURCE,f'train_{FSTR_END_IN}.npz'))
+    x_train = data['x_train']
+    y_train = data['y_train']
 
-    # Unpack input variables from .npz file
-    uit = data['uitn'] # zonal ice velocity, present day, normalized
-    vit = data['vitn'] # meridional ice velocity, present day, normalized
-    uat = data['uatn'] # zonal wind velocity, present day, normalized
-    vat = data['vatn'] # meridional wind velocity, present day, normalized
-    ciy = data['ciyn'] # ice concentration, previous day, normalized
-
-    # Pack input variables into list
-    invars = [uit, vit, uat, vat, ciy]
-
-    print("Input Variables Loaded")
+    # Load in testing data
+    data = np.load(os.path.join(PATH_SOURCE,f'test_{FSTR_END_IN}.npz'))
+    x_test = data['x_test']
+    y_test = data['y_test']
 
 
+    return
 
-def lr_train(invars):
+def lr_train(x_train, y_train):
+
+    # Get number of input channels for gram matrix
+    _, nin, _, _ = np.shape(x_train)
    
-    # Get ice velocity for nan filtering
-    uit = invars[0]
-    vit = invars[1]
-
     # Get dimensions for output arrays
-    nt, nlat, nlon = np.shape(invars[0])
+    nt, _, nlat, nlon = np.shape(y_train)
+
+    # Unpack target arrays
+    ui_t0 = y_train[:,0,:,:]
+    vi_t0 = y_train[:,1,:,:]
+
+    # Unpack feature arrays
+    ua_t0 = x_train[:,0,:,:]
+    va_t0 = x_train[:,1,:,:]
+    ci_t1 = x_train[:,1,:,:]
+    
       
     # Initialize output arrays
     true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
-    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
+    pred_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
     m_all = np.zeros((3, nlat, nlon), dtype = complex) # Complex model parameters (mean, complex 'yesterday' wind, complex 'yesterday' concentration)
     
     # Iterate through each latitude, longitude gridpoint
@@ -93,7 +101,7 @@ def lr_train(invars):
         for ilon in range(nlon):
 
             # Skip over land points
-            if np.all(np.logical_or(np.isnan(uit[:,ilat,ilon]), np.isnan(vit[:,ilat,ilon]))):
+            if np.all(np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))):
                 continue
 
             else:
@@ -101,10 +109,10 @@ def lr_train(invars):
                     # Handle missing data
                     
                     # Initialize mask for valid values
-                    true_mask = np.ones_like(uit[:,ilat,ilon], dtype=bool) # 1 = True = Inclusion
+                    true_mask = np.ones_like(ui_t0[:,ilat,ilon], dtype=bool) # 1 = True = Inclusion
 
                     # Set 'True' for indices with nan values, 'False' for valid
-                    inan = np.logical_or(np.isnan(uit[:,ilat,ilon]), np.isnan(vit[:,ilat,ilon]))
+                    inan = np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))
 
                     # Set NaN indices to False (Exclusion) (~ inverts 'True' where nan to 'False')
                     true_mask = ~inan
@@ -112,16 +120,23 @@ def lr_train(invars):
                     # Filter inputs to valid indices and unpack input list
                     uit_f, vit_f, uat_f, vat_f, ciy_f = [var[true_mask,ilat,ilon] for var in invars]
 
+                    # Filter inputs to valid indices
+                    ui_t0_filt = ui_t0[true_mask,ilat,ilon]
+                    vi_t0_filt = vi_t0[true_mask,ilat,ilon]
+                    ua_t0_filt = ua_t0[true_mask,ilat,ilon]
+                    va_t0_filt = va_t0[true_mask,ilat,ilon]
+                    ci_t1_filt = ci_t1[true_mask,ilat,ilon]
+
                     # Convert to complex
-                    zit = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
-                    zat = uat_f + vat_f*1j # Complex 'today' wind vector
-                    zciy = ciy_f + ciy_f*1j # Complex 'yesterday' ice concentration
+                    zi_t0 = ui_t0_filt + vi_t0_filt*1j # Complex 'today' ice velocity vector       
+                    za_t0 = ua_t0_filt + va_t0_filt*1j # Complex 'today' wind vector
+                    zci_t1 = ci_t1_filt + ci_t1_filt*1j # Complex 'yesterday' ice concentration
                     
                     # Store true complex ice velocity vectors at valid points
-                    true_all[true_mask, ilat, ilon] = zit
+                    true_all[true_mask, ilat, ilon] = zi_t0
 
                     # Define gram matrix
-                    G = np.ones(((len(zit), 3)), dtype = complex) # first column constant (1)
+                    G = np.ones(((len(ua_t0), 3)), dtype = complex) # first column constant (1)
 
                     G[:,1] = zat # Complex wind, today
                     G[:,2] = zciy # Complex ice concentration, yesterday

@@ -187,28 +187,28 @@ def main():
         r_train = r_train
     )
 
-    np.savez(
-        os.path.join(PATH_DEST, f'val_{FSTR_END_OUT}.npz'),
-        x_val = x_val,
-        y_val = y_val,
-        r_val = r_val
-    )
+    # np.savez(
+    #     os.path.join(PATH_DEST, f'val_{FSTR_END_OUT}.npz'),
+    #     x_val = x_val,
+    #     y_val = y_val,
+    #     r_val = r_val
+    # )
 
     np.savez(
         os.path.join(PATH_DEST, f'test_{FSTR_END_OUT}.npz'),
         x_test = x_test,
         y_test = y_test,
-        r_test = r_test,
+        r_test = r_test
     )
 
-    print(f"Train, Validation, and Test splits saved at {PATH_DEST}")
+    print(f"Train and Test splits saved at {PATH_DEST}")
 
     # Save split indices
 
     np.savez_compressed(
     os.path.join(PATH_DEST, f"split_indices_lr_{FSTR_END_OUT}.npz"),
     train_idx=train_idx,
-    val_idx=val_idx,
+    # val_idx=val_idx,
     test_idx=test_idx
     )
     
