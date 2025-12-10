@@ -140,17 +140,17 @@ def main():
 
     # Define split mask based on years
     train_mask = (years >= 1992) & (years <= 2016)
-    val_mask   = (years >= 2017) & (years <= 2018)
+    # val_mask   = (years >= 2017) & (years <= 2018)
     test_mask  = (years >= 2019) & (years <= 2020)
 
     # Get split indices
     train_idx = np.where(train_mask)[0]
-    val_idx   = np.where(val_mask)[0]
+    # val_idx   = np.where(val_mask)[0]
     test_idx  = np.where(test_mask)[0]
 
     # Fill train, validation, and test data arrays
     x_train, y_train, r_train = x[train_idx], y[train_idx], ri_t0[train_idx]
-    x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
+    # x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
     x_test, y_test, r_test = x[test_idx], y[test_idx], ri_t0[test_idx]
 
     # Save splits
