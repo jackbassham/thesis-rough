@@ -80,12 +80,15 @@ def main():
     np.savez(
         os.path.join(PATH_DEST, f"lr_coeff_fit_{FSTR_END_MODEL}"),
         m = m,
-        fit_train = fit_train
+        fit_train = fit_train,
+        true_train = true_train
     )
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_DEST, f"lr_preds_{FSTR_END_MODEL}")
+        os.path.join(PATH_DEST, f"lr_preds_{FSTR_END_MODEL}"),
+        pred_test = pred_test,
+        true_test = true_test
     )
 
     return
