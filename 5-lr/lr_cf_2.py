@@ -177,20 +177,6 @@ def lr_test(x_test, y_test, m):
     ua_t0 = x_test[:,0,:,:]
     va_t0 = x_test[:,1,:,:]
     ci_t1 = x_test[:,2,:,:]
-    
-    # Initialize output arrays
-    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
-    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
-    m_all = np.zeros((nin, nlat, nlon), dtype = complex) # lr coefficients
-
-    
-
-    # Get ice velocity for nan filtering
-    uit = invars[0]
-    vit = invars[1]
-
-    # Get dimensions for output arrays
-    nt, nlat, nlon = np.shape(invars[0])
       
     # Initialize output arrays
     true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
@@ -204,12 +190,12 @@ def lr_test(x_test, y_test, m):
             uit_f, vit_f, uat_f, vat_f, ciy_f = [var[:,ilat,ilon] for var in invars]
 
             # Convert to complex
-            zit = uit_f + vit_f*1j # Complex 'today' ice velocity vector       
-            zat = uat_f + vat_f*1j # Complex 'today' wind vector
-            zciy = ciy_f + 0*1j # Complex 'yesterday' ice concentration
+            zi_t0 = ui_t0[:,ilat,ilon] + vi_t0[:,ilat,ilon]*1j # Complex 'today' ice velocity vector       
+            za_t0 = ua_t0[:,ilat,ilon] + va_t0[:,ilat,ilon]*1j # Complex 'today' wind vector
+            zci_t1 = ci_t1[:,ilat,ilon] + ci_t1[:,ilat,ilon]*1j # Complex 'yesterday' ice concentration
             
             # Store true complex ice velocity vectors at valid points
-            true_all[:, ilat, ilon] = zit
+            true_all[:, ilat, ilon] = zi_t0
 
             # Define gram matrix
             G = np.ones(((len(zit), 3)), dtype = complex) # first column constant (1)
