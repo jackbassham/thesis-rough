@@ -121,17 +121,17 @@ def main():
     time = data['time']
 
     # Create present day parameters (t0) by shifting forward one day
-    ui_t0 = ui_filt[1:,:,:]
-    vi_t0 = vi_filt[1:,:,:]
-    ua_t0 = ua_filt[1:,:,:]
-    va_t0 = va_filt[1:,:,:]
+    ui_t0 = ui[1:,:,:]
+    vi_t0 = vi[1:,:,:]
+    ua_t0 = ua[1:,:,:]
+    va_t0 = va[1:,:,:]
     ri_t0 = ri_filt[1:,:,:]
 
     # Create present day (t0) time coordinate variable by shifting forward one day
     time_t0 = time[1:]
 
     # Create previous day parameters (t1) by removing last day
-    ci_t1 = ci_filt[:-1,:,:]
+    ci_t1 = ci[:-1,:,:]
 
     print('Present, Previous day parameters created')
 
@@ -144,23 +144,22 @@ def main():
     # Get data dimensions
     nt, nlat, nlon = np.shape(ui_t0) # time, latitude, longitude
 
-    # Initialize PyTorch Tensors (batch, channels, height, width)
+    # Initialize feature and target arrays (batch, channels, height, width)
     x = np.zeros((nt, n_in, nlat, nlon)) # Features
     y = np.zeros((nt, n_out, nlat, nlon)) # Targets
 
     # Fill feature arrays
     x[:, 0, :, :] = ua_t0 # Zonal Wind, present day
-    x[:, 1, :, :] = torch.from_numpy(va_t0) # Meridional Wind, present day
-    x[:, 2, :, :] = torch.from_numpy(ci_t1) # Ice Concentration, previous day
+    x[:, 1, :, :] = va_t0 # Meridional Wind, present day
+    x[:, 2, :, :] = ci_t1 # Ice Concentration, previous day
 
     # Fill target arrays
-    y[:, 0, :, :] = torch.from_numpy(ui_t0) # Zonal Ice Velocity, Today
-    y[:, 1, :, :] = torch.from_numpy(vi_t0) # Meridional Ice Velocity, Today
+    y[:, 0, :, :] = ui_t0 # Zonal Ice Velocity, present day
+    y[:, 1, :, :] = vi_t0 # Meridional Ice Velocity, present day
 
     print("Feature and Target Arrays filled")
 
     # Reshape uncertainty
-    ri_t0 = torch.from_numpy(ri_t0)
     ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, nlat, nlon]
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
@@ -182,20 +181,26 @@ def main():
 
     # Save splits
 
-    torch.save(
-        (x_train, y_train, r_train), 
-        os.path.join(PATH_DEST, f'train_{FSTR_END_OUT}.pt')
-        )
-    
-    torch.save(
-        (x_val, y_val, r_val), 
-        os.path.join(PATH_DEST, f'val_{FSTR_END_OUT}.pt')
-        )
+    np.savez(
+        os.path.join(PATH_DEST, f'train_{FSTR_END_OUT}.npz'),
+        x_train = x_train,
+        y_train = y_train,
+        r_train = r_train
+    )
 
-    torch.save(
-        (x_test, y_test, r_test), 
-        os.path.join(PATH_DEST, f'test_{FSTR_END_OUT}.pt')
-        )
+    np.savez(
+        os.path.join(PATH_DEST, f'val_{FSTR_END_OUT}.npz'),
+        x_val = x_val,
+        y_val = y_val,
+        r_val = r_val
+    )
+
+    np.savez(
+        os.path.join(PATH_DEST, f'test_{FSTR_END_OUT}.npz'),
+        x_test = x_test,
+        y_test = y_test,
+        r_test = r_test,
+    )
 
     print(f"Train, Validation, and Test splits saved at {PATH_DEST}")
 
