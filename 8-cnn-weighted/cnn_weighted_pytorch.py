@@ -53,7 +53,7 @@ PATH_DEST = os.path.abspath(
 )
 
 # Create the directory if it doesn't already exist
-os.makedirs(PATH_SOURCE, exist_ok=True)
+os.makedirs(PATH_DEST, exist_ok=True)
 
 def set_seed(seed=42):
     torch.manual_seed(seed) # PyTorch Reproducibility
