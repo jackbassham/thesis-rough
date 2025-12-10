@@ -121,33 +121,21 @@ class WeightedCNN(nn.Module):
 
 # # NOTE 
 # # 2. Change from mean to weighted average (dividing by sum(w))
-def WeightedMSEloss(pred, true, r, eps=1e-4):
-
-    # # Set NaN weights to zero (ignore in loss)
-    # w = torch.where(torch.isnan(r), torch.tensor(0.0, device = r.device, dtype = r.dtype), (1 / r + eps))  
+def WeightedMSEloss(pred, true, r, epsilon=1e-4):
 
     # Compute weights
-    w = 1 / (r + eps)  # [B, C, H, W]
-
-    # DO NOT NORMALIZE, OR NORMALIZE BY THE MEAN OF THE VALID POINTS ONLY
-    # TO AVOID INFLATION OF WEIGHTS
-
-    # IF THIS WORKS, TRY NORMALIZING BY VALUES NOT FLAGGED, AND LEAVING
-    # THE FLAGGED VALUES IN!
-
-    # # # Normalize weights so mean is 1
-    # w = w / torch.mean(w)
+    w = 1 / (r + epsilon)  # [B, C, H, W]
 
     # Compute square error
     se = (pred - true) ** 2                     # Square error [B, C, H, W]
 
     # Muliply square error by weights (batchwise)
-    wse = w * se                                # [B, C, H, W]
+    se_wtd = w * se                                # Weighted Square error [B, C, H, W]
 
     # Compute weighted mean for mse
-    mse = torch.sum(wse) / (torch.sum(w) + eps)
+    mse_wtd = torch.sum(se_wtd) / (torch.sum(w) + epsilon)
 
-    return mse
+    return mse_wtd
 
 def plot_weighted_losses(num_epochs, train_losses, val_losses, model):
     epochs = np.arange(1, num_epochs + 1)
