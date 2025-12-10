@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import linalg as LA
 import os
+from scipy.sparse import diags
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Get global variables from master 'train-models-all.sh'
@@ -70,7 +71,6 @@ def main():
     data = np.load(os.path.join(PATH_SOURCE,f'test_{FSTR_END_IN}.npz'))
     x_test = data['x_test']
     y_test = data['y_test']
-    r_test = data['r_test']
 
     # Train model
     m, fit_train, true_train = lr_train(x_train, y_train)
@@ -80,19 +80,22 @@ def main():
 
     # Save coeffients, fit
     np.savez(
-        os.path.join(PATH_DEST, f"lr_coeff_fit_{FSTR_END_MODEL}"),
+        os.path.join(PATH_DEST, f"lr_wtd_coeff_fit_{FSTR_END_MODEL}"),
         m = m,
-        fit_train = fit_train
+        fit_train = fit_train,
+        true_train = true_train
     )
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_DEST, f"lr_preds_{FSTR_END_MODEL}")
+        os.path.join(PATH_DEST, f"lr_wtd_preds_{FSTR_END_MODEL}"),
+        pred_test = pred_test,
+        true_test = true_test
     )
 
     return
 
-def lr_train(x_train, y_train):
+def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
 
     # Get number of input channels for gram matrix
     _, nin, _, _ = np.shape(x_train)
@@ -108,6 +111,9 @@ def lr_train(x_train, y_train):
     ua_t0 = x_train[:,0,:,:]
     va_t0 = x_train[:,1,:,:]
     ci_t1 = x_train[:,2,:,:]
+
+    # Unpack uncertainty
+    ri_t0 = r_train[:,0,:,:]
     
     # Initialize output arrays
     true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
@@ -141,12 +147,23 @@ def lr_train(x_train, y_train):
                     ua_t0_filt = ua_t0[true_mask,ilat,ilon]
                     va_t0_filt = va_t0[true_mask,ilat,ilon]
                     ci_t1_filt = ci_t1[true_mask,ilat,ilon]
+                    ri_t0_filt = ri_t0[true_mask,ilat,ilon]
 
-                    # Convert to complex
+                    # Convert inputs to complex
                     zi_t0 = ui_t0_filt + vi_t0_filt*1j # Complex 'today' ice velocity vector       
                     za_t0 = ua_t0_filt + va_t0_filt*1j # Complex 'today' wind vector
                     zci_t1 = ci_t1_filt + ci_t1_filt*1j # Complex 'yesterday' ice concentration
-                    
+
+                    # Convert uncertainty to complex
+                    zri_t0 = 2 * ri_t0_filt ** 2
+
+                    # Compute model weights
+                    w = 1 / (zri_t0 + epsilon)
+
+                    # Diagonalize weight matrix 
+                    # NOTE using scipy.sparse diags() for memory efficiency
+                    W = diags(w)
+
                     # Store true complex ice velocity vectors at valid points
                     true_all[true_mask, ilat, ilon] = zi_t0
 
@@ -160,7 +177,7 @@ def lr_train(x_train, y_train):
                     d = zi_t0.T
 
                     # Solve for lr coefficients
-                    m = (LA.inv((G.conj().T @ G))) @ G.conj().T @ d
+                    m = (LA.inv((G.conj().T @ W @ G))) @ G.conj().T @ W @ d # (adapted from eqn 39, SIOC221B Lec 10)
 
                     # Save lr coefficients
                     for im in range(len(m)):
