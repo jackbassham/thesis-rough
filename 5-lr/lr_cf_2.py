@@ -56,7 +56,7 @@ os.makedirs(PATH_DEST, exist_ok=True)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
-FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
+FSTR_END_MODEL = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
 
 def main():
     
@@ -69,6 +69,25 @@ def main():
     data = np.load(os.path.join(PATH_SOURCE,f'test_{FSTR_END_IN}.npz'))
     x_test = data['x_test']
     y_test = data['y_test']
+
+    # Train model
+    m, fit_train, true_train = lr_train(x_train, y_train)
+
+    # Get predictions on test set
+    pred_test, true_test = lr_test(x_test, y_test, m)
+
+    # Save coeffients, fit
+    np.savez(
+        os.path.join(PATH_DEST, f"lr_coeff_fit_{FSTR_END_MODEL}"),
+        m = m,
+        fit_train = fit_train
+    )
+
+    # Save predictions
+    np.savez(
+        os.path.join(PATH_DEST, f"lr_preds_{FSTR_END_MODEL}")
+    )
+
 
 
 
