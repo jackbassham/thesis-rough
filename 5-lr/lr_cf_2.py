@@ -186,9 +186,6 @@ def lr_test(x_test, y_test, m):
     for ilat in range(nlat):
         for ilon in range(nlon):
 
-            # Filter inputs to valid indices
-            uit_f, vit_f, uat_f, vat_f, ciy_f = [var[:,ilat,ilon] for var in invars]
-
             # Convert to complex
             zi_t0 = ui_t0[:,ilat,ilon] + vi_t0[:,ilat,ilon]*1j # Complex 'today' ice velocity vector       
             za_t0 = ua_t0[:,ilat,ilon] + va_t0[:,ilat,ilon]*1j # Complex 'today' wind vector
@@ -198,15 +195,15 @@ def lr_test(x_test, y_test, m):
             true_all[:, ilat, ilon] = zi_t0
 
             # Define gram matrix
-            G = np.ones(((len(zit), 3)), dtype = complex) # first column constant (1)
+            G = np.ones(((len(ua_t0), 3)), dtype = complex) # first column constant (1)
 
-            G[:,1] = zat # Complex wind, today
-            G[:,2] = zciy # Complex ice concentration, yesterday
+            G[:,1] = za_t0 # Complex wind, today
+            G[:,2] = zci_t1 # Complex ice concentration, yesterday
 
-            m_grid = m[:,ilat,ilon]
+            m_ij = m[:,ilat,ilon]
 
             # Calculate fit
-            pred = G @ m_grid
+            pred = G @ m_ij
             
             # Store predicted complex ice velocity vectors at valid points
             pred_all[:, ilat, ilon] = pred
