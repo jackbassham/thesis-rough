@@ -71,6 +71,7 @@ def main():
     y_test = data['y_test']
 
 
+
     return
 
 def lr_train(x_train, y_train):
@@ -88,13 +89,13 @@ def lr_train(x_train, y_train):
     # Unpack feature arrays
     ua_t0 = x_train[:,0,:,:]
     va_t0 = x_train[:,1,:,:]
-    ci_t1 = x_train[:,1,:,:]
+    ci_t1 = x_train[:,2,:,:]
     
       
     # Initialize output arrays
     true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
-    pred_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
-    m_all = np.zeros((3, nlat, nlon), dtype = complex) # Complex model parameters (mean, complex 'yesterday' wind, complex 'yesterday' concentration)
+    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
+    m_all = np.zeros((nin, nlat, nlon), dtype = complex) # Complex model parameters (mean, complex 'yesterday' wind, complex 'yesterday' concentration)
     
     # Iterate through each latitude, longitude gridpoint
     for ilat in range(nlat):
@@ -117,9 +118,6 @@ def lr_train(x_train, y_train):
                     # Set NaN indices to False (Exclusion) (~ inverts 'True' where nan to 'False')
                     true_mask = ~inan
 
-                    # Filter inputs to valid indices and unpack input list
-                    uit_f, vit_f, uat_f, vat_f, ciy_f = [var[true_mask,ilat,ilon] for var in invars]
-
                     # Filter inputs to valid indices
                     ui_t0_filt = ui_t0[true_mask,ilat,ilon]
                     vi_t0_filt = vi_t0[true_mask,ilat,ilon]
@@ -138,11 +136,11 @@ def lr_train(x_train, y_train):
                     # Define gram matrix
                     G = np.ones(((len(ua_t0), 3)), dtype = complex) # first column constant (1)
 
-                    G[:,1] = zat # Complex wind, today
-                    G[:,2] = zciy # Complex ice concentration, yesterday
+                    G[:,1] = za_t0 # Complex wind, today
+                    G[:,2] = zci_t1 # Complex ice concentration, yesterday
 
                     # Define data matrix
-                    d = zit.T
+                    d = zi_t0.T
 
                     # Solve for model parameters
                     m = (LA.inv((G.conj().T @ G))) @ G.conj().T @ d
