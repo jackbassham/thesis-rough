@@ -18,9 +18,7 @@ TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
 
 TIMESTAMP_MODEL = os.getenv("TIMESTAMP_MODEL") # timestamp version of model run
 
-# NOTE: Need lat and lon limits for cartopy plots; should match the input data
-LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
-LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
+MODEL_STR = os.getenv("MODEL_STR") # string indicator for model type
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Paths to data directories defined here
@@ -44,7 +42,7 @@ PATH_SOURCE = os.path.abspath(
 
 def main():
 
-    # Get filename from 
+    # Get filename, based on the model string given
 
     # Load in true and predicted model outputs
     data = np.load(os.path.join(PATH_SOURCE, fnam)) 
@@ -141,4 +139,20 @@ def weighted_skill(pred, true, r, epsilon = 1e-4):
     return weighted_skill
 
 def plot_metric(u_data, v_data, model_str):
+
+    # Set longitude bounds for plot (full zonal coverage)
+    lon_min = -180
+    lat_min = 180
+
+    # Set latitude bounds based on hemisphere
+    if HEM == 'sh':
+        lat_min = -90
+        lat_max = -65
+    elif HEM =='nh':
+        lat_min = 65
+        lat_max = 90
+    else:
+        
+
+
 
