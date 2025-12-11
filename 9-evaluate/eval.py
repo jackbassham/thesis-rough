@@ -33,6 +33,8 @@ PATH_SOURCE = os.path.abspath(
         script_dir,
         '..',
         'data',
+        'model-output',
+        MODEL_STR,
         HEM,
         TIMESTAMP_MODEL
     )
@@ -44,14 +46,27 @@ PATH_DEST = os.path.abspath(
         script_dir,
         '..',
         'data',
-        
+        'eval-plots',
+        MODEL_STR.replace('_', '-'),
+        TIMESTAMP_MODEL
     )
 )
+
+# Create the direectory if it doesn't already exist
+os.makedirs(PATH_DEST, exist_ok=True)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Additional global variables here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FSTR_END_MODEL = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
+
 
 
 def main():
 
     # Get filename, based on the model string given
+    fnam = f"preds_{MODEL_STR}_{FSTR_END_MODEL}.npz"
 
     # Load in true and predicted model outputs
     data = np.load(os.path.join(PATH_SOURCE, fnam)) 
@@ -62,6 +77,47 @@ def main():
     utrue = data['y_true'][:,0,:,:]
     vtrue = data['y_true'][:,1,:,:]
 
+    # Calculate and plot skill
+    plot_metric(
+        skill(upred, utrue),
+        skill(vpred, vtrue),
+        "Skill"
+    )
+
+    print("Skill Plotted")
+
+    # Calculate and plot weighted skill
+    plot_metric(
+        weighted_skill(upred, utrue, r_test),
+        weighted_skill(vpred, vtrue, r_test),
+        "Wtd Skill"
+    )
+
+    print("Weighted Skill Plotted")
+    print("")
+
+    # Calculate and plot correlation
+    plot_metric(
+        correlation(upred, utrue),
+        correlation(vpred, vtrue),
+        "Corr"
+    )
+
+    print("Correlation Plotted")
+    print("")
+
+    # Calculate and plot correlation
+    plot_metric(
+        weighted_correlation(upred, utrue, r_test),
+        weighted_correlation(vpred, vtrue, r_test),
+        "Wtd Corr"
+    )
+
+    print("Weighted Correlation Plotted")
+    print("")
+
+    print("All Metrics Plotted")
+    
     return
 
 
@@ -214,7 +270,7 @@ def plot_metric(u_data, v_data, metric):
     plt.colorbar(pcm_1, ax = axs[1], orientation = 'vertical')
 
     # Add title to plot
-    fig.suptitle(f"{metric}; {MODEL_STR} {TIMESTAMP_MODEL}", fontweight = 'bold')
+    fig.suptitle(f"{metric}; {MODEL_STR.upper()} {TIMESTAMP_MODEL}", fontweight = 'bold')
 
     # Format with tight layout
     fig.tight_layout
