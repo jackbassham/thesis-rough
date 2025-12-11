@@ -29,13 +29,13 @@ PATH_SOURCE = os.path.abspath(
         script_dir, 
         '..', 
         'data', 
-        'mask-norm', 
+        'regrid', 
         HEM,
         TIMESTAMP_IN)
 )
 
 # Define path to coordinate variables
-PATH_COORD = os.path.abspath(
+PATH_DEST = os.path.abspath(
     os.path.join(
         script_dir,
         '..',
@@ -43,17 +43,6 @@ PATH_COORD = os.path.abspath(
         'coordinates',
         HEM,
         TIMESTAMP_COORD)
-)
-
-# Define model output data input path; relative to current
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        'lr-input',
-        HEM,
-        TIMESTAMP_OUT)
 )
 
 # Create the directory if it doesn't already exist
