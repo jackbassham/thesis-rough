@@ -52,3 +52,24 @@ os.makedirs(PATH_DEST, exist_ok=True)
 
 FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
 FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
+
+def main():
+
+    # Load in coordinate variables from motion dataset
+    data = np.load(os.path.join(PATH_SOURCE, f'motion_ppv4_{FSTR_END_IN}'))
+    time = data['time']
+    lat = data['lat']
+    lon = data['lon']
+
+    # Save coordinate variables in new file
+    np.savez(
+        os.path.join(PATH_DEST, f'coord_{FSTR_END_COORD}'),
+        time = time,
+        lat = lat,
+        lon = lon
+    )
+
+    return
+
+if __name__ == "__main__":
+    main()
