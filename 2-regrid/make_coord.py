@@ -56,10 +56,23 @@ FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
 def main():
 
     # Load in coordinate variables from motion dataset
-    data = np.load(os.path.join(PATH_SOURCE, f'motion_ppv4_{FSTR_END_IN}'))
+    data = np.load(os.path.join(PATH_SOURCE, f'motion_ppv4_latlon_{FSTR_END_IN}.npz'))
     time = data['time']
     lat = data['lat']
     lon = data['lon']
+
+    # Load in coordinate variables from wind dataset
+    data = np.load(os.path.join(PATH_SOURCE, f'wind_jra55_latlon_{FSTR_END_IN}.npz'))
+    time = data['time']
+    lat = data['lat']
+    lon = data['lon']
+
+    # Load in coordinate variables from concentration dataset
+    data = np.load(os.path.join(PATH_SOURCE, f'con_nimbus7_latlon_{FSTR_END_IN}.npz'))
+    time = data['time']
+    lat = data['lat']
+    lon = data['lon']
+
 
     # Save coordinate variables in new file
     np.savez(
