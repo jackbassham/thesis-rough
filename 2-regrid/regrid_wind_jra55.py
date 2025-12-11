@@ -90,6 +90,9 @@ def main():
             u_new[:,j,i] = u_old[:,jjj,iii]
             v_new[:,j,i] = v_old[:,jjj,iii]
 
+    # Format time to 1D array; YYYY-MM-DD format
+    time = format_time(time)
+
     # Create new filename
     fnam = FNAM.replace("gaussian", "latlon") # Replace grid identifier
     
@@ -176,6 +179,26 @@ def nearest_neighbor_interpolation(res, lat_lim, lon_lim, lat_old, lon_old):
 
     # Return interpolation indices and new lat and lon coordinate variables
     return jj, ii, lat_new, lon_new
+
+def format_time(time):
+    """
+    Format time to 1-D array with YYYY-MM-DD
+    """
+
+    # convert to numpy array
+    time = np.asarray(time)
+
+    # squeeze to one dimension
+    time = np.squeeze(time)
+
+    # Assert 1D after squeeizng
+    if time.ndim !=1:
+        raise ValueError(f"Time coordinate nD after squeeizng; got {time.shape}")
+    
+    # Convert to datetime64[D] (YYYY-MM-DD; min, sec, nsec truncated)
+    time = time.astype('datetime64[D]')
+
+    return time
 
 def animated_time_series(data_values, time = None, 
                         main_title = None, titles = None, y_labels = None, x_labels = None, c_labels = None, 

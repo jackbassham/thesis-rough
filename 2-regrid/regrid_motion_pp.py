@@ -126,6 +126,9 @@ def main():
             # Extract data from nearest neighbor index
             r_new[:,j,i] = r_old[:,jjj,iii]
 
+    # Format time to 1D array; YYYY-MM-DD format
+    time = format_time(time)
+
     # Create new filename for regrided lat lon data
     fnam = filename.replace("EASE", "latlon")
     path = os.path.join(PATH_DEST, fnam)
@@ -248,6 +251,25 @@ def crop_2Dlatlon(data_old, lat_old, lon_old, lat_limits, lon_limits):
 
     return data_crop, lon_crop, lat_crop
 
+def format_time(time):
+    """
+    Format time to 1-D array with YYYY-MM-DD
+    """
+
+    # convert to numpy array
+    time = np.asarray(time)
+
+    # squeeze to one dimension
+    time = np.squeeze(time)
+
+    # Assert 1D after squeeizng
+    if time.ndim !=1:
+        raise ValueError(f"Time coordinate nD after squeeizng; got {time.shape}")
+    
+    # Convert to datetime64[D] (YYYY-MM-DD; min, sec, nsec truncated)
+    time = time.astype('datetime64[D]')
+
+    return time
 
 def animated_time_series(data_values, time = None, 
                         main_title = None, titles = None, y_labels = None, x_labels = None, c_labels = None, 
