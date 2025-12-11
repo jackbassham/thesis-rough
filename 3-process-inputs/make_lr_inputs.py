@@ -86,7 +86,7 @@ def main():
     print("Input Variables Loaded")
 
     # Extract time (dates)
-    fnam = f"coordinates_{FSTR_END_COORD}.npz"
+    fnam = f"coord_{FSTR_END_COORD}.npz"
     data = np.load(os.path.join(PATH_COORD, fnam), allow_pickle=True)
     time = data['time']
 
