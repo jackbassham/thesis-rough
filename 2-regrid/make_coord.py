@@ -14,8 +14,6 @@ TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
 
 TIMESTAMP_COORD = os.getenv("TIMESTAMP_COORD") # timestamp version of coordinate data
 
-TIMESTAMP_OUT = os.getenv("TIMESTAMP_OUT") # timestamp version of inputs processed here
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Paths to data directories defined here
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,4 +52,3 @@ os.makedirs(PATH_DEST, exist_ok=True)
 
 FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
 FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
-FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
