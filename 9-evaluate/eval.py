@@ -38,6 +38,15 @@ PATH_SOURCE = os.path.abspath(
     )
 )
 
+# Define path to plot outputs
+PATH_DEST = os.path.abspath(
+    os.path.join(
+        script_dir,
+        '..',
+        'data',
+        
+    )
+)
 
 
 def main():
@@ -138,11 +147,11 @@ def weighted_skill(pred, true, r, epsilon = 1e-4):
 
     return weighted_skill
 
-def plot_metric(u_data, v_data, model_str):
+def plot_metric(u_data, v_data, metric):
 
     # Set longitude bounds for plot (full zonal coverage)
     lon_min = -180
-    lat_min = 180
+    lon_max = 180
 
     # Set latitude bounds based on hemisphere
     if HEM == 'sh':
@@ -151,8 +160,66 @@ def plot_metric(u_data, v_data, model_str):
     elif HEM =='nh':
         lat_min = 65
         lat_max = 90
-    else:
-        
+
+    # Define plot proection based on hempisphere
+    if HEM == 'sh':
+        projection = ccrs.SouthPolarStereo()
+    elif HEM == 'nh':
+        projection = ccrs.NorthPolarStereo()
+
+    # Define data-to-plot's coordinate reference system
+    # NOTE, used for 'crs' and 'transform' cartopy parameters
+    crs = ccrs.PlateCarree()
+
+    # Set color map
+    cmap = cmo.cm.balance_r  # red blue colormap from cmocean
+
+    # Saturate colormap to -1 and 1 limits
+    vmin = -1
+    vmax = 1
+    
+    # Initialize subplots
+    fig, axs = plt.subplots(
+        nrows = 1,
+        ncols = 2,
+        figsize = (6,3),
+        subplot_kw = {"projection": projection},
+        constrained_layout = True
+    )
+
+    # Plot left plot; zonal evaluation
+    axs[0].set_extent([lon_min, lon_max, lat_min, lat_max], crs = crs)
+    axs[0].costlines
+    # Plot pcolormesh plot
+    pcm_0 = axs[0].pcolormesh(
+        lon, lat, u_data,
+        transform = crs,
+        cmap = cmap, vmin = vmin, vmax = vmax
+    )
+    axs[0].set_title("zonal")
+    # Add colorbar
+    plt.colorbar(pcm_0, ax = axs[0], orientation = 'vertical')
+
+    # Plot right plot; meridional evaluation
+    axs[1].set_extent([lon_min, lon_max, lat_min, lat_max], crs = crs)
+    axs[1].costlines
+    # Plot pcolormesh plot
+    pcm_1 = axs[1].pcolormesh(
+        lon, lat, v_data,
+        transform = crs,
+        cmap = cmap, vmin = vmin, vmax = vmax
+    )
+    axs[1].set_title("meridional")
+    # Add colorbar
+    plt.colorbar(pcm_1, ax = axs[1], orientation = 'vertical')
+
+    # Add title to plot
+    fig.suptitle(f"{metric}; {MODEL_STR} {TIMESTAMP_MODEL}", fontweight = 'bold')
+
+    # Format with tight layout
+    fig.tight_layout
+
+    # Save figure
 
 
 
