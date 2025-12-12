@@ -1,13 +1,6 @@
 import numpy as np
 import os
 
-from .param import (
-    HEM,
-    LAT_LIMITS, 
-    LON_LIMITS,
-    RESOLUTION,
-)
-
 from .path import (
     PATH_SOURCE,
     PATH_DEST_COORD,
