@@ -13,9 +13,9 @@ import xarray as xr # With h5netcdf
 # Data saved as time series in .npz file
 # ***credit source here***
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from shell script
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 HEM = os.getenv("HEM") # Hemisphere (sh or nh)
 
@@ -25,6 +25,8 @@ END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 # Nasa Earthdata login credentials for download
 USER = os.getenv("USER") # username
 PASS = os.getenv("PASS") # password
+
+TIMESTAMP_RAW = os.getenv("TIMESTAMP_RAW") # timestamp version for raw data
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Remaining global variables defined here
@@ -51,9 +53,11 @@ PATH_DEST = os.path.abspath(
     os.path.join(
         script_dir, 
         '..', 
-        'data', 
-        HEM, 
-        'raw')
+        'data',  
+        'raw',
+        HEM,
+        TIMESTAMP_RAW
+        )
 )
 
 # Create the direectory if it doesn't already exist

@@ -20,6 +20,8 @@ END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
 LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
 
+TIMESTAMP_RAW = os.getenv("TIMESTAMP_RAW") # timestamp version for raw data
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Remaining global variables defined here
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,14 +40,15 @@ PATH_SOURCE = "/project_shared/jra55/"
 # Get current script directory path
 script_dir = os.path.dirname(__file__)
 
-# Define data absolute download destination path relative to current
+# Define absolute data download destination path relative to current
 PATH_DEST = os.path.abspath(
     os.path.join(
         script_dir, 
         '..', 
-        'data', 
+        'data',
+        'raw', 
         HEM, 
-        'raw')
+        TIMESTAMP_RAW)
 )
 
 # Create the direectory if it doesn't already exist

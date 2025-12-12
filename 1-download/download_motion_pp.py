@@ -4,9 +4,9 @@ import os
 import requests
 import xarray as xr
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Get global variables from shell script
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 HEM = os.getenv("HEM") # Hemisphere (sh or nh)
 
@@ -27,6 +27,8 @@ BASE_URL = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vec
 # Enter valid file name (end of URL string)
 END_URL = "icemotion_daily_{HEM}_25km_{year}0101_{year}1231_v4.1.nc"
 
+TIMESTAMP_RAW = os.getenv("TIMESTAMP_RAW") # timestamp version for raw data
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Paths to data directories defined here
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,9 +41,10 @@ PATH_DEST = os.path.abspath(
     os.path.join(
         script_dir, 
         '..', 
-        'data', 
+        'data',
+        'raw', 
         HEM, 
-        'raw')
+        TIMESTAMP_RAW)
 )
 
 # Create the direectory if it doesn't already exist
