@@ -2,63 +2,30 @@ import numpy as np
 import os
 import sys
 
+from .param import (
+    HEM, 
+    START_YEAR, # 1989 on Mazloff Server not valid
+    END_YEAR,
+    LAT_LIMITS,
+    LON_LIMITS,
+)
+
+from .path import PATH_DEST, FSTR_END_OUT
+
 # Reads binary JRA-55 daily 3-Hourly near-surface (10m) wind vector data from Mazloff server and writes into .npz file
 # Oringinal Data from: "https://rda.ucar.edu/datasets/d628000/"
 # JRA55 README here: ""***""
 #  ***credit source here***  
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Global variables defined here
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-HEM = os.getenv("HEM") # Hemisphere (sh or nh)
+FNAM_U = "jra55_u10m_{year}" # source file name u component
+FNAM_V = "jra55_v10m_{year}" # source file name v component
 
-# NOTE 1989 on Mazloff Server has 366 days not 365 (doesn't line up with leap year rule)
-START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
-END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
+PATH_SOURCE = "/project_shared/jra55/" # Mazloff lab server file source path
 
-LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
-LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
-
-TIMESTAMP_RAW = os.getenv("TIMESTAMP_RAW") # timestamp version for raw data
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Remaining global variables defined here
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Define file source names for u and v vector components 
-FNAM_U = "jra55_u10m_{year}"
-FNAM_V = "jra55_v10m_{year}"
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Paths to data directories defined here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Define file source path (Mazloff Lab Servers)
-PATH_SOURCE = "/project_shared/jra55/"
-
-# Get current script directory path
-script_dir = os.path.dirname(__file__)
-
-# Define absolute data download destination path relative to current
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data',
-        'raw', 
-        HEM, 
-        TIMESTAMP_RAW)
-)
-
-# Create the direectory if it doesn't already exist
-os.makedirs(PATH_DEST, exist_ok=True)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Additional global variables here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_RAW}"
 
 def main():
 
