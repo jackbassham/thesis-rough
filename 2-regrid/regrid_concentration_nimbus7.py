@@ -6,72 +6,41 @@ import os
 import requests
 import xarray as xr # With h5netcdf
 
+from .param import (
+    HEM,
+    LAT_LIMITS, 
+    LON_LIMITS,
+    RESOLUTION,
+)
+
+from .path import (
+    PATH_SOURCE,
+    PATH_DEST,
+    FSTR_END_IN,
+    FSTR_END_OUT,
+)
+
+import temp_nasa_earth_data_file
+
 # Regrids time series of NSIDC Sea Ice Concentrations (Nimbus 7)
 # Data accessed from https://nsidc.org/data/nsidc-0051/versions/2
 # Grid info accessed from https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_anc_grid_info/
 # Processes entire time series from .npz file downloaded using '01_con_nimbus7_dload.py'
 # ***credit source here***
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-HEM = os.getenv("HEM") # Hemisphere (sh or nh)
-
-START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
-END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
-
-LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
-LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
-
-RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
-
-# Nasa Earthdata login credentials for download
-USER = os.getenv("USER") # username
-PASS = os.getenv("PASS") # password
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Remaining global variables defined here
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Global variables defined here
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Enter valid URL for Polar Stereographic 25km resolution lat lon grid
 URL_GRID = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_anc_grid_info/NSIDC0771_LatLon_PS_{grid}25km_v1.1.nc"
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Paths to data directories defined here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Get current script directory path
-script_dir = os.path.dirname(__file__)
-
-# Define absolute raw data directory source path relative to current
-PATH_SOURCE = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'raw')
-)
-
-# Define regrid data destination path relative to current
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'regrid')
-)
-
-# Create the direectory if it doesn't already exist
-os.makedirs(PATH_DEST, exist_ok=True)
-
-# Enter data file to regrid
-FNAM = "con_nimbus7_ps_{HEM}{START_YEAR}{END_YEAR}.npz"
-
 
 def main():
+
+    # Define data file to regrid
+    fnam = f"con_nimbus7_ps_{FSTR_END_IN}.npz"
     
     if HEM == 'nh':
         grid = "N"
@@ -91,23 +60,21 @@ def main():
     else:
         print("Error: original grid not loaded")
 
-    # Format filename
-    filename = FNAM.format(START_YEAR = START_YEAR, END_YEAR = END_YEAR, HEM = HEM)
 
     # Attempt to load the original .npz file
     try:
         # Load original .npz file
-        data = np.load(os.path.join(PATH_SOURCE, filename), allow_pickle=True)
+        data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
 
         # Attempt to access variables
         ci_old = data['ci'] # ice concentration on gaussian grid
         time = data['time'] # time series dates dt64
         var_names = data['var_names'] # variable names, based on sensors
 
-        print(f"{filename} loaded successfully.")
+        print(f"{fnam} loaded successfully.")
         
     except FileNotFoundError:
-        print(f"Error: The file '{filename}' was not found in '{PATH_SOURCE}'.")
+        print(f"Error: The file '{fnam}' was not found in '{PATH_SOURCE}'.")
     except KeyError as e:
         print(f"Error: Missing expected data key: {e}.")
     except Exception as e:
@@ -134,17 +101,17 @@ def main():
     # Format time to 1D array; YYYY-MM-DD format
     time = format_time(time)
 
-    # Create new filename for regrided lat lon data
-    fnam = filename.replace("ps", "latlon")
+    # Define regrid file name
+    fnam = f"con_nimbus7_latlon_{FSTR_END_OUT}.npz"
     
     # Save regrided lat lon data
-    np.savez_compressed(
-        os.path.join(PATH_DEST, fnam), 
+    np.savez(
+        os.path.join(PATH_DEST, fnam),
         ci = ci_new, 
         time = time, 
         lat = lat_new, 
         lon = lon_new, 
-        var_names = var_names
+        var_names = var_names,
     )
 
     print(f"Variables Saved at path {PATH_DEST}/{fnam}")
@@ -156,69 +123,6 @@ def main():
     #            LAT_LIMITS, LON_LIMITS, time = time, main_title = "Ice Concentration", save_path = save_path)
   
     return
-
-
-def temp_nasa_earth_data_file(url):
-    """Gets temporary file from Nasa Earth Data Website via URL"""
-    ### Create session for NASA Earthdata ###
-    # Overriding requests.Session.rebuild_auth to mantain authentication headers when redirected
-    # Custom subclass to extend functionality of parent class requests.session to maintain authentication headers
-    # when server redirects requests
-    class SessionWithHeaderRedirection(requests.Session):
-        # Host for which authentication headers maintained
-        AUTH_HOST = 'urs.earthdata.nasa.gov'
-    
-        # Define 'costructor method' for sublclass SessionWithHeaderRedirection  
-        # Called to initialze attributes of subclass when created (here with parameters username and password)
-        # 'self' parameter is in reference to the instance constructed (our subclass)
-        def __init__(self, username, password):
-            # Call constructor method for parent class (executing initialization code defined in parent class)
-            super().__init__()
-            # Initialize authentication atribute in class containing username and password
-            self.auth = (username, password)
-
-        # Overrides from the library to keep headers when redirected to or from the NASA auth host
-        def rebuild_auth(self, prepared_request, response):
-            headers = prepared_request.headers
-            url = prepared_request.url
-
-            if 'Authorization' in headers:
-                original_parsed = requests.utils.urlparse(response.request.url)
-                redirect_parsed = requests.utils.urlparse(url)
-
-                if (original_parsed.hostname != redirect_parsed.hostname) and \
-                        redirect_parsed.hostname != self.AUTH_HOST and \
-                        original_parsed.hostname != self.AUTH_HOST:
-                    del headers['Authorization']
-
-    # Create session with the user credentials that will be used to authenticate access to the data
-    session = SessionWithHeaderRedirection(USER, PASS)
-
-    try:
-        # submit the request using the session
-        response = session.get(url, stream=True)
-        # '200' means success
-        StatusCode = response.status_code
-        print(StatusCode)
-        # raise an exception in case of http errors
-        response.raise_for_status()  
-
-        # Read response content to temp using BytesIO object
-        temp = io.BytesIO(response.content)
-
-        return temp
-
-    except requests.exceptions.HTTPError as e:
-        # Handle any errors here
-        print(f"HTTP Error: {e}")
-        
-        return None
-    
-    except Exception as e:
-        print(f"Error: {e}")
-        
-        return None
-    
 
 def nearest_neighbor_interpolation(res, lat_limits, lon_limits, lat_old, lon_old):
     """

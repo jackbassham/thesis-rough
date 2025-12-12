@@ -3,73 +3,35 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# TODO fnam move grid to end of name
+from .param import (
+    HEM, 
+    LAT_LIMITS, 
+    LON_LIMITS,
+    RESOLUTION,
+)
+
+from .path import (
+    PATH_SOURCE,
+    PATH_DEST,
+    FSTR_END_IN,
+    FSTR_END_OUT,
+)
 
 # Regrids NSIDC Polar Pathfinder Sea Ice Velocities from EASE to regular lat lon coordinate system
 # Vector rotation from vertical/horizontal to N/E from:
 ## https://nsidc.org/data/user-resources/help-center/how-convert-horizontal-and-vertical-components-east-and-north
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-HEM = os.getenv("HEM") # Hemisphere (sh or nh)
-
-START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
-END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
-
-LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
-LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
-
-RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
-
-# Nasa Earthdata login credentials for download
-USER = os.getenv("USER") # username
-PASS = os.getenv("PASS") # password
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Paths to data directories defined here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Define file name to regrid
-FNAM = "motion_ppv4_EASE_{HEM}{START_YEAR}{END_YEAR}.npz"
-
-# Get current script directory path
-script_dir = os.path.dirname(__file__)
-
-# Define absolute raw data directory source path relative to current
-PATH_SOURCE = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'raw')
-)
-
-# Define regrid data destination path relative to current
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'regrid')
-)
-
-# Create the direectory if it doesn't already exist
-os.makedirs(PATH_DEST, exist_ok=True)
 
 
 def main():
 
     # Load original grid .npz variables
-    filename = FNAM.format(START_YEAR = START_YEAR, END_YEAR = END_YEAR, HEM = HEM)
+    fnam = f"motion_ppv4_EASE_{FSTR_END_IN}.npz"
 
     # Attempt to load the original .npz file
     try:
         # Load original .npz file
-        data = np.load(os.path.join(PATH_SOURCE, filename), allow_pickle=True)
+        data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
 
         # Attempt to access variables
         u_old = data['u'] # horizontal ice velocity (cm/s)
@@ -83,10 +45,10 @@ def main():
         print(type(time))  # Should be <class 'numpy.ndarray'>
         print("time_total dtype:", time.dtype)  # Should be datetime64
 
-        print(f"{filename} loaded successfully.")
+        print(f"{fnam} loaded successfully.")
         
     except FileNotFoundError:
-        print(f"Error: The file '{filename}' was not found in '{PATH_SOURCE}'.")
+        print(f"Error: The file '{fnam}' was not found in '{PATH_SOURCE}'.")
     except KeyError as e:
         print(f"Error: Missing expected data key: {e}.")
     except Exception as e:
@@ -129,13 +91,12 @@ def main():
     # Format time to 1D array; YYYY-MM-DD format
     time = format_time(time)
 
-    # Create new filename for regrided lat lon data
-    fnam = filename.replace("EASE", "latlon")
-    path = os.path.join(PATH_DEST, fnam)
+    # Define filename for regrid data
+    fnam = f"motion_ppv4_latlon_{FSTR_END_OUT}.npz"
 
     # Save time series data as npz variables
-    np.savez_compressed(
-        path, 
+    np.savez(
+        os.path.join(PATH_DEST, fnam), 
         u = u_new, 
         v = v_new, 
         r = r_new, 
@@ -144,7 +105,7 @@ def main():
         lon = lon_new
     )
 
-    print(f"Variables Saved at path {path}")
+    print(f"Variables Saved at path {PATH_DEST}/{fnam}")
 
     # NOTE due to vector rotation from horizontal/ vertical to Zonal/ Meridional
     # regrid components alone look incongruous with original data

@@ -3,63 +3,34 @@ import matplotlib.animation as animation
 import numpy as np
 import os
 
+from .param import (
+    HEM,
+    LAT_LIMITS, 
+    LON_LIMITS,
+    RESOLUTION,
+)
+
+from .path import (
+    PATH_SOURCE,
+    PATH_DEST,
+    FSTR_END_IN,
+    FSTR_END_OUT,
+)
+
 # Regrids JRA-55 daily near surface (10m) wind vector data from original Gaussian grid to regular lat lon
 # Oringinal Data from: "https://rda.ucar.edu/datasets/d628000/"
 # Entire time series processed to daily averages in .npz file using '01_wind_jra55_read.py'
 # JRA55 README here: ""***""
 #  ***credit source here***  
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-HEM = os.getenv("HEM") # Hemisphere (sh or nh)
-
-START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
-END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
-
-LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
-LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
-
-RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Paths to data directories defined here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Define data file name to regrid
-FNAM = f"wind_JRA55_gaussian_{HEM}{START_YEAR}{END_YEAR}.npz"
-
-# Get current script directory path
-script_dir = os.path.dirname(__file__)
-
-# Define absolute raw data directory source path relative to current
-PATH_SOURCE = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'raw')
-)
-
-# Define regrid data destination path relative to current
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'regrid')
-)
-
-# Create the direectory if it doesn't already exist
-os.makedirs(PATH_DEST, exist_ok=True)
 
 def main():
 
+    # Define data file to regrid
+    fnam = f"wind_jra55_gaussian_{FSTR_END_IN}.npz"
+
     # Load original .npz file
-    data = np.load(os.path.join(PATH_SOURCE, FNAM), allow_pickle = True)
+    data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle = True)
     u_old = data['u']
     v_old = data['v']
     lat_old = data['lat']
@@ -93,11 +64,11 @@ def main():
     # Format time to 1D array; YYYY-MM-DD format
     time = format_time(time)
 
-    # Create new filename
-    fnam = FNAM.replace("gaussian", "latlon") # Replace grid identifier
+    # Define regrid file name
+    fnam = f"wind_jra55_latlon_{FSTR_END_OUT}.npz"
     
     # Save regrided lat lon data
-    np.savez_compressed(
+    np.savez(
         os.path.join(PATH_DEST, fnam), 
         u = u_new, 
         v = v_new, 
