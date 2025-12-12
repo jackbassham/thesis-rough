@@ -50,6 +50,12 @@ PATH_DEST = os.path.abspath(
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Additional global variables here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_RAW}"
+
 def main():
 
     # Get abbreviated hemisphere for filename
@@ -116,7 +122,7 @@ def main():
     time_total = np.array([np.datetime64(t) for t in time_total])
 
     # Save time series data as npz variables
-    fnam = f"motion_ppv4_EASE_{HEM}{START_YEAR}{END_YEAR}"
+    fnam = f"motion_ppv4_EASE_{FSTR_END_OUT}"
     path = os.path.join(PATH_DEST, fnam)
 
     np.savez_compressed(

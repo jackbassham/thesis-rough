@@ -63,10 +63,16 @@ PATH_DEST = os.path.abspath(
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Additional global variables here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_RAW}"
+
 def main():
 
     # Initialize log for missing days
-    fnam_log = f'concentration_download_log_{HEM}{START_YEAR}{END_YEAR}.txt'
+    fnam_log = f'concentration_download_log_{FSTR_END_OUT}.txt'
     path_log = os.path.join(PATH_DEST, fnam_log)
 
     # Define start and end dates for year(Test 2020) 
@@ -159,7 +165,7 @@ def main():
     ci_total = np.concatenate(ci_total, axis = 0)
 
     # Save time series data as npz variables
-    fnam = f"con_nimbus7_ps_{HEM}{START_YEAR}{END_YEAR}"
+    fnam = f"con_nimbus7_ps_{FSTR_END_OUT}"
     np.savez_compressed(
         os.path.join(PATH_DEST, fnam), 
         ci = ci_total, 

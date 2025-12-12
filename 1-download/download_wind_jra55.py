@@ -54,6 +54,12 @@ PATH_DEST = os.path.abspath(
 # Create the direectory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok=True)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Additional global variables here
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_RAW}"
+
 def main():
 
     # Create time array of dates for year range
@@ -97,7 +103,7 @@ def main():
     v_total = np.concatenate(v_total, axis = 0)
 
     # Save time series data as npz variables
-    fnam = f"wind_JRA55_gaussian_{HEM}{START_YEAR}{END_YEAR}"
+    fnam = f"wind_JRA55_gaussian_{FSTR_END_OUT}"
 
     np.savez_compressed(
         os.path.join(PATH_DEST, fnam), 
