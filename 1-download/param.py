@@ -36,5 +36,5 @@ LON_LIMITS = [float(x) for x in get_vars("LON_LIMITS").split(",")] # West to Eas
 TIMESTAMP_OUT = get_vars("OUT_TIMESTAMP") # Timestamp version for data download
 
 # Nasa Earthdata login credentials for download
-USER = os.getenv("USER") # username
-PASS = os.getenv("PASS") # password
+USER = get_vars("USER") # username
+PASS = get_vars("PASS") # password
