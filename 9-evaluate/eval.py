@@ -16,6 +16,8 @@ END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
 TIMESTAMP_R = os.getenv("TIMESTAMP_IN") # timestamp version of uncertainty data
 
+TIMESTAMP_COORD = os.getenv("TIMESAMPT_COORD") # timestamp version of coordinate variables
+
 TIMESTAMP_MODEL = os.getenv("TIMESTAMP_MODEL") # timestamp version of model run
 
 MODEL_STR = os.getenv("MODEL_STR") # string indicator for model type
@@ -49,6 +51,17 @@ PATH_R = os.path.abspath(
         'lr-input',
         HEM,
         TIMESTAMP_R
+    )
+)
+
+# Define path to lat lon coordinate variables
+PATH_COORD = os.path.abspath(
+    os.path.join(
+        script_dir,
+        '..',
+        'coordinates',
+        HEM,
+        TIMESTAMP_COORD
     )
 )
 
@@ -224,7 +237,7 @@ def weighted_skill(pred, true, r, epsilon = 1e-4):
 
     return weighted_skill
 
-def plot_metric(u_data, v_data, metric):
+def plot_metric(u_data, v_data, lon, lat, metric):
 
     # Set longitude bounds for plot (full zonal coverage)
     lon_min = -180
@@ -260,7 +273,7 @@ def plot_metric(u_data, v_data, metric):
         nrows = 1,
         ncols = 2,
         figsize = (6,3),
-        subplot_kw = {"projection": projection},
+        subplot_kw = {'projection': projection},
         constrained_layout = True
     )
 
@@ -296,7 +309,12 @@ def plot_metric(u_data, v_data, metric):
     # Format with tight layout
     fig.tight_layout
 
-    # Save figure
+    # Define filemane for figure
+    fnam = f"{metric}_{MODEL_STR}_{TIMESTAMP_MODEL}.png"
 
+    # Save figure
+    plt.savefig(fnam, bbox_inches = 'tight')
+
+    return
 
 
