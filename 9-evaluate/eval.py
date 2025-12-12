@@ -14,7 +14,7 @@ HEM = os.getenv("HEM") # Hemisphere (sh or nh)
 START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
 END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
 
-TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
+TIMESTAMP_R = os.getenv("TIMESTAMP_IN") # timestamp version of uncertainty data
 
 TIMESTAMP_MODEL = os.getenv("TIMESTAMP_MODEL") # timestamp version of model run
 
@@ -40,14 +40,27 @@ PATH_SOURCE = os.path.abspath(
     )
 )
 
+# Define path to uncertainty for weighting
+PATH_R = os.path.abspath(
+    os.path.join(
+        script_dir,
+        '..',
+        'data',
+        'lr-input',
+        HEM,
+        TIMESTAMP_R
+    )
+)
+
 # Define path to plot outputs
 PATH_DEST = os.path.abspath(
     os.path.join(
         script_dir,
         '..',
-        'data',
-        'eval-plots',
+        'plots',
+        'quick-eval',
         MODEL_STR.replace('_', '-'),
+        HEM,
         TIMESTAMP_MODEL
     )
 )
@@ -60,15 +73,15 @@ os.makedirs(PATH_DEST, exist_ok=True)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FSTR_END_MODEL = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
-
+FSTR_END_R = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_R}"
 
 
 def main():
 
-    # Get filename, based on the model string given
+    # Get filename for model predictions, based on the model string given
     fnam = f"preds_{MODEL_STR}_{FSTR_END_MODEL}.npz"
 
-    # Load in true and predicted model outputs
+    # Load in model predictions
     data = np.load(os.path.join(PATH_SOURCE, fnam)) 
 
     upred = data['y_pred'][:,0,:,:]
@@ -76,6 +89,14 @@ def main():
 
     utrue = data['y_true'][:,0,:,:]
     vtrue = data['y_true'][:,1,:,:]
+
+    # Get filemane for uncertainty test split
+    fnam = f"test_{FSTR_END_R}.npz"
+
+    # Ice Velocity Uncertainty
+    # Includes flag values (r_raw + 1000, cm/s)
+    # Normalized by std ice speed
+    r_test = data['r_test'] 
 
     # Calculate and plot skill
     plot_metric(
