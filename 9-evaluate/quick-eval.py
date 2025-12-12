@@ -309,11 +309,16 @@ def plot_metric(u_data, v_data, lon, lat, metric):
     # Format with tight layout
     fig.tight_layout
 
+    # Add text with means
+    fig.text(0, -0.05, f"mean zonal {metric}: {np.nanmean(u_data):.4f}")
+    fig.text(0.5, -0.05, f"mean meridional {metric}: {np.nanmean(v_data):.4f}")
+
     # Define filemane for figure
     fnam = f"{metric}_{MODEL_STR}_{TIMESTAMP_MODEL}.png"
 
     # Save figure
-    plt.savefig(fnam, bbox_inches = 'tight')
+    plt.savefig(os.path.join(PATH_DEST, fnam), bbox_inches = 'tight')
+
 
     return
 
