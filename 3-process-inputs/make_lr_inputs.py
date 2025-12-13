@@ -2,78 +2,20 @@ import gc
 import numpy as np
 import os
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master '<  >.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-HEM = os.getenv("HEM") # Hemisphere (sh or nh)
-
-START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
-END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
-
-TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
-
-TIMESTAMP_COORD = os.getenv("TIMESTAMP_COORD") # timestamp version of coordinate data
-
-TIMESTAMP_OUT = os.getenv("TIMESTAMP_OUT") # timestamp version of inputs processed here
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Paths to data directories defined here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Get current script directory path
-script_dir = os.path.dirname(__file__)
-
-# Define masked & normalized input data path; relative to current
-PATH_SOURCE = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        'mask-norm', 
-        HEM,
-        TIMESTAMP_IN)
+from .path import (
+    PATH_SOURCE_MASKNORM,
+    PATH_SOURCE_COORD,
+    PATH_DEST_LR,
+    FSTR_END_IN_MASKNORM,
+    FSTR_END_IN_COORD,
+    FSTR_END_OUT,
 )
-
-# Define path to coordinate variables
-PATH_COORD = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-        'data',
-        'coordinates',
-        HEM,
-        TIMESTAMP_COORD)
-)
-
-# Define model output data input path; relative to current
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        'lr-input',
-        HEM,
-        TIMESTAMP_OUT)
-)
-
-# Create the directory if it doesn't already exist
-os.makedirs(PATH_DEST, exist_ok=True)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Additonal global variables here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
-FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
-FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
-
 
 def main():
 
     # Load in normalized data
-    fnam = f'masked_normalized_{FSTR_END_IN}.npz'
-    data = np.load(os.path.join(PATH_SOURCE, fnam))
+    fnam = f'masked_normalized_{FSTR_END_IN_MASKNORM}.npz'
+    data = np.load(os.path.join(PATH_SOURCE_MASKNORM, fnam))
 
     # Unpack input variables from .npz file
     ui = data['ui']
@@ -86,8 +28,8 @@ def main():
     print("Input Variables Loaded")
 
     # Extract time (dates)
-    fnam = f"coord_{FSTR_END_COORD}.npz"
-    data = np.load(os.path.join(PATH_COORD, fnam), allow_pickle=True)
+    fnam = f"coord_{FSTR_END_IN_COORD}.npz"
+    data = np.load(os.path.join(PATH_SOURCE_COORD, fnam), allow_pickle=True)
     time = data['time']
 
     # Create present day parameters (t0) by shifting forward one day
@@ -152,7 +94,7 @@ def main():
     # Save splits
 
     np.savez(
-        os.path.join(PATH_DEST, f'train_{FSTR_END_OUT}.npz'),
+        os.path.join(PATH_DEST_LR, f'train_{FSTR_END_OUT}.npz'),
         x_train = x_train,
         y_train = y_train,
         r_train = r_train
@@ -166,24 +108,24 @@ def main():
     # )
 
     np.savez(
-        os.path.join(PATH_DEST, f'test_{FSTR_END_OUT}.npz'),
+        os.path.join(PATH_DEST_LR, f'test_{FSTR_END_OUT}.npz'),
         x_test = x_test,
         y_test = y_test,
         r_test = r_test
     )
 
-    print(f"Train and Test splits saved at {PATH_DEST}")
+    print(f"Train and Test splits saved at {PATH_DEST_LR}")
 
     # Save split indices
 
     np.savez_compressed(
-    os.path.join(PATH_DEST, f"split_indices_lr_{FSTR_END_OUT}.npz"),
+    os.path.join(PATH_DEST_LR, f"split_indices_lr_{FSTR_END_OUT}.npz"),
     train_idx=train_idx,
     # val_idx=val_idx,
     test_idx=test_idx
     )
     
-    print(f"Split indices saved at {PATH_DEST}")
+    print(f"Split indices saved at {PATH_DEST_LR}")
 
     return
 
