@@ -79,7 +79,7 @@ PATH_DEST_CNN = os.path.abspath(
 os.makedirs(PATH_DEST_CNN, exist_ok = True)
 
 # Define string for end of coordinate data file
-FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN_COORD}"
+FSTR_END_IN_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN_COORD}"
 
 # Define string for end of input regrid data file
 FSTR_END_IN_REGRID = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN_REGRID}"
