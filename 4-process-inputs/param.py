@@ -34,6 +34,6 @@ RESOLUTION = int(get_vars("RESOLUTION")) # Grid resolution, km
 
 TIMESTAMP_IN = get_vars("TIMESTAMP_IN") # Timestamp version of masked, normalized input data
 
-TIMESTAMP_IN_COORD = os.getenv("TIMESTAMP_IN_COORD", TIMESTAMP_IN) # Timestamp version of coordinate data, if given
-
 TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # Timestamp version of output data
+
+TIMESTAMP_IN_COORD = os.getenv("TIMESTAMP_IN_COORD", TIMESTAMP_IN) # Timestamp version of coordinate data, if given
