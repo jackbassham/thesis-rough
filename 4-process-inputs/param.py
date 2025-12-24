@@ -32,10 +32,8 @@ END_YEAR = int(get_vars("END_YEAR")) # data ends 31DEC<END_YEAR>
 
 RESOLUTION = int(get_vars("RESOLUTION")) # Grid resolution, km
 
-TIMESTAMP_IN_COORD = get_vars("TIMESTAMP_IN_COORD") # Timestamp version of coordinate data
+TIMESTAMP_IN = get_vars("TIMESTAMP_IN") # Timestamp version of masked, normalized input data
 
-TIMESTAMP_IN_REGRID = get_vars("TIMESAMP_COORD") # Timestamp version of regrid data
-
-TIMESTAMP_IN_MASKNORM = get_vars("TIMESTAMP_IN_MASKNORM") # Timestamp version of masked normalized data
+TIMESTAMP_IN_COORD = os.getenv("TIMESTAMP_IN_COORD", TIMESTAMP_IN) # Timestamp version of coordinate data, if given
 
 TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # Timestamp version of output data
