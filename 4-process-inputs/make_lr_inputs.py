@@ -3,19 +3,19 @@ import numpy as np
 import os
 
 from .path import (
-    PATH_SOURCE_MASKNORM,
+    PATH_SOURCE,
     PATH_SOURCE_COORD,
     PATH_DEST_LR,
-    FSTR_END_IN_MASKNORM,
-    FSTR_END_IN_COORD,
+    FSTR_END_IN,
     FSTR_END_OUT,
+    FSTR_END_IN_COORD
 )
 
 def main():
 
     # Load in normalized data
-    fnam = f'masked_normalized_{FSTR_END_IN_MASKNORM}.npz'
-    data = np.load(os.path.join(PATH_SOURCE_MASKNORM, fnam))
+    fnam = f'masked_normalized_{FSTR_END_IN}.npz'
+    data = np.load(os.path.join(PATH_SOURCE, fnam))
 
     # Unpack input variables from .npz file
     ui = data['ui']
@@ -101,7 +101,7 @@ def main():
     )
 
     # np.savez(
-    #     os.path.join(PATH_DEST, f'val_{FSTR_END_OUT}.npz'),
+    #     os.path.join(PATH_DEST_LR, f'val_{FSTR_END_OUT}.npz'),
     #     x_val = x_val,
     #     y_val = y_val,
     #     r_val = r_val
