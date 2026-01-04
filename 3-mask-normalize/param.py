@@ -33,8 +33,6 @@ END_YEAR = int(get_vars("END_YEAR")) # data ends 31DEC<END_YEAR>
 LAT_LIMITS = [float(x) for x in get_vars("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
 LON_LIMITS = [float(x) for x in get_vars("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
 
-RESOLUTION = int(get_vars("RESOLUTION")) # Grid resolution, km
-
 TIMESTAMP_IN = get_vars("TIMESTAMP_IN")
 TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # Timestamp version for data download
 

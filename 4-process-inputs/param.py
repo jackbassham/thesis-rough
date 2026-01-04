@@ -30,8 +30,6 @@ HEM = get_vars("HEM") # hemisphere (sh or nh)
 START_YEAR = int(get_vars("START_YEAR")) # data starts 01JAN<START_YEAR>
 END_YEAR = int(get_vars("END_YEAR")) # data ends 31DEC<END_YEAR>
 
-RESOLUTION = int(get_vars("RESOLUTION")) # Grid resolution, km
-
 TIMESTAMP_IN = get_vars("TIMESTAMP_IN") # Timestamp version of masked, normalized input data
 
 TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # Timestamp version of output data
