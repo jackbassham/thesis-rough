@@ -4,12 +4,12 @@ import numpy as np
 import os
 
 from .path import (
-    PATH_SOURCE_MASKNORM,
+    PATH_SOURCE,
     PATH_SOURCE_COORD,
     PATH_DEST_CNN,
-    FSTR_END_IN_MASKNORM,
-    FSTR_END_IN_COORD,
+    FSTR_END_IN,
     FSTR_END_OUT,
+    FSTR_END_IN_COORD
 )
 
 # Set random seed for reproducibility
@@ -28,8 +28,8 @@ def main():
     set_seed(42)
 
     # Load in normalized data
-    fnam = f'masked_normalized_{FSTR_END_IN_MASKNORM}.npz'
-    data = np.load(os.path.join(PATH_SOURCE_MASKNORM, fnam))
+    fnam = f'masked_normalized_{FSTR_END_IN}.npz'
+    data = np.load(os.path.join(PATH_SOURCE, fnam))
 
     # Unpack input variables from .npz file
     ui = data['ui']
