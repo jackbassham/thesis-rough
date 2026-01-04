@@ -2,60 +2,12 @@ import gc
 import numpy as np
 import os
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-HEM = os.getenv("HEM") # Hemisphere (sh or nh)
-
-START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
-END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
-
-LAT_LIMITS = [float(x) for x in os.getenv("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
-LON_LIMITS = [float(x) for x in os.getenv("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
-
-RESOLUTION = int(os.getenv("RESOLUTION")) # Grid resolution, km
-
-TIMESTAMP_IN = os.getenv("TIMESTAMP_IN") # timestamp version of input data
-
-TIMESTAMP_OUT = os.getenv("TIMESTAMP_OUT") # timestamp version of inputs processed here
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Additonal global variables here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}"
-FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Paths to data directories defined here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Get current script directory path
-script_dir = os.path.dirname(__file__)
-
-# Define absolute raw data directory source path relative to current
-PATH_SOURCE = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'regrid')
+from .path import (
+    PATH_SOURCE,
+    PATH_DEST,
+    FSTR_END_IN,
+    FSTR_END_OUT
 )
-
-# Define masked normalized data destination path relative to current
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir, 
-        '..', 
-        'data', 
-        HEM, 
-        'mask-norm')
-)
-
-# Create the directory if it doesn't already exist
-os.makedirs(PATH_DEST, exist_ok=True)
 
 def main():
 
@@ -198,7 +150,7 @@ def main():
 
     # Save statistics for normalization
 
-    fnam = f'stats_for_normalization_{FSTR_END_OUT}.npz'
+    fnam = f'stats_norm_{FSTR_END_OUT}.npz'
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
