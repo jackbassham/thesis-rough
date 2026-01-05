@@ -241,7 +241,7 @@ def main():
     y_true = np.concatenate(all_targets, axis=0)
 
     # Save to .npz
-    fnam = f"preds_{FSTR_END_IN}.npz"
+    fnam = f"preds_{FSTR_END_OUT}.npz"
     np.savez(os.path.join(PATH_DEST, fnam), y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
