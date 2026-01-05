@@ -97,7 +97,7 @@ def WeightedMSEloss(pred, true, r, epsilon=1e-4):
 
     return mse_wtd
 
-def plot_weighted_losses(num_epochs, train_losses, val_losses, model):
+def plot_losses(num_epochs, train_losses, val_losses):
     epochs = np.arange(1, num_epochs + 1)
 
     
@@ -105,11 +105,11 @@ def plot_weighted_losses(num_epochs, train_losses, val_losses, model):
     plt.plot(epochs, train_losses, label = 'Train')
     plt.plot(epochs, val_losses, label = 'Validation')
     plt.xlabel('Epochs')
-    plt.ylabel('Weighted MSE Loss')
+    plt.ylabel('Weighted NRMSE Loss')
     plt.legend()
     plt.title(f"{model}")
 
-    plt.savefig(os.path.join(PATH_DEST, f'losses_{HEM}_{START_YEAR}_{END_YEAR}.png'))
+    plt.savefig(os.path.join(PATH_DEST, f'losses_{FSTR_END_OUT}.png'))
 
     # plt.show()
 
@@ -121,10 +121,9 @@ def main():
     set_seed(42)
 
     # Load input data
-    fstr = f"{HEM}_{START_YEAR}_{END_YEAR}"
-    x_train, y_train, r_train = torch.load(os.path.join(PATH_SOURCE,f'train_{fstr}.pt'))
-    x_val, y_val, r_val = torch.load(os.path.join(PATH_SOURCE,f'val_{fstr}.pt'))
-    x_test, y_test, r_test = torch.load(os.path.join(PATH_SOURCE,f'test_{fstr}.pt'))
+    x_train, y_train, r_train = torch.load(os.path.join(PATH_SOURCE,f'train_{FSTR_END_IN}.pt'))
+    x_val, y_val, r_val = torch.load(os.path.join(PATH_SOURCE,f'val_{FSTR_END_IN}.pt'))
+    x_test, y_test, r_test = torch.load(os.path.join(PATH_SOURCE,f'test_{FSTR_END_IN}.pt'))
 
     print("Input Data Loaded")
 
@@ -247,10 +246,10 @@ def main():
         print(f"Epoch {epoch+1}/{num_epochs} - u Pred (Val) Avg: {avg_u_pred:.4f} - v Pred (Val) Avg: {avg_v_pred:.4f}")
 
     # Plot losses
-    plot_weighted_losses(num_epochs, train_losses, val_losses, f"Weighted CNN")
+    plot_weighted_losses(num_epochs, train_losses, val_losses)
 
     # Save model weights
-    fnam = f'CNNweights_{HEM}_{START_YEAR}_{END_YEAR}.pth'
+    fnam = f'model_weights_{FSTR_END_OUT}.pth'
     torch.save(model.state_dict(), os.path.join(PATH_DEST,fnam))
 
     print('Model weights saved')
@@ -273,7 +272,7 @@ def main():
     y_true = np.concatenate(all_targets, axis=0)
 
     # Save to .npz
-    fnam = f"CNNPreds_{HEM}_{START_YEAR}_{END_YEAR}.npz"
+    fnam = f"preds_{FSTR_END_OUT}.npz"
     np.savez(os.path.join(PATH_DEST, fnam), y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
