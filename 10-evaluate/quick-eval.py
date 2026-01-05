@@ -37,15 +37,28 @@ def main():
     # Get filemane for uncertainty test split
     fnam = f"test_{FSTR_END_R}.npz"
 
+    # Load in uncertainty
+    data = np.load(os.path.join(PATH_R, fnam))
+
     # Ice Velocity Uncertainty
     # Includes flag values (r_raw + 1000, cm/s)
     # Normalized by std ice speed
-    r_test = data['r_test'] 
+    r_test = data['r_test']
 
+    # Get filename for lat lon coordinate variables
+    fnam = f"coord_{FSTR_END_COORD}.npz"
+
+    # Load in lat and lon
+    data = np.load(os.path.join(PATH_COORD, fnam))
+    lon = data['lon']
+    lat = data['lat']
+    
     # Calculate and plot skill
     plot_metric(
         skill(upred, utrue),
         skill(vpred, vtrue),
+        lon,
+        lat,
         "Skill"
     )
 
@@ -55,6 +68,8 @@ def main():
     plot_metric(
         weighted_skill(upred, utrue, r_test),
         weighted_skill(vpred, vtrue, r_test),
+        lon,
+        lat,
         "Wtd Skill"
     )
 
@@ -65,6 +80,8 @@ def main():
     plot_metric(
         correlation(upred, utrue),
         correlation(vpred, vtrue),
+        lon,
+        lat,
         "Corr"
     )
 
@@ -75,6 +92,8 @@ def main():
     plot_metric(
         weighted_correlation(upred, utrue, r_test),
         weighted_correlation(vpred, vtrue, r_test),
+        lon,
+        lat,
         "Wtd Corr"
     )
 
