@@ -31,7 +31,7 @@ def main():
 
     # Save coeffients, fit
     np.savez(
-        os.path.join(PATH_DEST, f"lr_wtd_coeff_fit_{FSTR_END_MODEL}"),
+        os.path.join(PATH_DEST, f"lr_wtd_coeff_fit_{FSTR_END_OUT}"),
         m = m,
         fit_train = fit_train,
         true_train = true_train
@@ -39,7 +39,7 @@ def main():
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_DEST, f"lr_wtd_preds_{FSTR_END_MODEL}"),
+        os.path.join(PATH_DEST, f"lr_wtd_preds_{FSTR_END_OUT}"),
         pred_test = pred_test,
         true_test = true_test
     )
