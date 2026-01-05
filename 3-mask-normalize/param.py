@@ -30,12 +30,5 @@ HEM = get_vars("HEM") # hemisphere (sh or nh)
 START_YEAR = int(get_vars("START_YEAR")) # data starts 01JAN<START_YEAR>
 END_YEAR = int(get_vars("END_YEAR")) # data ends 31DEC<END_YEAR>
 
-LAT_LIMITS = [float(x) for x in get_vars("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
-LON_LIMITS = [float(x) for x in get_vars("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
-
-TIMESTAMP_IN = get_vars("TIMESTAMP_IN")
-TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # Timestamp version for data download
-
-# Nasa Earthdata login credentials for download
-USER = get_vars("USER") # username
-PASS = get_vars("PASS") # password
+TIMESTAMP_IN = get_vars("TIMESTAMP_IN") # timestamp version for regrid input data
+TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # timestamp version for masked, normalized data
