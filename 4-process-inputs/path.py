@@ -2,7 +2,7 @@ import os
 from .param import (
     HEM,
     START_YEAR, END_YEAR,
-    TIMESTAMP_IN, TIMESTAMP_OUT, TIMESTAMP_IN_COORD,
+    TIMESTAMP_IN, TIMESTAMP_OUT, TIMESTAMP_COORD,
 )
 
 # Get current script directory
@@ -23,7 +23,7 @@ PATH_SOURCE_COORD = os.path.abspath(
         'data',
         'coordinates',
         HEM,
-        TIMESTAMP_IN_COORD,
+        TIMESTAMP_COORD,
     )
 )
 

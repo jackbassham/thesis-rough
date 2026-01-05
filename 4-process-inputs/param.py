@@ -34,4 +34,5 @@ TIMESTAMP_IN = get_vars("TIMESTAMP_IN") # Timestamp version of masked, normalize
 
 TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # Timestamp version of output data
 
-TIMESTAMP_IN_COORD = os.getenv("TIMESTAMP_IN_COORD", TIMESTAMP_IN) # Timestamp version of coordinate data, if given
+# Timestamp version of coordinate data if given, else use TIMESTSAMP_OUT (ie: running master shell)
+TIMESTAMP_COORD = os.getenv("TIMESTAMP_COORD", TIMESTAMP_OUT)
