@@ -14,6 +14,9 @@ from .path import(
     FSTR_END_OUT,
 )
 
+# Define model type string for saving predictions
+MODEL_STR = 'cnn_pt'
+
 def set_seed(seed=42):
     torch.manual_seed(seed) # PyTorch Reproducibility
     torch.cuda.manual_seed(seed) # Required if using GPU
@@ -95,11 +98,11 @@ def plot_losses(num_epochs, train_losses, val_losses):
     plt.plot(epochs, train_losses, label = 'Train')
     plt.plot(epochs, val_losses, label = 'Validation')
     plt.xlabel('Epochs')
-    plt.ylabel('NRMSE Loss')
+    plt.ylabel('Loss')
     plt.legend()
-    plt.title(f"{model}")
+    plt.title(f"{MODEL_STR} Loss")
 
-    plt.savefig(os.path.join(PATH_DEST, f'losses_{FSTR_END_OUT}.png'))
+    plt.savefig(os.path.join(PATH_DEST, f'loss_{MODEL_STR}_{FSTR_END_OUT}.png'))
 
     # plt.show()
 
@@ -218,7 +221,7 @@ def main():
     plot_losses(num_epochs, train_losses, val_losses)
 
     # Save model weights
-    fnam = f'model_weights_{FSTR_END_OUT}.pth'
+    fnam = f'wts_{MODEL_STR}_{FSTR_END_OUT}.pth'
     torch.save(model.state_dict(), os.path.join(PATH_DEST,fnam))
 
     print('Model weights saved')
@@ -241,7 +244,7 @@ def main():
     y_true = np.concatenate(all_targets, axis=0)
 
     # Save to .npz
-    fnam = f"preds_{FSTR_END_OUT}.npz"
+    fnam = f"preds_{MODEL_STR}_{FSTR_END_OUT}.npz"
     np.savez(os.path.join(PATH_DEST, fnam), y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
