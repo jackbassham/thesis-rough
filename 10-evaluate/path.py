@@ -1,8 +1,13 @@
 import os
+
 from .param import (
     HEM,
-    START_YEAR, END_YEAR,
-    TIMESTAMP_IN, TIMESTAMP_OUT,
+    START_YEAR, 
+    END_YEAR,
+    MODEL_STR,
+    TIMESTAMP_MODEL,
+    TIMESTAMP_COORD,
+    TIMESTAMP_R,
 )
 
 # Get current script directory
@@ -16,34 +21,58 @@ root = os.path.abspath(
     )
 )
 
-# Define masked-normalized data source path
+# Define model output source path
 PATH_SOURCE = os.path.abspath(
     os.path.join(
         root,
         'data',
-        'cnn-input',
+        'model-output',
+        MODEL_STR,
         HEM,
-        TIMESTAMP_IN,
+        TIMESTAMP_MODEL,
     )
 )
 
-# Define lr input destination path
+# Define quick evaluation plots destination path
 PATH_DEST = os.path.abspath(
     os.path.join(
         root,
-        'data',
-        'model-output',
-        'cnn-wtd-pytorch',
+        'plots',
+        'quick-eval',
+        MODEL_STR,
         HEM,
-        TIMESTAMP_OUT,
+        TIMESTAMP_MODEL,
     )
 )
 
 # Create the destination directory if it doesn't already exist
 os.makedirs(PATH_DEST, exist_ok = True)
 
-# Define string for end of input regrid data file
-FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
+PATH_COORD = os.path.abspath(
+    os.path.join(
+        root,
+        'data',
+        'coordinates',
+        HEM,
+        TIMESTAMP_OUT,
+    )
+)
 
-# Define string for end of output data
-FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
+PATH_R = os.path.abspath(
+    os.path.join(
+        root,
+        'data',
+        'lr-input',
+        HEM,
+        TIMESTAMP_R,
+    )
+)
+
+# Define string for end of model output file
+FSTR_END_MODEL = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
+
+# Define string for end of coordinate data file
+FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
+
+# Define string for end of uncertaity data file
+FSTR_END_R = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_R}"

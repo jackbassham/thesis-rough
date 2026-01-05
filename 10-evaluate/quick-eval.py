@@ -5,89 +5,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get global variables from master 'run-data-processing.sh'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-HEM = os.getenv("HEM") # Hemisphere (sh or nh)
-
-START_YEAR = int(os.getenv("START_YEAR")) # data starts 01JAN<START_YEAR>
-END_YEAR = int(os.getenv("END_YEAR")) # data ends 31DEC<END_YEAR>
-
-TIMESTAMP_R = os.getenv("TIMESTAMP_IN") # timestamp version of uncertainty data
-
-TIMESTAMP_COORD = os.getenv("TIMESAMPT_COORD") # timestamp version of coordinate variables
-
-TIMESTAMP_MODEL = os.getenv("TIMESTAMP_MODEL") # timestamp version of model run
-
-MODEL_STR = os.getenv("MODEL_STR") # string indicator for model type
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Paths to data directories defined here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Get current script directory path
-script_dir = os.path.dirname(__file__)
-
-# Define path to model outputs
-PATH_SOURCE = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-        'data',
-        'model-output',
-        MODEL_STR,
-        HEM,
-        TIMESTAMP_MODEL
-    )
+from .parma import(
+    MODEL_STR,
+    TIMESTAMP_MODEL
 )
 
-# Define path to uncertainty for weighting
-PATH_R = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-        'data',
-        'lr-input',
-        HEM,
-        TIMESTAMP_R
-    )
+from .path import(
+    PATH_SOURCE,
+    PATH_DEST,
+    PATH_COORD,
+    PATH_R,
+    FSTR_END_MODEL,
+    FSTR_END_COORD,
+    FSTR_END_R,
 )
-
-# Define path to lat lon coordinate variables
-PATH_COORD = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-        'coordinates',
-        HEM,
-        TIMESTAMP_COORD
-    )
-)
-
-# Define path to plot outputs
-PATH_DEST = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-        'plots',
-        'quick-eval',
-        MODEL_STR.replace('_', '-'),
-        HEM,
-        TIMESTAMP_MODEL
-    )
-)
-
-# Create the direectory if it doesn't already exist
-os.makedirs(PATH_DEST, exist_ok=True)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Additional global variables here
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FSTR_END_MODEL = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
-FSTR_END_R = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_R}"
-
 
 def main():
 
@@ -304,7 +235,7 @@ def plot_metric(u_data, v_data, lon, lat, metric):
     plt.colorbar(pcm_1, ax = axs[1], orientation = 'vertical')
 
     # Add title to plot
-    fig.suptitle(f"{metric}; {MODEL_STR.upper()} {TIMESTAMP_MODEL}", fontweight = 'bold')
+    fig.suptitle(f"{metric}; {MODEL_STR.upper()} v{TIMESTAMP_MODEL}", fontweight = 'bold')
 
     # Format with tight layout
     fig.tight_layout
@@ -318,7 +249,6 @@ def plot_metric(u_data, v_data, lon, lat, metric):
 
     # Save figure
     plt.savefig(os.path.join(PATH_DEST, fnam), bbox_inches = 'tight')
-
 
     return
 
