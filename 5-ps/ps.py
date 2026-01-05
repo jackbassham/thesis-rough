@@ -1,16 +1,17 @@
 import numpy as np
 import os
 
-# TODO import paths
 from .path import(
-
+    PATH_SOURCE,
+    PATH_DEST,
+    FSTR_END_IN,
+    FSTR_END_OUT,
 )
-
 
 def main():
 
     # Load in data (same as lr inputs)
-    data = np.load(os.path.join(PATH_SOURCE, f'test_{FSTR_END_IN}'))
+    data = np.load(os.path.join(PATH_SOURCE, f'test_{FSTR_END_IN}.npz'))
 
     # Use test split for persistence baseline
     y_test = data['y_test']
@@ -28,7 +29,12 @@ def main():
     # Shift true array forward
     y_true = y_test[1:,:,:,:]
 
-    # TODO Save arrays
+    # Save predictions
+    np.savez(
+        os.path.join(PATH_DEST, f"ps_preds_{FSTR_END_OUT}"),
+        y_pred = y_pred,
+        y_true = y_true
+    )
 
     return
 
