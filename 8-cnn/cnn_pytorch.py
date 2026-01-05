@@ -241,7 +241,7 @@ def main():
     y_true = np.concatenate(all_targets, axis=0)
 
     # Save to .npz
-    fnam = f"CNNPreds_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.npz"
+    fnam = f"preds_{FSTR_END_IN}.npz"
     np.savez(os.path.join(PATH_DEST, fnam), y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
