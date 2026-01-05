@@ -57,7 +57,7 @@ def main():
 
     # Save coordinate variables from one dataset in new file
     np.savez(
-        os.path.join(PATH_DEST_COORD, f'coord_{FSTR_END_OUT}'),
+        os.path.join(PATH_DEST_COORD, f'coord_{FSTR_END_OUT}.npz'),
         time = time_icevel,
         lat = lat_icevel,
         lon = lon_icevel

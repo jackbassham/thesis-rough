@@ -66,11 +66,11 @@ PATH_DEST_CNN = os.path.abspath(
 # Create the destination directory if it doesn't already exist
 os.makedirs(PATH_DEST_CNN, exist_ok = True)
 
-# Define string for end of coordinate data file
-FSTR_END_IN_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN_COORD}"
-
 # Define string for end of input regrid data file
 FSTR_END_IN = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_IN}"
 
 # Define string for end of output data
 FSTR_END_OUT = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
+
+# Define string for end of coordinate data file
+FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"

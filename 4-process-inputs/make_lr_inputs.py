@@ -8,7 +8,7 @@ from .path import (
     PATH_DEST_LR,
     FSTR_END_IN,
     FSTR_END_OUT,
-    FSTR_END_IN_COORD
+    FSTR_END_COORD
 )
 
 def main():
@@ -28,7 +28,7 @@ def main():
     print("Input Variables Loaded")
 
     # Extract time (dates)
-    fnam = f"coord_{FSTR_END_IN_COORD}.npz"
+    fnam = f"coord_{FSTR_END_COORD}.npz"
     data = np.load(os.path.join(PATH_SOURCE_COORD, fnam), allow_pickle=True)
     time = data['time']
 
