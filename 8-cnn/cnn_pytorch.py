@@ -87,7 +87,7 @@ def NRMSEloss(pred, true, eps=1e-6):
 
     return torch.sqrt(mse) / std
 
-def plot_losses(num_epochs, train_losses, val_losses, model):
+def plot_losses(num_epochs, train_losses, val_losses):
     epochs = np.arange(1, num_epochs + 1)
 
     
@@ -99,7 +99,7 @@ def plot_losses(num_epochs, train_losses, val_losses, model):
     plt.legend()
     plt.title(f"{model}")
 
-    plt.savefig(os.path.join(PATH_DEST, f'losses_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.png'))
+    plt.savefig(os.path.join(PATH_DEST, f'losses_{FSTR_END_OUT}.png'))
 
     # plt.show()
 
@@ -111,10 +111,9 @@ def main():
     set_seed(42)
 
     # Load input data
-    fstr = f"{HEM}_{START_YEAR}_{END_YEAR}"
-    x_train, y_train, _ = torch.load(os.path.join(PATH_SOURCE,f'train_{fstr}.pt'))
-    x_val, y_val, _ = torch.load(os.path.join(PATH_SOURCE,f'val_{fstr}.pt'))
-    x_test, y_test, _ = torch.load(os.path.join(PATH_SOURCE,f'test_{fstr}.pt'))
+    x_train, y_train, _ = torch.load(os.path.join(PATH_SOURCE,f'train_{FSTR_END_IN}.pt'))
+    x_val, y_val, _ = torch.load(os.path.join(PATH_SOURCE,f'val_{FSTR_END_IN}.pt'))
+    x_test, y_test, _ = torch.load(os.path.join(PATH_SOURCE,f'test_{FSTR_END_IN}.pt'))
 
     print("Input Data Loaded")
 
@@ -216,10 +215,10 @@ def main():
         print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {avg_train:.4f} - Val Loss: {avg_val:.4f}")
 
     # Plot losses
-    plot_losses(num_epochs, train_losses, val_losses, f"CNN{VERSION}")
+    plot_losses(num_epochs, train_losses, val_losses)
 
     # Save model weights
-    fnam = f'CNNweights_{HEM}_{START_YEAR}_{END_YEAR}_{VERSION}.pth'
+    fnam = f'model_weights_{FSTR_END_OUT}.pth'
     torch.save(model.state_dict(), os.path.join(PATH_DEST,fnam))
 
     print('Model weights saved')
