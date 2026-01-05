@@ -10,6 +10,9 @@ from .path import(
     FSTR_END_OUT,
 )
 
+# Define model type string for saving predictions
+MODEL_STR = 'lr_wtd_cf'
+
 def main():
     
     # Load in training data
@@ -31,7 +34,7 @@ def main():
 
     # Save coeffients, fit
     np.savez(
-        os.path.join(PATH_DEST, f"lr_wtd_coeff_fit_{FSTR_END_OUT}"),
+        os.path.join(PATH_DEST, f"coef_fit_{MODEL_STR}_{FSTR_END_OUT}.npz"),
         m = m,
         fit_train = fit_train,
         true_train = true_train
@@ -39,7 +42,7 @@ def main():
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_DEST, f"lr_wtd_preds_{FSTR_END_OUT}"),
+        os.path.join(PATH_DEST, f"preds_{MODEL_STR}_{FSTR_END_OUT}.npz"),
         pred_test = pred_test,
         true_test = true_test
     )
