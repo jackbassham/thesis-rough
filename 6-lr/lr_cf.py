@@ -30,39 +30,71 @@ def main():
     # Get input channel dimensions
     _, nin, _, _, = np.shape(x_train)
 
+    # TODO make coefficient dimension dynamic
+
+    # Get coefficient dimension
+    nm = nin + 1 # NOTE +1 for u and v complex concentration projections 
+    nm = nm + 2 # NOTE +2 for u and v constants (mean ~ 0) (constant column G[0])
+
     # Get test batch dimensions
     nt_te, _, _, _ = np.shape(y_test)
-
-    # Initialize arrays for real training outputs
-    # NOTE one extra coefficient for mean
-    m = np.full((nin + 1, nlat, nlon), np.nan) # model coefficients, real
-    fit_tr = np.full((nt_tr, nout, nlat, nlon), np.nan) # training fit, real
-    true_tr = np.full((nt_tr, nout, nlat, nlon), np.nan) # training true, real
 
     # Train model
     zm, zfit_tr, ztrue_tr = lr_train(x_train, y_train)
 
-    # Convert training outputs to real from complex
-    
+    # Initialize arrays for real training outputs
+    # NOTE two extra coefficients for u and v mean
+    m = np.full((nm, nlat, nlon), np.nan) # model coefficients, real
+    fit_tr = np.full((nt_tr, nout, nlat, nlon), np.nan) # training fit, real
+    true_tr = np.full((nt_tr, nout, nlat, nlon), np.nan) # training true, real
+
+    # TODO make loop or use advanced indexing for real and imaginary coefficients
+
+    # Convert training coefficients to real
+    m[0, :, :] = zm[0, :, :].real # C_uproj, (constant)
+    m[1, :, :] = zm[0, :, :].imag # C_vproj, (constant)
+    m[2, :, :] = zm[1, :, :].real # A_uproj, (ua_t0)
+    m[3, :, :] = zm[1, :, :].imag # A_uproj, (va_t0)
+    m[4, :, :] = zm[2, :, :].real # B_uproj, (ci_t1)
+    m[5, :, :] = zm[2, :, :].imag # B_uproj, (ci_t1)
+
+    # Convert training fit to real
+    fit_tr[:, 0, :, :] = zfit_tr.real # ui_t0, fit
+    fit_tr[:, 1, :, :] = zfit_tr.imag # vi_t0, fit
+
+    # Convert training true to real
+    true_tr[:, 0, :, :] = ztrue_tr.real # ui_t0, true
+    true_tr[:, 1, :, :] = ztrue.tr.imag # vi_t0, true
 
     # Save coeffients, fit
     np.savez(
         os.path.join(PATH_DEST, f"coef_fit_{MODEL_STR}_{FSTR_END_OUT}.npz"),
         m = m,
-        fit_train = fit_train,
-        true_train = true_train
+        fit_tr = fit_tr,
+        true_tr = true_tr,
     )
 
     # Get predictions on test set
-    zpred_te, ztrue_te = lr_test(x_test, y_test, m)
+    zpred_te, ztrue_te = lr_test(x_test, y_test, zm)
 
-    # TODO get predictions consistent with CNN for quick eval
+    # Intialize arrays for test output predictions
+    # NOTE y notation used for consistency with CNN and plotting
+    y_pred = np.full((nt_te, nout, nlat, nlon), np.nan) 
+    y_true = y_pred
+
+    # Convert test predictions to real
+    y_pred[:,0,:,:] = zpred_te.real # ui_t0, pred
+    y_pred[:,1,:,:] = zpred_te.imag # vi_t0, pred
+
+    # Convert test true to real
+    y_true[:,0,:,:] = ztrue_te.real # ui_t0, true
+    y_true[:,1,:,:] = ztrue_te.imag # vi_t0, true
 
     # Save predictions
     np.savez(
         os.path.join(PATH_DEST, f"preds_{MODEL_STR}_{FSTR_END_OUT}.npz"),
-        pred_test = pred_test,
-        true_test = true_test
+        y_pred = y_pred,
+        y_true = y_true,
     )
 
     return
@@ -83,7 +115,13 @@ def lr_train(x_train, y_train):
     ua_t0 = x_train[:,0,:,:]
     va_t0 = x_train[:,1,:,:]
     ci_t1 = x_train[:,2,:,:]
-    
+
+    # TODO fix nin for m_all (just a coincidence that it matches with nin)
+    # need A, B, C (za, ua, constant)
+
+    # TODO switch order of gram matrix so constant is at end?
+    # for consisitency with lr equation Ax + Bx + C
+
     # Initialize output arrays
     true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
     fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
@@ -126,7 +164,9 @@ def lr_train(x_train, y_train):
                     true_all[true_mask, ilat, ilon] = zi_t0
 
                     # Define gram matrix
-                    G = np.ones(((len(ua_t0), 3)), dtype = complex) # first column constant (1)
+                    G = np.ones(((len(ua_t0), 3)), dtype = complex) 
+                    
+                    # first column constant (1)
 
                     G[:,1] = za_t0 # Complex wind, today
                     G[:,2] = zci_t1 # Complex ice concentration, yesterday
