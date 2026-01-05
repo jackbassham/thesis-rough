@@ -103,9 +103,14 @@ def main():
 
 def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
 
-    # Get number of input channels for gram matrix
-    _, nin, _, _ = np.shape(x_train)
+    # TODO dynamic number of input channels and coefficients
+
+    # Define number of input channels for gram matrix
+    nin = 3 # complex wind (za), complex ice concentration (zci), complex constant 
    
+    # Define number of complex coefficients
+    nzm = 3 # A, B, C
+
     # Get dimensions for output arrays
     nt, _, nlat, nlon = np.shape(y_train)
 
@@ -122,9 +127,9 @@ def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
     ri_t0 = r_train[:,0,:,:]
     
     # Initialize output arrays
-    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
-    fit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
-    m_all = np.zeros((nin, nlat, nlon), dtype = complex) # lr coefficients (mean, present day wind, present day concentration), complex
+    ztrue_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
+    zfit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
+    zm_all = np.zeros((nzm, nlat, nlon), dtype = complex) # lr coefficients (mean, present day wind, present day concentration), complex
     
     # Iterate through each latitude, longitude gridpoint
     for ilat in range(nlat):
@@ -171,41 +176,51 @@ def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
                     W = diags(w)
 
                     # Store true complex ice velocity vectors at valid points
-                    true_all[true_mask, ilat, ilon] = zi_t0
+                    ztrue_all[true_mask, ilat, ilon] = zi_t0
+
+                    # Define size of valid batch at current grid point
+                    nt_ij = len(ua_t0_filt)
+
+                    # Define gram matrix
+                    G = np.ones(((nt_ij, n_in)), dtype = complex) 
+
+                    G[:,0] = za_t0 # Present day wind velocity, complex
+                    G[:,1] = zci_t1 # Previous day ice concentration, complex
 
                     # Define gram matrix
                     G = np.ones(((len(ua_t0), 3)), dtype = complex) # first column constant (1)
 
-                    G[:,1] = za_t0 # Complex wind, today
-                    G[:,2] = zci_t1 # Complex ice concentration, yesterday
+                    # NOTE last column of G constant
 
                     # Define data matrix
                     d = zi_t0.T
 
                     # Solve for lr coefficients
-                    m = (LA.inv((G.conj().T @ W @ G))) @ G.conj().T @ W @ d # (adapted from eqn 39, SIOC221B Lec 10)
+                    zm = (LA.inv((G.conj().T @ W @ G))) @ G.conj().T @ W @ d # (adapted from eqn 39, SIOC221B Lec 10)
 
                     # Save lr coefficients
-                    for im in range(len(m)):
-                        m_all[im, ilat, ilon] = m[im]
+                    for im in range(len(zm)):
+                        zm_all[im, ilat, ilon] = zm[im]
 
                     # Calculate fit
-                    fit = G @ m
+                    zfit = G @ zm
                     
                     # Store predicted complex ice velocity vectors at valid points
-                    fit_all[true_mask, ilat, ilon] = fit
+                    zfit_all[true_mask, ilat, ilon] = zfit
 
                 except Exception as e:
                     print(f"Error at lat={ilat}, lon={ilon}: {e}")
 
         print(f'lat {ilat} complete')
         
-    return m_all, fit_all, true_all
+    return zm_all, zfit_all, ztrue_all
 
-def lr_test(x_test, y_test, m):
+def lr_test(x_test, y_test, zm):
 
-    # Get number of input channels for gram matrix
-    _, nin, _, _ = np.shape(x_test)
+# TODO dynamic number of input channels and coefficients
+
+    # Define number of input channels for gram matrix
+    nin = 3 # complex wind (za), complex ice concentration (zci), complex constant 
    
     # Get dimensions for output arrays
     nt, _, nlat, nlon = np.shape(y_test)
@@ -220,8 +235,8 @@ def lr_test(x_test, y_test, m):
     ci_t1 = x_test[:,2,:,:]
       
     # Initialize output arrays
-    true_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
-    pred_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
+    ztrue_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
+    zpred_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
     
     # Iterate through each latitude, longitude gridpoint
     for ilat in range(nlat):
@@ -233,23 +248,23 @@ def lr_test(x_test, y_test, m):
             zci_t1 = ci_t1[:,ilat,ilon] + ci_t1[:,ilat,ilon]*1j # Complex 'yesterday' ice concentration
             
             # Store true complex ice velocity vectors at valid points
-            true_all[:, ilat, ilon] = zi_t0
+            ztrue_all[:, ilat, ilon] = zi_t0
 
             # Define gram matrix
-            G = np.ones(((len(ua_t0), 3)), dtype = complex) # first column constant (1)
+            G = np.ones(((nt, 3)), dtype = complex) # first column constant (1)
 
             G[:,1] = za_t0 # Complex wind, today
             G[:,2] = zci_t1 # Complex ice concentration, yesterday
 
-            m_ij = m[:,ilat,ilon]
+            zm_ij = zm[:,ilat,ilon]
 
             # Calculate fit
-            pred = G @ m_ij
+            zpred = G @ zm_ij
             
             # Store predicted complex ice velocity vectors at valid points
-            pred_all[:, ilat, ilon] = pred
+            zpred_all[:, ilat, ilon] = zpred
 
         print(f'ilat {ilat} complete')
         
-    return pred_all, true_all
+    return zpred_all, ztrue_all
 
