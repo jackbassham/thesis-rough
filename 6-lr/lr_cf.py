@@ -24,11 +24,26 @@ def main():
     x_test = data['x_test']
     y_test = data['y_test']
 
-    # Train model
-    m, fit_train, true_train = lr_train(x_train, y_train)
+    # Get train batch dimensions
+    nt_tr, nout, nlat, nlon = np.shape(y_train)
 
-    # Get predictions on test set
-    pred_test, true_test = lr_test(x_test, y_test, m)
+    # Get input channel dimensions
+    _, nin, _, _, = np.shape(x_train)
+
+    # Get test batch dimensions
+    nt_te, _, _, _ = np.shape(y_test)
+
+    # Initialize arrays for real training outputs
+    # NOTE one extra coefficient for mean
+    m = np.full((nin + 1, nlat, nlon), np.nan) # model coefficients, real
+    fit_tr = np.full((nt_tr, nout, nlat, nlon), np.nan) # training fit, real
+    true_tr = np.full((nt_tr, nout, nlat, nlon), np.nan) # training true, real
+
+    # Train model
+    zm, zfit_tr, ztrue_tr = lr_train(x_train, y_train)
+
+    # Convert training outputs to real from complex
+    
 
     # Save coeffients, fit
     np.savez(
@@ -37,6 +52,11 @@ def main():
         fit_train = fit_train,
         true_train = true_train
     )
+
+    # Get predictions on test set
+    zpred_te, ztrue_te = lr_test(x_test, y_test, m)
+
+    # TODO get predictions consistent with CNN for quick eval
 
     # Save predictions
     np.savez(
