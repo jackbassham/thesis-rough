@@ -68,6 +68,15 @@ export END_YEAR=2020
 # Define northern or southern hemisphere
 export HEM="nh" # "sh" or "nh"
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ACTIVATE CONDA ENVIRONMENT
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Initialize conda for non-interactive shells
+source "$(conda info --base)/etc/profile.d/conda.sh"
+
+# Activate environment
+conda activate seaice
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # RUN SCRIPTS
@@ -268,6 +277,16 @@ echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# SWITCH CONDA ENVIRONMENT TO PYTORCH
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Deactivate environment
+conda deactivate
+
+# Activate Pytorch Environment
+conda activate torch_env
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "8. CNN" 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -283,14 +302,7 @@ if ! python -m $DIR_STR/$MODEL_STR.py; then
     exit 1
 fi
 
-# Generate quick evaluation plots
-echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval.py; then 
-    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
-    exit 1
-fi
-
-echo "FINISHED $MODEL_STR train and quick eval"
+echo "FINISHED $MODEL_STR train"
 echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
 
@@ -310,6 +322,27 @@ if ! python -m $DIR_STR/$MODEL_STR.py; then
     exit 1
 fi
 
+echo "FINISHED $MODEL_STR train"
+echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
+echo " "
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# SWITCH CONDA ENVIRONMENT BACK FOR PLOTS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Deactivate environment
+conda deactivate
+
+# Activate Pytorch Environment
+conda activate seaice
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# QUICK EVAL PLOTS FOR CNN MODELS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define model type string for script and quick evaluation plots
+MODEL_STR="cnn_pt"
+
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
 if ! python -m 10-evaluate/quick_eval.py; then 
@@ -317,7 +350,21 @@ if ! python -m 10-evaluate/quick_eval.py; then
     exit 1
 fi
 
-echo "FINISHED $MODEL_STR train and quick eval"
+echo "FINISHED $MODEL_STR quick eval"
+echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
+echo " "
+
+# Define model type string for script and quick evaluation plots
+MODEL_STR="cnn_wtd_pt"
+
+# Generate quick evaluation plots
+echo "Starting quick-eval.py"
+if ! python -m 10-evaluate/quick_eval.py; then 
+    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+    exit 1
+fi
+
+echo "FINISHED $MODEL_STR quick eval"
 echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
 
