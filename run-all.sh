@@ -2,7 +2,7 @@
 #
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# README: run-model-training.sh
+# README: run-all.sh
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 # PURPOSE:
@@ -18,7 +18,6 @@
 #
 # USAGE:
 #   # Navigate to 'thesis-rough' repository directory
-#   cd
 #
 #   # Initialize script
 #   chmod +x run-model-training.sh
