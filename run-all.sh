@@ -95,108 +95,235 @@ echo " "
 export TIMESTAMP_IN=$TIMESTAMP
 export TIMESTAMP_OUT=$TIMESTAMP
 
-echo "1. DOWNLOADING RAW DATA"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "1. DOWNLOAD RAW DATA"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo "Starting 1-download/download_concentration_nimbus7.py..."
+echo "Starting download_concentration_nimbus7.py..."
 if ! python -m 1-download.download_concentration_nimbus7.py; then 
     echo "ERROR: Failed to run 1-download/download_concentration_nimbus7.py"
     exit 1
 fi
 
-echo "Finished 1-download/download_concentration_nimbus7.py,"
-echo "Starting 1-download/download_wind_jra55.py..."
+echo "Finished download_concentration_nimbus7.py,"
+echo "Starting download_wind_jra55.py..."
 if ! python -m 1-download.download_wind_jra55.py; then 
     echo "ERROR: Failed to run 1-download/download_wind_jra55.py"
     exit 1
 fi
 
-echo "Finished 1-download/download_wind_jra55.py,"
-echo "Starting 1-download/download_motion_pp.py..."
+echo "Finished download_wind_jra55.py,"
+echo "Starting download_motion_pp.py..."
 if ! python -m 1-download.download_motion_pp.py; then 
     echo "ERROR: Failed to run 1-download/download_motion_pp.py"
     exit 1
 fi
 
-echo "2. REGRIDDING DATA"
+echo "Finished download_motion_pp.py"
+echo " "
 
-echo "Starting 2-regrid/regrid_concentration_nimbus7.py..."
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "2. REGRID DATA"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+echo "Starting regrid_concentration_nimbus7.py..."
 if ! python -m 2-regrid.regrid_concentration_nimbus7.py; then 
     echo "ERROR: Failed to run regrid_concentration_nimbus7.py"
     exit 1
 fi
 
-echo "Finished 2-regrid/regrid_concentration_nimbus7.py," 
-echo "Starting 2-regrid/regrid_wind_jra55.py..."
+echo "Finished regrid_concentration_nimbus7.py," 
+echo "Starting regrid_wind_jra55.py..."
 if ! python -m 2-regrid.regrid_wind_jra55.py; then 
     echo "ERROR: Failed to run 2-regrid/regrid_wind_jra55.py"
     exit 1
 fi
 
-echo "Finished 2-regrid/regrid_wind_jra55.py," 
-echo "Starting 2-regrid/regrid_motion_pp.py..."
+echo "Finished regrid_wind_jra55.py," 
+echo "Starting regrid_motion_pp.py..."
 if ! python -m 2-regrid.regrid_motion_pp.py; then 
     echo "ERROR: Failed to run 2-regrid/regrid_motion_pp.py"
     exit 1
 fi
 
+echo "Finished regrid_motion_pp.py" 
+echo " "
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "3. MASK & NORMALIZE DATA"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo "Starting 3-mask-normalize/mask_normalize_inputs.py..."
+echo "Starting mask_normalize_inputs.py..."
 if ! python -m 3-mask-normalize.mask_normalize.py; then 
     echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
     exit 1
 fi
 
+echo "Finished mask_normalize_inputs.py"
+echo " "
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "4. PROCESS MODEL INPUTS" 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo "Starting 4-process-inputs/mask_normalize_inputs.py..."
-if ! python -m 3-mask-normalize.mask_normalize.py; then 
-    echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
+echo "Starting make_lr_inputs.py..."
+if ! python -m 4-process-inputs/make_lr_inputs.py; then 
+    echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
     exit 1
 fi
 
-echo "Starting ML Model Training"
-echo " "
-
-# echo "1. Starting Persistance"
-
-echo "2. Training Linear Regression"
-echo "Running '5-lr/lr_cf.py'"
-echo " "
-if ! python 5-lr/lr_cf.py; then
-    echo "ERROR: Failed to run lr_cf.py"
+echo "Finished make_lr_inputs.py," 
+echo "Starting make_cnn_inputs.py..."
+if ! python -m 4-process-inputs/make_cnn_inputs.py; then 
+    echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
     exit 1
 fi
 
-echo "3. Training Weighted Linear Regression"
-echo "Running '6-wlr/wlr_cf.py'"
+echo "Finished make_cnn_inputs.py" 
 echo " "
-if ! python 6-wlr/wlr_cf.py; then
-    echo "ERROR: Failed to run wlr_cf.py"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "MODEL TRAINING"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo " "
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "5. PERSISTENCE" 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define model type string for script and quick evaluation plots
+MODEL_STR="ps"
+
+# Define model script directory string
+DIR_STR="5-ps"
+
+echo "Starting $MODEL_STR.py..."
+if ! python -m $DIR_STR/$MODEL_STR.py; then 
+    echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
-echo "4. Training CNN"
-echo "Running '7-cnn/cnn_cf.py'"
-echo " "
-if ! python 7-cnn/cnn_cf.py; then
-    echo "ERROR: Failed to run cnn_cf.py"
+# Generate quick evaluation plots
+echo "Starting quick-eval.py"
+if ! python -m 10-evaluate/quick_eval.py; then 
+    echo "ERROR: 10-evaluate/quick_eval.py"
     exit 1
 fi
 
-echo "5. Training Weigghted CNN"
-echo "Running '8-wcnn/wcnn_cf.py'"
+echo "FINISHED $MODEL_STR train and quick eval"
+echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
-if ! python 8-wcnn/wcnn_cf.py; then
-    echo "ERROR: Failed to run wcnn_cf.py"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "6. LINEAR REGRESSION" 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define model type string for script and quick evaluation plots
+MODEL_STR="lr_cf"
+
+# Define model script directory string
+DIR_STR="6-lr"
+
+echo "Starting $MODEL_STR.py..."
+if ! python -m $DIR_STR/$MODEL_STR.py; then 
+    echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
-echo "Model Training Complete!"
+# Generate quick evaluation plots
+echo "Starting quick-eval.py"
+if ! python -m 10-evaluate/quick_eval.py; then 
+    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+    exit 1
+fi
+
+echo "FINISHED $MODEL_STR train and quick eval"
+echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
 
-echo "All outputs saved with timestamp: $TIMESTAMP"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "7. WEIGHTED LINEAR REGRESSION" 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define model type string for script and quick evaluation plots
+MODEL_STR="lr_wtd_cf"
+
+# Define model script directory string
+DIR_STR="7-lr-weighted"
+
+echo "Starting $MODEL_STR.py..."
+if ! python -m $DIR_STR/$MODEL_STR.py; then 
+    echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
+    exit 1
+fi
+
+# Generate quick evaluation plots
+echo "Starting quick-eval.py"
+if ! python -m 10-evaluate/quick_eval.py; then 
+    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+    exit 1
+fi
+
+echo "FINISHED $MODEL_STR train and quick eval"
+echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "8. CNN" 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define model type string for script and quick evaluation plots
+MODEL_STR="cnn_pt"
+
+# Define model script directory string
+DIR_STR="8-cnn"
+
+echo "Starting $MODEL_STR.py..."
+if ! python -m $DIR_STR/$MODEL_STR.py; then 
+    echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
+    exit 1
+fi
+
+# Generate quick evaluation plots
+echo "Starting quick-eval.py"
+if ! python -m 10-evaluate/quick_eval.py; then 
+    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+    exit 1
+fi
+
+echo "FINISHED $MODEL_STR train and quick eval"
+echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
+echo " "
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "9. WEIGHTED CNN" 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Define model type string for script and quick evaluation plots
+MODEL_STR="cnn_wtd_pt"
+
+# Define model script directory string
+DIR_STR="9-cnn-weighted"
+
+echo "Starting $MODEL_STR.py..."
+if ! python -m $DIR_STR/$MODEL_STR.py; then 
+    echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
+    exit 1
+fi
+
+# Generate quick evaluation plots
+echo "Starting quick-eval.py"
+if ! python -m 10-evaluate/quick_eval.py; then 
+    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+    exit 1
+fi
+
+echo "FINISHED $MODEL_STR train and quick eval"
+echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
+echo " "
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "FINISHED ALL ML MODEL TRAINING AND QUICK EVAL"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 exit 0
