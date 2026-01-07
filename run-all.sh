@@ -110,13 +110,13 @@ conda activate seaice
 export TIMESTAMP=$(python -m helpers.timestamp)
 
 # Print timestamp
-ok "Timestamp recorded:"
+echo "Timestamp recorded:"
 echo "  Timestamp     = $TIMESTAMP"
 echo " "
 
 
 # Print global variable selections
-ok "Global variables:"
+echo "Global variables:"
 echo "  HEM           = $HEM"
 echo "  YEARS         = $START_YEAR - $END_YEAR"
 echo " "
