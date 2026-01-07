@@ -16,7 +16,7 @@ def get_vars(var_name: str) -> str:
     value = os.getenv(var_name)
 
     if value is None:
-        print(f"ERROR: Set global variable: {var_name}", file = sys.stderror)
+        print(f"ERROR: Set global variable: {var_name}", file = sys.stderr)
         sys.exit(1)
 
     return value
