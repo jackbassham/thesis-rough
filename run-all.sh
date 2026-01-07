@@ -20,7 +20,7 @@
 #   # Navigate to 'thesis-rough' repository directory
 #
 #   # Initialize script
-#   chmod +x run-model-training.sh
+#   chmod +x run-all.sh
 # 
 #   # Run script
 #   ./run-model-training.sh
