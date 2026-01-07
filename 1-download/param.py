@@ -33,7 +33,7 @@ END_YEAR = int(get_vars("END_YEAR")) # data ends 31DEC<END_YEAR>
 LAT_LIMITS = [float(x) for x in get_vars("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
 LON_LIMITS = [float(x) for x in get_vars("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
 
-TIMESTAMP_OUT = get_vars("OUT_TIMESTAMP") # Timestamp version for data download
+TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT") # Timestamp version for data download
 
 # Nasa Earthdata login credentials for download
 USER = get_vars("USER") # username
