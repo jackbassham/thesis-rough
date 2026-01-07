@@ -23,7 +23,7 @@
 #   chmod +x run-all.sh
 # 
 #   # Run script
-#   ./run-model-training.sh
+#   ./run-all.sh
 #
 # NOTE: LATITUDE LONGITUDE BOUNDS FOR REPLICATION
 #
@@ -40,6 +40,7 @@
 # TODO: Download JRA55 data from source
 # START_YEAR=1992
 # END_YEAR=2020
+#
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # GLOBAL CONFIG
@@ -68,9 +69,32 @@ export END_YEAR=2020
 # Define northern or southern hemisphere
 export HEM="nh" # "sh" or "nh"
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# INITIALIZE LOG FOR SHELL SCRIPT
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")"
+
+LOGDIR="logs"
+mkdir -p "$LOGDIR"
+
+LOGFILE="$LOGDIR/run_$(date +'%Y%m%d_%H%M%S').log"
+
+# Redirect ALL output to log file (and still show it in terminal)
+exec > >(tee -a "$LOGFILE") 2>&1
+
+echo "===== PIPELINE START ====="
+echo "Start time: $(date)"
+echo "Host: $(hostname)"
+echo "User: $(whoami)"
+echo "=========================="
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ACTIVATE CONDA ENVIRONMENT
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Initialize conda for non-interactive shells
 source "$(conda info --base)/etc/profile.d/conda.sh"
@@ -78,9 +102,9 @@ source "$(conda info --base)/etc/profile.d/conda.sh"
 # Activate environment
 conda activate seaice
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # RUN SCRIPTS
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get timestamp from python script
 export TIMESTAMP=$(python -m helpers.timestamp.py)
