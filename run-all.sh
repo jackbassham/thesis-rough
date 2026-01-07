@@ -107,7 +107,7 @@ conda activate seaice
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get timestamp from python script
-export TIMESTAMP=$(python -m helpers.timestamp.py)
+export TIMESTAMP=$(python -m helpers.timestamp)
 
 # Print timestamp
 ok "Timestamp recorded:"
