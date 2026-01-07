@@ -14,7 +14,7 @@ from .param import (
 
 from .path import PATH_DEST, FSTR_END_OUT
 
-import temp_nasa_earth_data_file
+from helpers import temp_nasa_earth_data_file
 
 # Downloads Daily NSIDC Sea Ice Concentrations (Nimbus7)
 # from https://nsidc.org/data/nsidc-0051/versions/2

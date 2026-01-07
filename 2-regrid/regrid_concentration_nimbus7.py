@@ -20,7 +20,7 @@ from .path import (
     FSTR_END_OUT,
 )
 
-import temp_nasa_earth_data_file
+from helpers import temp_nasa_earth_data_file
 
 # Regrids time series of NSIDC Sea Ice Concentrations (Nimbus 7)
 # Data accessed from https://nsidc.org/data/nsidc-0051/versions/2

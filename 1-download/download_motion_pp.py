@@ -12,7 +12,7 @@ from .param import (
 
 from .path import PATH_DEST, FSTR_END_OUT
 
-import temp_nasa_earth_data_file
+from helpers import temp_nasa_earth_data_file
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Global variables defined here
