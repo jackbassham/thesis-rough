@@ -99,8 +99,14 @@ echo "=========================="
 # Initialize conda for non-interactive shells
 source "$(conda info --base)/etc/profile.d/conda.sh"
 
+# Define environment
+conda_env="seaice"
+
 # Activate environment
-conda activate seaice
+conda activate $conda_env
+
+echo "Activated Conda Environment '$conda_env'"
+echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # RUN SCRIPTS
@@ -132,21 +138,21 @@ echo "1. DOWNLOAD RAW DATA"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 echo "Starting download_concentration_nimbus7.py..."
-if ! python -m 1-download.download_concentration_nimbus7.py; then 
+if ! python -m 1-download.download_concentration_nimbus7; then 
     echo "ERROR: Failed to run 1-download/download_concentration_nimbus7.py"
     exit 1
 fi
 
 echo "Finished download_concentration_nimbus7.py,"
 echo "Starting download_wind_jra55.py..."
-if ! python -m 1-download.download_wind_jra55.py; then 
+if ! python -m 1-download.download_wind_jra55; then 
     echo "ERROR: Failed to run 1-download/download_wind_jra55.py"
     exit 1
 fi
 
 echo "Finished download_wind_jra55.py,"
 echo "Starting download_motion_pp.py..."
-if ! python -m 1-download.download_motion_pp.py; then 
+if ! python -m 1-download.download_motion_pp; then 
     echo "ERROR: Failed to run 1-download/download_motion_pp.py"
     exit 1
 fi
@@ -159,21 +165,21 @@ echo "2. REGRID DATA"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 echo "Starting regrid_concentration_nimbus7.py..."
-if ! python -m 2-regrid.regrid_concentration_nimbus7.py; then 
+if ! python -m 2-regrid.regrid_concentration_nimbus7; then 
     echo "ERROR: Failed to run regrid_concentration_nimbus7.py"
     exit 1
 fi
 
 echo "Finished regrid_concentration_nimbus7.py," 
 echo "Starting regrid_wind_jra55.py..."
-if ! python -m 2-regrid.regrid_wind_jra55.py; then 
+if ! python -m 2-regrid.regrid_wind_jra55; then 
     echo "ERROR: Failed to run 2-regrid/regrid_wind_jra55.py"
     exit 1
 fi
 
 echo "Finished regrid_wind_jra55.py," 
 echo "Starting regrid_motion_pp.py..."
-if ! python -m 2-regrid.regrid_motion_pp.py; then 
+if ! python -m 2-regrid.regrid_motion_pp; then 
     echo "ERROR: Failed to run 2-regrid/regrid_motion_pp.py"
     exit 1
 fi
@@ -186,7 +192,7 @@ echo "3. MASK & NORMALIZE DATA"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 echo "Starting mask_normalize_inputs.py..."
-if ! python -m 3-mask-normalize.mask_normalize.py; then 
+if ! python -m 3-mask-normalize.mask_normalize; then 
     echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
     exit 1
 fi
@@ -199,14 +205,14 @@ echo "4. PROCESS MODEL INPUTS"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 echo "Starting make_lr_inputs.py..."
-if ! python -m 4-process-inputs/make_lr_inputs.py; then 
+if ! python -m 4-process-inputs/make_lr_inputs; then 
     echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
     exit 1
 fi
 
 echo "Finished make_lr_inputs.py," 
 echo "Starting make_cnn_inputs.py..."
-if ! python -m 4-process-inputs/make_cnn_inputs.py; then 
+if ! python -m 4-process-inputs/make_cnn_inputs; then 
     echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
     exit 1
 fi
@@ -230,14 +236,14 @@ MODEL_STR="ps"
 DIR_STR="5-ps"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR.py; then 
+if ! python -m $DIR_STR/$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval.py; then 
+if ! python -m 10-evaluate/quick_eval; then 
     echo "ERROR: 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -257,14 +263,14 @@ MODEL_STR="lr_cf"
 DIR_STR="6-lr"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR.py; then 
+if ! python -m $DIR_STR/$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval.py; then 
+if ! python -m 10-evaluate/quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -284,14 +290,14 @@ MODEL_STR="lr_wtd_cf"
 DIR_STR="7-lr-weighted"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR.py; then 
+if ! python -m $DIR_STR/$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval.py; then 
+if ! python -m 10-evaluate/quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -307,8 +313,14 @@ echo " "
 # Deactivate environment
 conda deactivate
 
-# Activate Pytorch Environment
-conda activate torch_env
+# Define environment
+conda_env="torch_env"
+
+# Activate environment
+conda activate $conda_env
+
+echo "Activated Conda Environment '$conda_env'"
+echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "8. CNN" 
@@ -321,7 +333,7 @@ MODEL_STR="cnn_pt"
 DIR_STR="8-cnn"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR.py; then 
+if ! python -m $DIR_STR/$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
@@ -341,7 +353,7 @@ MODEL_STR="cnn_wtd_pt"
 DIR_STR="9-cnn-weighted"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR.py; then 
+if ! python -m $DIR_STR/$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
@@ -357,8 +369,14 @@ echo " "
 # Deactivate environment
 conda deactivate
 
-# Activate Pytorch Environment
-conda activate seaice
+# Define environment
+conda_env="seaice"
+
+# Activate environment
+conda activate $conda_env
+
+echo "Activated Conda Environment '$conda_env'"
+echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # QUICK EVAL PLOTS FOR CNN MODELS
@@ -369,7 +387,7 @@ MODEL_STR="cnn_pt"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval.py; then 
+if ! python -m 10-evaluate/quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -383,7 +401,7 @@ MODEL_STR="cnn_wtd_pt"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval.py; then 
+if ! python -m 10-evaluate/quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
