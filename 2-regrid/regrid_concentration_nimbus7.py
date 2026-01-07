@@ -20,7 +20,7 @@ from .path import (
     FSTR_END_OUT,
 )
 
-from helpers import temp_nasa_earth_data_file
+from helpers.nasa_earth_data import get_temp_NED_file
 
 # Regrids time series of NSIDC Sea Ice Concentrations (Nimbus 7)
 # Data accessed from https://nsidc.org/data/nsidc-0051/versions/2
@@ -50,7 +50,7 @@ def main():
     url_grid = URL_GRID.format(grid = grid)
 
     # Load original grid in temp file
-    temp = temp_nasa_earth_data_file(url_grid)
+    temp = get_temp_NED_file(url_grid)
 
     if temp is not None:
         with xr.open_dataset(temp) as data:

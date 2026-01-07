@@ -3,7 +3,7 @@ import io
 
 from .param import USER, PASS
 
-def temp_nasa_earth_data_file(url):
+def get_temp_NED_file(url):
     """Gets temporary file from Nasa Earth Data Website via URL"""
     ### Create session for NASA Earthdata ###
     # Overriding requests.Session.rebuild_auth to mantain authentication headers when redirected
