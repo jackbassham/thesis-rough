@@ -70,7 +70,7 @@ def main():
     v_total = np.concatenate(v_total, axis = 0)
 
     # Save time series data as npz variables
-    fnam = f"wind_JRA55_gaussian_{FSTR_END_OUT}"
+    fnam = f"wind_jra55_gaussian_{FSTR_END_OUT}.npz"
 
     np.savez_compressed(
         os.path.join(PATH_DEST, fnam), 
