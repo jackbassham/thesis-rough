@@ -28,7 +28,7 @@ def main():
 
     print('Concentration Loaded')
 
-    fnam = f"wind_JRA55_latlon_{FSTR_END_IN}.npz"
+    fnam = f"wind_jra55_latlon_{FSTR_END_IN}.npz"
     data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
 
     ua = data['u']
