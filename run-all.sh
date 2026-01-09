@@ -112,8 +112,11 @@ echo " "
 # RUN SCRIPTS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Get timestamp from python script
-export TIMESTAMP=$(python -m helpers.timestamp)
+# # Get timestamp from python script
+# export TIMESTAMP=$(python -m helpers.timestamp)
+
+# Get timestamp version from previous run
+export TIMESTAMP='20260107_164301'
 
 # Print timestamp
 echo "Timestamp recorded:"
@@ -133,86 +136,87 @@ echo " "
 export TIMESTAMP_IN=$TIMESTAMP
 export TIMESTAMP_OUT=$TIMESTAMP
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-echo "1. DOWNLOAD RAW DATA"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# echo "1. DOWNLOAD RAW DATA"
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo "Starting download_concentration_nimbus7.py..."
-if ! python -m 1-download.download_concentration_nimbus7; then 
-    echo "ERROR: Failed to run 1-download/download_concentration_nimbus7.py"
-    exit 1
-fi
+# echo "Starting download_concentration_nimbus7.py..."
+# if ! python -m 1-download.download_concentration_nimbus7; then 
+#     **TODO update ERROR message for consistency with python modules over script**
+#     echo "ERROR: Failed to run 1-download/download_concentration_nimbus7.py"
+#     exit 1
+# fi
 
-echo "Finished download_concentration_nimbus7.py,"
-echo "Starting download_wind_jra55.py..."
-if ! python -m 1-download.download_wind_jra55; then 
-    echo "ERROR: Failed to run 1-download/download_wind_jra55.py"
-    exit 1
-fi
+# echo "Finished download_concentration_nimbus7.py,"
+# echo "Starting download_wind_jra55.py..."
+# if ! python -m 1-download.download_wind_jra55; then 
+#     echo "ERROR: Failed to run 1-download/download_wind_jra55.py"
+#     exit 1
+# fi
 
-echo "Finished download_wind_jra55.py,"
-echo "Starting download_motion_pp.py..."
-if ! python -m 1-download.download_motion_pp; then 
-    echo "ERROR: Failed to run 1-download/download_motion_pp.py"
-    exit 1
-fi
+# echo "Finished download_wind_jra55.py,"
+# echo "Starting download_motion_pp.py..."
+# if ! python -m 1-download.download_motion_pp; then 
+#     echo "ERROR: Failed to run 1-download/download_motion_pp.py"
+#     exit 1
+# fi
 
-echo "Finished download_motion_pp.py"
-echo " "
+# echo "Finished download_motion_pp.py"
+# echo " "
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-echo "2. REGRID DATA"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# echo "2. REGRID DATA"
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo "Starting regrid_concentration_nimbus7.py..."
-if ! python -m 2-regrid.regrid_concentration_nimbus7; then 
-    echo "ERROR: Failed to run regrid_concentration_nimbus7.py"
-    exit 1
-fi
+# echo "Starting regrid_concentration_nimbus7.py..."
+# if ! python -m 2-regrid.regrid_concentration_nimbus7; then 
+#     echo "ERROR: Failed to run regrid_concentration_nimbus7.py"
+#     exit 1
+# fi
 
-echo "Finished regrid_concentration_nimbus7.py," 
-echo "Starting regrid_wind_jra55.py..."
-if ! python -m 2-regrid.regrid_wind_jra55; then 
-    echo "ERROR: Failed to run 2-regrid/regrid_wind_jra55.py"
-    exit 1
-fi
+# echo "Finished regrid_concentration_nimbus7.py," 
+# echo "Starting regrid_wind_jra55.py..."
+# if ! python -m 2-regrid.regrid_wind_jra55; then 
+#     echo "ERROR: Failed to run 2-regrid/regrid_wind_jra55.py"
+#     exit 1
+# fi
 
-echo "Finished regrid_wind_jra55.py," 
-echo "Starting regrid_motion_pp.py..."
-if ! python -m 2-regrid.regrid_motion_pp; then 
-    echo "ERROR: Failed to run 2-regrid/regrid_motion_pp.py"
-    exit 1
-fi
+# echo "Finished regrid_wind_jra55.py," 
+# echo "Starting regrid_motion_pp.py..."
+# if ! python -m 2-regrid.regrid_motion_pp; then 
+#     echo "ERROR: Failed to run 2-regrid/regrid_motion_pp.py"
+#     exit 1
+# fi
 
-echo "Finished regrid_motion_pp.py" 
-echo " "
+# echo "Finished regrid_motion_pp.py" 
+# echo " "
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-echo "3. MASK & NORMALIZE DATA"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# echo "3. MASK & NORMALIZE DATA"
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo "Starting mask_normalize_inputs.py..."
-if ! python -m 3-mask-normalize.mask_normalize; then 
-    echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
-    exit 1
-fi
+# echo "Starting mask_normalize_inputs.py..."
+# if ! python -m 3-mask-normalize.mask_normalize; then 
+#     echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
+#     exit 1
+# fi
 
-echo "Finished mask_normalize_inputs.py"
-echo " "
+# echo "Finished mask_normalize_inputs.py"
+# echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "4. PROCESS MODEL INPUTS" 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 echo "Starting make_lr_inputs.py..."
-if ! python -m 4-process-inputs/make_lr_inputs; then 
+if ! python -m 4-process-inputs.make_lr_inputs; then 
     echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
     exit 1
 fi
 
 echo "Finished make_lr_inputs.py," 
 echo "Starting make_cnn_inputs.py..."
-if ! python -m 4-process-inputs/make_cnn_inputs; then 
+if ! python -m 4-process-inputs.make_cnn_inputs; then 
     echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
     exit 1
 fi
@@ -236,14 +240,14 @@ MODEL_STR="ps"
 DIR_STR="5-ps"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR; then 
+if ! python -m $DIR_STR.$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval; then 
+if ! python -m 10-evaluate.quick_eval; then 
     echo "ERROR: 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -263,14 +267,14 @@ MODEL_STR="lr_cf"
 DIR_STR="6-lr"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR; then 
+if ! python -m $DIR_STR.$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval; then 
+if ! python -m 10-evaluate.quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -290,14 +294,14 @@ MODEL_STR="lr_wtd_cf"
 DIR_STR="7-lr-weighted"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR; then 
+if ! python -m $DIR_STR.$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval; then 
+if ! python -m 10-evaluate.quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -333,7 +337,7 @@ MODEL_STR="cnn_pt"
 DIR_STR="8-cnn"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR; then 
+if ! python -m $DIR_STR.$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
@@ -353,7 +357,7 @@ MODEL_STR="cnn_wtd_pt"
 DIR_STR="9-cnn-weighted"
 
 echo "Starting $MODEL_STR.py..."
-if ! python -m $DIR_STR/$MODEL_STR; then 
+if ! python -m $DIR_STR.$MODEL_STR; then 
     echo "ERROR: Failed to run $DIR_STR/$MODEL_STR.py"
     exit 1
 fi
@@ -387,7 +391,7 @@ MODEL_STR="cnn_pt"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval; then 
+if ! python -m 10-evaluate.quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
@@ -401,7 +405,7 @@ MODEL_STR="cnn_wtd_pt"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate/quick_eval; then 
+if ! python -m 10-evaluate.quick_eval; then 
     echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
     exit 1
 fi
