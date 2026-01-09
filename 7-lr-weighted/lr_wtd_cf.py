@@ -66,7 +66,7 @@ def main():
 
     # Convert training true to real
     true_tr[:, 0, :, :] = ztrue_tr.real # ui_t0, true
-    true_tr[:, 1, :, :] = ztrue.tr.imag # vi_t0, true
+    true_tr[:, 1, :, :] = ztrue_tr.imag # vi_t0, true
 
     # Save coeffients, fit
     np.savez(
