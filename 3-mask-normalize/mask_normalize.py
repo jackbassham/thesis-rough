@@ -143,7 +143,7 @@ def main():
         ui = ui_norm, vi = vi_norm, 
         ri = ri_norm, 
         ua = ua_norm, va = va_norm,
-        ci_norm = ci_norm
+        ci = ci_norm
         )
 
     print(f"Normalized inputs saved at: \n {PATH_DEST}/{fnam}")
