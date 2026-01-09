@@ -41,9 +41,9 @@ TIMESTAMP_MODEL = os.getenv("TIMESTAMP_MODEL", TIMESTAMP_OUT)
 
 # TODO TIMESTAMP_COORD
 # If timestamp version not given for coordinates, use TIMESTAMP_OUT (ie: running master shell)
-TIMESTAMP_COORD = os.get_env("TIMESTAMP_COORD", TIMESTAMP_OUT)
+TIMESTAMP_COORD = os.getenv("TIMESTAMP_COORD", TIMESTAMP_OUT)
 
 # TODO TIMESTAMP_UNCERTAINTY
 # If timestamp version not given for uncertainty, use TIMESTAMP_OUT (ie: running master shell)
 # Uncertainty taken from LR test split
-TIMESTAMP_R = os.get_env("TIMESTAMP_R", TIMESTAMP_OUT)
+TIMESTAMP_R = os.getenv("TIMESTAMP_R", TIMESTAMP_OUT)

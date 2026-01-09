@@ -54,7 +54,7 @@ PATH_COORD = os.path.abspath(
         'data',
         'coordinates',
         HEM,
-        TIMESTAMP_OUT,
+        TIMESTAMP_COORD,
     )
 )
 
