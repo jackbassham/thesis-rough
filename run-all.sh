@@ -189,6 +189,13 @@ export TIMESTAMP_OUT=$TIMESTAMP
 # fi
 
 # echo "Finished regrid_motion_pp.py" 
+# echo "Starting make_coord.py..."
+# if ! python -m 2-regrid.make_coord; then 
+#     echo "ERROR: Failed to run 2-regrid/make_coord.py"
+#     exit 1
+# fi
+
+# echo "Finished make_coord.py" 
 # echo " "
 
 # #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,17 +211,34 @@ export TIMESTAMP_OUT=$TIMESTAMP
 # echo "Finished mask_normalize_inputs.py"
 # echo " "
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-echo "4. PROCESS MODEL INPUTS" 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# echo "4. PROCESS MODEL INPUTS" 
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo "Starting make_lr_inputs.py..."
-if ! python -m 4-process-inputs.make_lr_inputs; then 
-    echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
-    exit 1
-fi
+# echo "Starting make_lr_inputs.py..."
+# if ! python -m 4-process-inputs.make_lr_inputs; then 
+#     echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
+#     exit 1
+# fi
 
 echo "Finished make_lr_inputs.py," 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# SWITCH CONDA ENVIRONMENT TO PYTORCH
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Deactivate environment
+conda deactivate
+
+# Define environment
+conda_env="torch_env"
+
+# Activate environment
+conda activate $conda_env
+
+echo "Activated Conda Environment '$conda_env'"
+echo " "
+
 echo "Starting make_cnn_inputs.py..."
 if ! python -m 4-process-inputs.make_cnn_inputs; then 
     echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
@@ -232,6 +256,22 @@ echo " "
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "5. PERSISTENCE" 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# SWITCH CONDA ENVIRONMENT TO SEAICE
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Deactivate environment
+conda deactivate
+
+# Define environment
+conda_env="seaice"
+
+# Activate environment
+conda activate $conda_env
+
+echo "Activated Conda Environment '$conda_env'"
+echo " "
 
 # Define model type string for script and quick evaluation plots
 MODEL_STR="ps"
