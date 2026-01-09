@@ -20,8 +20,8 @@ def main():
     nt, n_out, nlat, nlon = np.shape(y_test)
 
     # Initialize output arrays
-    y_true = np.full((nt - 1, n_out, nlat, nlon))
-    y_pred = true_all
+    y_true = np.full((nt - 1, n_out, nlat, nlon), np.nan)
+    y_pred = y_true
 
     # Set predicted equal to previous day (remove last day from array)
     y_pred = y_test[:-1,:,:,:]
@@ -31,7 +31,7 @@ def main():
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_DEST, f"ps_preds_{FSTR_END_OUT}"),
+        os.path.join(PATH_DEST, f"preds_ps_{FSTR_END_OUT}"),
         y_pred = y_pred,
         y_true = y_true
     )
