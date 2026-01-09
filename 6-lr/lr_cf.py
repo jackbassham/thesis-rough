@@ -172,7 +172,7 @@ def lr_train(x_train, y_train):
                     nt_ij = len(ua_t0_filt)
 
                     # Define gram matrix
-                    G = np.ones(((nt_ij, n_in)), dtype = complex) 
+                    G = np.ones(((nt_ij, nin)), dtype = complex) 
 
                     G[:,0] = za_t0 # Present day wind velocity, complex
                     G[:,1] = zci_t1 # Previous day ice concentration, complex
@@ -187,7 +187,7 @@ def lr_train(x_train, y_train):
 
                     # Save lr coefficients
                     for izm in range(len(zm)):
-                        zm_all[izm, ilat, ilon] = m[izm]
+                        zm_all[izm, ilat, ilon] = zm[izm]
 
                     # Calculate fit
                     zfit = G @ zm

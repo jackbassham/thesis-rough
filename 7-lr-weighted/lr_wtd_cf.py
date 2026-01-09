@@ -182,7 +182,7 @@ def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
                     nt_ij = len(ua_t0_filt)
 
                     # Define gram matrix
-                    G = np.ones(((nt_ij, n_in)), dtype = complex) 
+                    G = np.ones(((nt_ij, nin)), dtype = complex) 
 
                     G[:,0] = za_t0 # Present day wind velocity, complex
                     G[:,1] = zci_t1 # Previous day ice concentration, complex
