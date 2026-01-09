@@ -2,11 +2,13 @@ import numpy as np
 import os
 
 from .path import (
-    PATH_SOURCE,
+    PATH_DEST,
     PATH_DEST_COORD,
     FSTR_END_IN,
     FSTR_END_OUT,
 )
+
+PATH_SOURCE = PATH_DEST # Source for coordinates same as destination for regrid
 
 def main():
 
