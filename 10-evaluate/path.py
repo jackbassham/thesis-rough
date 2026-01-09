@@ -5,6 +5,7 @@ from .param import (
     START_YEAR, 
     END_YEAR,
     MODEL_STR,
+    MODEL_DIR,
     TIMESTAMP_MODEL,
     TIMESTAMP_COORD,
     TIMESTAMP_R,
@@ -27,7 +28,7 @@ PATH_SOURCE = os.path.abspath(
         root,
         'data',
         'model-output',
-        MODEL_STR,
+        MODEL_DIR,
         HEM,
         TIMESTAMP_MODEL,
     )
@@ -39,7 +40,7 @@ PATH_DEST = os.path.abspath(
         root,
         'plots',
         'quick-eval',
-        MODEL_STR,
+        MODEL_DIR,
         HEM,
         TIMESTAMP_MODEL,
     )

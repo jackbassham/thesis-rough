@@ -9,6 +9,7 @@ import os
 
 from .param import(
     MODEL_STR,
+    MODEL_DIR,
     TIMESTAMP_MODEL,
     HEM,
 )

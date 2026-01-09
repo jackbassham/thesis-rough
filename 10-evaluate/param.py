@@ -32,6 +32,8 @@ END_YEAR = int(get_vars("END_YEAR")) # data ends 31DEC<END_YEAR>
 
 MODEL_STR = get_vars("MODEL_STR")
 
+MODEL_DIR = MODEL_STR.replace('_', '-')
+
 # TODO if "TIMESTAMP_MODEL" version given in shell, set to TIMESTAMP_OUT version,
 # else set to TIMESTAMP_OUT
 TIMESTAMP_OUT = get_vars("TIMESTAMP_OUT")
