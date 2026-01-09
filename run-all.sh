@@ -221,32 +221,32 @@ export TIMESTAMP_OUT=$TIMESTAMP
 #     exit 1
 # fi
 
-echo "Finished make_lr_inputs.py," 
+# echo "Finished make_lr_inputs.py," 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# SWITCH CONDA ENVIRONMENT TO PYTORCH
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # SWITCH CONDA ENVIRONMENT TO PYTORCH
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Deactivate environment
-conda deactivate
+# # Deactivate environment
+# conda deactivate
 
-# Define environment
-conda_env="torch_env"
+# # Define environment
+# conda_env="torch_env"
 
-# Activate environment
-conda activate $conda_env
+# # Activate environment
+# conda activate $conda_env
 
-echo "Activated Conda Environment '$conda_env'"
-echo " "
+# echo "Activated Conda Environment '$conda_env'"
+# echo " "
 
-echo "Starting make_cnn_inputs.py..."
-if ! python -m 4-process-inputs.make_cnn_inputs; then 
-    echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
-    exit 1
-fi
+# echo "Starting make_cnn_inputs.py..."
+# if ! python -m 4-process-inputs.make_cnn_inputs; then 
+#     echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
+#     exit 1
+# fi
 
-echo "Finished make_cnn_inputs.py" 
-echo " "
+# echo "Finished make_cnn_inputs.py" 
+# echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "MODEL TRAINING"
@@ -261,20 +261,20 @@ echo "5. PERSISTENCE"
 # SWITCH CONDA ENVIRONMENT TO SEAICE
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Deactivate environment
-conda deactivate
+# # Deactivate environment
+# conda deactivate
 
-# Define environment
-conda_env="seaice"
+# # Define environment
+# conda_env="seaice"
 
-# Activate environment
-conda activate $conda_env
+# # Activate environment
+# conda activate $conda_env
 
-echo "Activated Conda Environment '$conda_env'"
-echo " "
+# echo "Activated Conda Environment '$conda_env'"
+# echo " "
 
 # Define model type string for script and quick evaluation plots
-MODEL_STR="ps"
+export MODEL_STR="ps"
 
 # Define model script directory string
 DIR_STR="5-ps"
@@ -301,7 +301,7 @@ echo "6. LINEAR REGRESSION"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-MODEL_STR="lr_cf"
+export MODEL_STR="lr_cf"
 
 # Define model script directory string
 DIR_STR="6-lr"
@@ -328,7 +328,7 @@ echo "7. WEIGHTED LINEAR REGRESSION"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-MODEL_STR="lr_wtd_cf"
+export MODEL_STR="lr_wtd_cf"
 
 # Define model script directory string
 DIR_STR="7-lr-weighted"
@@ -371,7 +371,7 @@ echo "8. CNN"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-MODEL_STR="cnn_pt"
+export MODEL_STR="cnn_pt"
 
 # Define model script directory string
 DIR_STR="8-cnn"
@@ -391,7 +391,7 @@ echo "9. WEIGHTED CNN"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-MODEL_STR="cnn_wtd_pt"
+export MODEL_STR="cnn_wtd_pt"
 
 # Define model script directory string
 DIR_STR="9-cnn-weighted"
@@ -427,7 +427,7 @@ echo " "
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-MODEL_STR="cnn_pt"
+export MODEL_STR="cnn_pt"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
@@ -441,7 +441,7 @@ echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
 
 # Define model type string for script and quick evaluation plots
-MODEL_STR="cnn_wtd_pt"
+export MODEL_STR="cnn_wtd_pt"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
