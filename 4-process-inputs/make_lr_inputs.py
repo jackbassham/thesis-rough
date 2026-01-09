@@ -72,7 +72,9 @@ def main():
     print("Feature and Target Arrays filled")
 
     # Reshape uncertainty
-    ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, nlat, nlon]
+    # NOTE DO NOT reshape uncertainty for LR
+    # ri_t0 = np.expand_dims(ri_t0, 1)
+    # # ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, nlat, nlon]
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 
