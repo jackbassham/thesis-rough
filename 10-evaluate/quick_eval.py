@@ -7,7 +7,8 @@ import os
 
 from .param import(
     MODEL_STR,
-    TIMESTAMP_MODEL
+    TIMESTAMP_MODEL,
+    HEM
 )
 
 from .path import(
