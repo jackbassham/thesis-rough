@@ -268,3 +268,5 @@ def lr_test(x_test, y_test, zm):
         
     return zpred_all, ztrue_all
 
+if __name__ == "__main__":
+    main()

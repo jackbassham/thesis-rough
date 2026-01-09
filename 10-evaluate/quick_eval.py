@@ -271,4 +271,5 @@ def plot_metric(u_data, v_data, lon, lat, metric):
 
     return
 
-
+if __name__ == "__main__":
+    main()
