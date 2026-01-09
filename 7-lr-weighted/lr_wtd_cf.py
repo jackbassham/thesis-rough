@@ -124,7 +124,7 @@ def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
     ci_t1 = x_train[:,2,:,:]
 
     # Unpack uncertainty
-    ri_t0 = r_train[:,0,:,:]
+    ri_t0 = r_train
     
     # Initialize output arrays
     ztrue_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
