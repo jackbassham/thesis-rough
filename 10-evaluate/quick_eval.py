@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+# TODO silence mean of empty slice warning
+
 from .param import(
     MODEL_STR,
     TIMESTAMP_MODEL,
@@ -45,6 +47,12 @@ def main():
     # Includes flag values (r_raw + 1000, cm/s)
     # Normalized by std ice speed
     r_test = data['r_test']
+
+    # If the model is persistance
+    # TODO dynamic strings and error conditions
+    if MODEL_STR == 'ps':
+        # Shift r_test array forward one day
+        r_test = r_test[1:,:,:]
 
     # Get filename for lat lon coordinate variables
     fnam = f"coord_{FSTR_END_COORD}.npz"
@@ -230,7 +238,7 @@ def plot_metric(u_data, v_data, lon, lat, metric):
 
     # Plot left plot; zonal evaluation
     axs[0].set_extent([lon_min, lon_max, lat_min, lat_max], crs = crs)
-    axs[0].costlines
+    axs[0].coastlines
     # Plot pcolormesh plot
     pcm_0 = axs[0].pcolormesh(
         lon, lat, u_data,
@@ -243,7 +251,7 @@ def plot_metric(u_data, v_data, lon, lat, metric):
 
     # Plot right plot; meridional evaluation
     axs[1].set_extent([lon_min, lon_max, lat_min, lat_max], crs = crs)
-    axs[1].costlines
+    axs[1].coastlines
     # Plot pcolormesh plot
     pcm_1 = axs[1].pcolormesh(
         lon, lat, v_data,
