@@ -33,7 +33,7 @@ PATH_DEST = os.path.abspath(
         root,
         'data',
         'model-output',
-        'cnn-wtd-pytorch',
+        'cnn-wtd-pt',
         HEM,
         TIMESTAMP_OUT,
     )
