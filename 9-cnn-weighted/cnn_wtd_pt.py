@@ -249,7 +249,7 @@ def main():
         print(f"Epoch {epoch+1}/{num_epochs} - u Pred (Val) Avg: {avg_u_pred:.4f} - v Pred (Val) Avg: {avg_v_pred:.4f}")
 
     # Plot losses
-    plot_weighted_losses(num_epochs, train_losses, val_losses)
+    plot_losses(num_epochs, train_losses, val_losses)
 
     # Save model weights
     fnam = f'wts_{MODEL_STR}_{FSTR_END_OUT}.pth'
