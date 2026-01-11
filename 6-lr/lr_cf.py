@@ -121,7 +121,7 @@ def lr_train(x_train, y_train):
     va_t0 = x_train[:,1,:,:]
     ci_t1 = x_train[:,2,:,:]
 
-    # TODO fix nin for m_all (just a coincidence that it matches with nin)
+    # TODO fix nin for zm_all (just a coincidence that it matches with nin)
     # need A, B, C (za, ua, constant)
 
     # TODO switch order of gram matrix so constant is at end?
@@ -130,7 +130,7 @@ def lr_train(x_train, y_train):
     # Initialize output arrays
     ztrue_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
     zfit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
-    zm_all = np.zeros((nzm, nlat, nlon), dtype = complex) # lr coefficients (A, B, C), complex
+    zm_all = np.full((nzm, nlat, nlon), np.nan, dtype = complex) # lr coefficients (A, B, C), complex
     
     # Iterate through each latitude, longitude gridpoint
     for ilat in range(nlat):
@@ -169,7 +169,7 @@ def lr_train(x_train, y_train):
                     ztrue_all[true_mask, ilat, ilon] = zi_t0
 
                     # Define size of valid batch at current grid point
-                    nt_ij = len(ua_t0_filt)
+                    nt_ij = len(ui_t0_filt)
 
                     # Define gram matrix
                     G = np.ones(((nt_ij, nin)), dtype = complex) 
@@ -238,10 +238,12 @@ def lr_test(x_test, y_test, zm):
             ztrue_all[:, ilat, ilon] = zi_t0
 
             # Define gram matrix
-            G = np.ones(((nt, 3)), dtype = complex) # first column constant (1)
+            G = np.ones(((nt, 3)), dtype = complex)
 
-            G[:,1] = za_t0 # Complex wind, today
-            G[:,2] = zci_t1 # Complex ice concentration, yesterday
+            G[:,0] = za_t0 # Complex wind, today
+            G[:,1] = zci_t1 # Complex ice concentration, yesterday
+
+            # Last column of G constant
 
             zm_ij = zm[:,ilat,ilon]
 
