@@ -80,7 +80,7 @@ def main():
     # Intialize arrays for test output predictions
     # NOTE y notation used for consistency with CNN and plotting
     y_pred = np.full((nt_te, nout, nlat, nlon), np.nan) 
-    y_true = y_pred
+    y_true = np.full((nt_te, nout, nlat, nlon), np.nan)
 
     # Convert test predictions to real
     y_pred[:,0,:,:] = zpred_te.real # ui_t0, pred
@@ -229,32 +229,66 @@ def lr_test(x_test, y_test, zm):
     for ilat in range(nlat):
         for ilon in range(nlon):
 
-            # Convert to complex
-            zi_t0 = ui_t0[:,ilat,ilon] + vi_t0[:,ilat,ilon]*1j # Complex 'today' ice velocity vector       
-            za_t0 = ua_t0[:,ilat,ilon] + va_t0[:,ilat,ilon]*1j # Complex 'today' wind vector
-            zci_t1 = ci_t1[:,ilat,ilon] + ci_t1[:,ilat,ilon]*1j # Complex 'yesterday' ice concentration
+            # Skip over land points
+            if np.all(np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))):
+                continue
+
+            else:
+                try:
+                    # Handle missing data
+                    
+                    # Initialize mask for valid values
+                    true_mask = np.ones_like(ui_t0[:,ilat,ilon], dtype=bool) # 1 = True = Inclusion
+
+                    # Set 'True' for indices with nan values, 'False' for valid
+                    inan = np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))
+
+                    # Set NaN indices to False (Exclusion) (~ inverts 'True' where nan to 'False')
+                    true_mask = ~inan
+
+                    # Filter inputs to valid indices
+                    ui_t0_filt = ui_t0[true_mask,ilat,ilon]
+                    vi_t0_filt = vi_t0[true_mask,ilat,ilon]
+                    ua_t0_filt = ua_t0[true_mask,ilat,ilon]
+                    va_t0_filt = va_t0[true_mask,ilat,ilon]
+                    ci_t1_filt = ci_t1[true_mask,ilat,ilon]
+
+                    # Convert to complex
+                    zi_t0 = ui_t0_filt + vi_t0_filt*1j # Complex 'today' ice velocity vector       
+                    za_t0 = ua_t0_filt + va_t0_filt*1j # Complex 'today' wind vector
+                    zci_t1 = ci_t1_filt + ci_t1_filt*1j # Complex 'yesterday' ice concentration
+                    
+                    # Store true complex ice velocity vectors at valid points
+                    ztrue_all[true_mask, ilat, ilon] = zi_t0
+
+                    # Define size of valid batch at current grid point
+                    nt_ij = len(ui_t0_filt)
+
+                    # Define gram matrix
+                    G = np.ones(((nt_ij, nin)), dtype = complex) 
+
+                    G[:,0] = za_t0 # Present day wind velocity, complex
+                    G[:,1] = zci_t1 # Previous day ice concentration, complex
+                    
+                    # NOTE last column of G constant
+
+                    # Define data matrix
+                    d = zi_t0.T
+
+                    # Get valid coefficients at grid point
+                    zm_ij = zm[:,ilat,ilon]
+
+                    # Calculate fit
+                    zpred = G @ zm_ij
             
-            # Store true complex ice velocity vectors at valid points
-            ztrue_all[:, ilat, ilon] = zi_t0
+                    # Store predicted complex ice velocity vectors at valid points
+                    zpred_all[true_mask, ilat, ilon] = zpred
 
-            # Define gram matrix
-            G = np.ones(((nt, 3)), dtype = complex)
-
-            G[:,0] = za_t0 # Complex wind, today
-            G[:,1] = zci_t1 # Complex ice concentration, yesterday
-
-            # Last column of G constant
-
-            zm_ij = zm[:,ilat,ilon]
-
-            # Calculate fit
-            zpred = G @ zm_ij
-            
-            # Store predicted complex ice velocity vectors at valid points
-            zpred_all[:, ilat, ilon] = zpred
+                except Exception as e:
+                    print(f"Error at lat={ilat}, lon={ilon}: {e}")
 
         print(f'ilat {ilat} complete')
-        
+
     return zpred_all, ztrue_all
 
 if __name__ == "__main__":
