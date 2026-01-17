@@ -27,12 +27,15 @@ PATH_SOURCE = os.path.abspath(
     )
 )
 
+
+
 # Define lr input destination path
 PATH_DEST = os.path.abspath(
     os.path.join(
         root,
         'data',
         'model-output',
+        # TODO dynamic model path string
         'cnn-wtd-pt',
         HEM,
         TIMESTAMP_OUT,
