@@ -66,9 +66,6 @@ export RESOLUTION=25 # km
 export START_YEAR=1992 # minimum 1989
 export END_YEAR=2020
 
-# Define northern or southern hemisphere
-export HEM="nh" # "sh" or "nh"
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INITIALIZE LOG FOR SHELL SCRIPT
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,6 +133,9 @@ echo " "
 
 # Timestamp version of regrid data
 export TIMESTAMP_IN='20260107_164301'
+
+# Timestamp version of coordinate variables
+export TIMESTAMP_COORD=$TIMESTAMP_IN
 
 export TIMESTAMP_OUT=$TIMESTAMP
 
