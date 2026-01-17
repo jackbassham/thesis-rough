@@ -18,34 +18,14 @@ def main():
     data = np.load(os.path.join(PATH_SOURCE, fnam))
 
     # Unpack input variables from .npz file
-    ui = data['ui']
-    vi = data['vi']
-    ri = data['ri']
-    ua = data['ua']
-    va = data['va']
-    ci = data['ci']
+    ui_t0 = data['ui_t0']
+    vi_t0 = data['vi_t0']
+    ri_t0 = data['ri_t0']
+    ua_t0 = data['ua_t0']
+    va_t0 = data['va_t0']
+    ci_t1 = data['ci_t1']
 
     print("Input Variables Loaded")
-
-    # Extract time (dates)
-    fnam = f"coord_{FSTR_END_COORD}.npz"
-    data = np.load(os.path.join(PATH_SOURCE_COORD, fnam), allow_pickle=True)
-    time = data['time']
-
-    # Create present day parameters (t0) by shifting forward one day
-    ui_t0 = ui[1:,:,:]
-    vi_t0 = vi[1:,:,:]
-    ua_t0 = ua[1:,:,:]
-    va_t0 = va[1:,:,:]
-    ri_t0 = ri[1:,:,:]
-
-    # Create present day (t0) time coordinate variable by shifting forward one day
-    time_t0 = time[1:]
-
-    # Create previous day parameters (t1) by removing last day
-    ci_t1 = ci[:-1,:,:]
-
-    print('Present, Previous day parameters created')
 
     # Define number of input channels
     n_in = 3
@@ -75,6 +55,14 @@ def main():
     # NOTE DO NOT reshape uncertainty for LR
     # ri_t0 = np.expand_dims(ri_t0, 1)
     # # ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, nlat, nlon]
+    
+    # Extract time (dates)
+    fnam = f"coord_{FSTR_END_COORD}.npz"
+    data = np.load(os.path.join(PATH_SOURCE_COORD, fnam), allow_pickle=True)
+    time = data['time']
+
+    # Create present day (t0) time coordinate variable by shifting forward one day
+    time_t0 = time[1:]
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 

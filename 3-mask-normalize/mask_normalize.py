@@ -55,12 +55,25 @@ def main():
 
     print('Raw concentration masked based on NSIDC masks.')
 
+    # Shift present day parameters forward one day, for one point Middle Weddell
+    ui_t0 = ui[1:,:,:]
+    vi_t0 = vi[1:,:,:]
+    ua_t0 = ua[1:,:,:]
+    va_t0 = va[1:,:,:]
+    ri_t0 = ri[1:,:,:]
+
+    # Get present day ice concentration for masking
+    ci_t0 = ci[1:,:,:]
+
+    # Remove last day from previous day parameters
+    ci_t1 = ci[:-1,:,:]
+
     # Create list of input variables
-    invars = [ui, vi, ri, ua, va, ci]
+    invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
 
     # Mask spatial indices with concentration less than .15, NaN concentration
     # NOTE keeping flag values for ice velocity uncertainties
-    mask = (ci <= .15) | (np.isnan(ci))
+    mask = (ci_t0 <= .15) | (np.isnan(ci_t0))
 
     # NaN out points meeting mask condition
     invars_masked = [np.where(mask, np.nan, var) for var in invars]
@@ -131,19 +144,33 @@ def main():
 
     ci_norm = (ci_masked - ci_bar) / ci_std
 
-    print("'uat_bar', 'vat_bar', and 'ciy_bar' normalized by respective standard devations:")
+    print("'ua', 'va', and 'ci' normalized by respective standard devations:")
     print(f"   {ua_std:.3f} cm/s, {va_std:.3f} cm/s, {ci_std:.3f}")
     print('')
+
+    # Pack normalized input variables into list
+    invars_norm = [ui_norm, vi_norm, ri_norm, ua_norm, va_norm, ci_norm]
+
+    # Count number of data points in each variable
+    total_points = [var.size for var in invars_norm]
+
+    # Count the number of nans in each variable
+    total_nan = [np.isnan(var).sum() for var in invars_norm]
+
+    for p, n in zip(total_points, total_nan):
+        print(f"total points/ total nan: {p} / {n}")
+        print(f"num valid points {p - n}")
+        print(f"frac nan (invalid) {n / p}")
     
     # Save normalized input variables
     fnam = f'masked_normalized_{FSTR_END_OUT}.npz'
 
     np.savez(
         os.path.join(PATH_DEST, fnam),
-        ui = ui_norm, vi = vi_norm, 
-        ri = ri_norm, 
-        ua = ua_norm, va = va_norm,
-        ci = ci_norm
+        ui_t0 = ui_norm, vi_t0 = vi_norm, 
+        ri_t0 = ri_norm, 
+        ua_t0 = ua_norm, va_t0 = va_norm,
+        ci_t1 = ci_norm
         )
 
     print(f"Normalized inputs saved at: \n {PATH_DEST}/{fnam}")

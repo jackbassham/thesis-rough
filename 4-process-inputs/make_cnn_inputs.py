@@ -32,52 +32,28 @@ def main():
     data = np.load(os.path.join(PATH_SOURCE, fnam))
 
     # Unpack input variables from .npz file
-    ui = data['ui']
-    vi = data['vi']
-    ri = data['ri']
-    ua = data['ua']
-    va = data['va']
-    ci = data['ci']
+    ui_t0 = data['ui_t0']
+    vi_t0 = data['vi_t0']
+    ri_t0 = data['ri_t0']
+    ua_t0 = data['ua_t0']
+    va_t0 = data['va_t0']
+    ci_t1 = data['ci_t1']
 
     print("Input Variables Loaded")
 
     # Convert NaN values in inputs to zero
-    ui_filt = np.nan_to_num(ui, 0)
-    vi_filt = np.nan_to_num(vi, 0)
-    ua_filt = np.nan_to_num(ua, 0)
-    va_filt = np.nan_to_num(va, 0)
-    ci_filt = np.nan_to_num(ci, 0)
+    ui_t0 = np.nan_to_num(ui_t0, 0)
+    vi_t0 = np.nan_to_num(vi_t0, 0)
+    ua_t0 = np.nan_to_num(ua_t0, 0)
+    va_t0 = np.nan_to_num(va_t0, 0)
+    ci_t1 = np.nan_to_num(ci_t1, 0)
 
     print("Input NaNs Converted to 0")
 
     # Convert NaN values in uncertainty to 1000 (flag)
-    ri_filt = np.where(np.isnan(ri), 1e3, ri)
+    ri_t0 = np.where(np.isnan(ri_t0), 1e3, ri_t0)
 
     print("Uncertainty NaNs Converted to 1000")
-
-    # Delete arrays to free memory
-    del ui, vi, ua, va, ci, ri
-    gc.collect() 
-
-    # Extract time (dates)
-    fnam = f"coord_{FSTR_END_COORD}.npz"
-    data = np.load(os.path.join(PATH_SOURCE_COORD, fnam), allow_pickle=True)
-    time = data['time']
-
-    # Create present day parameters (t0) by shifting forward one day
-    ui_t0 = ui_filt[1:,:,:]
-    vi_t0 = vi_filt[1:,:,:]
-    ua_t0 = ua_filt[1:,:,:]
-    va_t0 = va_filt[1:,:,:]
-    ri_t0 = ri_filt[1:,:,:]
-
-    # Create present day (t0) time coordinate variable by shifting forward one day
-    time_t0 = time[1:]
-
-    # Create previous day parameters (t1) by removing last day
-    ci_t1 = ci_filt[:-1,:,:]
-
-    print('Present, Previous day parameters created')
 
     # Define number of input channels
     n_in = 3
@@ -106,6 +82,14 @@ def main():
     # Reshape uncertainty
     ri_t0 = torch.from_numpy(ri_t0)
     ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, ny, nx]
+
+    # Extract time (dates)
+    fnam = f"coord_{FSTR_END_COORD}.npz"
+    data = np.load(os.path.join(PATH_SOURCE_COORD, fnam), allow_pickle=True)
+    time = data['time']
+
+    # Create present day (t0) time coordinate variable by shifting forward one day
+    time_t0 = time[1:]
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 
