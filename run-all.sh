@@ -112,11 +112,8 @@ echo " "
 # RUN SCRIPTS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# # Get timestamp from python script
-# export TIMESTAMP=$(python -m helpers.timestamp)
-
-# Get timestamp version from previous run
-export TIMESTAMP='20260107_164301'
+# Get timestamp from python script
+export TIMESTAMP=$(python -m helpers.timestamp)
 
 # Print timestamp
 echo "Timestamp recorded:"
@@ -133,7 +130,13 @@ echo " "
 # For this master shell script, all input/ output timestamp versions will be the same
 # For individual shell scripts (model training, etc, enter appropriate timestamp versions for input data)
 
-export TIMESTAMP_IN=$TIMESTAMP
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# MODIFY TIMESTAMP FOR PARTIAL RUN
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Timestamp version of regrid data
+export TIMESTAMP_IN='20260107_164301'
+
 export TIMESTAMP_OUT=$TIMESTAMP
 
 # #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -198,55 +201,62 @@ export TIMESTAMP_OUT=$TIMESTAMP
 # echo "Finished make_coord.py" 
 # echo " "
 
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# echo "3. MASK & NORMALIZE DATA"
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "3. MASK & NORMALIZE DATA"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# echo "Starting mask_normalize_inputs.py..."
-# if ! python -m 3-mask-normalize.mask_normalize; then 
-#     echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
-#     exit 1
-# fi
+echo "Starting mask_normalize_inputs.py..."
+if ! python -m 3-mask-normalize.mask_normalize; then 
+    echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
+    exit 1
+fi
 
-# echo "Finished mask_normalize_inputs.py"
-# echo " "
+echo "Finished mask_normalize_inputs.py"
+echo " "
 
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# echo "4. PROCESS MODEL INPUTS" 
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "4. PROCESS MODEL INPUTS" 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# echo "Starting make_lr_inputs.py..."
-# if ! python -m 4-process-inputs.make_lr_inputs; then 
-#     echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
-#     exit 1
-# fi
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# MODIFY TIMESTAMP FOR PARTIAL RUN
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# echo "Finished make_lr_inputs.py," 
+# Timestamp version of new masked normalized data
+export TIMESTAMP_IN=$TIMESTAMP_OUT
 
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # SWITCH CONDA ENVIRONMENT TO PYTORCH
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "Starting make_lr_inputs.py..."
+if ! python -m 4-process-inputs.make_lr_inputs; then 
+    echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
+    exit 1
+fi
 
-# # Deactivate environment
-# conda deactivate
+echo "Finished make_lr_inputs.py," 
 
-# # Define environment
-# conda_env="torch_env"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# SWITCH CONDA ENVIRONMENT TO PYTORCH
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# # Activate environment
-# conda activate $conda_env
+# Deactivate environment
+conda deactivate
 
-# echo "Activated Conda Environment '$conda_env'"
-# echo " "
+# Define environment
+conda_env="torch_env"
 
-# echo "Starting make_cnn_inputs.py..."
-# if ! python -m 4-process-inputs.make_cnn_inputs; then 
-#     echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
-#     exit 1
-# fi
+# Activate environment
+conda activate $conda_env
 
-# echo "Finished make_cnn_inputs.py" 
-# echo " "
+echo "Activated Conda Environment '$conda_env'"
+echo " "
+
+echo "Starting make_cnn_inputs.py..."
+if ! python -m 4-process-inputs.make_cnn_inputs; then 
+    echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
+    exit 1
+fi
+
+echo "Finished make_cnn_inputs.py" 
+echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "MODEL TRAINING"
@@ -261,17 +271,17 @@ echo "5. PERSISTENCE"
 # SWITCH CONDA ENVIRONMENT TO SEAICE
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# # Deactivate environment
-# conda deactivate
+# Deactivate environment
+conda deactivate
 
-# # Define environment
-# conda_env="seaice"
+# Define environment
+conda_env="seaice"
 
-# # Activate environment
-# conda activate $conda_env
+# Activate environment
+conda activate $conda_env
 
-# echo "Activated Conda Environment '$conda_env'"
-# echo " "
+echo "Activated Conda Environment '$conda_env'"
+echo " "
 
 # Define model type string for script and quick evaluation plots
 export MODEL_STR="ps"
@@ -406,9 +416,9 @@ echo "FINISHED $MODEL_STR train"
 echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SWITCH CONDA ENVIRONMENT BACK FOR PLOTS
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Deactivate environment
 conda deactivate
