@@ -132,7 +132,7 @@ echo " "
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Timestamp version of regrid data
-export TIMESTAMP_IN='20260107_164301'
+export TIMESTAMP_IN='01072026_1643'
 
 # Timestamp version of coordinate variables
 export TIMESTAMP_COORD=$TIMESTAMP_IN
