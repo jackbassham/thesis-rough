@@ -43,10 +43,10 @@ def main():
     print('Variable Files Loaded')
     print('')
 
-    # Mask ice concentration
+    # Mask ice concentration based on NSIDC dataset mask values
     ci_raw = np.round(ci * 250) # raw value ice concentration (NSIDC)
 
-    # NSIDC Masks 
+    # NSIDC Mask values
     # 251 pole hole
     # 252 unused data
     # 253 coastline
@@ -54,6 +54,20 @@ def main():
     ci = np.where((ci_raw == 251) | (ci_raw == 252) | (ci_raw == 253) | (ci_raw == 254), np.nan, ci)
 
     print('Raw concentration masked based on NSIDC masks.')
+
+    nt, _, _ = np.shape(ci)
+
+    # Assign threshold of percent ice free days for concentration masking
+    threshold = .90 * nt # 90% of days
+
+    # Count number of days ice free at each spatial location
+    n_ice_free = np.sum(ci == 0, axis = 0)
+
+    # Create mask for ice free days above threshold
+    mask = n_ice_free > threshold
+
+    # Mask out days where ice free greater number of days than threshold
+    ci = np.where(mask, np.nan, ci)
 
     # Shift present day parameters forward one day, for one point Middle Weddell
     ui_t0 = ui[1:,:,:]

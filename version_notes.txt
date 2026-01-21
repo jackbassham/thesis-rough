@@ -14,6 +14,9 @@ Still encountering -inf skills in both hemispheres
 (probably due to close to zero variance in true values giving zero division).
 These points seem to be beyond the ice edge.
 DEBUG:
-Playing with time variable ice concentration mask used in Hoffman et. al. (in addition to NSIDC mask, mask
-locations where ice cocentration = 0 for > 20% of the time).
+Playing with ice concentration mask used in Hoffman et. al. based on percent time ice free (in addition to NSIDC mask, mask
+locations where ice cocentration = 0 for > 90% of the time (v.s. 80 for Hoffman)).
+The 90% mask captures points in SH with near zero variance with less area removed from domain than others (visually). Visual comparison
+with negative skill.
+Trying SH and NH with 90% threshold for ice free days.
 FIX:
