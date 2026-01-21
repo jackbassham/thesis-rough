@@ -1,0 +1,19 @@
+VERSION 20260107_164301
+RUN:
+Ran all scripts for both SH and NH. CNN in both hempsipheres and WTD CNN in SH produced expected skills.
+WTD CNN in NH was noisy.
+LR and WTD LR in both SH and NH had sparse outputs (singular matrix, NaNs at many locations).
+FIX: 
+Had switched to assigining present day/ previous day variables after masking/ normalizing in this version.
+Switching back to masking/ normalizing after assigning variables fixed sparse LR outputs in proceding version.
+
+VERSION 20260116_164705
+RUN:
+Ran from mask-norm on for both SH and NH with fixes mentioned directly above. Expected skills.
+Still encountering -inf skills in both hemispheres
+(probably due to close to zero variance in true values giving zero division).
+These points seem to be beyond the ice edge.
+DEBUG:
+Playing with time variable ice concentration mask used in Hoffman et. al. (in addition to NSIDC mask, mask
+locations where ice cocentration = 0 for > 20% of the time).
+FIX:
