@@ -1,4 +1,4 @@
-VERSION 20260107_164301
+VERSION 01072026_164301
 RUN:
 Ran all scripts for both SH and NH. CNN in both hempsipheres and WTD CNN in SH produced expected skills.
 WTD CNN in NH was noisy.
@@ -7,7 +7,7 @@ FIX:
 Had switched to assigining present day/ previous day variables after masking/ normalizing in this version.
 Switching back to masking/ normalizing after assigning variables fixed sparse LR outputs in proceding version.
 
-VERSION 20260116_164705
+VERSION 01162026_164705
 RUN:
 Ran from mask-norm on for both SH and NH with fixes mentioned directly above. Expected skills.
 Still encountering -inf skills in both hemispheres

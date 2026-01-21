@@ -78,7 +78,7 @@ cd "$(dirname "$0")"
 LOGDIR="logs"
 mkdir -p "$LOGDIR"
 
-LOGFILE="$LOGDIR/run_$(date +'%Y%m%d_%H%M%S').log"
+LOGFILE="$LOGDIR/run_$(date +'%Y%m%d_%H%M').log"
 
 # Redirect ALL output to log file (and still show it in terminal)
 exec > >(tee -a "$LOGFILE") 2>&1
