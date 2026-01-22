@@ -7,6 +7,7 @@ from .param import (
     MODEL_STR,
     MODEL_DIR,
     TIMESTAMP_MODEL,
+    TIMESTAMP_OUT,
     TIMESTAMP_COORD,
     TIMESTAMP_R,
 )
