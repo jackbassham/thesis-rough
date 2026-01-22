@@ -177,12 +177,11 @@ def skill(pred, true, epsilon = 1e-4):
     vartrue = np.nanmean((true - truebar)**2, axis = 0) # variance in true
     # NOTE above is equivalent to np.nanvar()
 
-    skill = 1 - mse / (vartrue + epslion)
+    skill = 1 - mse / (vartrue + epsilon)
 
     return skill
 
 def weighted_skill(pred, true, r, epsilon = 1e-4):
-    # NOTE excluding epsilon = 1e-4 from denominator for now
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
     w = 1 / (r + epsilon)

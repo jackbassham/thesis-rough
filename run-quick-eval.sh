@@ -122,6 +122,9 @@ export TIMESTAMP_COORD='01072026_1643'
 # Timestamp version for model outputs
 export TIMESTAMP_MODEL='01212026_1222'
 
+# Timestamp version of uncertainty (from lr input)
+export TIMESTAMP_R='01212026_1222'
+
 export TIMESTAMP_OUT=$TIMESTAMP
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
