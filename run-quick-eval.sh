@@ -44,21 +44,8 @@
 # GLOBAL CONFIG
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Enter NASA Earthdata Login Credentials HERE
-# (For NSIDC Motion and Concentration Datasets)
-export USER="jbassham"
-export PASS="guJdib-huczi6-jimsuh"
-
 # Define northern or southern hemisphere
 export HEM="nh" # "sh" or "nh"
-
-# Define latitude longitude bounds (see above for replication)
-# NOTE: Limits are in quotes, separated by comma
-export LAT_LIMITS="60, 90" # "lower (Southern), upper (Northern)", (coverage 29.7N to 90N or -90S to -37S)
-export LON_LIMITS="-180, 180"  # "Western, Eastern", (coverage -180 W to 180E)
-
-# Define grid resolution
-export RESOLUTION=25 # km
 
 # Define temporal range (see above for replication)
 export START_YEAR=1992 # minimum 1989
