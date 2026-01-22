@@ -120,7 +120,7 @@ echo " "
 export TIMESTAMP_COORD='01072026_1643'
 
 # Timestamp version for model outputs
-export TIMTESAMP_IN='01212026_1222'
+export TIMESAMP_MODEL='01212026_1222'
 
 export TIMESTAMP_OUT=$TIMESTAMP
 

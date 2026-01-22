@@ -11,6 +11,7 @@ from .param import(
     MODEL_STR,
     MODEL_DIR,
     TIMESTAMP_MODEL,
+    TIMESTAMP_OUT,
     HEM,
 )
 
@@ -20,6 +21,7 @@ from .path import(
     PATH_COORD,
     PATH_R,
     FSTR_END_MODEL,
+    FSTR_END_DEST,
     FSTR_END_COORD,
     FSTR_END_R,
 )
@@ -274,7 +276,7 @@ def plot_metric(u_data, v_data, lon, lat, metric):
     fig.text(0.5, -0.05, f"mean meridional {metric}: {np.nanmean(v_data):.4f}")
 
     # Define filemane for figure
-    fnam = f"{metric}_{MODEL_STR}_{TIMESTAMP_MODEL}.png"
+    fnam = f"{metric}_{MODEL_STR}_{TIMESTAMP_OUT}.png"
 
     # Save figure
     plt.savefig(os.path.join(PATH_DEST, fnam), bbox_inches = 'tight')

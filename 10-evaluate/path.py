@@ -42,7 +42,7 @@ PATH_DEST = os.path.abspath(
         'quick-eval',
         MODEL_DIR,
         HEM,
-        TIMESTAMP_MODEL,
+        TIMESTAMP_OUT,
     )
 )
 
@@ -71,6 +71,9 @@ PATH_R = os.path.abspath(
 
 # Define string for end of model output file
 FSTR_END_MODEL = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
+
+# Define string for end of plot destination file
+FSTR_END_DEST = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}
 
 # Define string for end of coordinate data file
 FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
