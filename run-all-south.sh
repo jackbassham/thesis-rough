@@ -109,8 +109,11 @@ echo " "
 # RUN SCRIPTS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Get timestamp from python script
-export TIMESTAMP=$(python -m helpers.timestamp)
+# # Get timestamp from python script
+# export TIMESTAMP=$(python -m helpers.timestamp)
+
+# Define timestamp version to match previous run (a few minutes apart)
+export TIMESTAMP="01212026_1222"
 
 # Print timestamp
 echo "Timestamp recorded:"
@@ -139,67 +142,67 @@ export TIMESTAMP_COORD=$TIMESTAMP_IN
 
 export TIMESTAMP_OUT=$TIMESTAMP
 
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# echo "1. DOWNLOAD RAW DATA"
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "1. DOWNLOAD RAW DATA"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# echo "Starting download_concentration_nimbus7.py..."
-# if ! python -m 1-download.download_concentration_nimbus7; then 
-#     **TODO update ERROR message for consistency with python modules over script**
-#     echo "ERROR: Failed to run 1-download/download_concentration_nimbus7.py"
-#     exit 1
-# fi
+echo "Starting download_concentration_nimbus7.py..."
+if ! python -m 1-download.download_concentration_nimbus7; then 
+    **TODO update ERROR message for consistency with python modules over script**
+    echo "ERROR: Failed to run 1-download/download_concentration_nimbus7.py"
+    exit 1
+fi
 
-# echo "Finished download_concentration_nimbus7.py,"
-# echo "Starting download_wind_jra55.py..."
-# if ! python -m 1-download.download_wind_jra55; then 
-#     echo "ERROR: Failed to run 1-download/download_wind_jra55.py"
-#     exit 1
-# fi
+echo "Finished download_concentration_nimbus7.py,"
+echo "Starting download_wind_jra55.py..."
+if ! python -m 1-download.download_wind_jra55; then 
+    echo "ERROR: Failed to run 1-download/download_wind_jra55.py"
+    exit 1
+fi
 
-# echo "Finished download_wind_jra55.py,"
-# echo "Starting download_motion_pp.py..."
-# if ! python -m 1-download.download_motion_pp; then 
-#     echo "ERROR: Failed to run 1-download/download_motion_pp.py"
-#     exit 1
-# fi
+echo "Finished download_wind_jra55.py,"
+echo "Starting download_motion_pp.py..."
+if ! python -m 1-download.download_motion_pp; then 
+    echo "ERROR: Failed to run 1-download/download_motion_pp.py"
+    exit 1
+fi
 
-# echo "Finished download_motion_pp.py"
-# echo " "
+echo "Finished download_motion_pp.py"
+echo " "
 
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# echo "2. REGRID DATA"
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+echo "2. REGRID DATA"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# echo "Starting regrid_concentration_nimbus7.py..."
-# if ! python -m 2-regrid.regrid_concentration_nimbus7; then 
-#     echo "ERROR: Failed to run regrid_concentration_nimbus7.py"
-#     exit 1
-# fi
+echo "Starting regrid_concentration_nimbus7.py..."
+if ! python -m 2-regrid.regrid_concentration_nimbus7; then 
+    echo "ERROR: Failed to run regrid_concentration_nimbus7.py"
+    exit 1
+fi
 
-# echo "Finished regrid_concentration_nimbus7.py," 
-# echo "Starting regrid_wind_jra55.py..."
-# if ! python -m 2-regrid.regrid_wind_jra55; then 
-#     echo "ERROR: Failed to run 2-regrid/regrid_wind_jra55.py"
-#     exit 1
-# fi
+echo "Finished regrid_concentration_nimbus7.py," 
+echo "Starting regrid_wind_jra55.py..."
+if ! python -m 2-regrid.regrid_wind_jra55; then 
+    echo "ERROR: Failed to run 2-regrid/regrid_wind_jra55.py"
+    exit 1
+fi
 
-# echo "Finished regrid_wind_jra55.py," 
-# echo "Starting regrid_motion_pp.py..."
-# if ! python -m 2-regrid.regrid_motion_pp; then 
-#     echo "ERROR: Failed to run 2-regrid/regrid_motion_pp.py"
-#     exit 1
-# fi
+echo "Finished regrid_wind_jra55.py," 
+echo "Starting regrid_motion_pp.py..."
+if ! python -m 2-regrid.regrid_motion_pp; then 
+    echo "ERROR: Failed to run 2-regrid/regrid_motion_pp.py"
+    exit 1
+fi
 
-# echo "Finished regrid_motion_pp.py" 
-# echo "Starting make_coord.py..."
-# if ! python -m 2-regrid.make_coord; then 
-#     echo "ERROR: Failed to run 2-regrid/make_coord.py"
-#     exit 1
-# fi
+echo "Finished regrid_motion_pp.py" 
+echo "Starting make_coord.py..."
+if ! python -m 2-regrid.make_coord; then 
+    echo "ERROR: Failed to run 2-regrid/make_coord.py"
+    exit 1
+fi
 
-# echo "Finished make_coord.py" 
-# echo " "
+echo "Finished make_coord.py" 
+echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "3. MASK & NORMALIZE DATA"
