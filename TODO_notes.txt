@@ -1,0 +1,3 @@
+Silence mean of empty slice warnings, read docs on np.errstate:
+with np.errstate(invalid="ignore", divide="ignore"):
+    mse = np.nanmean((true - pred)**2, axis=0)
