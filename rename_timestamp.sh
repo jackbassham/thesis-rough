@@ -6,7 +6,7 @@ echo "from 'prefix_YYYYMMDD_HHMMSS.ext' to 'prefix_MMDDYYYY_HHMM.ext'"
 echo " " 
 
 # Run loop to rename files with reformatted timestamp
-find data/ -type f \( -name "*.pt" -o -name "*.npz"  -o -name "*.png" \) | while read -r f; do
+find plots/ -type f \( -name "*.pt" -o -name "*.npz"  -o -name "*.png" \) | while read -r f; do
   dir=$(dirname "$f")
   base=$(basename "$f")
 
@@ -39,7 +39,7 @@ echo "from 'YYYYMMDD_HHMMSS' to 'MMDDYYYY_HHMM"
 echo " "
 
 # Run loop to rename subdirectories with reformatted timestamp
-find data/ -type d | sort -r | while read -r d; do
+find plots/ -type d | sort -r | while read -r d; do
   base=$(basename "$d")
   parent=$(dirname "$d")
 

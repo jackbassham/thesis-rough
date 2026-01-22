@@ -109,8 +109,11 @@ echo " "
 # RUN SCRIPTS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Get timestamp from python script
-export TIMESTAMP=$(python -m helpers.timestamp)
+# # Get timestamp from python script
+# export TIMESTAMP=$(python -m helpers.timestamp)
+
+# Define timestamp version to match Southern Hemisphere run (a few minutes apart)
+export TIMESTAMP="01212026_1222"
 
 # Print timestamp
 echo "Timestamp recorded:"

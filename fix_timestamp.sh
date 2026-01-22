@@ -1,31 +1,37 @@
 # DRY RUN (print out) of rename all files (.pt, .npz, .png)
-# with timestamp YYYYMMDD_HHMMSS to MMDDYYYY_HHMM 
+# with timestamp MMDD$Y_1222 to MMDDYYYY_HHMM 
 
 echo "Running loop to rename files with reformatted timestamp"
 echo "from 'prefix_YYYYMMDD_HHMMSS.ext' to 'prefix_MMDDYYYY_HHMM.ext'"
 echo " " 
 
+# Define the year for timestamp version
+YEAR=$(date +%Y)
+
 # Run loop to rename files with reformatted timestamp
-find plots/ -type f \( -name "*.pt" -o -name "*.npz"  -o -name "*.png" \) | while read -r f; do
+find -type f \( -name "*.pt" -o -name "*.npz"  -o -name "*.png" \) | while read -r f; do
   dir=$(dirname "$f")
   base=$(basename "$f")
 
 # Find the timestamp pattern (matching a digits '_' then 8 digits (from 0-9), then '_' then 4 digits (from 0-9)) after prefix .*
-  if [[ $base =~ ^(.*)_([0-9]{4})([0-9]{2})([0-9]{2})_([0-9]{2})([0-9]{2})[0-9]{2}\.(pt|npz|png)$ ]]; then
+  if [[ $base =~ ^(.*)_([0-9]{2})([0-9]{2})\$Y_([0-9]{2})([0-9]{2})\.(pt|npz|png)$ ]]; then
     # Assign variables to each BASH_REMATCH in '()'
     prefix="${BASH_REMATCH[1]}"
-    year="${BASH_REMATCH[2]}"
-    month="${BASH_REMATCH[3]}"
-    day="${BASH_REMATCH[4]}"
-    hour="${BASH_REMATCH[5]}"
-    minute="${BASH_REMATCH[6]}"
-    ext="${BASH_REMATCH[7]}"
+    month="${BASH_REMATCH[2]}"
+    day="${BASH_REMATCH[3]}"
+    hour="${BASH_REMATCH[4]}"
+    minute="${BASH_REMATCH[5]}"
+    ext="${BASH_REMATCH[6]}"
 
     # Reorder variables for new timestamp
-    new="${prefix}_${month}${day}${year}_${hour}${minute}.${ext}"
+    new="${prefix}_${month}${day}${YEAR}_${hour}${minute}.${ext}"
 
-    # Print command (DRY RUN!)
+    # Change the filename
+    mv "$f" "$dir/$new"
+
+    # Print the name change
     echo mv "$f" "$dir/$new"
+
   fi
 done
 
@@ -34,22 +40,24 @@ echo "from 'YYYYMMDD_HHMMSS' to 'MMDDYYYY_HHMM"
 echo " "
 
 # Run loop to rename subdirectories with reformatted timestamp
-find plots/ -type d | sort -r | while read -r d; do
+find -type d | sort -r | while read -r d; do
   base=$(basename "$d")
   parent=$(dirname "$d")
 
   # Find the timestamp pattern
-  if [[ $base =~ ^([0-9]{4})([0-9]{2})([0-9]{2})_([0-9]{2})([0-9]{2})[0-9]*$ ]]; then
-    year="${BASH_REMATCH[1]}"
-    month="${BASH_REMATCH[2]}"
-    day="${BASH_REMATCH[3]}"
-    hour="${BASH_REMATCH[4]}"
-    minute="${BASH_REMATCH[5]}"
+  if [[ $base =~ ^([0-9]{2})([0-9]{2})\$Y_([0-9]{2})([0-9]{2})*$ ]]; then
+    month="${BASH_REMATCH[1]}"
+    day="${BASH_REMATCH[2]}"
+    hour="${BASH_REMATCH[3]}"
+    minute="${BASH_REMATCH[4]}"
 
     # Reorder variables for new timestamp
-    new="${month}${day}${year}_${hour}${minute}"
+    new="${month}${day}${YEAR}_${hour}${minute}"
 
-    # Print command (DRY RUN!)
+    # Change the filename
+    mv "$d" "$parent/$new"    
+
+    # Print name change
     echo mv "$d" "$parent/$new" 
   fi
 done
