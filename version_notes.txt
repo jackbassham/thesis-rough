@@ -19,14 +19,4 @@ locations where ice cocentration = 0 for > 90% of the time (v.s. 80 for Hoffman)
 The 90% mask captures points in SH with near zero variance with less area removed from domain than others (visually). Visual comparison
 with negative skill.
 Trying SH and NH with 90% threshold for ice free days.
-Trying issue with
-FIX: 
-None yet - improvement but still seeing issues with skill.
-NEW PROBLEM:
-WTD LR for SH and NH maxed out negative skill and WTD CNN for NH showing noise - compare uncertainty stats for both hemispheres.
-
-VERSION 
-RUN:
-Ran plots only with small epsilon correction in skill and weighted skill (1e-4).
-DEBUG:
-Added epsilon value for skills (had it previously, forgot to inlude it in these versions).
+FIX:
