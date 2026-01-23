@@ -25,8 +25,18 @@ None yet - improvement but still seeing issues with skill.
 NEW PROBLEM:
 WTD LR for SH and NH maxed out negative skill and WTD CNN for NH showing noise - compare uncertainty stats for both hemispheres.
 
-VERSION 
+VERSION 01222026_1511
 RUN:
-Ran plots only with small epsilon correction in skill and weighted skill (1e-4).
+Ran plots only with small epsilon correction in skill and weighted skill (1e-4). Still seeing large negative skill values.
+Continue with masking.
 DEBUG:
 Added epsilon value for skills (had it previously, forgot to inlude it in these versions).
+
+VERSION 01232026_1104
+RUN:
+Ran only lr_wtd_cf for NH and SH. Unique output for y_pred and y_true (test output)! Skill looks valid in both SH and NH! 
+FIX:
+Problem was likely memory allocation with np.full for y_pred and setting y_true = y_pred.
+
+
+
