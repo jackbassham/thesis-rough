@@ -38,5 +38,7 @@ Ran only lr_wtd_cf for NH and SH. Unique output for y_pred and y_true (test outp
 FIX:
 Problem was likely memory allocation with np.full for y_pred and setting y_true = y_pred.
 
-
+VERSION 01232026_1338
+RUN:
+Ran from mask-norm on with 80% days with ice coverage threshold
 

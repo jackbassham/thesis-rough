@@ -52,11 +52,11 @@ export USER="jbassham"
 export PASS="guJdib-huczi6-jimsuh"
 
 # Define northern or southern hemisphere
-export HEM="nh" # "sh" or "nh"
+export HEM="sh" # "sh" or "nh"
 
 # Define latitude longitude bounds (see above for replication)
 # NOTE: Limits are in quotes, separated by comma
-export LAT_LIMITS="60, 90" # "lower (Southern), upper (Northern)", (coverage 29.7N to 90N or -90S to -37S)
+export LAT_LIMITS="-80, -62" # "lower (Southern), upper (Northern)", (coverage 29.7N to 90N or -90S to -37S)
 export LON_LIMITS="-180, 180"  # "Western, Eastern", (coverage -180 W to 180E)
 
 # Define grid resolution
@@ -112,8 +112,8 @@ echo " "
 # # Get timestamp from python script
 # export TIMESTAMP=$(python -m helpers.timestamp)
 
-# Define timestamp version to match Southern Hemisphere run (a few minutes apart)
-export TIMESTAMP="01212026_1222"
+# Match timestamp with southern henmisphere run (a few minutes ago)
+export TIMESTAMP='01232026_1338'
 
 # Print timestamp
 echo "Timestamp recorded:"
@@ -131,14 +131,14 @@ echo " "
 # For individual shell scripts (model training, etc, enter appropriate timestamp versions for input data)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# MODIFY TIMESTAMP FOR PARTIAL RUN
+# MODIFY TIMESTAMPS FOR PARTIAL RUN
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Timestamp version of regrid data
+# Timestamp most recent regrid data
 export TIMESTAMP_IN='01072026_1643'
 
 # Timestamp version of coordinate variables
-export TIMESTAMP_COORD=$TIMESTAMP_IN
+export TIMESTAMP_COORD='01072026_1643'
 
 export TIMESTAMP_OUT=$TIMESTAMP
 
@@ -222,11 +222,11 @@ echo "4. PROCESS MODEL INPUTS"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# MODIFY TIMESTAMP FOR PARTIAL RUN
+# MODIFY TIMESTAMPS FOR PARTIAL RUN
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Timestamp version of new masked normalized data
-export TIMESTAMP_IN=$TIMESTAMP_OUT
+# Get timestamp of current masked_normalized data
+TIMESTAMP_IN=$TIMESTAMP_OUT
 
 echo "Starting make_lr_inputs.py..."
 if ! python -m 4-process-inputs.make_lr_inputs; then 
