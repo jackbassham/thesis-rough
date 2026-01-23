@@ -45,7 +45,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define northern or southern hemisphere
-export HEM="nh" # "sh" or "nh"
+export HEM="sh" # "sh" or "nh"
 
 # Define temporal range (see above for replication)
 export START_YEAR=1992 # minimum 1989
