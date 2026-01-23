@@ -58,7 +58,7 @@ def main():
     nt, _, _ = np.shape(ci)
 
     # Assign threshold of percent ice free days for concentration masking
-    threshold = .90 * nt # 90% of days
+    threshold = .80 * nt # 90% of days
 
     # Count number of days ice free at each spatial location
     n_ice_free = np.sum(ci == 0, axis = 0)
