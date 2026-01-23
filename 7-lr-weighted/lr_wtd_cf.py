@@ -82,7 +82,7 @@ def main():
     # Intialize arrays for test output predictions
     # NOTE y notation used for consistency with CNN and plotting
     y_pred = np.full((nt_te, nout, nlat, nlon), np.nan) 
-    y_true = y_pred
+    y_true = np.full((nt_te, nout, nlat, nlon), np.nan)
 
     # Convert test predictions to real
     y_pred[:,0,:,:] = zpred_te.real # ui_t0, pred
@@ -179,7 +179,7 @@ def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
                     ztrue_all[true_mask, ilat, ilon] = zi_t0
 
                     # Define size of valid batch at current grid point
-                    nt_ij = len(ua_t0_filt)
+                    nt_ij = len(ui_t0_filt)
 
                     # Define gram matrix
                     G = np.ones(((nt_ij, nin)), dtype = complex) 
@@ -196,8 +196,8 @@ def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
                     zm = (LA.inv((G.conj().T @ W @ G))) @ G.conj().T @ W @ d # (adapted from eqn 39, SIOC221B Lec 10)
 
                     # Save lr coefficients
-                    for im in range(len(zm)):
-                        zm_all[im, ilat, ilon] = zm[im]
+                    for izm in range(len(zm)):
+                        zm_all[izm, ilat, ilon] = zm[izm]
 
                     # Calculate fit
                     zfit = G @ zm
