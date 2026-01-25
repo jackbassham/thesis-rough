@@ -57,18 +57,6 @@ def main():
 
     nt, _, _ = np.shape(ci)
 
-    # Assign threshold of percent ice free days for concentration masking
-    threshold = .80 * nt # 90% of days
-
-    # Count number of days ice free at each spatial location
-    n_ice_free = np.sum(ci == 0, axis = 0)
-
-    # Create mask for ice free days above threshold
-    mask = n_ice_free > threshold
-
-    # Mask out days where ice free greater number of days than threshold
-    ci = np.where(mask, np.nan, ci)
-
     # Shift present day parameters forward one day, for one point Middle Weddell
     ui_t0 = ui[1:,:,:]
     vi_t0 = vi[1:,:,:]
@@ -85,12 +73,27 @@ def main():
     # Create list of input variables
     invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
 
-    # Mask spatial indices with concentration less than .15, NaN concentration
-    # NOTE keeping flag values for ice velocity uncertainties
-    mask = (ci_t0 <= .15) | (np.isnan(ci_t0))
+    # Compute variance of zonal and meridional ice velocities
+    var_ui_t0 = np.nanvar(ui_t0, axis = 0)
+    var_vi_t0 = np.nanvar(vi_t0, axis = 0)
+
+    # Set variance threshold to 0.05
+    var_thresh = 0.05
+
+    # Define mask where ice velocity variance is lower than threshold
+    var_mask = (var_ui_t0 < var_thresh) | (var_vi_t0 < var_thresh)
+
+    print('Inputs masked where ice velocity variance < 0.05')
+    print('')
+
+    # Define mask where ice concneration less than .15 or nan
+    ci_mask = (ci_t0 <= .15) | (np.isnan(ci_t0))
+
+    # Combine masks
+    total_mask = var_mask | ci_mask
 
     # NaN out points meeting mask condition
-    invars_masked = [np.where(mask, np.nan, var) for var in invars]
+    invars_masked = [np.where(total_mask, np.nan, var) for var in invars]
 
     print('Inputs masked where ice concentration values <= .15 or nan.')
     print('')
