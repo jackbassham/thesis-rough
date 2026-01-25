@@ -52,11 +52,11 @@ export USER="jbassham"
 export PASS="guJdib-huczi6-jimsuh"
 
 # Define northern or southern hemisphere
-export HEM="sh" # "sh" or "nh"
+export HEM="nh" # "sh" or "nh"
 
 # Define latitude longitude bounds (see above for replication)
 # NOTE: Limits are in quotes, separated by comma
-export LAT_LIMITS="-80, -62" # "lower (Southern), upper (Northern)", (coverage 29.7N to 90N or -90S to -37S)
+export LAT_LIMITS="60, 90" # "lower (Southern), upper (Northern)", (coverage 29.7N to 90N or -90S to -37S)
 export LON_LIMITS="-180, 180"  # "Western, Eastern", (coverage -180 W to 180E)
 
 # Define grid resolution
@@ -113,7 +113,7 @@ echo " "
 # export TIMESTAMP=$(python -m helpers.timestamp)
 
 # Match timestamp with southern henmisphere run (a few minutes ago)
-export TIMESTAMP='01232026_1338'
+export TIMESTAMP='01252026_1525'
 
 # Print timestamp
 echo "Timestamp recorded:"

@@ -40,5 +40,12 @@ Problem was likely memory allocation with np.full for y_pred and setting y_true 
 
 VERSION 01232026_1338
 RUN:
-Ran from mask-norm on with 80% days with ice coverage threshold
+Ran both SH and NH from mask-norm on with mask at spatial points with 80% days ice free threshold
+Looks better! Still not perfect. Think about combining variance mask with
+mask based on 80% or 90% threshold.
+
+VERSION 01252026_
+RUN:
+Ran both SH and NH from mask-norm on with mask at spatial points with < 0.05 ice velocity
+variance threshold.
 
