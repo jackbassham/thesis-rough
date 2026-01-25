@@ -2,8 +2,8 @@
 **.nc
 **.cdf
 **.csv
-*.tab
-**.tiff
+**.tab
+**/*.tiff
 
 
 # Training variables
