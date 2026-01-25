@@ -77,17 +77,20 @@ def main():
     var_ui_t0 = np.nanvar(ui_t0, axis = 0)
     var_vi_t0 = np.nanvar(vi_t0, axis = 0)
 
-    # Set variance threshold to 0.05
+    # Set minimum variance threshold
     var_thresh = 0.05
 
     # Define mask where ice velocity variance is lower than threshold
     var_mask = (var_ui_t0 < var_thresh) | (var_vi_t0 < var_thresh)
 
-    print('Inputs masked where ice velocity variance < 0.05')
+    print(f'Mask defined where ice velocity variance < {var_thresh}')
     print('')
 
+    # Define minimum ice concentration threshold
+    ci_thresh = 0.15
+
     # Define mask where ice concneration less than .15 or nan
-    ci_mask = (ci_t0 <= .15) | (np.isnan(ci_t0))
+    ci_mask = (ci_t0 <= ci_thresh) | (np.isnan(ci_t0))
 
     # Combine masks
     total_mask = var_mask | ci_mask
@@ -95,7 +98,7 @@ def main():
     # NaN out points meeting mask condition
     invars_masked = [np.where(total_mask, np.nan, var) for var in invars]
 
-    print('Inputs masked where ice concentration values <= .15 or nan.')
+    print(f'Mask defined where ice concentration values <= {ci_thresh} or nan.')
     print('')
 
     # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
