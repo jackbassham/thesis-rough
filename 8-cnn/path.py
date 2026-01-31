@@ -5,22 +5,24 @@ from .param import (
     TIMESTAMP_IN, TIMESTAMP_OUT,
 )
 
-# Get current script directory
-script_dir = os.path.dirname(__file__)
+# # Get current script directory
+# script_dir = os.path.dirname(__file__)
 
-# Get root directory (one level above)
-root = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-    )
-)
+# # Get root directory (one level above)
+# root = os.path.abspath(
+#     os.path.join(
+#         script_dir,
+#         '..',
+#     )
+# )
+
+# Define root for data directory
+data_root = '/data/globus/jbassham/thesis-rough'
 
 # Define masked-normalized data source path
 PATH_SOURCE = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'cnn-input',
         HEM,
         TIMESTAMP_IN,
@@ -30,8 +32,7 @@ PATH_SOURCE = os.path.abspath(
 # Define lr input destination path
 PATH_DEST = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'model-output',
         'cnn-pt',
         HEM,

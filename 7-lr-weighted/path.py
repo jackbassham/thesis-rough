@@ -5,33 +5,31 @@ from .param import (
     TIMESTAMP_IN, TIMESTAMP_OUT,
 )
 
-# Get current script directory
-script_dir = os.path.dirname(__file__)
+# # Get current script directory
+# script_dir = os.path.dirname(__file__)
 
-# Get root directory (one level above)
-root = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-    )
-)
+# # Get root directory (one level above)
+# root = os.path.abspath(
+#     os.path.join(
+#         script_dir,
+#         '..',
+#     )
+# )
 
 # Define masked-normalized data source path
 PATH_SOURCE = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'lr-input',
         HEM,
         TIMESTAMP_IN,
     )
 )
 
-# Define lr input destination path
+# Define model output destination path
 PATH_DEST = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'model-output',
         'lr-wtd-cf',
         HEM,

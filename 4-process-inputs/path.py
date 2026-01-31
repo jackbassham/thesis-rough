@@ -5,22 +5,24 @@ from .param import (
     TIMESTAMP_IN, TIMESTAMP_OUT, TIMESTAMP_COORD,
 )
 
-# Get current script directory
-script_dir = os.path.dirname(__file__)
+# # Get current script directory
+# script_dir = os.path.dirname(__file__)
 
-# Get root directory (one level above)
-root = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-    )
-)
+# # Get root directory (one level above)
+# root = os.path.abspath(
+#     os.path.join(
+#         script_dir,
+#         '..',
+#     )
+# )
+
+# Define root for data directory
+data_root = '/data/globus/jbassham/thesis-rough'
 
 # Define coordinate variable source path
 PATH_SOURCE_COORD = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'coordinates',
         HEM,
         TIMESTAMP_COORD,
@@ -30,8 +32,7 @@ PATH_SOURCE_COORD = os.path.abspath(
 # Define masked-normalized data source path
 PATH_SOURCE = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'mask-norm',
         HEM,
         TIMESTAMP_IN,
@@ -41,8 +42,7 @@ PATH_SOURCE = os.path.abspath(
 # Define lr input destination path
 PATH_DEST_LR = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'lr-input',
         HEM,
         TIMESTAMP_OUT,
@@ -55,8 +55,7 @@ os.makedirs(PATH_DEST_LR, exist_ok = True)
 # Define cnn destination path
 PATH_DEST_CNN = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'cnn-input',
         HEM,
         TIMESTAMP_OUT,

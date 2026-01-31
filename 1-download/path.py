@@ -5,22 +5,24 @@ from .param import (
     TIMESTAMP_OUT
 )
 
-# Get current script directory
-script_dir = os.path.dirname(__file__)
+# # Get current script directory
+# script_dir = os.path.dirname(__file__)
 
-# Get root directory (one level above)
-root = os.path.abspath(
-    os.path.join(
-        script_dir,
-        '..',
-    )
-)
+# # Get root directory (one level above)
+# root = os.path.abspath(
+#     os.path.join(
+#         script_dir,
+#         '..',
+#     )
+# )
+
+# Define root for data directory
+data_root = '/data/globus/jbassham/thesis-rough'
 
 # Define download destination path
 PATH_DEST = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'raw',
         HEM,
         TIMESTAMP_OUT,

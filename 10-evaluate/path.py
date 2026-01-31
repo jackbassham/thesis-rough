@@ -23,11 +23,13 @@ root = os.path.abspath(
     )
 )
 
+# Define root for data directory
+data_root = '/data/globus/jbassham/thesis-rough'
+
 # Define model output source path
 PATH_SOURCE = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'model-output',
         MODEL_DIR,
         HEM,
