@@ -64,7 +64,7 @@ def main():
     n_ice_free = np.sum(ci == 0, axis = 0)
 
     # Create mask for ice free days above threshold
-    mask_ice_free = n_ice_free > threshold_ice_free
+    mask_ice_free = n_ice_free > thresh_ice_free
 
     # Mask concentration based on threshold
     ci = np.where(mask_ice_free, np.nan, ci)
