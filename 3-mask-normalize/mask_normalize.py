@@ -57,16 +57,17 @@ def main():
 
     nt, _, _ = np.shape(ci)
 
-    # Assign threshold of percent ice free days for concentration masking
-    thresh_ice_free = .80 * nt # 80% of days
+    # Assign threshold for number of ice free days at a spatial gridpoint
+    thresh_ice_free = .70 * nt # 70% of days
 
-    # Count number of days ice free at each spatial location
-    n_ice_free = np.sum(ci == 0, axis = 0)
+    # Count number of ice free days at each spatial gridpoint
+    # NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
+    n_ice_free = np.sum(ci <= 0.15, axis = 0)
 
-    # Create mask for ice free days above threshold
+    # Create mask at spatial gridpoints where ice free days excede threshold
     mask_ice_free = n_ice_free > thresh_ice_free
 
-    # Mask concentration based on threshold
+    # Assign nan values to masked points
     ci = np.where(mask_ice_free, np.nan, ci)
 
     # Shift present day parameters forward one day, for one point Middle Weddell
