@@ -71,7 +71,8 @@ def main():
     # Assign nan values to masked points
     ci = np.where(mask_ice_free, np.nan, ci)
 
-    print(f"Mask defined at gridpoints where 'ice free' >= {thresh_ice_free} days")
+    print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
+    print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
 
     # Shift present day parameters forward one day, for one point Middle Weddell
     ui_t0 = ui[1:,:,:]
@@ -90,12 +91,33 @@ def main():
     invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
 
     # Define mask where present day ice concentration is nan
-    mask = np.isnan(ci_t0)
+    nan_mask = (np.isnan(ci_t0)) | (np.isnan(ui_t0)) | (np.isnan(vi_t0))
+
+    # Define filename for mask
+    fnam = 'nan_mask_{FSTR_END_OUT}.npz'
+
+    # Save the mask
+    np.savez(
+        os.path.join(PATH_DEST, fnam),
+        nan_mask = nan_mask
+    )
+
+    # Define land mask (just in case)
+    land_mask = np.all(np.isnan(ci_t0), axis = 0)
+
+    # Define filename for mask
+    fnam = 'land_mask_{FSTR_END_OUT}.npz'
+
+    # Save the mask
+    np.savez(
+        os.path.join(PATH_DEST, fnam),
+        land_mask = land_mask
+    )
 
     # NaN out points meeting mask condition
-    invars_masked = [np.where(total_mask, np.nan, var) for var in invars]
+    invars_masked = [np.where(mask, np.nan, var) for var in invars]
 
-    print(f'Mask defined where ice concentration values <= {ci_thresh} or nan.')
+    print('Mask defined where ci is nan')
     print('')
 
     # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
