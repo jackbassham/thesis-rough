@@ -9,6 +9,7 @@ from .param import (
     TIMESTAMP_MODEL,
     TIMESTAMP_OUT,
     TIMESTAMP_COORD,
+    TTIMESTAMP_MASK,
     TIMESTAMP_R,
 )
 
@@ -54,18 +55,25 @@ os.makedirs(PATH_DEST, exist_ok = True)
 
 PATH_COORD = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'coordinates',
         HEM,
         TIMESTAMP_COORD,
     )
 )
 
+PATH_MASK = os.path.abspath(
+    os.path.join(
+        data_root,
+        'mask-norm',
+        HEM,
+        TIMESTAMP_MASK,
+    )
+)
+
 PATH_R = os.path.abspath(
     os.path.join(
-        root,
-        'data',
+        data_root,
         'lr-input',
         HEM,
         TIMESTAMP_R,
@@ -80,6 +88,9 @@ FSTR_END_DEST = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_OUT}"
 
 # Define string for end of coordinate data file
 FSTR_END_COORD = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_COORD}"
+
+# Define string for end of mask data file
+FSTR_END_MASK = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MASK}"
 
 # Define string for end of uncertaity data file
 FSTR_END_R = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_R}"

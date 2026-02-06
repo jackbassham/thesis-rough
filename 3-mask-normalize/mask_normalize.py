@@ -115,7 +115,7 @@ def main():
     )
 
     # NaN out points meeting mask condition
-    invars_masked = [np.where(mask, np.nan, var) for var in invars]
+    invars_masked = [np.where(nan_mask, np.nan, var) for var in invars]
 
     print('Mask defined where ci is nan')
     print('')

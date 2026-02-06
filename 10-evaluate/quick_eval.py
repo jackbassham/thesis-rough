@@ -19,10 +19,12 @@ from .path import(
     PATH_SOURCE,
     PATH_DEST,
     PATH_COORD,
+    PATH_MASK,
     PATH_R,
     FSTR_END_MODEL,
     FSTR_END_DEST,
     FSTR_END_COORD,
+    FSTR_END_MASK,
     FSTR_END_R,
 )
 
@@ -40,6 +42,30 @@ def main():
     utrue = data['y_true'][:,0,:,:]
     vtrue = data['y_true'][:,1,:,:]
 
+    # Get filename for nan mask
+    fnam = f"nan_mask_{FSTR_END_MASK}"
+
+    # Load time variable nan mask
+    data = np.load(os.path.join(PATH_MASK), fnam)
+
+    nan_mask = data['nan_mask']
+
+    # If the model is persistance
+    if MODEL_STR == 'ps':
+
+        # Shift nan mask one day forward
+        nan_mask = nan_mask[1:,:,:]
+
+
+    # Mask invalid points in model output before evaluation
+    # NOTE CNN input of 0 at invalid points and LR output of 0 for vi (imag) component
+
+    upred = np.where(nan_mask, np.nan, upred)
+    vpred = np.where(nan_mask, np.nan, vpred)
+
+    utrue = np.where(nan_mask, np.nan, utrue)
+    vtrue = np.where(nan_mask, np.nan, vtrue)
+
     # Get filemane for uncertainty test split
     fnam = f"test_{FSTR_END_R}.npz"
 
@@ -54,6 +80,7 @@ def main():
     # If the model is persistance
     # TODO dynamic strings and error conditions
     if MODEL_STR == 'ps':
+        
         # Shift r_test array forward one day
         r_test = r_test[1:,:,:]
 
