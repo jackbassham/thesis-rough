@@ -64,9 +64,12 @@ def main():
     # NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
     n_ice_free = np.sum(ci <= 0.15, axis = 0)
 
+    # Define threshold for ice concentration at single point
+    ci_thresh = 0.15
+
     # Create mask at spatial gridpoints where ice free days excede threshold
-    # and at single data points where concentration 0.15 and below
-    mask_ice_free = (n_ice_free > thresh_ice_free) | (ci <= 0.15)
+    # and at single data points where concentration below threshold
+    mask_ice_free = (n_ice_free > thresh_ice_free) | (ci <= ci_thresh)
 
     # Assign nan values to masked points
     ci = np.where(mask_ice_free, np.nan, ci)
