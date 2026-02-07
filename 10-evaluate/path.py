@@ -9,7 +9,7 @@ from .param import (
     TIMESTAMP_MODEL,
     TIMESTAMP_OUT,
     TIMESTAMP_COORD,
-    TTIMESTAMP_MASK,
+    TIMESTAMP_MASK,
     TIMESTAMP_R,
 )
 
