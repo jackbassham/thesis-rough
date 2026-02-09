@@ -87,13 +87,8 @@ def main():
     # Create mask at spatial gridpoints where ice free days excede threshold
     # and at single data points where concentration below threshold
     # and where concentration or velocity is nan
-    nan_mask = np.logical_or(
-        np.isnan(ci_t0),
-        ci_t0 <= ci_thresh,
-        n_ice_free > thresh_ice_free,
-        np.isnan(ui_t0),
-        np.isnan(vi_t0),
-    )
+
+    nan_mask = (np.isnan(ci_t0)) | (np.isnan(ui_t0)) | (np.isnan(vi_t0)) | (ci_t0 <= ci_thresh) | (n_ice_free > thresh_ice_free)
 
     print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
     print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
