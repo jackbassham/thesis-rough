@@ -44,6 +44,9 @@ def main():
     utrue = data['y_true'][:,0,:,:]
     vtrue = data['y_true'][:,1,:,:]
 
+    print(f'Shape utrue {np.shape(utrue)}')
+    print('')
+
     # Get filename for test train split
     fnam = f'split_indices_lr_{FSTR_END_SPLIT}.npz'
 
@@ -61,6 +64,9 @@ def main():
 
     # Load in nan mask and slice to test indices
     nan_mask = data['nan_mask'][test_idx]
+
+    print(f'Shape nan_mask {np.shape(nan_mask)}')
+    print('')
 
     # If the model is persistance
     if MODEL_STR == 'ps':
