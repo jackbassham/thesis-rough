@@ -46,7 +46,7 @@ def main():
     fnam = f"nan_mask_{FSTR_END_MASK}.npz"
 
     # Load time variable nan mask
-    data = np.load(os.path.join(PATH_MASK), fnam)
+    data = np.load(os.path.join(PATH_MASK, fnam))
 
     nan_mask = data['nan_mask']
 
