@@ -16,6 +16,9 @@ from .param import (
 #     )
 # )
 
+# Define root for data directory
+data_root = '/data/globus/jbassham/thesis-rough'
+
 # Define masked-normalized data source path
 PATH_SOURCE = os.path.abspath(
     os.path.join(
