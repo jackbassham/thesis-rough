@@ -21,11 +21,13 @@ from .path import(
     PATH_COORD,
     PATH_MASK,
     PATH_R,
+    PATH_SPLIT,
     FSTR_END_MODEL,
     FSTR_END_DEST,
     FSTR_END_COORD,
     FSTR_END_MASK,
     FSTR_END_R,
+    FSTR_END_SPLIT,
 )
 
 def main():
@@ -42,13 +44,23 @@ def main():
     utrue = data['y_true'][:,0,:,:]
     vtrue = data['y_true'][:,1,:,:]
 
+    # Get filename for test train split
+    fnam = f'split_indices_lr_{FSTR_END_SPLIT}.npz'
+
+    # Load split indices file
+    data = np.load(os.path.join(PATH_SPLIT, fnam))
+
+    # Load test indices
+    test_idx = data['test_idx']
+
     # Get filename for nan mask
     fnam = f"nan_mask_{FSTR_END_MASK}.npz"
 
-    # Load time variable nan mask
+    # Load time variable nan mask file
     data = np.load(os.path.join(PATH_MASK, fnam))
 
-    nan_mask = data['nan_mask']
+    # Load in nan mask and slice to test indices
+    nan_mask = data['nan_mask'][test_idx]
 
     # If the model is persistance
     if MODEL_STR == 'ps':

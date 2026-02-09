@@ -80,6 +80,8 @@ PATH_R = os.path.abspath(
     )
 )
 
+PATH_SPLIT = PATH_R
+
 # Define string for end of model output file
 FSTR_END_MODEL = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MODEL}"
 
@@ -94,3 +96,6 @@ FSTR_END_MASK = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_MASK}"
 
 # Define string for end of uncertaity data file
 FSTR_END_R = f"{HEM}{START_YEAR}{END_YEAR}_{TIMESTAMP_R}"
+
+# Define string for end of split indices file
+FSTR_END_SPLIT = FSTR_END_R
