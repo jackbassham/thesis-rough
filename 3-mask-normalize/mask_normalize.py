@@ -57,27 +57,13 @@ def main():
 
     nt, _, _ = np.shape(ci)
 
-    # Assign threshold for number of ice free days at a spatial gridpoint
-    thresh_ice_free = .70 * nt # 70% of days
-
-    # Count number of ice free days at each spatial gridpoint
-    # NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
-    n_ice_free = np.sum(ci <= 0.15, axis = 0)
-
-    # Define threshold for ice concentration at single point
-    ci_thresh = 0.15
-
-    # Create mask at spatial gridpoints where ice free days excede threshold
-    # and at single data points where concentration below threshold
-    mask_ice_free = (n_ice_free > thresh_ice_free) | (ci <= ci_thresh)
-
     # Assign nan values to masked points
     ci = np.where(mask_ice_free, np.nan, ci)
 
     print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
     print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
 
-    # Shift present day parameters forward one day, for one point Middle Weddell
+    # Shift present day parameters forward one day
     ui_t0 = ui[1:,:,:]
     vi_t0 = vi[1:,:,:]
     ua_t0 = ua[1:,:,:]
@@ -93,8 +79,26 @@ def main():
     # Create list of input variables
     invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
 
-    # Define mask where present day ice concentration is nan
-    nan_mask = (np.isnan(ci_t0)) | (np.isnan(ui_t0)) | (np.isnan(vi_t0))
+    # Assign threshold for number of ice free days at a spatial gridpoint
+    thresh_ice_free = .70 * nt # 70% of days
+
+    # Count number of ice free days at each spatial gridpoint
+    # NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
+    n_ice_free = np.sum(ci_t0 <= 0.15, axis = 0)
+
+    # Define threshold for ice concentration at single point
+    ci_thresh = 0.15
+
+    # Create mask at spatial gridpoints where ice free days excede threshold
+    # and at single data points where concentration below threshold
+    # and where concentration or velocity is nan
+    nan_mask = np.locial_or(
+        np.isnan(ci_t0),
+        ci_t0 <= ci_thresh,
+        n_ice_free > thresh_ice_free,
+        np.isnan(ui_t0),
+        np.isnan(vi_t0),
+    )
 
     # Define filename for mask
     fnam = f'nan_mask_{FSTR_END_OUT}.npz'
