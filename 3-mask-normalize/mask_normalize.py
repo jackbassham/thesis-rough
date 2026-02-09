@@ -55,12 +55,6 @@ def main():
 
     print('Raw concentration masked based on NSIDC masks.')
 
-    # Get number of days in concentration variable
-    nt, _, _ = np.shape(ci)
-
-    print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
-    print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
-
     # Shift present day parameters forward one day
     ui_t0 = ui[1:,:,:]
     vi_t0 = vi[1:,:,:]
@@ -76,6 +70,9 @@ def main():
 
     # Create list of input variables
     invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
+
+    # Get number of days in concentration variable
+    nt, _, _ = np.shape(ci_t0)
 
     # Assign threshold for number of ice free days at a spatial gridpoint
     thresh_ice_free = .70 * nt # 70% of days
@@ -97,6 +94,9 @@ def main():
         np.isnan(ui_t0),
         np.isnan(vi_t0),
     )
+
+    print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
+    print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
 
     # Define filename for mask
     fnam = f'nan_mask_{FSTR_END_OUT}.npz'
