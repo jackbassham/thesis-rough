@@ -55,10 +55,8 @@ def main():
 
     print('Raw concentration masked based on NSIDC masks.')
 
+    # Get number of days in concentration variable
     nt, _, _ = np.shape(ci)
-
-    # Assign nan values to masked points
-    ci = np.where(mask_ice_free, np.nan, ci)
 
     print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
     print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
