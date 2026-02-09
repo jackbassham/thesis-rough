@@ -43,7 +43,7 @@ def main():
     vtrue = data['y_true'][:,1,:,:]
 
     # Get filename for nan mask
-    fnam = f"nan_mask_{FSTR_END_MASK}"
+    fnam = f"nan_mask_{FSTR_END_MASK}.npz"
 
     # Load time variable nan mask
     data = np.load(os.path.join(PATH_MASK), fnam)
