@@ -97,7 +97,7 @@ def main():
     nan_mask = (np.isnan(ci_t0)) | (np.isnan(ui_t0)) | (np.isnan(vi_t0))
 
     # Define filename for mask
-    fnam = 'nan_mask_{FSTR_END_OUT}.npz'
+    fnam = f'nan_mask_{FSTR_END_OUT}.npz'
 
     # Save the mask
     np.savez(
@@ -109,7 +109,7 @@ def main():
     land_mask = np.all(np.isnan(ci_t0), axis = 0)
 
     # Define filename for mask
-    fnam = 'land_mask_{FSTR_END_OUT}.npz'
+    fnam = f'land_mask_{FSTR_END_OUT}.npz'
 
     # Save the mask
     np.savez(
