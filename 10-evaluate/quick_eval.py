@@ -285,7 +285,7 @@ def plot_metric(u_data, v_data, lon, lat, metric):
 
     # Plot left plot; zonal evaluation
     axs[0].set_extent([lon_min, lon_max, lat_min, lat_max], crs = crs)
-    axs[0].coastlines
+    axs[0].coastlines()
     # Plot pcolormesh plot
     pcm_0 = axs[0].pcolormesh(
         lon, lat, u_data,
@@ -298,7 +298,7 @@ def plot_metric(u_data, v_data, lon, lat, metric):
 
     # Plot right plot; meridional evaluation
     axs[1].set_extent([lon_min, lon_max, lat_min, lat_max], crs = crs)
-    axs[1].coastlines
+    axs[1].coastlines()
     # Plot pcolormesh plot
     pcm_1 = axs[1].pcolormesh(
         lon, lat, v_data,
