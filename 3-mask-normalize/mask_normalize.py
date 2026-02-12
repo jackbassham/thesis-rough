@@ -62,6 +62,15 @@ def main():
     va_t0 = va[1:,:,:]
     ri_t0 = ri[1:,:,:]
 
+    # Take absolute value of uncertainty
+    # NOTE negatives exist where data points are close to coastlines (NSIDC)
+    # due to the possibility of False Ice, so that users can remove 
+    # from dataset
+    # NOTE
+    # TODO see what abs value does, then consider removing entirely
+    ri_t0 = np.abs(ri_t0)
+
+
     # Get present day ice concentration for masking
     ci_t0 = ci[1:,:,:]
 
