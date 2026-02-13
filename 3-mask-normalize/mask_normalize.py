@@ -70,7 +70,6 @@ def main():
     # TODO see what abs value does, then consider removing entirely
     ri_t0 = np.abs(ri_t0)
 
-
     # Get present day ice concentration for masking
     ci_t0 = ci[1:,:,:]
 
@@ -78,7 +77,7 @@ def main():
     ci_t1 = ci[:-1,:,:]
 
     # Create list of input variables
-    invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
+    invars = [ui_t0, vi_t0, ri_t0, ci_t1]
 
     # Get number of days in concentration variable
     nt, _, _ = np.shape(ci_t0)
@@ -123,8 +122,14 @@ def main():
         land_mask = land_mask
     )
 
-    # NaN out points meeting mask condition
+    # NaN out points meeting mask condition (Do not mask wind) 
     invars_masked = [np.where(nan_mask, np.nan, var) for var in invars]
+
+    # Reinsert zonal wind
+    invars_masked = invars_masked.insert(-2, ua_t0)
+
+    # Reinsert meridional wind
+    invars_masked = invars_masked.insert(-2, va_t0)
 
     print('Mask defined where ci is nan')
     print('')
