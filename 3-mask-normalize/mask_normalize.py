@@ -145,7 +145,6 @@ def main():
     ui_masked, vi_masked, ri_masked, ua_masked, va_masked, ci_masked = invars_masked
 
     # Delete unused arrays from memory
-    del invars
     del ui, vi, ri, ua, va, ci
     gc.collect()
 
