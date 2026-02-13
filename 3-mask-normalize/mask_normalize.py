@@ -76,9 +76,6 @@ def main():
     # Remove last day from previous day parameters
     ci_t1 = ci[:-1,:,:]
 
-    # Create list of input variables
-    invars = [ui_t0, vi_t0, ri_t0, ci_t1]
-
     # Get number of days in concentration variable
     nt, _, _ = np.shape(ci_t0)
 
@@ -123,16 +120,13 @@ def main():
     )
 
     # NaN out points meeting mask condition (Do not mask wind) 
-    invars_masked = [np.where(nan_mask, np.nan, var) for var in invars]
+    ui_t0 = np.where(nan_mask, np.nan, ui_t0)
+    vi_t0 = np.where(nan_mask, np.nan, vi_t0)
+    ri_t0 = np.where(nan_mask, np.nan, ri_t0)
+    ci_t1 = np.where(nan_mask, np.nan, ci_t1)
 
-    # Reinsert zonal wind
-    invars_masked = invars_masked.insert(-2, ua_t0)
-
-    # Reinsert meridional wind
-    invars_masked = invars_masked.insert(-2, va_t0)
-
-    print('Mask defined where ci is nan')
-    print('')
+    # Create list of masked variables
+    invars_masked = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
 
     # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
     # 1. Compute temporal mean, gridwise
