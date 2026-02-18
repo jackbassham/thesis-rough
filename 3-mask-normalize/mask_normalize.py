@@ -70,11 +70,15 @@ def main():
     # TODO see what abs value does, then consider removing entirely
     ri_t0 = np.abs(ri_t0)
 
+
     # Get present day ice concentration for masking
     ci_t0 = ci[1:,:,:]
 
     # Remove last day from previous day parameters
     ci_t1 = ci[:-1,:,:]
+
+    # Create list of input variables
+    invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
 
     # Get number of days in concentration variable
     nt, _, _ = np.shape(ci_t0)
@@ -119,14 +123,11 @@ def main():
         land_mask = land_mask
     )
 
-    # NaN out points meeting mask condition (Do not mask wind) 
-    ui_t0 = np.where(nan_mask, np.nan, ui_t0)
-    vi_t0 = np.where(nan_mask, np.nan, vi_t0)
-    ri_t0 = np.where(nan_mask, np.nan, ri_t0)
-    ci_t1 = np.where(nan_mask, np.nan, ci_t1)
+    # NaN out points meeting mask condition
+    invars_masked = [np.where(nan_mask, np.nan, var) for var in invars]
 
-    # Create list of masked variables
-    invars_masked = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
+    print('Mask defined where ci is nan')
+    print('')
 
     # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
     # 1. Compute temporal mean, gridwise
@@ -145,6 +146,7 @@ def main():
     ui_masked, vi_masked, ri_masked, ua_masked, va_masked, ci_masked = invars_masked
 
     # Delete unused arrays from memory
+    del invars
     del ui, vi, ri, ua, va, ci
     gc.collect()
 
