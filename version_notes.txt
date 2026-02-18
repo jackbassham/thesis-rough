@@ -98,10 +98,14 @@ using LR masked inputs and converting NaN to zero and inputs
 to pytorch tensors before running CNN.
 
 2. Clean up workflow and paths:
+- Clean up file names - remove redundancy from filenames, keep 
+directory structure
+- * Move toward python pipleline after research steps
 - Implement a python cofig.py module for global parameters
 - Consolidate param and path to one script?
 - Use python script for orchestration, but can keep bash script
 for running ('HPC?') for now?
+
 
 3. Try to include mask as a CNN input and a masked loss function!
 So that CNN learns only from real data!
