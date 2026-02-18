@@ -44,8 +44,76 @@ Ran both SH and NH from mask-norm on with mask at spatial points with 80% days i
 Looks better! Still not perfect. Think about combining variance mask with
 mask based on 80% or 90% threshold.
 
-VERSION 01252026_
+VERSION 01252026_1525
 RUN:
 Ran both SH and NH from mask-norm on with mask at spatial points with < 0.05 ice velocity
 variance threshold.
+
+Did Not see imporovement.
+
+...
+
+VERSION 02132026_1142
+RUN:
+Ran both SH and NH from mask-norm on with mask at:
+1. Entire spatial grid points where ice concentration is less than or equal to 0.15 
+more than 70% of the time
+2. Entire spatial grid points where Ice concentration, zonal, or zeridional ice velocity are NaN.
+3. Single data points where ice concentration is less than or equal to 0.15
+
+Seeing reasonable skill, outliers reduced 
+- seems to be a sweet spot for the mask. KEEPING FOR NOW.
+
+* Moving forward to debugging weighted CNN outputs from NH, bad uncertainty.
+
+VERSION 02132026_0924
+FIX:
+Found NH contains negative values uncertainty (for vectors close to the coast) 
+while SH dataset does not. The spread in uncertainty and negative uncertainty
+seemed to be causing instability in Weighted CNN Weighted NRMSE loss function.
+
+Moved to using absolute value of uncertainty. (r = abs(r))
+
+RUN:
+Ran NH dataset from mask-norm on, using absolute value of uncertainty.
+
+NH output now showing reasonable skill for weighted CNN!
+
+VERSION 02132026_1142
+Playing arround with bypassing mask on wind in mask-norm so that the 
+CNN trains using wind over land and missing points. 
+
+RUN: Ran both SH and NH from mask norm on using unmasked wind inputs. Saw a very slight reduction
+in skill (~ -0.02) overall. Nothing super noteworthy.
+
+REVERTING TO masking wind.
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Moving Forward: git branch 'ensemble':
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Improvements before actually implementing an ensemble:
+1. Consolidate LR and CNN inputs (avoid repetitive preprocessing), 
+using LR masked inputs and converting NaN to zero and inputs 
+to pytorch tensors before running CNN.
+
+2. Clean up workflow and paths:
+- Implement a python cofig.py module for global parameters
+- Consolidate param and path to one script?
+- Use python script for orchestration, but can keep bash script
+for running ('HPC?') for now?
+
+3. Try to include mask as a CNN input and a masked loss function!
+So that CNN learns only from real data!
+
+...
+
+...
+
+4. Then, when running smoothly, move to implementing an ensemble
+with 10 members; each consisting of randomized block of 2 test years, 
+block of 2 val years, and the rest train years
+* aka 'Blocked Monte Carlo' ensemble approach
+
+
 
