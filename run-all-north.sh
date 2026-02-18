@@ -113,7 +113,7 @@ echo " "
 # export TIMESTAMP=$(python -m helpers.timestamp)
 
 # Match timestamp with southern henmisphere run (a few minutes ago)
-export TIMESTAMP='01252026_1525'
+export TIMESTAMP='02132026_1142'
 
 # Print timestamp
 echo "Timestamp recorded:"
