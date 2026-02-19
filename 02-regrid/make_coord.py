@@ -1,11 +1,9 @@
 import numpy as np
 import os
 
-from .path import (
-    PATH_DEST,
-    PATH_DEST_COORD,
-    FSTR_END_IN,
-    FSTR_END_OUT,
+from config.path import (
+    PATH_REGRID,
+    PATH_COORDINATES,
 )
 
 PATH_SOURCE = PATH_DEST # Source for coordinates same as destination for regrid
@@ -13,19 +11,19 @@ PATH_SOURCE = PATH_DEST # Source for coordinates same as destination for regrid
 def main():
 
     # Load in coordinate variables from motion dataset
-    data = np.load(os.path.join(PATH_SOURCE, f'motion_ppv4_latlon_{FSTR_END_IN}.npz'))
+    data = np.load(os.path.join(PATH_REGRID, f'motion_ppv4_latlon.npz'))
     time_icevel = data['time']
     lat_icevel = data['lat']
     lon_icevel = data['lon']
 
     # Load in coordinate variables from wind dataset
-    data = np.load(os.path.join(PATH_SOURCE, f'wind_jra55_latlon_{FSTR_END_IN}.npz'))
+    data = np.load(os.path.join(PATH_REGRID, f'wind_jra55_latlon.npz'))
     time_wind = data['time']
     lat_wind = data['lat']
     lon_wind = data['lon']
 
     # Load in coordinate variables from concentration dataset
-    data = np.load(os.path.join(PATH_SOURCE, f'con_nimbus7_latlon_{FSTR_END_IN}.npz'))
+    data = np.load(os.path.join(PATH_REGRID, f'con_nimbus7_latlon.npz'))
     time_con = data['time']
     lat_con = data['lat']
     lon_con = data['lon']
@@ -57,12 +55,16 @@ def main():
         }
     )
 
+    # Update time to reflect data shift for 'present day' inputs
+    time_t0 = time_icevel[1:]
+
     # Save coordinate variables from one dataset in new file
     np.savez(
-        os.path.join(PATH_DEST_COORD, f'coord_{FSTR_END_OUT}.npz'),
-        time = time_icevel,
+        os.path.join(PATH_COORDINATES, f'coordinates.npz'),
+        time_total = time_icevel,
+        time_t0 = time_t0,
         lat = lat_icevel,
-        lon = lon_icevel
+        lon = lon_icevel,
     )
 
     return
