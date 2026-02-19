@@ -3,17 +3,15 @@ import matplotlib.animation as animation
 import numpy as np
 import os
 
-from .param import (
+from config.config import (
     LAT_LIMITS, 
     LON_LIMITS,
     RESOLUTION,
 )
 
-from .path import (
-    PATH_SOURCE,
-    PATH_DEST,
-    FSTR_END_IN,
-    FSTR_END_OUT,
+from config.path import (
+    PATH_RAW,
+    PATH_REGRID,
 )
 
 # Regrids JRA-55 daily near surface (10m) wind vector data from original Gaussian grid to regular lat lon
@@ -26,10 +24,10 @@ from .path import (
 def main():
 
     # Define data file to regrid
-    fnam = f"wind_jra55_gaussian_{FSTR_END_IN}.npz"
+    fnam = 'wind_jra55_gaussian.npz'
 
     # Load original .npz file
-    data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle = True)
+    data = np.load(os.path.join(PATH_RAW, fnam), allow_pickle = True)
     u_old = data['u']
     v_old = data['v']
     lat_old = data['lat']
@@ -63,12 +61,15 @@ def main():
     # Format time to 1D array; YYYY-MM-DD format
     time = format_time(time)
 
-    # Define regrid file name
-    fnam = f"wind_jra55_latlon_{FSTR_END_OUT}.npz"
+    # Define data file name
+    fnam = f"wind_jra55_latlon.npz"
+
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_REGRID, exist_ok = True)
     
-    # Save regrided lat lon data
+    # Save the data
     np.savez(
-        os.path.join(PATH_DEST, fnam), 
+        os.path.join(PATH_REGRID, fnam), 
         u = u_new, 
         v = v_new, 
         time = time, 
@@ -76,7 +77,7 @@ def main():
         lon = lon_new
     )
     
-    print(f"Variables Saved at path {PATH_DEST}/{fnam}")
+    print(f"Variables Saved at path {PATH_REGRID}/{fnam}")
 
     # speed_new = np.sqrt(u_new**2 + v_new**2) # lat lon wind speed (m/s)
     # speed_old = np.sqrt(u_old**2 + v_old**2) # EASE wind speed (m/s)

@@ -3,18 +3,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-from .param import (
+from config.config import (
     HEM, 
     LAT_LIMITS, 
     LON_LIMITS,
     RESOLUTION,
 )
 
-from .path import (
-    PATH_SOURCE,
-    PATH_DEST,
-    FSTR_END_IN,
-    FSTR_END_OUT,
+from config.path import (
+    PATH_RAW,
+    PATH_REGRID,
 )
 
 # Regrids NSIDC Polar Pathfinder Sea Ice Velocities from EASE to regular lat lon coordinate system
@@ -22,16 +20,15 @@ from .path import (
 ## https://nsidc.org/data/user-resources/help-center/how-convert-horizontal-and-vertical-components-east-and-north
 
 
-
 def main():
 
     # Load original grid .npz variables
-    fnam = f"motion_ppv4_EASE_{FSTR_END_IN}.npz"
+    fnam = f"ice_vel_ppv4_ease.npz"
 
     # Attempt to load the original .npz file
     try:
         # Load original .npz file
-        data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+        data = np.load(os.path.join(PATH_RAW, fnam), allow_pickle=True)
 
         # Attempt to access variables
         u_old = data['u'] # horizontal ice velocity (cm/s)
@@ -48,7 +45,7 @@ def main():
         print(f"{fnam} loaded successfully.")
         
     except FileNotFoundError:
-        print(f"Error: The file '{fnam}' was not found in '{PATH_SOURCE}'.")
+        print(f"Error: The file '{fnam}' was not found in '{PATH_RAW}'.")
     except KeyError as e:
         print(f"Error: Missing expected data key: {e}.")
     except Exception as e:
@@ -91,12 +88,15 @@ def main():
     # Format time to 1D array; YYYY-MM-DD format
     time = format_time(time)
 
-    # Define filename for regrid data
-    fnam = f"motion_ppv4_latlon_{FSTR_END_OUT}.npz"
+    # Define data file name
+    fnam = "motion_ppv4_latlon.npz"
 
-    # Save time series data as npz variables
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_REGRID, exist_ok = True)
+
+    # Save the data
     np.savez(
-        os.path.join(PATH_DEST, fnam), 
+        os.path.join(PATH_REGRID, fnam), 
         u = u_new, 
         v = v_new, 
         r = r_new, 
@@ -105,7 +105,7 @@ def main():
         lon = lon_new
     )
 
-    print(f"Variables Saved at path {PATH_DEST}/{fnam}")
+    print(f"Regrid data saved at path {PATH_DEST}/{fnam}")
 
     # NOTE due to vector rotation from horizontal/ vertical to Zonal/ Meridional
     # regrid components alone look incongruous with original data

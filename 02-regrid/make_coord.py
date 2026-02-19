@@ -58,6 +58,9 @@ def main():
     # Update time to reflect data shift for 'present day' inputs
     time_t0 = time_icevel[1:]
 
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_COORDINATES, exist_ok = True)
+
     # Save coordinate variables from one dataset in new file
     np.savez(
         os.path.join(PATH_COORDINATES, f'coordinates.npz'),
@@ -68,6 +71,7 @@ def main():
     )
 
     return
+
 
 def assert_equal(coord_dict):
     """

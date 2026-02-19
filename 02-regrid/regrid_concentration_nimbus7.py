@@ -6,18 +6,16 @@ import os
 import requests
 import xarray as xr # With h5netcdf
 
-from .param import (
+from config.config import (
     HEM,
     LAT_LIMITS, 
     LON_LIMITS,
     RESOLUTION,
 )
 
-from .path import (
-    PATH_SOURCE,
-    PATH_DEST,
-    FSTR_END_IN,
-    FSTR_END_OUT,
+from config.path import (
+    PATH_RAW,
+    PATH_REGRID,
 )
 
 from helpers.nasa_earth_data import get_temp_NED_file
@@ -40,7 +38,7 @@ URL_GRID = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_a
 def main():
 
     # Define data file to regrid
-    fnam = f"con_nimbus7_ps_{FSTR_END_IN}.npz"
+    fnam = 'ice_conc_nimbus7_ps.npz'
     
     if HEM == 'nh':
         grid = "N"
@@ -61,10 +59,9 @@ def main():
         print("Error: original grid not loaded")
 
 
-    # Attempt to load the original .npz file
     try:
-        # Load original .npz file
-        data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+        # Attempt to load the raw data file
+        data = np.load(os.path.join(PATH_RAW, fnam), allow_pickle=True)
 
         # Attempt to access variables
         ci_old = data['ci'] # ice concentration on gaussian grid
@@ -74,7 +71,7 @@ def main():
         print(f"{fnam} loaded successfully.")
         
     except FileNotFoundError:
-        print(f"Error: The file '{fnam}' was not found in '{PATH_SOURCE}'.")
+        print(f"Error: The file '{fnam}' was not found in '{PATH_RAW}'.")
     except KeyError as e:
         print(f"Error: Missing expected data key: {e}.")
     except Exception as e:
@@ -101,20 +98,22 @@ def main():
     # Format time to 1D array; YYYY-MM-DD format
     time = format_time(time)
 
-    # Define regrid file name
-    fnam = f"con_nimbus7_latlon_{FSTR_END_OUT}.npz"
+    # Define data file name
+    fnam = 'ice_conc_nimbus7_latlon.npz'
+
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_REGRID, exist_ok = True)
     
-    # Save regrided lat lon data
+    # Save the data
     np.savez(
-        os.path.join(PATH_DEST, fnam),
+        os.path.join(PATH_REGRID, fnam),
         ci = ci_new, 
         time = time, 
         lat = lat_new, 
         lon = lon_new, 
-        var_names = var_names,
     )
 
-    print(f"Variables Saved at path {PATH_DEST}/{fnam}")
+    print(f"Variables Saved at path {PATH_REGRID}/{fnam}")
 
     # # Compare regrid and old ice concentration
     # fnam = fnam.replace(".npz", "_grid_compare.mp4")
@@ -123,6 +122,7 @@ def main():
     #            LAT_LIMITS, LON_LIMITS, time = time, main_title = "Ice Concentration", save_path = save_path)
   
     return
+
 
 def nearest_neighbor_interpolation(res, lat_limits, lon_limits, lat_old, lon_old):
     """
@@ -225,6 +225,7 @@ def format_time(time):
     time = time.astype('datetime64[D]')
 
     return time
+
 
 def animated_time_series(data_values, time = None, 
                         main_title = None, titles = None, y_labels = None, x_labels = None, c_labels = None, 

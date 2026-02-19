@@ -36,14 +36,16 @@ END_YEAR = int(get_vars("END_YEAR")) # data ends 31DEC<END_YEAR>
 LAT_LIMITS = [float(x) for x in get_vars("LAT_LIMITS").split(",")] # South to North latitude bounds, degrees
 LON_LIMITS = [float(x) for x in get_vars("LON_LIMITS").split(",")] # West to East longitude bounds, degrees
 
+RESOLUTION = int(get_vars("RESOLUTION")) # Grid resolution, km
+
 # Nasa Earthdata login credentials for download
 USER = get_vars("USER") # username
 PASS = get_vars("PASS") # password
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Timestamps and timestamp overides retrieved here
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Timestamps or timestamp defaults retrieved here
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 TIMESTAMP_RAW = get_global_variable("TIMESTAMP_RAW", "TIMESTAMP_OUT")
 TIMESTAMP_REGRID = get_global_variable("TIMESTAMP_REGRID", "TIMESTAMP_OUT")
