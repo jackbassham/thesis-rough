@@ -105,8 +105,9 @@ def main():
     x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
     x_test, y_test, r_test = x[test_idx], y[test_idx], ri_t0[test_idx]
 
-    # Save splits
 
+    # Save splits
+    
     torch.save(
         (x_train, y_train, r_train), 
         os.path.join(PATH_DEST_CNN, f'train_{FSTR_END_OUT}.pt')
