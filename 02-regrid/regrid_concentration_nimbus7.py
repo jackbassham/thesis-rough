@@ -38,7 +38,7 @@ URL_GRID = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_a
 def main():
 
     # Define data file to regrid
-    fnam = 'ice_conc_nimbus7_ps.npz'
+    fnam = 'ice_conc_raw_nimbus7_ps.npz'
     
     if HEM == 'nh':
         grid = "N"

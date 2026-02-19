@@ -23,7 +23,7 @@ from config.path import (
 def main():
 
     # Load original grid .npz variables
-    fnam = f"ice_vel_ppv4_ease.npz"
+    fnam = f"ice_vel_raw_ppv4_ease.npz"
 
     # Attempt to load the original .npz file
     try:

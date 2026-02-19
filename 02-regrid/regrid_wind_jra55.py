@@ -24,7 +24,7 @@ from config.path import (
 def main():
 
     # Define data file to regrid
-    fnam = 'wind_jra55_gaussian.npz'
+    fnam = 'wind_raw_jra55_gaussian.npz'
 
     # Load original .npz file
     data = np.load(os.path.join(PATH_RAW, fnam), allow_pickle = True)
