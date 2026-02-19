@@ -89,7 +89,7 @@ def main():
     time = format_time(time)
 
     # Define data file name
-    fnam = "motion_ppv4_latlon.npz"
+    fnam = "ice_vel_regrid_ppv4.npz"
 
     # Create the destination directory if it doesn't already exist
     os.makedirs(PATH_REGRID, exist_ok = True)

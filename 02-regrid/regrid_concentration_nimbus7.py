@@ -99,7 +99,7 @@ def main():
     time = format_time(time)
 
     # Define data file name
-    fnam = 'ice_conc_nimbus7_latlon.npz'
+    fnam = 'ice_conc_regrid_nimbus7.npz'
 
     # Create the destination directory if it doesn't already exist
     os.makedirs(PATH_REGRID, exist_ok = True)
