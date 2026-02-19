@@ -205,12 +205,13 @@ def main():
         print(f"num valid points {p - n}")
         print(f"frac nan (invalid) {n / p}")
     
-    # Define data file name
+    # Define data file name for normalized data
     fnam = 'masked_normalized.npz'
 
     # Create the destination directory if it doesn't already exist
     os.makedirs(PATH_MASK_NORM, exist_ok = True)
 
+    # Save the normalized data
     np.savez(
         os.path.join(PATH_MASK_NORM, fnam),
         ui_t0 = ui_norm, vi_t0 = vi_norm, 
@@ -221,10 +222,10 @@ def main():
 
     print(f"Normalized inputs saved at: \n {PATH_MASK_NORM}/{fnam}")
 
-    # Save statistics for normalization
-
+    # Define file name for normalization statistics
     fnam = 'stats_for_normalization.npz'
 
+    # Save the normalization statistics
     np.savez(
         os.path.join(PATH_MASK_NORM, fnam),
         ui_bar = ui_bar, vi_bar = vi_bar,
