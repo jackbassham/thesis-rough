@@ -55,10 +55,7 @@ def main():
     # Extract time (dates)
     fnam = f"coordinates.npz"
     data = np.load(os.path.join(PATH_COORDINATES, fnam), allow_pickle=True)
-    time = data['time']
-
-    # Create present day (t0) time coordinate variable by shifting forward one day
-    time_t0 = time[1:]
+    time_t0 = data['time_t0']
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 
