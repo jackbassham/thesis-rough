@@ -3,20 +3,17 @@ import torch
 import numpy as np
 import os
 
-from .path import (
-    PATH_SOURCE,
-    PATH_SOURCE_COORD,
-    PATH_DEST_CNN,
-    FSTR_END_IN,
-    FSTR_END_OUT,
-    FSTR_END_COORD,
+from config.path import(
+    PATH_MASK_NORM,
+    PATH_COORDINATES,
+    PATH_MODEL_INPUTS,
 )
 
 def main():
 
     # Load in normalized data
     fnam = 'masked_normalized.npz'
-    data = np.load(os.path.join(PATH_SOURCE, fnam))
+    data = np.load(os.path.join(PATH_MASK_NORM, fnam))
 
     # Unpack input variables from .npz file
     ui_t0 = data['ui_t0']
@@ -53,13 +50,11 @@ def main():
     print("Feature and Target Arrays filled")
 
     # Reshape uncertainty
-    # NOTE DO NOT reshape uncertainty for LR
-    # ri_t0 = np.expand_dims(ri_t0, 1)
-    # # ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, nlat, nlon]
+    ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, nlat, nlon]
     
     # Extract time (dates)
-    fnam = f"coord_{FSTR_END_COORD}.npz"
-    data = np.load(os.path.join(PATH_SOURCE_COORD, fnam), allow_pickle=True)
+    fnam = f"coordinates.npz"
+    data = np.load(os.path.join(PATH_COORDINATES, fnam), allow_pickle=True)
     time = data['time']
 
     # Create present day (t0) time coordinate variable by shifting forward one day
@@ -74,46 +69,45 @@ def main():
 
     # Get split indices
     train_idx = np.where(train_mask)[0]
-    # val_idx   = np.where(val_mask)[0]
+    val_idx   = np.where(val_mask)[0]
     test_idx  = np.where(test_mask)[0]
 
     # Fill train, validation, and test data arrays
     x_train, y_train, r_train = x[train_idx], y[train_idx], ri_t0[train_idx]
-    # x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
+    x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
     x_test, y_test, r_test = x[test_idx], y[test_idx], ri_t0[test_idx]
 
     # Save splits
-
     np.savez(
-        os.path.join(PATH_DEST_LR, f'train_{FSTR_END_OUT}.npz'),
+        os.path.join(PATH_MODEL_INPUTS, 'train.npz'),
         x_train = x_train,
         y_train = y_train,
         r_train = r_train
     )
 
-    # np.savez(
-    #     os.path.join(PATH_DEST_LR, f'val_{FSTR_END_OUT}.npz'),
-    #     x_val = x_val,
-    #     y_val = y_val,
-    #     r_val = r_val
-    # )
+    np.savez(
+        os.path.join(PATH_MODEL_INPUTS, 'val.npz'),
+        x_val = x_val,
+        y_val = y_val,
+        r_val = r_val
+    )
 
     np.savez(
-        os.path.join(PATH_DEST_LR, f'test_{FSTR_END_OUT}.npz'),
+        os.path.join(PATH_MODEL_INPUTS, 'test.npz'),
         x_test = x_test,
         y_test = y_test,
         r_test = r_test
     )
 
-    print(f"Train and Test splits saved at {PATH_DEST_LR}")
+    print(f'Splits saved at {PATH_MODEL_INPUTS}')
 
     # Save split indices
 
     np.savez_compressed(
     os.path.join(PATH_DEST_LR, f"split_indices_lr_{FSTR_END_OUT}.npz"),
-    train_idx=train_idx,
-    # val_idx=val_idx,
-    test_idx=test_idx
+        train_idx=train_idx,
+        # val_idx=val_idx,
+        test_idx=test_idx
     )
     
     print(f"Split indices saved at {PATH_DEST_LR}")
