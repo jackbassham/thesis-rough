@@ -2,7 +2,7 @@ import numpy as np
 import os
 import sys
 
-from .param import (
+from config.config import (
     HEM, 
     START_YEAR, # 1989 on Mazloff Server not valid
     END_YEAR,
@@ -10,7 +10,7 @@ from .param import (
     LON_LIMITS,
 )
 
-from .path import PATH_DEST, FSTR_END_OUT
+from config.path import PATH_RAW
 
 # Reads binary JRA-55 daily 3-Hourly near-surface (10m) wind vector data from Mazloff server and writes into .npz file
 # Oringinal Data from: "https://rda.ucar.edu/datasets/d628000/"
@@ -69,11 +69,16 @@ def main():
     u_total = np.concatenate(u_total, axis = 0)
     v_total = np.concatenate(v_total, axis = 0)
 
-    # Save time series data as npz variables
-    fnam = f"wind_jra55_gaussian_{FSTR_END_OUT}.npz"
+    # Define name for data file
+    fnam = 'wind_raw_jra55_gaussian.npz'
 
+    # Create directory for the data if it doesn't already exist
+    os.makedirs(PATH_RAW, exist_ok = True)
+
+
+    # Save the data
     np.savez_compressed(
-        os.path.join(PATH_DEST, fnam), 
+        os.path.join(PATH_RAW, fnam), 
         u = u_total, 
         v = v_total, 
         time = time, 
@@ -81,7 +86,7 @@ def main():
         lon = lon
     )
     
-    print(f"Variables Saved at path {PATH_DEST}/{fnam}.npz")
+    print(f'Variables Saved at path {PATH_RAW}/{fnam}')
     
     return
 

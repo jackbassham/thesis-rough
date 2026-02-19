@@ -4,13 +4,13 @@ import os
 import requests
 import xarray as xr
 
-from .param import (
+from config.config import (
     HEM, 
     START_YEAR,
     END_YEAR
 )
 
-from .path import PATH_DEST, FSTR_END_OUT
+from config.path import PATH_RAW
 
 from helpers.nasa_earth_data import get_temp_NED_file
 
@@ -90,22 +90,26 @@ def main():
     time_total = np.array([np.datetime64(t) for t in time_total])
 
     # Save time series data as npz variables
-    fnam = f"motion_ppv4_EASE_{FSTR_END_OUT}"
-    path = os.path.join(PATH_DEST, fnam)
+    fnam = 'ice_vel_raw_ppv4_ease.npz'
 
+    # Create directory for the data if it doesn't already exist
+    os.makedirs(PATH_RAW, exist_ok = True)
+
+    # Save the data
     np.savez_compressed(
-        path, 
-        u = u_total, 
-        v = v_total, 
-        r = r_total, 
-        time = time_total, 
-        lat = lat, 
-        lon = lon
+        os.path.join(PATH_RAW, fnam),
+        u = u_total,
+        v = v_total,
+        r = r_total,
+        time = time_total,
+        lat = lat,
+        lon = lon,
     )
 
-    print(f"Variables Saved at path {path}.npz")
+    print(f'Raw ice velocity Saved at path {PATH_RAW}/fnam')
 
     return
+
 
 if __name__ == "__main__":
     main()

@@ -6,13 +6,13 @@ import requests
 import time
 import xarray as xr # With h5netcdf
 
-from .param import (
+from config.config import (
     HEM, 
     START_YEAR,
     END_YEAR
 )
 
-from .path import PATH_DEST, FSTR_END_OUT
+from config.path import PATH_RAW
 
 from helpers.nasa_earth_data import get_temp_NED_file
 
@@ -38,8 +38,8 @@ END_URL = "NSIDC0051_SEAICE_PS_{hem}25km_{date}_v2.0.nc"
 def main():
 
     # Initialize log for missing days
-    fnam_log = f'concentration_download_log_{FSTR_END_OUT}.txt'
-    path_log = os.path.join(PATH_DEST, fnam_log)
+    fnam = 'concentration_download_log.txt'
+    path_log = os.path.join(PATH_RAW, fnam)
 
     # Define start and end dates for year(Test 2020) 
     start_date = datetime(START_YEAR, 1, 1)
@@ -64,10 +64,10 @@ def main():
         base_url = BASE_URL.format(date = dstr_url)
 
         # Get abbreviated hemisphere for filename
-        if HEM == "sh":
-            hem = "S"
+        if HEM == 'sh':
+            hem = 'S'
         else:
-            hem = "N"
+            hem = 'N'
 
         fnam = END_URL.format(date = dstr_f, hem = hem)
 
@@ -100,7 +100,7 @@ def main():
                 if not found_name:
                         ci = np.nan
                         var_names_total.append(None)
-                        print(f"NO DATA FOR {date}, ICECON NaN")
+                        print(f'NO DATA FOR {date}, ICECON NaN')
                         # Log missing data
                         with open(path_log, "a") as log:
                             log.write(f"{date}, NO DATA, ICECON NaN.\n")
@@ -115,9 +115,9 @@ def main():
             var_names_total.append(None)
             time_total.append(date)
 
-            print(f"Error {date}")
+            print(f'Error {date}')
             with open(path_log, "a") as log:
-                log.write(f"{date}, NO DATA.\n")
+                log.write(f'{date}, NO DATA.\n')
 
         # Append ice concentration data to time series list
         ci_total.append(ci)
@@ -130,19 +130,25 @@ def main():
     # Concatenate concentration data along time dimension
     ci_total = np.concatenate(ci_total, axis = 0)
 
-    # Save time series data as npz variables
-    fnam = f"con_nimbus7_ps_{FSTR_END_OUT}"
+    # Define name for data file
+    fnam = 'ice_concentration_raw_nimbus7_ps.npz'
+
+    # Create directory for the data if it doesn't already exist
+    os.makedirs(PATH_RAW, exist_ok = True)
+
+    # Save the data
     np.savez_compressed(
-        os.path.join(PATH_DEST, fnam), 
+        os.path.join(PATH_RAW, fnam), 
         ci = ci_total, 
         time = time_total, 
         var_names = var_names_total, 
         allow_pickle = True
     )
 
-    print(f"Variables Saved at path {PATH_DEST + fnam}.npz")
+    print(f'Raw ice concentration saved at {PATH_RAW}/{fnam}')
 
     return
+
 
 if __name__ == "__main__":
     main()
