@@ -2,18 +2,16 @@ import gc
 import numpy as np
 import os
 
-from .path import (
-    PATH_SOURCE,
-    PATH_DEST,
-    FSTR_END_IN,
-    FSTR_END_OUT
+from config.path import (
+    PATH_REGRID,
+    PATH_MASK_NORM,
 )
 
 def main():
 
     # Load in variables
-    fnam = f"motion_ppv4_latlon_{FSTR_END_IN}.npz"
-    data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+    fnam = 'ice_vel_regrid_ppv4.npz'
+    data = np.load(os.path.join(PATH_REGRID, fnam), allow_pickle=True)
 
     ui = data['u'] # zonal ice velocity
     vi = data['v'] # meridional ice velocity
@@ -21,15 +19,15 @@ def main():
 
     print('Ice Velocity, Uncertainty Loaded')
 
-    fnam = f"con_nimbus7_latlon_{FSTR_END_IN}.npz"
-    data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+    fnam = 'ice_conc_regrid_nimbus7.npz'
+    data = np.load(os.path.join(PATH_REGRID, fnam), allow_pickle=True)
 
     ci = data['ci']# ice concentration
 
     print('Concentration Loaded')
 
-    fnam = f"wind_jra55_latlon_{FSTR_END_IN}.npz"
-    data = np.load(os.path.join(PATH_SOURCE, fnam), allow_pickle=True)
+    fnam = 'wind_regrid_jra55.npz'
+    data = np.load(os.path.join(PATH_REGRID, fnam), allow_pickle=True)
 
     ua = data['u']
     va = data['v']
@@ -39,9 +37,6 @@ def main():
     # Delete 'data' from memory
     del data
     gc.collect()
-
-    print('Variable Files Loaded')
-    print('')
 
     # Mask ice concentration based on NSIDC dataset mask values
     ci_raw = np.round(ci * 250) # raw value ice concentration (NSIDC)
@@ -103,24 +98,24 @@ def main():
     print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
 
     # Define filename for mask
-    fnam = f'nan_mask_{FSTR_END_OUT}.npz'
+    fnam = 'nan_mask.npz'
 
     # Save the mask
     np.savez(
-        os.path.join(PATH_DEST, fnam),
-        nan_mask = nan_mask
+        os.path.join(PATH_MASK_NORM, fnam),
+        nan_mask = nan_mask,
     )
 
     # Define land mask (just in case)
     land_mask = np.all(np.isnan(ci_t0), axis = 0)
 
     # Define filename for mask
-    fnam = f'land_mask_{FSTR_END_OUT}.npz'
+    fnam = 'land_mask.npz'
 
     # Save the mask
     np.savez(
-        os.path.join(PATH_DEST, fnam),
-        land_mask = land_mask
+        os.path.join(PATH_MASK_NORM, fnam),
+        land_mask = land_mask,
     )
 
     # NaN out points meeting mask condition
@@ -210,25 +205,28 @@ def main():
         print(f"num valid points {p - n}")
         print(f"frac nan (invalid) {n / p}")
     
-    # Save normalized input variables
-    fnam = f'masked_normalized_{FSTR_END_OUT}.npz'
+    # Define data file name
+    fnam = 'masked_normalized.npz'
+
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_MASK_NORM, exist_ok = True)
 
     np.savez(
-        os.path.join(PATH_DEST, fnam),
+        os.path.join(PATH_MASK_NORM, fnam),
         ui_t0 = ui_norm, vi_t0 = vi_norm, 
         ri_t0 = ri_norm, 
         ua_t0 = ua_norm, va_t0 = va_norm,
         ci_t1 = ci_norm
         )
 
-    print(f"Normalized inputs saved at: \n {PATH_DEST}/{fnam}")
+    print(f"Normalized inputs saved at: \n {PATH_MASK_NORM}/{fnam}")
 
     # Save statistics for normalization
 
-    fnam = f'stats_norm_{FSTR_END_OUT}.npz'
+    fnam = 'stats_for_normalization.npz'
 
     np.savez(
-        os.path.join(PATH_DEST, fnam),
+        os.path.join(PATH_MASK_NORM, fnam),
         ui_bar = ui_bar, vi_bar = vi_bar,
         ua_bar = ua_bar, va_bar = va_bar, 
         ci_bar = ci_bar,
@@ -236,7 +234,8 @@ def main():
         ci_std = ci_std
     )
 
-    print(f"Stats for normalizing saved at: \n {PATH_DEST}/{fnam}")
+    print(f"Stats for normalizing saved at {PATH_MASK_NORM}/{fnam}")
+
 
 if __name__ == "__main__":
     main()
