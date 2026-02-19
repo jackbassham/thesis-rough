@@ -131,7 +131,7 @@ def main():
     ci_total = np.concatenate(ci_total, axis = 0)
 
     # Define name for data file
-    fnam = 'ice_concentration_raw_nimbus7_ps.npz'
+    fnam = 'ice_conc_raw_nimbus7_ps.npz'
 
     # Create directory for the data if it doesn't already exist
     os.makedirs(PATH_RAW, exist_ok = True)
