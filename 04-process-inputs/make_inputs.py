@@ -50,7 +50,7 @@ def main():
     print("Feature and Target Arrays filled")
 
     # Reshape uncertainty
-    ri_t0 = ri_t0.unsqueeze(1) # [nt, 1, nlat, nlon]
+    ri_t0 = np.expand_dims(ri_t0, axis = 1) # [nt, 1, nlat, nlon]
     
     # Extract time (dates)
     fnam = f"coordinates.npz"
