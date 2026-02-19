@@ -28,7 +28,7 @@ def main():
 
     print("Input Variables Loaded")
 
-        # Define number of input channels
+    # Define number of input channels
     n_in = 3
 
     # Define number of output channels
@@ -69,7 +69,7 @@ def main():
 
     # Define split mask based on years
     train_mask = (years >= 1992) & (years <= 2016)
-    # val_mask   = (years >= 2017) & (years <= 2018)
+    val_mask   = (years >= 2017) & (years <= 2018)
     test_mask  = (years >= 2019) & (years <= 2020)
 
     # Get split indices
