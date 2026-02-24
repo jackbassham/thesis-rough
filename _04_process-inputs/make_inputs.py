@@ -25,7 +25,7 @@ def main():
 
     # Load in nan mask
     fnam = 'nan_mask.npz'
-    data = np.load(os.path.join(PATH_MASK_NORM), fnam)
+    data = np.load(os.path.join(PATH_MASK_NORM, fnam))
 
     nan_mask = data['nan_mask']
 
@@ -66,7 +66,11 @@ def main():
     # Extract time (dates)
     fnam = f"coordinates.npz"
     data = np.load(os.path.join(PATH_COORDINATES, fnam), allow_pickle=True)
-    time_t0 = data['time_t0']
+    # time_t0 = data['time_t0']
+
+    # TODO remove the below, new coordinates file does this
+    time = data['time']
+    time_t0 = time[1:]
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 
