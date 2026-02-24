@@ -89,7 +89,7 @@ PATH_MODEL_INPUTS = build_data_path('model-inputs', TIMESTAMP_INPUTS)
 # Store possible model output paths as global variables
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PATH_PS_OUT = build_model_output_path('ps', TIMESTAMP_OUTPUTS)
-PATH_LR_OUT = build_model_output_path('lr-cf', TIMESTAMP_OUTPUTS)
+PATH_LR_CF_OUT = build_model_output_path('lr-cf', TIMESTAMP_OUTPUTS)
 PATH_LR_WTD_CF_OUT = build_model_output_path('lr-wtd-cf', TIMESTAMP_OUTPUTS)
 PATH_CNN_PT_OUT = build_model_output_path('cnn', TIMESTAMP_OUTPUTS)
 PATH_CNN_WTD_PT_OUT = build_model_output_path('cnn-wtd', TIMESTAMP_OUTPUTS)
