@@ -39,7 +39,7 @@ def build_data_path(data_directory: str, data_timestamp: str, root: str = ROOT_D
     return data_path
 
 
-def build_model_output_path(model_name: str, model_timestamp: str, root: str = ROOT_DATA) -> str:
+def build_model_output_path(model_name: str, model_timestamp: str = TIMESTAMP_OUTPUTS, root: str = ROOT_DATA) -> str:
     """
 
     """
@@ -88,8 +88,18 @@ PATH_MODEL_INPUTS = build_data_path('model-inputs', TIMESTAMP_INPUTS)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Store possible model output paths as global variables
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-PATH_PS_OUT = build_model_output_path('ps', TIMESTAMP_OUTPUTS)
-PATH_LR_CF_OUT = build_model_output_path('lr-cf', TIMESTAMP_OUTPUTS)
-PATH_LR_WTD_CF_OUT = build_model_output_path('lr-wtd-cf', TIMESTAMP_OUTPUTS)
-PATH_CNN_PT_OUT = build_model_output_path('cnn', TIMESTAMP_OUTPUTS)
-PATH_CNN_WTD_PT_OUT = build_model_output_path('cnn-wtd', TIMESTAMP_OUTPUTS)
+PATH_PS_OUT = build_model_output_path('ps')
+PATH_LR_CF_OUT = build_model_output_path('lr-cf')
+PATH_LR_WTD_CF_OUT = build_model_output_path('lr-wtd-cf')
+PATH_CNN_PT_OUT = build_model_output_path('cnn')
+PATH_CNN_WTD_PT_OUT = build_model_output_path('cnn-wtd')
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Store possible output plot paths as global variables
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PATH_PS_OUT = build_plot_path('ps')
+PATH_LR_CF_OUT = build_plot_path('lr_cf')
+PATH_LR_WTD_CF_OUT = build_plot_path('lr_wtd_cf')
+PATH_CNN_PT_OUT = build_plot_path('cnn')
+PATH_CNN_WTD_PT_OUT = build_plot_path('cnn_wtd')

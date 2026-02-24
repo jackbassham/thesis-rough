@@ -1,17 +1,15 @@
 import numpy as np
 import os
 
-from .path import(
-    PATH_SOURCE,
-    PATH_DEST,
-    FSTR_END_IN,
-    FSTR_END_OUT,
+from _00_config.path import(
+    PATH_MODEL_INPUTS,
+    PATH_PS_OUT,
 )
 
 def main():
 
     # Load in data (same as lr inputs)
-    data = np.load(os.path.join(PATH_SOURCE, f'test_{FSTR_END_IN}.npz'))
+    data = np.load(os.path.join(PATH_MODEL_INPUTS, f'test.npz'))
 
     # Use test split for persistence baseline
     y_test = data['y_test']
@@ -31,7 +29,7 @@ def main():
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_DEST, f"preds_ps_{FSTR_END_OUT}"),
+        os.path.join(PATH_PS_OUT, f"preds_ps.npz"),
         y_pred = y_pred,
         y_true = y_true
     )

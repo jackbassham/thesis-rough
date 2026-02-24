@@ -1,12 +1,10 @@
 import numpy as np
 import os
 
-from config.path import (
+from _00_config.path import (
     PATH_REGRID,
     PATH_COORDINATES,
 )
-
-PATH_SOURCE = PATH_DEST # Source for coordinates same as destination for regrid
 
 def main():
 

@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-from config.config import (
+from _00_config.config import (
     HEM, 
     LAT_LIMITS, 
     LON_LIMITS,
     RESOLUTION,
 )
 
-from config.path import (
+from _00_config.path import (
     PATH_RAW,
     PATH_REGRID,
 )

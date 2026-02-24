@@ -1,16 +1,14 @@
-import io
 import numpy as np
 import os
-import requests
 import xarray as xr
 
-from config.config import (
+from _00_config.config import (
     HEM, 
     START_YEAR,
     END_YEAR
 )
 
-from config.path import PATH_RAW
+from _00_config.path import PATH_RAW
 
 from helpers.nasa_earth_data import get_temp_NED_file
 

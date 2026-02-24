@@ -8,11 +8,9 @@ import os
 import matplotlib.pyplot as plt
 cuda_available = torch.cuda.is_available()
 
-from .path import(
-    PATH_SOURCE,
-    PATH_DEST,
-    FSTR_END_IN,
-    FSTR_END_OUT,
+from _00_config.path import(
+    PATH_MODEL_INPUTS,
+    PATH_CNN_WTD_PT_OUT,
 )
 
 # Define model type string for saving predictions
@@ -124,9 +122,9 @@ def main():
     set_seed(42)
 
     # Load input data
-    x_train, y_train, r_train = torch.load(os.path.join(PATH_SOURCE,f'train_{FSTR_END_IN}.pt'))
-    x_val, y_val, r_val = torch.load(os.path.join(PATH_SOURCE,f'val_{FSTR_END_IN}.pt'))
-    x_test, y_test, r_test = torch.load(os.path.join(PATH_SOURCE,f'test_{FSTR_END_IN}.pt'))
+    x_train, y_train, r_train = torch.load(os.path.join(PATH_MODEL_INPUTS,f'train.pt'))
+    x_val, y_val, r_val = torch.load(os.path.join(PATH_MODEL_INPUTS,f'val.pt'))
+    x_test, y_test, r_test = torch.load(os.path.join(PATH_MODEL_INPUTS,f'test.pt'))
 
     print("Input Data Loaded")
 
@@ -252,8 +250,8 @@ def main():
     plot_losses(num_epochs, train_losses, val_losses)
 
     # Save model weights
-    fnam = f'wts_{MODEL_STR}_{FSTR_END_OUT}.pth'
-    torch.save(model.state_dict(), os.path.join(PATH_DEST,fnam))
+    fnam = f'wts_{MODEL_STR}.pth'
+    torch.save(model.state_dict(), os.path.join(PATH_CNN_WTD_PT_OUT,fnam))
 
     print('Model weights saved')
 
@@ -275,8 +273,8 @@ def main():
     y_true = np.concatenate(all_targets, axis=0)
 
     # Save to .npz
-    fnam = f"preds_{MODEL_STR}_{FSTR_END_OUT}.npz"
-    np.savez(os.path.join(PATH_DEST, fnam), y_pred = y_pred, y_true = y_true)
+    fnam = f"preds_{MODEL_STR}.npz"
+    np.savez(os.path.join(PATH_CNN_WTD_PT_OUT, fnam), y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
 

@@ -7,36 +7,28 @@ import os
 
 # TODO silence mean of empty slice warning
 
-from .param import(
+from _00_config.config import(
     MODEL_STR,
-    MODEL_DIR,
-    TIMESTAMP_MODEL,
-    TIMESTAMP_OUT,
     HEM,
+    TIMESTAMP_OUTPUTS,
 )
 
-from .path import(
-    PATH_SOURCE,
-    PATH_DEST,
-    PATH_COORD,
-    PATH_MASK,
-    PATH_R,
-    PATH_SPLIT,
-    FSTR_END_MODEL,
-    FSTR_END_DEST,
-    FSTR_END_COORD,
-    FSTR_END_MASK,
-    FSTR_END_R,
-    FSTR_END_SPLIT,
+from _00_config.path import(
+    build_model_output_path,
+    build_plot_path,
+    PATH_MODEL_INPUTS,
+    PATH_NAN_MASK,
+    PATH_COORDINATES,
 )
-
 def main():
 
+    MODEL_OUTPUT_PATH = build_model_output_path(MODEL_STR.replace('_', '-'))
+
     # Get filename for model predictions, based on the model string given
-    fnam = f"preds_{MODEL_STR}_{FSTR_END_MODEL}.npz"
+    fnam = f"preds_{MODEL_STR}.npz"
 
     # Load in model predictions
-    data = np.load(os.path.join(PATH_SOURCE, fnam)) 
+    data = np.load(os.path.join(MODEL_OUTPUT_PATH, fnam)) 
 
     upred = data['y_pred'][:,0,:,:]
     vpred = data['y_pred'][:,1,:,:]
@@ -48,19 +40,19 @@ def main():
     print('')
 
     # Get filename for test train split
-    fnam = f'split_indices_lr_{FSTR_END_SPLIT}.npz'
+    fnam = f'split_indices.npz'
 
     # Load split indices file
-    data = np.load(os.path.join(PATH_SPLIT, fnam))
+    data = np.load(os.path.join(PATH_MODEL_INPUTS, fnam))
 
     # Load test indices
     test_idx = data['test_idx']
 
     # Get filename for nan mask
-    fnam = f"nan_mask_{FSTR_END_MASK}.npz"
+    fnam = f"nan_mask.npz"
 
     # Load time variable nan mask file
-    data = np.load(os.path.join(PATH_MASK, fnam))
+    data = np.load(os.path.join(PATH_NAN_MASK, fnam))
 
     # Load in nan mask and slice to test indices
     nan_mask = data['nan_mask'][test_idx]
@@ -85,10 +77,10 @@ def main():
     vtrue = np.where(nan_mask, np.nan, vtrue)
 
     # Get filemane for uncertainty test split
-    fnam = f"test_{FSTR_END_R}.npz"
+    fnam = f"test.npz"
 
     # Load in uncertainty
-    data = np.load(os.path.join(PATH_R, fnam))
+    data = np.load(os.path.join(PATH_MODEL_INPUTS, fnam))
 
     # Ice Velocity Uncertainty
     # Includes flag values (r_raw + 1000, cm/s)
@@ -103,10 +95,10 @@ def main():
         r_test = r_test[1:,:,:]
 
     # Get filename for lat lon coordinate variables
-    fnam = f"coord_{FSTR_END_COORD}.npz"
+    fnam = f"coordinates.npz"
 
     # Load in lat and lon
-    data = np.load(os.path.join(PATH_COORD, fnam))
+    data = np.load(os.path.join(PATH_COORDINATES, fnam))
     lon = data['lon']
     lat = data['lat']
     
@@ -310,7 +302,7 @@ def plot_metric(u_data, v_data, lon, lat, metric):
     plt.colorbar(pcm_1, ax = axs[1], orientation = 'vertical')
 
     # Add title to plot
-    fig.suptitle(f"{metric}; {MODEL_STR.upper()} v{TIMESTAMP_MODEL}", fontweight = 'bold')
+    fig.suptitle(f"{metric}; {MODEL_STR.upper()} v{TIMESTAMP_OUTPUTS}", fontweight = 'bold')
 
     # Format with tight layout
     fig.tight_layout
@@ -320,10 +312,12 @@ def plot_metric(u_data, v_data, lon, lat, metric):
     fig.text(0.5, -0.05, f"mean meridional {metric}: {np.nanmean(v_data):.4f}")
 
     # Define filemane for figure
-    fnam = f"{metric}_{MODEL_STR}_{TIMESTAMP_OUT}.png"
+    fnam = f"{metric}_{MODEL_STR}_{TIMESTAMP_OUTPUTS}.png"
+
+    PLOT_PATH = build_plot_path(MODEL_STR)
 
     # Save figure
-    plt.savefig(os.path.join(PATH_DEST, fnam), bbox_inches = 'tight')
+    plt.savefig(os.path.join(PLOT_PATH, fnam), bbox_inches = 'tight')
 
     return
 

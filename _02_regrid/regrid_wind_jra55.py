@@ -1,88 +1,50 @@
-import io
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
 import os
-import requests
-import xarray as xr # With h5netcdf
 
-from config.config import (
-    HEM,
+from _00_config.config import (
     LAT_LIMITS, 
     LON_LIMITS,
     RESOLUTION,
 )
 
-from config.path import (
+from _00_config.path import (
     PATH_RAW,
     PATH_REGRID,
 )
 
-from helpers.nasa_earth_data import get_temp_NED_file
-
-# Regrids time series of NSIDC Sea Ice Concentrations (Nimbus 7)
-# Data accessed from https://nsidc.org/data/nsidc-0051/versions/2
-# Grid info accessed from https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_anc_grid_info/
-# Processes entire time series from .npz file downloaded using '01_con_nimbus7_dload.py'
-# ***credit source here***
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Global variables defined here
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Enter valid URL for Polar Stereographic 25km resolution lat lon grid
-URL_GRID = "https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_anc_grid_info/NSIDC0771_LatLon_PS_{grid}25km_v1.1.nc"
+# Regrids JRA-55 daily near surface (10m) wind vector data from original Gaussian grid to regular lat lon
+# Oringinal Data from: "https://rda.ucar.edu/datasets/d628000/"
+# Entire time series processed to daily averages in .npz file using '01_wind_jra55_read.py'
+# JRA55 README here: ""***""
+#  ***credit source here***  
 
 
 def main():
 
     # Define data file to regrid
-    fnam = 'ice_conc_raw_nimbus7_ps.npz'
-    
-    if HEM == 'nh':
-        grid = "N"
-    else:
-        grid = "S"
+    fnam = 'wind_raw_jra55_gaussian.npz'
 
-    url_grid = URL_GRID.format(grid = grid)
+    # Load original .npz file
+    data = np.load(os.path.join(PATH_RAW, fnam), allow_pickle = True)
+    u_old = data['u']
+    v_old = data['v']
+    lat_old = data['lat']
+    lon_old = data['lon']
+    time = data['time']
 
-    # Load original grid in temp file
-    temp = get_temp_NED_file(url_grid)
+    # Create meshgrid of old lat and lon values (Converting 1D to 2D arrays)
+    # Consistent with polar pathfinder velocity lat and lon
+    lon_old, lat_old = np.meshgrid(lon_old, lat_old)
 
-    if temp is not None:
-        with xr.open_dataset(temp) as data:
-            lat_old = data['latitude'].values # Polar Stereographic
-            lon_old = data['longitude'].values # Polar Stereographic
-
-    else:
-        print("Error: original grid not loaded")
-
-
-    try:
-        # Attempt to load the raw data file
-        data = np.load(os.path.join(PATH_RAW, fnam), allow_pickle=True)
-
-        # Attempt to access variables
-        ci_old = data['ci'] # ice concentration on gaussian grid
-        time = data['time'] # time series dates dt64
-        var_names = data['var_names'] # variable names, based on sensors
-
-        print(f"{fnam} loaded successfully.")
-        
-    except FileNotFoundError:
-        print(f"Error: The file '{fnam}' was not found in '{PATH_RAW}'.")
-    except KeyError as e:
-        print(f"Error: Missing expected data key: {e}.")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}.")
-
-    # Get indices for new lat lon grid
     jj, ii, lat_new, lon_new = nearest_neighbor_interpolation(RESOLUTION, LAT_LIMITS, LON_LIMITS, lat_old, lon_old)
+    
 
     # Initialize data arrays for current year
     dims = (len(time), len(lat_new), len(lon_new))
-    ci_new = np.zeros(dims) # ice concentation (part coverage 0 to 1)
+    v_new = np.zeros(dims) # meridional wind (m/s)
+    u_new = np.zeros(dims) # zonal wind (m/s)
 
     # Iterate through gridpoints
     for i in range(dims[2]):
@@ -93,38 +55,44 @@ def main():
             jjj = jj[j,i]
             
             # Extract data from nearest neighbor index
-            ci_new[:,j,i] = ci_old[:,jjj,iii]
+            u_new[:,j,i] = u_old[:,jjj,iii]
+            v_new[:,j,i] = v_old[:,jjj,iii]
 
     # Format time to 1D array; YYYY-MM-DD format
     time = format_time(time)
 
     # Define data file name
-    fnam = 'ice_conc_regrid_nimbus7.npz'
+    fnam = f"wind_regrid_jra55.npz"
 
     # Create the destination directory if it doesn't already exist
     os.makedirs(PATH_REGRID, exist_ok = True)
     
     # Save the data
     np.savez(
-        os.path.join(PATH_REGRID, fnam),
-        ci = ci_new, 
+        os.path.join(PATH_REGRID, fnam), 
+        u = u_new, 
+        v = v_new, 
         time = time, 
         lat = lat_new, 
-        lon = lon_new, 
+        lon = lon_new
     )
-
+    
     print(f"Variables Saved at path {PATH_REGRID}/{fnam}")
 
-    # # Compare regrid and old ice concentration
-    # fnam = fnam.replace(".npz", "_grid_compare.mp4")
+    # speed_new = np.sqrt(u_new**2 + v_new**2) # lat lon wind speed (m/s)
+    # speed_old = np.sqrt(u_old**2 + v_old**2) # EASE wind speed (m/s)
+
+    # # Compare regrid and old speed
+    # fnam = fnam.replace(".npz", "_speed_grid_compare.mp4")
     # save_path = os.path.join(PATH_DEST,fnam)
-    # compare_grids(ci_new, lat_new, lon_new, ci_old, lat_old, lon_old,  
-    #            LAT_LIMITS, LON_LIMITS, time = time, main_title = "Ice Concentration", save_path = save_path)
-  
+    # compare_grids(speed_new, lat_new, lon_new, speed_old, lat_old, lon_old, 
+    #         LAT_LIMITS, LON_LIMITS, time = time, main_title = "Wind Speed",
+    #         save_path = save_path)  
+    
     return
+    
 
-
-def nearest_neighbor_interpolation(res, lat_limits, lon_limits, lat_old, lon_old):
+def nearest_neighbor_interpolation(res, lat_lim, lon_lim, lat_old, lon_old):
     """
     Returns new regular lat lon coordinate arrays given input resolution in km (based on polar 
     ice veolocity product) and bounds in degrees
@@ -140,11 +108,11 @@ def nearest_neighbor_interpolation(res, lat_limits, lon_limits, lat_old, lon_old
 
     # Convert resolution to degrees latitude)
     yres = res / 111   # latitude resolution (deg)
-    xres = res / (111*np.cos(np.radians((lat_limits[0]+lat_limits[1])/2))) # longitude resolution (deg) based on average latitude
+    xres = res / (111*np.cos(np.radians((lat_lim[0]+lat_lim[1])/2))) # longitude resolution (deg) based on average latitude
 
     # Create arrays for new lat and lon grid
-    lat_new = np.arange(lat_limits[0], lat_limits[1] + yres, yres) # Latitude
-    lon_new = np.arange(lon_limits[0], lon_limits[1] + xres, xres) # Longitude
+    lat_new = np.arange(lat_lim[0], lat_lim[1] + yres, yres) # Latitude
+    lon_new = np.arange(lon_lim[0], lon_lim[1] + xres, xres) # Longitude
     nlat = len(lat_new)
     nlon = len(lon_new)
     
@@ -183,29 +151,6 @@ def nearest_neighbor_interpolation(res, lat_limits, lon_limits, lat_old, lon_old
     # Return interpolation indices and new lat and lon coordinate variables
     return jj, ii, lat_new, lon_new
 
-
-def crop_2Dlatlon(data_old, lat_old, lon_old, lat_limits, lon_limits):
-    """
-    Crops data with 2D lat and lon variables (where lat and lon are used as coordinate variables)
-    """
-    
-    # Check that lon range in (-180, 180)
-    if np.any(lon_old > 180):
-        lon_old = np.where(lon_old > 180, lon_old - 360, lon_old)  # Convert from 0-360 to -180-180
-    elif np.any(lon_old < -180):
-        raise ValueError("Longitude values must be in the range (-180, 180).")
-
-    # * Extract j indices along [0]th dimension
-    j = np.unique(np.where((lat_old >= lat_limits[0]) & (lat_old <= lat_limits[1]) & (lon_old >= lon_limits[0]) & (lon_old <= lon_limits[1]))[0])
-    # * Extract i indices along [1]th dimension
-    i = np.unique(np.where((lat_old >= lat_limits[0]) & (lat_old <= lat_limits[1]) & (lon_old >= lon_limits[0]) & (lon_old <= lon_limits[1]))[1])
-    
-    lat_crop = lat_old[j,:][:,i]
-    lon_crop = lon_old[j,:][:,i]
-    data_crop = data_old[:,j,:][:,:,i]
-
-    return data_crop, lon_crop, lat_crop
-
 def format_time(time):
     """
     Format time to 1-D array with YYYY-MM-DD
@@ -225,7 +170,6 @@ def format_time(time):
     time = time.astype('datetime64[D]')
 
     return time
-
 
 def animated_time_series(data_values, time = None, 
                         main_title = None, titles = None, y_labels = None, x_labels = None, c_labels = None, 
@@ -316,6 +260,29 @@ def animated_time_series(data_values, time = None,
         plot_animated.save(save_path, writer = writer)
 
     return plot_animated
+
+
+def crop_2Dlatlon(data_old, lat_old, lon_old, lat_limits, lon_limits):
+    """
+    Crops data with 2D lat and lon variables (where lat and lon are used as coordinate variables)
+    """
+    
+    # Check that lon range in (-180, 180)
+    if np.any(lon_old > 180):
+        lon_old = np.where(lon_old > 180, lon_old - 360, lon_old)  # Convert from 0-360 to -180-180
+    elif np.any(lon_old < -180):
+        raise ValueError("Longitude values must be in the range (-180, 180).")
+
+    # * Extract j indices along [0]th dimension
+    j = np.unique(np.where((lat_old >= lat_limits[0]) & (lat_old <= lat_limits[1]) & (lon_old >= lon_limits[0]) & (lon_old <= lon_limits[1]))[0])
+    # * Extract i indices along [1]th dimension
+    i = np.unique(np.where((lat_old >= lat_limits[0]) & (lat_old <= lat_limits[1]) & (lon_old >= lon_limits[0]) & (lon_old <= lon_limits[1]))[1])
+    
+    lat_crop = lat_old[j,:][:,i]
+    lon_crop = lon_old[j,:][:,i]
+    data_crop = data_old[:,j,:][:,:,i]
+
+    return data_crop, lon_crop, lat_crop
 
 
 def compare_grids(data_new, lat_new, lon_new, data_old, lat_old, lon_old,  

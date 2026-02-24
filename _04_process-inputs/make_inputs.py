@@ -1,9 +1,7 @@
-import gc
-import torch
 import numpy as np
 import os
 
-from config.path import(
+from _00_config.path import(
     PATH_MASK_NORM,
     PATH_COORDINATES,
     PATH_MODEL_INPUTS,

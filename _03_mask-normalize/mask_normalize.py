@@ -2,7 +2,7 @@ import gc
 import numpy as np
 import os
 
-from config.path import (
+from _00_config.path import (
     PATH_REGRID,
     PATH_MASK_NORM,
 )

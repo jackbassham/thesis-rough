@@ -1,26 +1,26 @@
 import numpy as np
 from numpy import linalg as LA
 import os
+from scipy.sparse import diags
 
-from .path import(
-    PATH_SOURCE,
-    PATH_DEST,
-    FSTR_END_IN,
-    FSTR_END_OUT,
+from _00_config.path import(
+    PATH_MODEL_INPUTS,
+    PATH_LR_WTD_CF_OUT,
 )
 
 # Define model type string for saving predictions
-MODEL_STR = 'lr_cf'
+MODEL_STR = 'lr_wtd_cf'
 
 def main():
     
     # Load in training data
-    data = np.load(os.path.join(PATH_SOURCE,f'train_{FSTR_END_IN}.npz'))
+    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'train.npz'))
     x_train = data['x_train']
     y_train = data['y_train']
+    r_train = data['r_train']
 
     # Load in testing data
-    data = np.load(os.path.join(PATH_SOURCE,f'test_{FSTR_END_IN}.npz'))
+    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'test.npz'))
     x_test = data['x_test']
     y_test = data['y_test']
 
@@ -40,9 +40,9 @@ def main():
     nt_te, _, _, _ = np.shape(y_test)
 
     # Train model
-    zm, zfit_tr, ztrue_tr = lr_train(x_train, y_train)
+    zm, zfit_tr, ztrue_tr = lr_train(x_train, y_train, r_train)
 
-    # Initialize arrays for real training outputs
+     # Initialize arrays for real training outputs
     # NOTE two extra coefficients for u and v mean
     m = np.full((nm, nlat, nlon), np.nan) # model coefficients, real
     fit_tr = np.full((nt_tr, nout, nlat, nlon), np.nan) # training fit, real
@@ -68,7 +68,7 @@ def main():
 
     # Save coeffients, fit
     np.savez(
-        os.path.join(PATH_DEST, f"coef_fit_{MODEL_STR}_{FSTR_END_OUT}.npz"),
+        os.path.join(PATH_LR_WTD_CF_OUT, f"coef_fit_{MODEL_STR}.npz"),
         m = m,
         fit_tr = fit_tr,
         true_tr = true_tr,
@@ -92,23 +92,23 @@ def main():
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_DEST, f"preds_{MODEL_STR}_{FSTR_END_OUT}.npz"),
+        os.path.join(PATH_LR_WTD_CF_OUT, f"preds_{MODEL_STR}.npz"),
         y_pred = y_pred,
         y_true = y_true,
     )
 
     return
 
-def lr_train(x_train, y_train):
+def lr_train(x_train, y_train, r_train, epsilon = 1e-4):
 
     # TODO dynamic number of input channels and coefficients
 
     # Define number of input channels for gram matrix
     nin = 3 # complex wind (za), complex ice concentration (zci), complex constant 
-
+   
     # Define number of complex coefficients
     nzm = 3 # A, B, C
-   
+
     # Get dimensions for output arrays
     nt, _, nlat, nlon = np.shape(y_train)
 
@@ -121,16 +121,13 @@ def lr_train(x_train, y_train):
     va_t0 = x_train[:,1,:,:]
     ci_t1 = x_train[:,2,:,:]
 
-    # TODO fix nin for zm_all (just a coincidence that it matches with nin)
-    # need A, B, C (za, ua, constant)
-
-    # TODO switch order of gram matrix so constant is at end?
-    # for consisitency with lr equation Ax + Bx + C
-
+    # Unpack uncertainty
+    ri_t0 = r_train
+    
     # Initialize output arrays
     ztrue_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
     zfit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
-    zm_all = np.full((nzm, nlat, nlon), np.nan, dtype = complex) # lr coefficients (A, B, C), complex
+    zm_all = np.full((nzm, nlat, nlon), np.nan, dtype = complex) # lr coefficients (mean, present day wind, present day concentration), complex
     
     # Iterate through each latitude, longitude gridpoint
     for ilat in range(nlat):
@@ -159,12 +156,23 @@ def lr_train(x_train, y_train):
                     ua_t0_filt = ua_t0[true_mask,ilat,ilon]
                     va_t0_filt = va_t0[true_mask,ilat,ilon]
                     ci_t1_filt = ci_t1[true_mask,ilat,ilon]
+                    ri_t0_filt = ri_t0[true_mask,ilat,ilon]
 
-                    # Convert to complex
+                    # Convert inputs to complex
                     zi_t0 = ui_t0_filt + vi_t0_filt*1j # Complex 'today' ice velocity vector       
                     za_t0 = ua_t0_filt + va_t0_filt*1j # Complex 'today' wind vector
                     zci_t1 = ci_t1_filt + ci_t1_filt*1j # Complex 'yesterday' ice concentration
-                    
+
+                    # Convert uncertainty to complex
+                    zri_t0 = 2 * ri_t0_filt ** 2
+
+                    # Compute model weights
+                    w = 1 / (zri_t0 + epsilon)
+
+                    # Diagonalize weight matrix 
+                    # NOTE using scipy.sparse diags() for memory efficiency
+                    W = diags(w)
+
                     # Store true complex ice velocity vectors at valid points
                     ztrue_all[true_mask, ilat, ilon] = zi_t0
 
@@ -176,14 +184,14 @@ def lr_train(x_train, y_train):
 
                     G[:,0] = za_t0 # Present day wind velocity, complex
                     G[:,1] = zci_t1 # Previous day ice concentration, complex
-                    
+
                     # NOTE last column of G constant
 
                     # Define data matrix
                     d = zi_t0.T
 
                     # Solve for lr coefficients
-                    zm = (LA.inv((G.conj().T @ G))) @ G.conj().T @ d
+                    zm = (LA.inv((G.conj().T @ W @ G))) @ G.conj().T @ W @ d # (adapted from eqn 39, SIOC221B Lec 10)
 
                     # Save lr coefficients
                     for izm in range(len(zm)):
@@ -291,6 +299,6 @@ def lr_test(x_test, y_test, zm):
 
     return zpred_all, ztrue_all
 
+    
 if __name__ == "__main__":
     main()
-

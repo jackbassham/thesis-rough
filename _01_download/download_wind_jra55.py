@@ -2,7 +2,7 @@ import numpy as np
 import os
 import sys
 
-from config.config import (
+from _00_config.config import (
     HEM, 
     START_YEAR, # 1989 on Mazloff Server not valid
     END_YEAR,
@@ -10,7 +10,7 @@ from config.config import (
     LON_LIMITS,
 )
 
-from config.path import PATH_RAW
+from _00_config.path import PATH_RAW
 
 # Reads binary JRA-55 daily 3-Hourly near-surface (10m) wind vector data from Mazloff server and writes into .npz file
 # Oringinal Data from: "https://rda.ucar.edu/datasets/d628000/"
