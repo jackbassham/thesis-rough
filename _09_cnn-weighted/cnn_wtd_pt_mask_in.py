@@ -133,7 +133,7 @@ def main():
 
     x_train = torch.from_numpy(np.nan_to_num(x_train, 0))
     y_train = torch.from_numpy(np.nan_to_num(y_train, 0))
-    r_train = torch.from_numpy(np.nan_to_num(r_train, 0))
+    r_train = torch.from_numpy(np.nan_to_num(r_train, 1e3))
     nan_mask_train = torch.from_numpy(nan_mask_train)
 
     fnam = 'val.npz'
@@ -147,7 +147,7 @@ def main():
 
     x_val = torch.from_numpy(np.nan_to_num(x_val, 0))
     y_val = torch.from_numpy(np.nan_to_num(y_val, 0))
-    r_val = torch.from_numpy(np.nan_to_num(r_val, 0))
+    r_val = torch.from_numpy(np.nan_to_num(r_val, 1e3))
     nan_mask_val = torch.from_numpy(nan_mask_val)
 
     fnam = 'test.npz'
@@ -161,7 +161,7 @@ def main():
 
     x_test = torch.from_numpy(np.nan_to_num(x_test, 0))
     y_test = torch.from_numpy(np.nan_to_num(y_test, 0))
-    r_test = torch.from_numpy(np.nan_to_num(r_val, 0))
+    r_test = torch.from_numpy(np.nan_to_num(r_val, 1e3))
     nan_mask_test = torch.from_numpy(nan_mask_test)
 
     print("Input Data Loaded")
