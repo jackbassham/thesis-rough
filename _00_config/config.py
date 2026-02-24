@@ -41,10 +41,6 @@ RESOLUTION = int(get_global_variable("RESOLUTION")) # Grid resolution, km
 USER = get_global_variable("USER") # username
 PASS = get_global_variable("PASS") # password
 
-# String identifier for ML model type
-MODEL_STR = get_global_variable("MODEL_STR")
-
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Timestamps or timestamp defaults retrieved here
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
