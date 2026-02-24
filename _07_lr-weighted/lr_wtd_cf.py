@@ -66,6 +66,9 @@ def main():
     true_tr[:, 0, :, :] = ztrue_tr.real # ui_t0, true
     true_tr[:, 1, :, :] = ztrue_tr.imag # vi_t0, true
 
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_LR_WTD_CF_OUT, exist_ok = True)
+
     # Save coeffients, fit
     np.savez(
         os.path.join(PATH_LR_WTD_CF_OUT, f"coef_fit_{MODEL_STR}.npz"),

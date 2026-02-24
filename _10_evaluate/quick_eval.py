@@ -316,6 +316,9 @@ def plot_metric(u_data, v_data, lon, lat, metric):
 
     PLOT_PATH = build_plot_path(MODEL_STR)
 
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PLOT_PATH, exist_ok = True)
+
     # Save figure
     plt.savefig(os.path.join(PLOT_PATH, fnam), bbox_inches = 'tight')
 

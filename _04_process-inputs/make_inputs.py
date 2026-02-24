@@ -85,6 +85,9 @@ def main():
     x_val, y_val, r_val, nan_mask_val = x[val_idx], y[val_idx], ri_t0[val_idx], nan_mask[val_idx]
     x_test, y_test, r_test, nan_mask_test = x[test_idx], y[test_idx], ri_t0[test_idx], nan_mask[test_idx]
 
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_MODEL_INPUTS, exist_ok = True)
+
     # Save splits
     np.savez(
         os.path.join(PATH_MODEL_INPUTS, 'train.npz'),

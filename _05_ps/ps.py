@@ -27,6 +27,9 @@ def main():
     # Shift true array forward
     y_true = y_test[1:,:,:,:]
 
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_PS_OUT, exist_ok = True)
+
     # Save predictions
     np.savez(
         os.path.join(PATH_PS_OUT, f"preds_ps.npz"),

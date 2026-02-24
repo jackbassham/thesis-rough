@@ -66,6 +66,9 @@ export RESOLUTION=25 # km
 export START_YEAR=1992 # minimum 1989
 export END_YEAR=2020
 
+# Initialize MODEL_STR variable for quick eval plots (updated for each model)
+export MODEL_STR=""
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INITIALIZE LOG FOR SHELL SCRIPT
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,10 +135,10 @@ echo " "
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Timestamp most recent regrid data
-export TIMESTAMP_IN='01072026_1643'
+export TIMESTAMP_REGRID='01072026_1643'
 
 # Timestamp version of coordinate variables
-export TIMESTAMP_COORD='01072026_1643'
+export TIMESTAMP_COORDINATES='01072026_1643'
 
 export TIMESTAMP_OUT=$TIMESTAMP
 
@@ -206,8 +209,8 @@ echo "3. MASK & NORMALIZE DATA"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 echo "Starting mask_normalize_inputs.py..."
-if ! python -m 3-mask-normalize.mask_normalize; then 
-    echo "ERROR: Failed to run 3-mask-normalize/mask_normalize_inputs.py"
+if ! python -m _03_mask-normalize.mask_normalize; then 
+    echo "ERROR: Failed to run _03_mask-normalize/mask_normalize_inputs.py"
     exit 1
 fi
 
@@ -218,45 +221,14 @@ echo " "
 echo "4. PROCESS MODEL INPUTS" 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# MODIFY TIMESTAMPS FOR PARTIAL RUN
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Get timestamp of current masked_normalized data
-TIMESTAMP_IN=$TIMESTAMP_OUT
-
-echo "Starting make_lr_inputs.py..."
-if ! python -m 4-process-inputs.make_lr_inputs; then 
-    echo "ERROR: Failed to run 4-process-inputs/make_lr_inputs.py"
+echo "Starting make_inputs.py..."
+if ! python -m _04_process-inputs.make_inputs; then 
+    echo "ERROR: Failed to run _04_process-inputs/make_inputs.py"
     exit 1
 fi
 
-echo "Finished make_lr_inputs.py," 
+echo "Finished make_inputs.py," 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# SWITCH CONDA ENVIRONMENT TO PYTORCH
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Deactivate environment
-conda deactivate
-
-# Define environment
-conda_env="torch_env"
-
-# Activate environment
-conda activate $conda_env
-
-echo "Activated Conda Environment '$conda_env'"
-echo " "
-
-echo "Starting make_cnn_inputs.py..."
-if ! python -m 4-process-inputs.make_cnn_inputs; then 
-    echo "ERROR: Failed to run 4-process-inputs/make_cnn_inputs.py"
-    exit 1
-fi
-
-echo "Finished make_cnn_inputs.py" 
-echo " "
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "MODEL TRAINING"
@@ -267,27 +239,11 @@ echo " "
 echo "5. PERSISTENCE" 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# SWITCH CONDA ENVIRONMENT TO SEAICE
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Deactivate environment
-conda deactivate
-
-# Define environment
-conda_env="seaice"
-
-# Activate environment
-conda activate $conda_env
-
-echo "Activated Conda Environment '$conda_env'"
-echo " "
-
 # Define model type string for script and quick evaluation plots
 export MODEL_STR="ps"
 
 # Define model script directory string
-DIR_STR="5-ps"
+DIR_STR="_05_ps"
 
 echo "Starting $MODEL_STR.py..."
 if ! python -m $DIR_STR.$MODEL_STR; then 
@@ -297,8 +253,8 @@ fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate.quick_eval; then 
-    echo "ERROR: 10-evaluate/quick_eval.py"
+if ! python -m _10_evaluate.quick_eval; then 
+    echo "ERROR: _10_evaluate/quick_eval.py"
     exit 1
 fi
 
@@ -314,7 +270,7 @@ echo "6. LINEAR REGRESSION"
 export MODEL_STR="lr_cf"
 
 # Define model script directory string
-DIR_STR="6-lr"
+DIR_STR="_06_lr"
 
 echo "Starting $MODEL_STR.py..."
 if ! python -m $DIR_STR.$MODEL_STR; then 
@@ -324,8 +280,8 @@ fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate.quick_eval; then 
-    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+if ! python -m _10_evaluate.quick_eval; then 
+    echo "ERROR: Failed to run _10_evaluate/quick_eval.py"
     exit 1
 fi
 
@@ -341,7 +297,7 @@ echo "7. WEIGHTED LINEAR REGRESSION"
 export MODEL_STR="lr_wtd_cf"
 
 # Define model script directory string
-DIR_STR="7-lr-weighted"
+DIR_STR="_07_lr-weighted"
 
 echo "Starting $MODEL_STR.py..."
 if ! python -m $DIR_STR.$MODEL_STR; then 
@@ -351,8 +307,8 @@ fi
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate.quick_eval; then 
-    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+if ! python -m _10_evaluate.quick_eval; then 
+    echo "ERROR: Failed to run _10_evaluate/quick_eval.py"
     exit 1
 fi
 
@@ -381,10 +337,10 @@ echo "8. CNN"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-export MODEL_STR="cnn_pt"
+export MODEL_STR="cnn_pt_mask_in"
 
 # Define model script directory string
-DIR_STR="8-cnn"
+DIR_STR="_08_cnn"
 
 echo "Starting $MODEL_STR.py..."
 if ! python -m $DIR_STR.$MODEL_STR; then 
@@ -401,10 +357,10 @@ echo "9. WEIGHTED CNN"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-export MODEL_STR="cnn_wtd_pt"
+export MODEL_STR="cnn_wtd_pt_mask_in"
 
 # Define model script directory string
-DIR_STR="9-cnn-weighted"
+DIR_STR="_09_cnn-weighted"
 
 echo "Starting $MODEL_STR.py..."
 if ! python -m $DIR_STR.$MODEL_STR; then 
@@ -437,12 +393,12 @@ echo " "
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define model type string for script and quick evaluation plots
-export MODEL_STR="cnn_pt"
+export MODEL_STR="cnn_pt_mask_in"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate.quick_eval; then 
-    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+if ! python -m _10_evaluate.quick_eval; then 
+    echo "ERROR: Failed to run _10_evaluate/quick_eval.py"
     exit 1
 fi
 
@@ -451,12 +407,12 @@ echo "PLOTS at: '/plots/quick-eval/$MODEL_STR/$HEM/$TIMESTAMP'"
 echo " "
 
 # Define model type string for script and quick evaluation plots
-export MODEL_STR="cnn_wtd_pt"
+export MODEL_STR="cnn_wtd_pt_mask_in"
 
 # Generate quick evaluation plots
 echo "Starting quick-eval.py"
-if ! python -m 10-evaluate.quick_eval; then 
-    echo "ERROR: Failed to run 10-evaluate/quick_eval.py"
+if ! python -m _10_evaluate.quick_eval; then 
+    echo "ERROR: Failed to run _10_evaluate/quick_eval.py"
     exit 1
 fi
 

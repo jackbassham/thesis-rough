@@ -110,13 +110,16 @@ def plot_losses(num_epochs, train_losses, val_losses):
     plt.legend()
     plt.title(f"{MODEL_STR} Loss")
 
-    plt.savefig(os.path.join(PATH_DEST, f'loss_{MODEL_STR}_{FSTR_END_OUT}.png'))
+    plt.savefig(os.path.join(PATH_CNN_WTD_PT_OUT, f'loss_{MODEL_STR}.png'))
 
     # plt.show()
 
     return
 
 def main():
+    
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_CNN_WTD_PT_OUT, exist_ok = True)
 
     # Set random seed for reproducibility
     set_seed(42)
