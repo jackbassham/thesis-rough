@@ -45,12 +45,13 @@ PASS = get_global_variable("PASS") # password
 # Timestamps or timestamp defaults retrieved here
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TIMESTAMP_RAW = get_global_variable("TIMESTAMP_RAW", "TIMESTAMP_OUT")
-TIMESTAMP_REGRID = get_global_variable("TIMESTAMP_REGRID", "TIMESTAMP_OUT")
-TIMESTAMP_COORDINATES = get_global_variable("TIMSTAMP_COORDINATES", "TIMESTAMP_OUT")
-TIMESTAMP_NAN_MASK = get_global_variable("TIMESTAMP_NAN_MASK", "TIMESTAMP_OUT")
-TIMESTAMP_R = get_global_variable("TIMESTAMP_UNCERTAINTY", "TIMESTAMP_OUT")
-TIMESTAMP_MASK_NORM = get_global_variable("TIMESTAMP_MASK_NORM", "TIMESTAMP_OUT")
-TIMESTAMP_INPUTS = get_global_variable("TIMESTAMP_INPUTS", "TIMESTAMP_OUT")
-TIMESTAMP_OUTPUTS = get_global_variable("TIMESTAMP_OUTPUTS", "TIMESTAMP_OUT")
+TIMESTAMP_OUT = get_global_variable("TIMESTAMP_OUT")
+TIMESTAMP_RAW = get_global_variable("TIMESTAMP_RAW", TIMESTAMP_OUT)
+TIMESTAMP_REGRID = get_global_variable("TIMESTAMP_REGRID", TIMESTAMP_OUT)
+TIMESTAMP_COORDINATES = get_global_variable("TIMSTAMP_COORDINATES", TIMESTAMP_OUT)
+TIMESTAMP_NAN_MASK = get_global_variable("TIMESTAMP_NAN_MASK", TIMESTAMP_OUT)
+TIMESTAMP_R = get_global_variable("TIMESTAMP_UNCERTAINTY", TIMESTAMP_OUT)
+TIMESTAMP_MASK_NORM = get_global_variable("TIMESTAMP_MASK_NORM", TIMESTAMP_OUT)
+TIMESTAMP_INPUTS = get_global_variable("TIMESTAMP_INPUTS", TIMESTAMP_OUT)
+TIMESTAMP_OUTPUTS = get_global_variable("TIMESTAMP_OUTPUTS", TIMESTAMP_OUT)
 
