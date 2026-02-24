@@ -1,5 +1,4 @@
 import os
-import sys
 
 
 def get_global_variable(shell_variable: str, default_variable: str | None = None) -> str:
