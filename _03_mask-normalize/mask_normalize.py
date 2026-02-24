@@ -9,6 +9,9 @@ from _00_config.path import (
 
 def main():
 
+    # Create the destination directory if it doesn't already exist
+    os.makedirs(PATH_MASK_NORM, exist_ok = True)
+
     # Load in variables
     fnam = 'ice_vel_regrid_ppv4.npz'
     data = np.load(os.path.join(PATH_REGRID, fnam), allow_pickle=True)
@@ -207,9 +210,6 @@ def main():
     
     # Define data file name for normalized data
     fnam = 'masked_normalized.npz'
-
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PATH_MASK_NORM, exist_ok = True)
 
     # Save the normalized data
     np.savez(
