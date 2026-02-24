@@ -101,14 +101,13 @@ def main():
     # Save split indices
 
     np.savez_compressed(
-    os.path.join(PATH_DEST_LR, f"split_indices_lr_{FSTR_END_OUT}.npz"),
+    os.path.join(PATH_MODEL_INPUTS, f"split_indices.npz"),
         train_idx=train_idx,
-        # val_idx=val_idx,
+        val_idx=val_idx,
         test_idx=test_idx
     )
     
-    print(f"Split indices saved at {PATH_DEST_LR}")
-
+    print(f"Split indices saved at {PATH_MODEL_INPUTS}")
 
     return
 
