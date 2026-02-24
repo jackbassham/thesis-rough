@@ -23,8 +23,20 @@ def main():
 
     print("Input Variables Loaded")
 
+    # Load in nan mask
+    fnam = 'nan_mask.npz'
+    data = np.load(os.path.join(PATH_MASK_NORM), fnam)
+
+    nan_mask = data['nan_mask']
+
+    # Initialize nan mask input, where mask = 1 where valid and 0 where data is nan
+    nan_mask_input = np.ones_like(nan_mask)
+
+    # Convert indices where nans exist to 0
+    nan_mask_input = np.where(np.isnan(nan_mask), 0, nan_mask_input)
+
     # Define number of input channels
-    n_in = 3
+    n_in = 4
 
     # Define number of output channels
     n_out = 2
@@ -40,6 +52,7 @@ def main():
     x[:, 0, :, :] = ua_t0 # Zonal Wind, present day
     x[:, 1, :, :] = va_t0 # Meridional Wind, present day
     x[:, 2, :, :] = ci_t1 # Ice Concentration, previous day
+    x[:, 3, :, :] = nan_mask_input
 
     # Fill target arrays
     y[:, 0, :, :] = ui_t0 # Zonal Ice Velocity, present day
@@ -68,30 +81,33 @@ def main():
     test_idx  = np.where(test_mask)[0]
 
     # Fill train, validation, and test data arrays
-    x_train, y_train, r_train = x[train_idx], y[train_idx], ri_t0[train_idx]
-    x_val, y_val, r_val = x[val_idx], y[val_idx], ri_t0[val_idx]
-    x_test, y_test, r_test = x[test_idx], y[test_idx], ri_t0[test_idx]
+    x_train, y_train, r_train, nan_mask_train = x[train_idx], y[train_idx], ri_t0[train_idx], nan_mask[train_idx]
+    x_val, y_val, r_val, nan_mask_val = x[val_idx], y[val_idx], ri_t0[val_idx], nan_mask[val_idx]
+    x_test, y_test, r_test, nan_mask_test = x[test_idx], y[test_idx], ri_t0[test_idx], nan_mask[test_idx]
 
     # Save splits
     np.savez(
         os.path.join(PATH_MODEL_INPUTS, 'train.npz'),
         x_train = x_train,
         y_train = y_train,
-        r_train = r_train
+        r_train = r_train,
+        nan_mask_train = nan_mask_train,
     )
 
     np.savez(
         os.path.join(PATH_MODEL_INPUTS, 'val.npz'),
         x_val = x_val,
         y_val = y_val,
-        r_val = r_val
+        r_val = r_val,
+        nan_mask_val = nan_mask_val,
     )
 
     np.savez(
         os.path.join(PATH_MODEL_INPUTS, 'test.npz'),
         x_test = x_test,
         y_test = y_test,
-        r_test = r_test
+        r_test = r_test,
+        nan_mask_test = nan_mask_test,
     )
 
     print(f'Splits saved at {PATH_MODEL_INPUTS}')
@@ -102,7 +118,7 @@ def main():
     os.path.join(PATH_MODEL_INPUTS, f"split_indices.npz"),
         train_idx=train_idx,
         val_idx=val_idx,
-        test_idx=test_idx
+        test_idx=test_idx,
     )
     
     print(f"Split indices saved at {PATH_MODEL_INPUTS}")
