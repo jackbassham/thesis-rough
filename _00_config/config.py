@@ -1,93 +1,126 @@
 from dataclasses import dataclass
+from typing import Tuple
 
+@dataclass
 class Config:
-    def __init__(self,
-            hemisphere, year_range,
-            latitude_bounds, longitude_bounds, grid_resolution,
-):
-        """
-        Configuration for global data parameters
+    """
+    Configuration for global data parameters
 
-        Parameters used for replication:
+    Parameters used for replication:
 
-            Enter parameters based on the following for replication of Northern Hemisphere 
-            and Southern Hemisphere model runs.
+        Enter parameters based on the following for replication of Northern Hemisphere 
+        and Southern Hemisphere model runs.
 
-            Hemisphere String identifier:
-            String identifier
-            'sh' Southern Hemisphere
-            'nh' Northern Hemisphere
+        Hemisphere String identifier:
+        String identifier
+        'sh' Southern Hemisphere
+        'nh' Northern Hemisphere
 
-            Temporal Bounds:
-            year_range = (1992, 2020)
-            # NOTE: Original Hoffman, et. al range is 1989-2020, 1989-1991 corrupted JRA55 data files on Mazloff Server
-            # TODO: Script to JRA55 or ERA data from source
+        Temporal Bounds:
+        year_range = (1992, 2020)
+        # NOTE: Original Hoffman, et. al range is 1989-2020, 1989-1991 corrupted JRA55 data files on Mazloff Server
+        # TODO: Script to JRA55 or ERA data from source
 
-            Spatial Bounds: 
-            Southern Hemisphere; Southern Ocean
-            latitude_limits = (-80, -62), limited to -90degS to -37degS
-            longitude_limts = (-180, 180), limited to -180degW to 180degE
-            
-            Northern Hemisphere; Arctic ('nh')
-            latitude_limits = (60, 90), limited to 29.7N to 90N
-            longitude_limts = (-180, 180), limited to -180degW to 180degE
-
-            Grid Resolution:
-            25
-            Resolution, in km, used for new regrid data. Based on original EASE grid
-            resolution of NSIDC Polar Pathfinder Sea Ice Motion Vectors, version 4. 
-            Converted to degrees during regrid. 
-
-        """
-
-        # Construct parameters
-        self.hempisphere = hemisphere
-        self.year_range = year_range
-        self.latitude_bounds = latitude_bounds
-        self.longitude_bounds = longitude_bounds
-        self.grid_resolution = grid_resolution
-
-        # Getter for hemisphere
-        @property
-        def hemisphere(self):
-            return self._hemisphere
+        Spatial Bounds: 
+        Southern Hemisphere; Southern Ocean
+        latitude_limits = (-80, -62), limited to -90degS to -37degS
+        longitude_limts = (-180, 180), limited to -180degW to 180degE
         
-        # Setter for hemisphere
-        @hemisphere.setter
-        def hemisphere(self, hemisphere):
-            # Handle case where hemisphere string is invalid
-            if not hemisphere == 'nh' or not hemisphere == 'sh':
-                raise ValueError('Invalid hemisphere string: Enter "sh" for Southern or "nh" for Northern') 
-            self._hemisphere = hemisphere
+        Northern Hemisphere; Arctic ('nh')
+        latitude_limits = (60, 90), limited to 29.7N to 90N
+        longitude_limts = (-180, 180), limited to -180degW to 180degE
 
-        @property
-        def year_range(self):
-            return self._year_range
+        Grid Resolution:
+        25
+        Resolution, in km, used for new regrid data. Based on original EASE grid
+        resolution of NSIDC Polar Pathfinder Sea Ice Motion Vectors, version 4. 
+        Converted to degrees during regrid. 
+
+    """
+
+    # Construct parameters
+    hemisphere: str
+    year_range: Tuple[int, int]
+    latitude_bounds: Tuple[float, float]
+    longitude_bounds: Tuple[float, float]
+    grid_resolution = float
+
+
+    def __post_init__(self):
+        """
+        Post initialization error handling to check that parameters are valid
+        """
+
+        # Handle invalid hemisphere string
+        if self.hemisphere not in ('sh', 'nh'):
+            raise ValueError('Invalid hemisphere string: Enter "sh" for Southern or "nh" for Northern') 
         
-        @year_range.setter
-        def year_range(self, year_range):
-            # Handle case where years are not entered as a tuple range
-            if not isinstance(year_range, tuple) or not len(year_range) == 2:
-                raise ValueError('Enter a tuple year range (min year, max year)')
+        # Handle years not entered as range
+        if not len(self.year_range) == 2:
+            raise ValueError('Enter a year range as a tuple (start year, end year)')
             
-            # Extract start year and end year
-            start, end = year_range
+        # Extract start year and end year from tuple
+        start, end = self.year_range
 
-            # Handle case where either year is not valid
-            if not isinstance(start, int) or not isinstance(end, int):
-                raise ValueError('Invalid year input: Enter years in format YYYY')
+        # Handle invalid year entry type
+        if not isinstance(start, int) or not isinstance(end, int):
+            raise ValueError('Invalid year input: Enter years as integers in format YYYY')
 
-            # Handle case where years are out of range
-            if not 1989 < year_range < 2020:
-                raise ValueError('Years out of range: Enter in range 1989 to 2020')
+        # Handle years out of range
+        if not start >= 1989 or end <= 2020:
+            raise ValueError('Years out of range: Enter in range 1989 to 2020')
+
+        # Handle invalid order of range
+        if not start < end:
+            raise ValueError('Start year must precede end year')
+
+        # Handle latitude bounds not entered as range
+        if not len(self.latitude_bounds) == 2:
+            raise ValueError('Enter a latitude bounds as a tuple (min lat, max lat)')
+        
+        # Extract minimum and maximum latitudes
+        min_lat, max_lat = self.latitude_bounds
+
+        # Handle invalid latitude entry type
+        if not isinstance(min_lat, (float, int)) or not isinstance(max_lat, (float, int)):
+            raise ValueError('Invalid latitude bound input: Enter latitudes as integers or floats')
+        
+        # Handle invalid latitude bounds for Southern Hemisphere
+        if self.hemisphere == 'sh':
+            if not min_lat >= -90 or not max_lat <= -37:
+                raise ValueError('Invalid latitude Southern Hemisphere: limited to (-90, -37) ie: 90degS, 37degS') 
+
+        # Handle invalid latitude bounds for Northern Hemisphere
+        if self.hemisphere == 'nh':
+            if not min_lat >= 29.7 or not max_lat <= 90:
+                raise ValueError('Invalid latitude Northern Hemisphere: limited to (29.7, 90) ie: 29.7degN, 90degN') 
+        
+        # Handle longitude bounds not entered as range
+        if not len(self.longitude_bounds) == 2:
+            raise ValueError('Enter a latitude bounds as a tuple (min lat, max lat)')
+        
+        # Extract minimum and maximum longitude from bounds
+        min_lon, max_lon = self.longitude_bounds
+
+        # Handle invalid latitude entry type
+        if not isinstance(min_lat, (float, int)) or not isinstance(max_lat, (float, int)):
+            raise ValueError('Invalid latitude bound input: Enter latitudes as integers or floats')
+
+        # Handle longitude bounds out of range
+        if not min_lon >= -180 or not max_lon <= 180:
+            raise ValueError('Invalid longitude range: bounds limited to (-180, 180) ie: "180degW, 180degE"')
+        
+        # Handle invalid grid resolution
+        if not isinstance(self.grid_resolution, (float, int)) or self.grid_resolution <= 0:
+            raise ValueError('Invalid grid resolution, enter as positive, nonzero integer or float')
 
 
 # Create instance of parameters for model run
 config = Config(
     hempisphere = 'sh',
     year_range = (1992, 2020),
-    latitude_limts = (-80, -62),
-    longitude_limits = (-180, 180),
+    latitude_bounds = (-80, -62),
+    longitude_bounds = (-180, 180),
     grid_resolution = 25,
 )
     
