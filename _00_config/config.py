@@ -17,7 +17,18 @@ class Config:
             Enter parameters based on the following for replication of Northern Hemisphere 
             and Southern Hemisphere model runs.
 
-            Southern Hemisphere; Southern Ocean ('sh')
+            Hemisphere String identifier:
+            String identifier
+            'sh' Southern Hemisphere
+            'nh' Northern Hemisphere
+
+            Temporal Bounds:
+            year_range = (1992, 2020)
+            # NOTE: Original Hoffman, et. al range is 1989-2020, 1989-1991 corrupted JRA55 data files on Mazloff Server
+            # TODO: Script to JRA55 or ERA data from source
+
+            Spatial Bounds: 
+            Southern Hemisphere; Southern Ocean
             latitude_limits = (-80, -62), limited to -90degS to -37degS
             longitude_limts = (-180, 180), limited to -180degW to 180degE
             
@@ -25,10 +36,11 @@ class Config:
             latitude_limits = (60, 90), limited to 29.7N to 90N
             longitude_limts = (-180, 180), limited to -180degW to 180degE
 
-            Temporal Bounds
-            year_range = (1992, 2020)
-            # NOTE: Minimum Year 1989 (HOFFMAN), 1989-1991 corrupted JRA55 data files on Mazloff Server
-            # TODO: Script to JRA55 or ERA data from source=
+            Grid Resolution:
+            25
+            Resolution, in km, used for new regrid data. Based on original EASE grid
+            resolution of NSIDC Polar Pathfinder Sea Ice Motion Vectors, version 4. 
+            Converted to degrees during regrid. 
 
         """
 
@@ -38,8 +50,6 @@ class Config:
         self.longitude_limits = (-180, 180)
         self.grid_resolution = 25
     
-
-
 
 def get_global_variable(shell_variable: str, default_variable: str | None = None) -> str:
     """
