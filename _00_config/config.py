@@ -1,5 +1,45 @@
 import os
 
+class Config:
+    def __init__(
+            self,
+            hemisphere,
+            year_range,
+            latitude_limits,
+            longitude_limits,
+            grid_resolution,
+    ):
+        """
+        Configuration for global data parameters
+
+        Parameters used for replication:
+
+            Enter parameters based on the following for replication of Northern Hemisphere 
+            and Southern Hemisphere model runs.
+
+            Southern Hemisphere; Southern Ocean ('sh')
+            latitude_limits = (-80, -62), limited to -90degS to -37degS
+            longitude_limts = (-180, 180), limited to -180degW to 180degE
+            
+            Northern Hemisphere; Arctic ('nh')
+            latitude_limits = (60, 90), limited to 29.7N to 90N
+            longitude_limts = (-180, 180), limited to -180degW to 180degE
+
+            Temporal Bounds
+            year_range = (1992, 2020)
+            # NOTE: Minimum Year 1989 (HOFFMAN), 1989-1991 corrupted JRA55 data files on Mazloff Server
+            # TODO: Script to JRA55 or ERA data from source=
+
+        """
+
+        self.hempisphere = 'sh'
+        self.year_range = (1992, 2020)
+        self.latitude_limts = (-80, -62)
+        self.longitude_limits = (-180, 180)
+        self.grid_resolution = 25
+    
+
+
 
 def get_global_variable(shell_variable: str, default_variable: str | None = None) -> str:
     """
