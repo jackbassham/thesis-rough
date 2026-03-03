@@ -43,18 +43,30 @@ class Config:
     year_range: Tuple[int, int]
     latitude_bounds: Tuple[float, float]
     longitude_bounds: Tuple[float, float]
-    grid_resolution = float
+    grid_resolution: int
 
 
     def __post_init__(self):
         """
-        Post initialization error handling to check that parameters are valid
-        """
+        Post parameter initialization error handling using validation methods
+        """ 
+        self._validate_hemisphere()
+        self._validate_year_range()
+        self._validate_latitude_bounds()
+        self._validate_longitude_bounds()
+        self._validate_grid_resolution()
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Parameter Validation Methods
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    def _validate_hemisphere(self):
         # Handle invalid hemisphere string
         if self.hemisphere not in ('sh', 'nh'):
             raise ValueError('Invalid hemisphere string: Enter "sh" for Southern or "nh" for Northern') 
         
+
+    def _validate_year_range(self):
         # Handle years not entered as range
         if not len(self.year_range) == 2:
             raise ValueError('Enter a year range as a tuple (start year, end year)')
@@ -67,13 +79,15 @@ class Config:
             raise ValueError('Invalid year input: Enter years as integers in format YYYY')
 
         # Handle years out of range
-        if not start >= 1989 or end <= 2020:
+        if start < 1989 or end > 2020:
             raise ValueError('Years out of range: Enter in range 1989 to 2020')
 
         # Handle invalid order of range
         if not start < end:
             raise ValueError('Start year must precede end year')
 
+
+    def _validate_latitude_bounds(self):
         # Handle latitude bounds not entered as range
         if not len(self.latitude_bounds) == 2:
             raise ValueError('Enter a latitude bounds as a tuple (min lat, max lat)')
@@ -87,14 +101,16 @@ class Config:
         
         # Handle invalid latitude bounds for Southern Hemisphere
         if self.hemisphere == 'sh':
-            if not min_lat >= -90 or not max_lat <= -37:
+            if min_lat < -90 or max_lat > -37:
                 raise ValueError('Invalid latitude Southern Hemisphere: limited to (-90, -37) ie: 90degS, 37degS') 
 
         # Handle invalid latitude bounds for Northern Hemisphere
         if self.hemisphere == 'nh':
-            if not min_lat >= 29.7 or not max_lat <= 90:
+            if min_lat < 29.7 or max_lat > 90:
                 raise ValueError('Invalid latitude Northern Hemisphere: limited to (29.7, 90) ie: 29.7degN, 90degN') 
         
+
+    def _validate_longitude_bounds(self):
         # Handle longitude bounds not entered as range
         if not len(self.longitude_bounds) == 2:
             raise ValueError('Enter a latitude bounds as a tuple (min lat, max lat)')
@@ -103,13 +119,15 @@ class Config:
         min_lon, max_lon = self.longitude_bounds
 
         # Handle invalid latitude entry type
-        if not isinstance(min_lat, (float, int)) or not isinstance(max_lat, (float, int)):
-            raise ValueError('Invalid latitude bound input: Enter latitudes as integers or floats')
+        if not isinstance(min_lon, (float, int)) or not isinstance(max_lon, (float, int)):
+            raise ValueError('Invalid longitude bound input: Enter longitudes as integers or floats')
 
         # Handle longitude bounds out of range
-        if not min_lon >= -180 or not max_lon <= 180:
+        if min_lon < -180 or max_lon > 180:
             raise ValueError('Invalid longitude range: bounds limited to (-180, 180) ie: "180degW, 180degE"')
         
+
+    def _validate_grid_resolution(self):
         # Handle invalid grid resolution
         if not isinstance(self.grid_resolution, (float, int)) or self.grid_resolution <= 0:
             raise ValueError('Invalid grid resolution, enter as positive, nonzero integer or float')
@@ -119,7 +137,7 @@ def main():
 
     # Create instance of parameters for model run
     config = Config(
-        hempisphere = 'sh',
+        hemisphere = 'sh',
         year_range = (1992, 2020),
         latitude_bounds = (-80, -62),
         longitude_bounds = (-180, 180),
