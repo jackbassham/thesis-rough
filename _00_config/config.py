@@ -115,14 +115,20 @@ class Config:
             raise ValueError('Invalid grid resolution, enter as positive, nonzero integer or float')
 
 
-# Create instance of parameters for model run
-config = Config(
-    hempisphere = 'sh',
-    year_range = (1992, 2020),
-    latitude_bounds = (-80, -62),
-    longitude_bounds = (-180, 180),
-    grid_resolution = 25,
-)
+def main():
+
+    # Create instance of parameters for model run
+    config = Config(
+        hempisphere = 'sh',
+        year_range = (1992, 2020),
+        latitude_bounds = (-80, -62),
+        longitude_bounds = (-180, 180),
+        grid_resolution = 25
+    )
+
+
+if __name__ == '__main__':
+    main()
     
 
 def get_global_variable(shell_variable: str, default_variable: str | None = None) -> str:
