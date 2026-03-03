@@ -1,14 +1,10 @@
-import os
+from dataclasses import dataclass
 
 class Config:
-    def __init__(
-            self,
-            hemisphere,
-            year_range,
-            latitude_limits,
-            longitude_limits,
-            grid_resolution,
-    ):
+    def __init__(self,
+            hemisphere, year_range,
+            latitude_bounds, longitude_bounds, grid_resolution,
+):
         """
         Configuration for global data parameters
 
@@ -44,11 +40,56 @@ class Config:
 
         """
 
-        self.hempisphere = 'sh'
-        self.year_range = (1992, 2020)
-        self.latitude_limts = (-80, -62)
-        self.longitude_limits = (-180, 180)
-        self.grid_resolution = 25
+        # Construct parameters
+        self.hempisphere = hemisphere
+        self.year_range = year_range
+        self.latitude_bounds = latitude_bounds
+        self.longitude_bounds = longitude_bounds
+        self.grid_resolution = grid_resolution
+
+        # Getter for hemisphere
+        @property
+        def hemisphere(self):
+            return self._hemisphere
+        
+        # Setter for hemisphere
+        @hemisphere.setter
+        def hemisphere(self, hemisphere):
+            # Handle case where hemisphere string is invalid
+            if not hemisphere == 'nh' or not hemisphere == 'sh':
+                raise ValueError('Invalid hemisphere string: Enter "sh" for Southern or "nh" for Northern') 
+            self._hemisphere = hemisphere
+
+        @property
+        def year_range(self):
+            return self._year_range
+        
+        @year_range.setter
+        def year_range(self, year_range):
+            # Handle case where years are not entered as a tuple range
+            if not isinstance(year_range, tuple) or not len(year_range) == 2:
+                raise ValueError('Enter a tuple year range (min year, max year)')
+            
+            # Extract start year and end year
+            start, end = year_range
+
+            # Handle case where either year is not valid
+            if not isinstance(start, int) or not isinstance(end, int):
+                raise ValueError('Invalid year input: Enter years in format YYYY')
+
+            # Handle case where years are out of range
+            if not 1989 < year_range < 2020:
+                raise ValueError('Years out of range: Enter in range 1989 to 2020')
+
+
+# Create instance of parameters for model run
+config = Config(
+    hempisphere = 'sh',
+    year_range = (1992, 2020),
+    latitude_limts = (-80, -62),
+    longitude_limits = (-180, 180),
+    grid_resolution = 25,
+)
     
 
 def get_global_variable(shell_variable: str, default_variable: str | None = None) -> str:
