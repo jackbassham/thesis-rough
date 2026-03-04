@@ -148,6 +148,9 @@ class VersionConfig:
     (ie: user runs the entire pipeline)
     """
 
+    # Define format for timestamp version
+    TIMESTAMP_FORMAT = "%m%d%Y_%H%M"
+
     timestamp_out: Optional[str] = None
 
     timestamp_raw: Optional[str] = None
@@ -161,11 +164,9 @@ class VersionConfig:
 
     @classmethod
     def get_timestamp(cls):
-        # Define format for timestamp version
-        _timestamp_format = "%m%d%Y_%H%M"
 
         # Generate time stamp with format #MMDDYY_HHMM
-        return(datetime.now().strftime(_timestamp_format))
+        return(datetime.now().strftime(cls.TIMESTAMP_FORMAT))
 
 
     def __post_init__(self):
