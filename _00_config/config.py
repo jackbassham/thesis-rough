@@ -102,10 +102,14 @@ class DataConfig:
         if not isinstance(min_lat, (float, int)) or not isinstance(max_lat, (float, int)):
             raise ValueError('Invalid latitude bound input: Enter latitudes as integers or floats')
         
+        # Handle miss-ordered latitude bounds
+        if not min_lat < max_lat:
+            raise ValueError('Enter latitude bounds from South to North (where minimum less than maximum)')
+
         # Handle invalid latitude bounds for Southern Hemisphere
         if self.hemisphere == 'sh':
             if min_lat < -90 or max_lat > -37:
-                raise ValueError('Southern Hemisphere latitude bounds limited to (-90, -37) ie: "90degS, 37degS"') 
+                raise ValueError('Southern Hemisphere latitude bounds limited to (-90, -37) ie: "90degS, 37degS"')
 
         # Handle invalid latitude bounds for Northern Hemisphere
         if self.hemisphere == 'nh':
@@ -124,6 +128,10 @@ class DataConfig:
         # Handle invalid latitude entry type
         if not isinstance(min_lon, (float, int)) or not isinstance(max_lon, (float, int)):
             raise ValueError('Longitude bounds must be entered as integers or floats')
+        
+        # Handle miss-ordered longitude bounds
+        if not min_lon < max_lon:
+            raise ValueError('Enter longitude bounds from West to East (-180 to 180; where minimum less than maximum)')
 
         # Handle longitude bounds out of range
         if min_lon < -180 or max_lon > 180:
