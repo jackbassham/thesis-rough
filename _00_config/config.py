@@ -116,7 +116,7 @@ class DataConfig:
     def _validate_longitude_bounds(self):
         # Handle longitude bounds not entered as range
         if not len(self.longitude_bounds) == 2:
-            raise ValueError('Enter a latitude bounds as a tuple (min lat, max lat)')
+            raise ValueError('Enter latitude as a tuple (min lat, max lat)')
         
         # Extract minimum and maximum longitude from bounds
         min_lon, max_lon = self.longitude_bounds
