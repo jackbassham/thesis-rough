@@ -173,21 +173,39 @@ class VersionConfig:
         """
         Post parameter initialization error handling using validation methods. 
         Sets timestamps to current 'timestamp_out', unless user specifies manually.
+        Raise value error if user does not enter in format MMDDYY_HHMM.
         """ 
 
+        # If user does not enter manually, assign current timestamp
         if self.timestamp_out is None:
             self.timestamp_out = self.get_timestamp()
+        else:
+            # Check for errors in manually entered timestamp
+            self._validate_format(self.timestamp_out)
 
+        # Iterate through remaining timestamps
+        for attr in [
+            'timestamp_raw',
+            'timestamp_regrid',
+            'timestamp_mask_norm',
+            'timestamp_inputs',
+            'timestamp_outputs',
+            'timestamp_coordinates',
+            'timestamp_nan_mask',
+            'timestamp_uncertainty',
+        ]:
+            
+            # Get the input value of timestamp attribute
+            value = getattr(self, attr)
 
-        self.timestamp_raw = self.timestamp_raw or self.timestamp_out
-        self.timestamp_regrid = self.timestamp_regrid or self.timestamp_out
-        self.timestamp_mask_norm = self.timestamp_mask_norm or self.timestamp_out
-        self.timestamp_inputs = self.timestamp_inputs or self.timestamp_out
-        self.timestamp_outputs = self.timestamp_outputs or self.timestamp_out
-        self.timestamp_coordinates = self.timestamp_coordinates or self.timestamp_out
-        self.timestamp_nan_mask = self.timestamp_nan_mask or self.timestamp_out
-        self.timestamp_uncertainty = self.timestamp_uncertainty or self.timestamp_out
+            # If user does not enter manually  
+            if value is None:
+                # Set to current timestamp (default)
+                setattr(self, attr, self.timestamp_out)
 
+            else:
+                # Check for errors in manually entered timestamp
+                self.validate_format(value)
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -202,14 +220,11 @@ class VersionConfig:
             raise ValueError(f'Timestamp {timestamp} must match format {self._timestamp_format}')
         
 
-
 @dataclass
 class LoginCredentials:
 
     username: str
     password: str
-
-
 
 
 def main():
