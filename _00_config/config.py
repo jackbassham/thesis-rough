@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from typing import Tuple
 
+# TODO consider YAML
+
 @dataclass
-class Config:
+class DataConfig:
     """
     Configuration for global data parameters
 
