@@ -149,7 +149,7 @@ class VersionConfig:
     """
 
     # Define format for timestamp version
-    TIMESTAMP_FORMAT = "%m%d%Y_%H%M"
+    _timestamp_format = "%m%d%Y_%H%M"
 
     timestamp_out: Optional[str] = None
 
@@ -166,13 +166,17 @@ class VersionConfig:
     def get_timestamp(cls):
 
         # Generate time stamp with format #MMDDYY_HHMM
-        return(datetime.now().strftime(cls.TIMESTAMP_FORMAT))
+        return(datetime.now().strftime(cls._timestamp_format))
 
 
     def __post_init__(self):
+        """
+        Post parameter initialization error handling using validation methods. 
+        Sets timestamps to current 'timestamp_out', unless user specifies manually.
+        """ 
 
         if self.timestamp_out is None:
-            self.timestamp_out = self.get_timestamp(self._timestamp_format)
+            self.timestamp_out = self.get_timestamp()
 
 
         self.timestamp_raw = self.timestamp_raw or self.timestamp_out
@@ -184,11 +188,20 @@ class VersionConfig:
         self.timestamp_nan_mask = self.timestamp_nan_mask or self.timestamp_out
         self.timestamp_uncertainty = self.timestamp_uncertainty or self.timestamp_out
 
+
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Parameter Validation Methods
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    def _validate_
+    def _validate_format(self, timestamp: str):
+        try:
+            datetime.strptime(timestamp, self._timestamp_format)
+
+        except ValueError:
+            raise ValueError(f'Timestamp {timestamp} must match format {self._timestamp_format}')
+        
+
 
 @dataclass
 class LoginCredentials:
