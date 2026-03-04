@@ -105,12 +105,12 @@ class DataConfig:
         # Handle invalid latitude bounds for Southern Hemisphere
         if self.hemisphere == 'sh':
             if min_lat < -90 or max_lat > -37:
-                raise ValueError('Invalid latitude Southern Hemisphere: limited to (-90, -37) ie: 90degS, 37degS') 
+                raise ValueError('Southern Hemisphere latitude bounds limited to (-90, -37) ie: "90degS, 37degS"') 
 
         # Handle invalid latitude bounds for Northern Hemisphere
         if self.hemisphere == 'nh':
             if min_lat < 29.7 or max_lat > 90:
-                raise ValueError('Invalid latitude Northern Hemisphere: limited to (29.7, 90) ie: 29.7degN, 90degN') 
+                raise ValueError('Northern Hemisphere latitude bounds limited to (29.7, 90) ie: "29.7degN, 90degN"') 
         
 
     def _validate_longitude_bounds(self):
@@ -123,11 +123,11 @@ class DataConfig:
 
         # Handle invalid latitude entry type
         if not isinstance(min_lon, (float, int)) or not isinstance(max_lon, (float, int)):
-            raise ValueError('Invalid longitude bound input: Enter longitudes as integers or floats')
+            raise ValueError('Longitude bounds must be entered as integers or floats')
 
         # Handle longitude bounds out of range
         if min_lon < -180 or max_lon > 180:
-            raise ValueError('Invalid longitude range: bounds limited to (-180, 180) ie: "180degW, 180degE"')
+            raise ValueError('Longitude bounds limited to (-180, 180) ie: "180degW, 180degE"')
         
 
     def _validate_grid_resolution(self):
@@ -222,6 +222,9 @@ class VersionConfig:
 
 @dataclass
 class LoginCredentials:
+    """
+    Login credentials 
+    """
 
     username: str
     password: str
