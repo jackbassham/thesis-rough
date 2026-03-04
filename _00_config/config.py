@@ -159,19 +159,19 @@ class VersionConfig:
     timestamp_nan_mask: Optional[str] = None
     timestamp_uncertainty: Optional[str] = None
 
-    # Define format for timesatamp version
-    _timestamp_format = "%m%d%Y_%H%M"
-
-    def _get_timestamp(format):
+    @classmethod
+    def get_timestamp(cls):
+        # Define format for timestamp version
+        _timestamp_format = "%m%d%Y_%H%M"
 
         # Generate time stamp with format #MMDDYY_HHMM
-        return(datetime.now().strftime(format))
+        return(datetime.now().strftime(_timestamp_format))
 
 
     def __post_init__(self):
 
         if self.timestamp_out is None:
-            self.timestamp_out = self._get_timestamp(self._timestamp_format)
+            self.timestamp_out = self.get_timestamp(self._timestamp_format)
 
 
         self.timestamp_raw = self.timestamp_raw or self.timestamp_out
@@ -182,6 +182,20 @@ class VersionConfig:
         self.timestamp_coordinates = self.timestamp_coordinates or self.timestamp_out
         self.timestamp_nan_mask = self.timestamp_nan_mask or self.timestamp_out
         self.timestamp_uncertainty = self.timestamp_uncertainty or self.timestamp_out
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Parameter Validation Methods
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    def _validate_
+
+@dataclass
+class LoginCredentials:
+
+    username: str
+    password: str
+
+
 
 
 def main():
