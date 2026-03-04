@@ -1,12 +1,13 @@
 from dataclasses import dataclass
-from typing import Tuple
+from datetime import datetime
+from typing import Tuple, Optional
 
 # TODO consider YAML
 
 @dataclass
 class DataConfig:
     """
-    Configuration for global data parameters
+    Configuration for global data data parameters
 
     Parameters used for replication:
 
@@ -135,10 +136,58 @@ class DataConfig:
             raise ValueError('Invalid grid resolution, enter as positive, nonzero integer or float')
 
 
+@dataclass
+class VersionConfig:
+    """
+    Configuration for timestamped data version control.
+
+    Assigns one timestamp at runtime to 'timestamp_out', unless
+    user assigns 'timestamp_out' version manually when instantiating the version 
+    configuration. Timestamps can be optionally assigned for different versions of data to allow
+    user to run from different start points. These default to 'timestamp_out' if not assigned by user 
+    (ie: user runs the entire pipeline)
+    """
+
+    timestamp_out: Optional[str] = None
+
+    timestamp_raw: Optional[str] = None
+    timestamp_regrid: Optional[str] = None
+    timestamp_mask_norm: Optional[str] = None
+    timestamp_inputs: Optional[str] = None
+    timestamp_outputs: Optional[str] = None
+    timestamp_coordinates: Optional[str] = None
+    timestamp_nan_mask: Optional[str] = None
+    timestamp_uncertainty: Optional[str] = None
+
+    # Define format for timesatamp version
+    _timestamp_format = "%m%d%Y_%H%M"
+
+    def _get_timestamp(format):
+
+        # Generate time stamp with format #MMDDYY_HHMM
+        return(datetime.now().strftime(format))
+
+
+    def __post_init__(self):
+
+        if self.timestamp_out is None:
+            self.timestamp_out = self._get_timestamp(self._timestamp_format)
+
+
+        self.timestamp_raw = self.timestamp_raw or self.timestamp_out
+        self.timestamp_regrid = self.timestamp_regrid or self.timestamp_out
+        self.timestamp_mask_norm = self.timestamp_mask_norm or self.timestamp_out
+        self.timestamp_inputs = self.timestamp_inputs or self.timestamp_out
+        self.timestamp_outputs = self.timestamp_outputs or self.timestamp_out
+        self.timestamp_coordinates = self.timestamp_coordinates or self.timestamp_out
+        self.timestamp_nan_mask = self.timestamp_nan_mask or self.timestamp_out
+        self.timestamp_uncertainty = self.timestamp_uncertainty or self.timestamp_out
+
+
 def main():
 
     # Create instance of parameters for model run
-    config = Config(
+    dataconfig = DataConfig(
         hemisphere = 'sh',
         year_range = (1992, 2020),
         latitude_bounds = (-80, -62),
