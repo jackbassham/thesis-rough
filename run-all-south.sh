@@ -112,8 +112,10 @@ echo " "
 # RUN SCRIPTS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Get timestamp from python script
-export TIMESTAMP=$(python -m helpers.timestamp)
+# # Get timestamp from python script
+# export TIMESTAMP=$(python -m helpers.timestamp)
+
+export TIMESTAMP='02242026_1103'
 
 # Print timestamp
 echo "Timestamp recorded:"

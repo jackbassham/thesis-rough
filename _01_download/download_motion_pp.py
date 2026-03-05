@@ -10,7 +10,7 @@ from _00_config.config import (
 
 from _00_config.path import PATH_RAW
 
-from helpers.nasa_earth_data import get_temp_NED_file
+from .get_nasa_earth_data import get_temp_file
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Global variables defined here
@@ -40,7 +40,7 @@ def main():
     url = base_url + fnam
 
     # Get lat and lon variables from one year
-    temp = get_temp_NED_file(url)
+    temp = get_temp_file(url)
     with xr.open_dataset(temp) as data:
         lat = data['latitude'] # EASE latitude shaped [y, x]
         lon = data['longitude'] # EASE longitude shaped [y, x]
@@ -62,7 +62,7 @@ def main():
         url = base_url + fnam
 
         # Download file at year
-        temp = get_temp_NED_file(url)
+        temp = get_temp_file(url)
         with xr.open_dataset(temp) as data:
             u = data['u'].values                             # horizontal sea ice velocity [t, y, x], cm/s
             v = data['v'].values                             # vertical sea ice velocity [t, y, x], cm/s 

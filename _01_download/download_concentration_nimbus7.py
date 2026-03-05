@@ -11,7 +11,7 @@ from _00_config.config import (
 
 from _00_config.path import PATH_RAW
 
-from helpers.nasa_earth_data import get_temp_NED_file
+from .get_nasa_earth_data import get_temp_file
 
 # Downloads Daily NSIDC Sea Ice Concentrations (Nimbus7)
 # from https://nsidc.org/data/nsidc-0051/versions/2
@@ -72,7 +72,7 @@ def main():
         url = base_url+fnam
     
         # Get data in a temporary variable
-        temp = get_temp_NED_file(url)
+        temp = get_temp_file(url)
 
         # If retrieved from url sucessfully
         if temp is not None:
