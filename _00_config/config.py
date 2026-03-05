@@ -172,11 +172,11 @@ class VersionConfig:
     timestamp_model_inputs: Optional[str] = None
     timestamp_model_outputs: Optional[str] = None
 
-    @classmethod
-    def get_timestamp(cls):
+
+    def get_timestamp(self):
 
         # Generate time stamp with format #MMDDYY_HHMM
-        return(datetime.now().strftime(cls._timestamp_format))
+        return(datetime.now().strftime(self._timestamp_format))
 
 
     def __post_init__(self):
