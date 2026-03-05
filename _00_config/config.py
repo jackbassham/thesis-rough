@@ -64,6 +64,9 @@ class DataConfig:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def _validate_hemisphere(self):
+        # Allow for case insensitivity and whitespace
+        self.hemisphere = self.hemisphere.lower().strip()
+
         # Handle invalid hemisphere string
         if self.hemisphere not in ('sh', 'nh'):
             raise ValueError('Invalid hemisphere string: Enter "sh" for Southern or "nh" for Northern') 
