@@ -299,11 +299,21 @@ class PathConfig:
 
         # Return path for the quick evaluation plots
         if plot_path:
-            return self.project_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp
+            return self.project_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp
         
         # Return path for the model outputs
         else:
-            return self.data_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp
+            return self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp
+
+
+    def makedir_if_missing(self, path: Path) -> Path:
+        """
+        Instance method makes directory if it doesn't already exist.
+        parents = True and exist_ok = True prevents path.mkdir from
+        raising FileExistsError.
+        """
+        path.mkdir(parents=True, exist_ok = True)
+        return path
         
 
 @dataclass
