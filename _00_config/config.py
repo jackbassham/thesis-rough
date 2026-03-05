@@ -233,6 +233,8 @@ class PathConfig:
     
     """
 
+    # TODO: __str__() method to print for paths in main function here 
+
     # List valid data stages
     DATA_STAGES = [
         'raw',
