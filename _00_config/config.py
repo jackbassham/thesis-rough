@@ -155,7 +155,7 @@ class VersionConfig:
 
     Assigns one timestamp at runtime to 'timestamp_out', unless
     user assigns 'timestamp_out' version manually when instantiating the version 
-    configuration. Timestamps can be optionally assigned for different versions of data to allow
+    configuration. Timestamps can be optionally assigned for version of specific data stage to allow
     user to run from different start points. These default to 'timestamp_out' if not assigned by user 
     (ie: user runs the entire pipeline)
     """
@@ -195,7 +195,7 @@ class VersionConfig:
             # Check for errors in manually entered timestamp
             self._validate_format(self.timestamp_out)
 
-        # Iterate through remaining timestamps
+        # Iterate through remaining data stage timestamps
         for attr in [
             'timestamp_raw',
             'timestamp_regrid',
@@ -240,13 +240,17 @@ class PathConfig:
     # Pass in instance of data configuratino and version configuration
     def __init__(self, data_config, version_config):
 
-        # Root to Mazloff scratch data directory
+        # Instantiate configuration objects
+        self.data_config = data_config
+        self.version_config = version_config
+
+        # Define root to Mazloff scratch data directory
         # TODO: allow dynamic/ change for other users
         # when working with small sample dataset
-        _data_root = '/data/globus/jbassham/thesis-rough'
+        self.data_root = Path('/data/globus/jbassham/thesis-rough')
 
-        # Root to project directory for plots, etc
-        _project_root = ''
+        # Define root to project directory for plots, etc
+        self.project_root = Path('.')
 
     def path_builder(
         self,
@@ -266,6 +270,8 @@ class PathConfig:
             path = root / data_directory / hemisphere / timestamp
 
         return path
+    
+
     
 
     
