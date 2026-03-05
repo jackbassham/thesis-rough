@@ -287,7 +287,6 @@ class PathConfig:
     def model_path(self, model_name: str, plot_path: bool = False) -> Path:
         """
         Instance method for creating path to specific model outputs
-
         If plot_path is set to True, creates path to quick eval plots in project directory
         """
 
