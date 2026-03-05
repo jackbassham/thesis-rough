@@ -168,8 +168,8 @@ class VersionConfig:
     timestamp_raw: Optional[str] = None
     timestamp_regrid: Optional[str] = None
     timestamp_mask_norm: Optional[str] = None
-    timestamp_inputs: Optional[str] = None
-    timestamp_outputs: Optional[str] = None
+    timestamp_model_inputs: Optional[str] = None
+    timestamp_model_outputs: Optional[str] = None
     timestamp_coordinates: Optional[str] = None
     timestamp_nan_mask: Optional[str] = None
     timestamp_uncertainty: Optional[str] = None
@@ -200,8 +200,8 @@ class VersionConfig:
             'timestamp_raw',
             'timestamp_regrid',
             'timestamp_mask_norm',
-            'timestamp_inputs',
-            'timestamp_outputs',
+            'timestamp_model_inputs',
+            'timestamp_model_outputs',
             'timestamp_coordinates',
             'timestamp_nan_mask',
             'timestamp_uncertainty',
@@ -236,6 +236,12 @@ class PathConfig:
     """
     
     """
+
+    DATA_STAGES = [
+        'raw',
+        'regrid',
+        'coordinates'
+    ]
 
     # Pass in instance of data configuratino and version configuration
     def __init__(self, data_config, version_config):
