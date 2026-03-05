@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Tuple, Optional
 
 # TODO consider YAML
@@ -230,6 +231,52 @@ class VersionConfig:
         except ValueError:
             raise ValueError(f'Timestamp {timestamp} must match format {self._timestamp_format}')
         
+
+class PathConfig:
+    """
+    
+    """
+
+    # Pass in instance of data configuratino and version configuration
+    def __init__(self, data_config, version_config):
+
+        # Root to Mazloff scratch data directory
+        # TODO: allow dynamic/ change for other users
+        # when working with small sample dataset
+        _data_root = '/data/globus/jbassham/thesis-rough'
+
+        # Root to project directory for plots, etc
+        _project_root = ''
+
+    def path_builder(
+        self,
+        root: Path,
+        data_directory: str,
+        hemisphere: str,
+        timestamp: str,
+        model_directory: str | None = None,
+    ) -> Path:
+        """
+        
+        """
+        if model_directory is not None:
+            path = root / data_directory / model_directory / hemisphere / timestamp
+
+        else:
+            path = root / data_directory / hemisphere / timestamp
+
+        return path
+    
+
+    
+        
+
+
+
+
+
+
+
 
 @dataclass
 class LoginCredentials:
