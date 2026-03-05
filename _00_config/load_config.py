@@ -20,6 +20,7 @@ def load_config():
     # With argument parsing for optional data step timestamps,
     # otherwise defaults to current 'timestamp_out'
     version_config = VersionConfig(
+        timestamp_out = args.timestamp_out,
         timestamp_raw = args.timestamp_raw,
         timestamp_regrid = args.timestamp_regrid,
         timestamp_coordinates = args.timestamp_coordinates,
