@@ -233,23 +233,6 @@ class PathConfig:
     
     """
 
-    DATA_STAGES = [
-        'raw',
-        'regrid',
-        'coordinates',
-        'mask_norm',
-        'model_inputs',
-        'model_output',
-    ]
-
-    MODEL_NAMES = [
-        'ps',
-        'lr-cf',
-        'lr-wtd-cf',
-        'cnn-pt',
-        'cnn-wtd-pt'
-    ]
-
     # Pass in instance of data configuratino and version configuration
     def __init__(self, data_config: object, version_config: object):
 
@@ -288,41 +271,7 @@ class PathConfig:
         else:
             return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp)
         
-
-
-
-    def path_builder(
-        self,
-        root: Path,
-        data_directory: str,
-        hemisphere: str,
-        timestamp: str,
-        model_directory: str | None = None,
-    ) -> Path:
-        """
         
-        """
-        if model_directory is not None:
-            path = root / data_directory / model_directory / hemisphere / timestamp
-
-        else:
-            path = root / data_directory / hemisphere / timestamp
-
-        return path
-    
-
-    
-
-    
-        
-
-
-
-
-
-
-
-
 @dataclass
 class LoginCredentials:
     """
