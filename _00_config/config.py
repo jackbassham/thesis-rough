@@ -234,7 +234,7 @@ class PathConfig:
     """
 
     # Pass in instance of data configuratino and version configuration
-    def __init__(self, data_config: object, version_config: object):
+    def __init__(self, data_config: DataConfig, version_config: VersionConfig):
 
         # Instantiate configuration objects
         self.data_config = data_config
@@ -271,7 +271,7 @@ class PathConfig:
         else:
             return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp)
         
-        
+
 @dataclass
 class LoginCredentials:
     """
