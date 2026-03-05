@@ -233,6 +233,25 @@ class PathConfig:
     
     """
 
+    # List valid data stages
+    DATA_STAGES = [
+        'raw',
+        'regrid',
+        'coordinates',
+        'mask-norm',
+        'model-inputs',
+        'model-output',
+    ]
+
+    # List valid model names
+    MODEL_NAMES = [
+        'ps',
+        'lr-cf',
+        'lr-cf-wtd',
+        'cnn-pt',
+        'cnn-pt-wtd',
+    ]
+
     # Pass in instance of data configuratino and version configuration
     def __init__(self, data_config: DataConfig, version_config: VersionConfig):
 
@@ -250,6 +269,13 @@ class PathConfig:
 
 
     def data_stage_path(self, data_stage: str) -> Path:
+        """
+        Instance method for creating path to specific data stage
+        """
+
+        # Handle case where data stage entry is invalid
+        if data_stage not in self.DATA_STAGES:
+            raise ValueError(f'Unknown data stage entry in path config: {data_stage}')
 
         # Get timestamp attribute for data stage
         timestamp = getattr(self.version_config, f'timestamp_{data_stage}')
@@ -259,17 +285,26 @@ class PathConfig:
     
 
     def model_path(self, model_name: str, plot_path: bool = False) -> Path:
+        """
+        Instance method for creating path to specific model outputs
+
+        If plot_path is set to True, creates path to quick eval plots in project directory
+        """
+
+        # Handle case where model name entry is invalid
+        if model_name not in self.MODEL_NAMES:
+            raise ValueError(f'Uknown model name entry in path config: {model_name}')
 
         # Get timestamp for model output
         timestamp = self.version_config.timestamp_model_outputs
 
         # Return path for the quick evaluation plots
         if plot_path:
-            return Path(self.project_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp)
+            return self.project_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp
         
         # Return path for the model outputs
         else:
-            return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp)
+            return self.data_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp
         
 
 @dataclass
