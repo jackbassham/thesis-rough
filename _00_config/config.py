@@ -167,12 +167,10 @@ class VersionConfig:
 
     timestamp_raw: Optional[str] = None
     timestamp_regrid: Optional[str] = None
+    timestamp_coordinates: Optional[str] = None
     timestamp_mask_norm: Optional[str] = None
     timestamp_model_inputs: Optional[str] = None
     timestamp_model_outputs: Optional[str] = None
-    timestamp_coordinates: Optional[str] = None
-    timestamp_nan_mask: Optional[str] = None
-    timestamp_uncertainty: Optional[str] = None
 
     @classmethod
     def get_timestamp(cls):
@@ -199,12 +197,10 @@ class VersionConfig:
         for attr in [
             'timestamp_raw',
             'timestamp_regrid',
+            'timestamp_coordinates',
             'timestamp_mask_norm',
             'timestamp_model_inputs',
-            'timestamp_model_outputs',
-            'timestamp_coordinates',
-            'timestamp_nan_mask',
-            'timestamp_uncertainty',
+            'timestamp_model_output',
         ]:
             
             # Get the input value of timestamp attribute
@@ -240,11 +236,22 @@ class PathConfig:
     DATA_STAGES = [
         'raw',
         'regrid',
-        'coordinates'
+        'coordinates',
+        'mask_norm',
+        'model_inputs',
+        'model_output',
+    ]
+
+    MODEL_NAMES = [
+        'ps',
+        'lr-cf',
+        'lr-wtd-cf',
+        'cnn-pt',
+        'cnn-wtd-pt'
     ]
 
     # Pass in instance of data configuratino and version configuration
-    def __init__(self, data_config, version_config):
+    def __init__(self, data_config: object, version_config: object):
 
         # Instantiate configuration objects
         self.data_config = data_config
@@ -257,6 +264,32 @@ class PathConfig:
 
         # Define root to project directory for plots, etc
         self.project_root = Path('.')
+
+
+    def data_stage_path(self, data_stage: str) -> Path:
+
+        # Get timestamp attribute for data stage
+        timestamp = getattr(self.version_config, f'timestamp_{data_stage}')
+
+        # Return path for the data stage
+        return Path(self.data_root / data_stage / self.data_config.hemisphere / timestamp)
+    
+
+    def model_path(self, model_name: str, plot_path: bool = False) -> Path:
+
+        # Get timestamp for model output
+        timestamp = self.version_config.timestamp_model_outputs
+
+        # Return path for the quick evaluation plots
+        if plot_path:
+            return Path(self.project_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp)
+        
+        # Return path for the model outputs
+        else:
+            return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp)
+        
+
+
 
     def path_builder(
         self,
