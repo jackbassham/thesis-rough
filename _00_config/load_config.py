@@ -18,7 +18,7 @@ def load_config():
 
     # Create instance of timestamp version
     # With argument parsing for optional data step timestamps,
-    # otherwise defaults to current 'timestamp_out'
+    # otherwise defaults to current timestamp stored in 'timestamp_out'
     version_config = VersionConfig(
         timestamp_out = args.timestamp_out,
         timestamp_raw = args.timestamp_raw,
