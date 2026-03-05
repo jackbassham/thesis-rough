@@ -170,7 +170,7 @@ class VersionConfig:
     timestamp_coordinates: Optional[str] = None
     timestamp_mask_norm: Optional[str] = None
     timestamp_model_inputs: Optional[str] = None
-    timestamp_model_outputs: Optional[str] = None
+    timestamp_model_output: Optional[str] = None
 
 
     def get_timestamp(self):
