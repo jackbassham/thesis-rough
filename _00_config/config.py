@@ -240,9 +240,9 @@ class PathConfig:
         'raw',
         'regrid',
         'coordinates',
-        'mask-norm',
-        'model-inputs',
-        'model-output',
+        'mask_norm',
+        'model_inputs',
+        'model_output',
     ]
 
     # List valid model names
