@@ -20,7 +20,14 @@ from _00_config.path import (
 ## https://nsidc.org/data/user-resources/help-center/how-convert-horizontal-and-vertical-components-east-and-north
 
 
-def main():
+def main(pipeline_config):
+
+    if pipeline_config is None:
+        from _00_config.load_config import load_config
+
+        pipeline_config = load_config()
+
+
 
     # Load original grid .npz variables
     fnam = f"ice_vel_raw_ppv4_ease.npz"
