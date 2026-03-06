@@ -2,6 +2,8 @@ import gc
 import numpy as np
 import os
 
+# FIXME pass/ silence numpy RuntimeWarning: Mean of empty slice
+
 
 def main(cfg):
 
