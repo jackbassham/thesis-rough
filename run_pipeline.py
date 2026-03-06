@@ -19,7 +19,6 @@ PIPELINE_STEPS = {
 }
 
 
-
 def main():
 
     # Instantiate configuration
@@ -31,6 +30,31 @@ def run_pipeline(config, start = None, end = None):
     
     """
 
+    # Get pipeline step keys from the dict and store in list
+    steps = list(PIPELINE_STEPS.keys())
+
+    # Initialize start index
+    start_index = 0
+
+    # Initialize end index
+    end_index = len(steps)
+
+    # Move start index if command line argument provided by user
+    if start:
+        start_index = PIPELINE_STEPS.index(start)
+
+    # Move end index if command line argument provided by user
+    if end:
+        # Slice exclusive of end, so add one to index
+        end_index = PIPELINE_STEPS.index(end) + 1
+
+    # Iterate through pipeline steps given indices
+    for step in steps[start_index:end_index]:
+
+        print(f'Running pipeline step: {step}')
+
+        # Get function for pipeline step and run
+        PIPELINE_STEPS[step](config)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,13 +63,14 @@ def run_pipeline(config, start = None, end = None):
 
 # TODO reduce repetition, add error handling, allow for different datasets?
 
+# TODO remove number ordering for modules to allow flexibility?
+
 # TODO quick eval in each model step
 
 
 def step_download_motion(config):
     from ._01_download.download_motion_pp import main
     main(config)
-
 
 def step_download_concentration(config):
     from ._01_download.download_concentration_nimbus7 import main
