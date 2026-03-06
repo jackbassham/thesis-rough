@@ -1,11 +1,19 @@
 import requests
 import io
 
-from .param import USER, PASS
+from _00_config.load_config import load_config
 
 def get_temp_file(url):
     """Gets temporary file from Nasa Earth Data Website via URL"""
     ### Create session for NASA Earthdata ###
+
+    # Load configuration
+    _, _, _, login_credentials = load_config()
+
+    # Get login credentials from configuration instance
+    username = login_credentials.username
+    password = login_credentials.password
+
     # Overriding requests.Session.rebuild_auth to mantain authentication headers when redirected
     # Custom subclass to extend functionality of parent class requests.session to maintain authentication headers
     # when server redirects requests
@@ -37,7 +45,7 @@ def get_temp_file(url):
                     del headers['Authorization']
 
     # Create session with the user credentials that will be used to authenticate access to the data
-    session = SessionWithHeaderRedirection(USER, PASS)
+    session = SessionWithHeaderRedirection(username, password)
 
     try:
         # submit the request using the session
