@@ -213,7 +213,7 @@ class VersionConfig:
 
             else:
                 # Check for errors in manually entered timestamp
-                self.validate_format(value)
+                self._validate_format(value)
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
