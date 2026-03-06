@@ -1,7 +1,6 @@
 from _00_config.load_config import load_config
 from _00_config.parse_args import parse_args
 
-# FIXME placement of PIPELINE_STEPS global dict
 
 # FIXME parse_args import into both load_config and run_pipeline
 
@@ -55,12 +54,22 @@ def run_pipeline(config, start = None, end = None):
 
     # Move start index if command line argument provided by user
     if start:
-        start_index = PIPELINE_STEPS.index(start)
+        # Handle case where start is not valid
+        if start not in steps:
+            raise ValueError(f'Unknown pipeline start step: "{start}"')
+
+        else:
+            # Retrieve index from start step
+            start_index = steps.index(start)
 
     # Move end index if command line argument provided by user
     if end:
-        # Slice exclusive of end, so add one to index
-        end_index = PIPELINE_STEPS.index(end) + 1
+        if end not in steps:
+            raise ValueError(f'Unknown pipeline end step: "{end}"')
+        
+        else:
+            # Retrieve index from end step (exclusive of end, add 1)
+            end_index = steps.index(end) + 1
 
     # Iterate through pipeline steps given indices
     for step in steps[start_index:end_index]:
