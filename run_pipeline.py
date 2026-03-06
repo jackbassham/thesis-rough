@@ -1,13 +1,19 @@
 from _00_config.load_config import load_config
 from _00_config.parse_args import parse_args
 
+from typing import Callable
+# Import PipelineConfig for type checking only
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from _00_config.config import PipelineConfig
+
 
 # FIXME parse_args import into both load_config and run_pipeline
 
 def main():
 
-    # Define pipeline steps
-    PIPELINE_STEPS = {
+    # Define pipeline steps in dict with argument keys and callable values
+    pipeline_steps = {
         'download_motion': step_download_motion,
         'download_concentration': step_download_concentration,
         'download_wind': step_download_wind,
@@ -31,19 +37,21 @@ def main():
 
     # Run pipeline with configuration instance and optional start end points
     run_pipeline(
+        pipeline_steps,
         pipeline_config,
         start = args.start,
         end = args.end,
     )
 
 
-def run_pipeline(pipeline_config, start = None, end = None):
+def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config: PipelineConfig, 
+                 start: str | None = None, end: str |None = None):
     """
     
     """
 
     # Get pipeline step keys from the dict and store in list
-    steps = list(PIPELINE_STEPS.keys())
+    steps = list(pipeline_steps.keys())
 
     # Initialize start index
     start_index = 0
@@ -76,7 +84,7 @@ def run_pipeline(pipeline_config, start = None, end = None):
         print(f'Running pipeline step: {step}')
 
         # Get function for pipeline step and run
-        PIPELINE_STEPS[step](pipeline_config)
+        pipeline_steps[step](pipeline_config)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
