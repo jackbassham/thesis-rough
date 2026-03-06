@@ -1,5 +1,11 @@
-from .config import DataConfig, VersionConfig, PathConfig
+from .config import DataConfig, VersionConfig, PathConfig, LoginCredentials
 from .parse_args import parse_args
+
+
+def main():
+
+    # Load in configuration defined in function below
+    data_config, version_config, paths, login_credentials = load_config()
 
 
 def load_config():
@@ -32,4 +38,14 @@ def load_config():
     # Create instance of paths
     paths = PathConfig(data_config, version_config)
 
-    return data_config, version_config, paths
+    # Create instance of login credentials for Nasa Earth Data access
+    login_credentials = LoginCredentials(
+        username = 'jbassham',
+        password = 'guJdib-huczi6-jimsuh'
+    )
+
+    return data_config, version_config, paths, login_credentials
+
+
+if __name__ == '__main__':
+    main()
