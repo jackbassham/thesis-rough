@@ -21,8 +21,18 @@ PIPELINE_STEPS = {
 
 def main():
 
-    # Instantiate configuration
+    # Instantiate argument parser
+    args = parse_args()
+
+    # Instantiate configuration from loader
     config = load_config()
+
+    # Run pipeline with configuration instance and optional start end points
+    run_pipeline(
+        config,
+        start = args.start,
+        end = args.end,
+    )
 
 
 def run_pipeline(config, start = None, end = None):
