@@ -1,4 +1,10 @@
-from .config import DataConfig, VersionConfig, PathConfig, LoginCredentials
+from .config import(
+    DataConfig, 
+    VersionConfig, 
+    PathConfig, 
+    LoginCredentials,
+    PipelineConfig,
+)
 from .parse_args import parse_args
 
 
@@ -36,7 +42,7 @@ def load_config():
     )
 
     # Create instance of paths
-    paths = PathConfig(data_config, version_config)
+    path_config = PathConfig(data_config, version_config)
 
     # Create instance of login credentials for Nasa Earth Data access
     login_credentials = LoginCredentials(
@@ -44,7 +50,13 @@ def load_config():
         password = 'guJdib-huczi6-jimsuh'
     )
 
-    return data_config, version_config, paths, login_credentials
+    # Return entire pipeline configuration object
+    return PipelineConfig(
+        data_config = data_config,
+        version_config = version_config,
+        path_config = path_config,
+        login_credentials = login_credentials,
+    )
 
 
 if __name__ == '__main__':

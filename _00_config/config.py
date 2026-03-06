@@ -329,6 +329,17 @@ class LoginCredentials:
     password: str
 
 
+@dataclass
+class PipelineConfig:
+    """
+    Container for all pipeline configuration objects.
+    """
+    data_config: DataConfig
+    version_config: VersionConfig
+    path_config: PathConfig
+    login_credentials: LoginCredentials
+
+
 def main():
 
     # Create instance of data parameters
