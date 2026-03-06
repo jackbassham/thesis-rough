@@ -6,7 +6,10 @@ import os
 def main(cfg):
 
     PATH_REGRID = cfg.path_config.data_stage_path('regrid')
-    PATH_MASK_NORM = cfg.path_config.data_stage_path('mask_norm')    
+
+    # FIXME try to clean up the method execution here
+    PATH_MASK_NORM = cfg.path_config.data_stage_path('mask_norm')
+    cfg.path_config.makedir_if_missing(PATH_MASK_NORM)    
 
     # Create the destination directory if it doesn't already exist
     os.makedirs(PATH_MASK_NORM, exist_ok = True)
