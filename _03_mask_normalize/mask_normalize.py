@@ -2,12 +2,11 @@ import gc
 import numpy as np
 import os
 
-from _00_config.path import (
-    PATH_REGRID,
-    PATH_MASK_NORM,
-)
 
-def main():
+def main(cfg):
+
+    PATH_REGRID = cfg.path_config.data_stage_path('regrid')
+    PATH_MASK_NORM = cfg.path_config.data_stage_path('mask-norm')    
 
     # Create the destination directory if it doesn't already exist
     os.makedirs(PATH_MASK_NORM, exist_ok = True)
@@ -239,4 +238,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # NOTE remember this block is for direct script execution
+    # know this because __name__ called is "__main__" (script!)
+    # So when running script directly, we import load_config separately,
+    # otherwise, when importing the module here, EVEN 'main()' 
+    # in the case of master 'run_pipeline.py', this block is ignored
+    # and the universal cfg is passed to main in 'run_pipeline.py'
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
