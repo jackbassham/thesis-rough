@@ -1,6 +1,8 @@
 from _00_config.load_config import load_config
 from _00_config.parse_args import parse_args
 
+# FIXME placement of PIPELINE_STEPS global dict
+
 # Define pipeline steps
 PIPELINE_STEPS = {
     'download_motion': step_download_motion,
