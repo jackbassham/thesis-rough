@@ -1,5 +1,6 @@
 import argparse
 
+# FIXME remove whitespace from timestamp entries
 
 def parse_args():
 
