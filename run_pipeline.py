@@ -4,25 +4,24 @@ from _00_config.parse_args import parse_args
 
 # FIXME parse_args import into both load_config and run_pipeline
 
-# Define pipeline steps
-PIPELINE_STEPS = {
-    'download_motion': step_download_motion,
-    'download_concentration': step_download_concentration,
-    'download_wind': step_download_wind,
-    'regrid_motion': step_regrid_motion,
-    'regrid_concentration': step_regrid_concentration,
-    'regrid_wind': step_regrid_wind,
-    'mask_normalize': step_mask_normalize,
-    'process_inputs': step_process_inputs,
-    'ps': step_ps,
-    'lr': step_lr,
-    'lr_wtd': step_lr_wtd,
-    'cnn': step_cnn,
-    'cnn_wtd': step_cnn_wtd,
-}
-
-
 def main():
+
+    # Define pipeline steps
+    PIPELINE_STEPS = {
+        'download_motion': step_download_motion,
+        'download_concentration': step_download_concentration,
+        'download_wind': step_download_wind,
+        'regrid_motion': step_regrid_motion,
+        'regrid_concentration': step_regrid_concentration,
+        'regrid_wind': step_regrid_wind,
+        'mask_normalize': step_mask_normalize,
+        'process_inputs': step_process_inputs,
+        'ps': step_ps,
+        'lr': step_lr,
+        'lr_wtd': step_lr_wtd,
+        'cnn': step_cnn,
+        'cnn_wtd': step_cnn_wtd,
+    }
 
     # Instantiate argument parser
     args = parse_args()
