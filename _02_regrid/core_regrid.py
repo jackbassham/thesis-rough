@@ -1,13 +1,89 @@
+from dataclasses import dataclass
 import numpy as np
+import numpy.typing as npt
 from typing import Tuple
+
+
+# NOTE: Tuples changed to dataclasses to avoid confusion when unpacking
+# NOTE: Functionality remains in functions to avoid overcomplicating with class methods
+# and instantiation
+
+
+@dataclass
+class OldProjGrid:
+    lat_mesh: npt.NDArray[np.float64]
+    lon_mesh: npt.NDArray[np.float64]
+
+    # TODO convert old grid coordinate variables to lat lon mesh grid (JRA55)
+    # TODO boolean for case when old lat and lon are not mesh grid?
+
+    def __post_init__(self):
+        
+        ...
+    
+
+@dataclass
+class GridSpec:
+
+    # TODO: specification for new grid (resolution, bounds)
+    ...
+
+    # TODO ?? resolution, convert to degrees within spec?
+    resolution_km: float
+
+
+    def _convert_res_to_degrees(self):
+
+        ...
+
+
+
+@dataclass
+class NewRegGrid:
+    lat: npt.NDArray[np.float64]
+    lon: npt.NDArray[np.float64]
+
+
+
+        
+
+
+@dataclass
+class InterpIndices:
+
+    ...
+
+
+
+
+# FIXME move these to OldProjectedGrid and NewRegularGrid
+@dataclass
+class NewGridBounds:
+    lat: Tuple[float, float]
+    lon: Tuple[float, float]
+
+
+@dataclass
+class NewGridResolution:
+    lat_deg: float
+    lon_deg: float
+
+
+@dataclass
+class NewGridCoordinates:
+    lat: npt.NDArray[np.float64]
+    lon: npt.NDArray[np.float64]
+
 
 def main():
 
     ...
 
 
+# TODO split up new grid construction and nearest neighbor interpolation
+
 def nearest_neighbor_interpolation(
-    grid_resolution_deg: Tuple[float, float], latitude_bounds: Tuple[float, float], longitude_bounds:Tuple[float, float], 
+    grid_resolution_deg: Tuple[float, float], latitude_bounds: Tuple[float, float], longitude_bounds: Tuple[float, float], 
     old_latitude, old_longitude
     ):
     """
