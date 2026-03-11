@@ -68,8 +68,8 @@ class GridSpec:
     """
     Specifications for new regular lat/lon grid
     """
-    latitude_bounds: Tuple[float, float]
-    longitude_bounds: Tuple[float, float]
+    lat_bounds: Tuple[float, float]
+    lon_bounds: Tuple[float, float]
     resolution_km: float
 
     # NOTE error handling already covered in DataConvig?
@@ -82,7 +82,7 @@ class GridSpec:
     def resolution_degrees_lon(self):
 
         # Get the average latitude of the region
-        avg_lat = np.mean(self.latitude_bounds)
+        avg_lat = np.mean(self.lat_bounds)
 
         # Convert longitude resolution to degrees from kilometers
         # based on average latitude
@@ -101,33 +101,20 @@ class InterpIndices:
     ...
 
 
-
-
-# FIXME move these to OldProjectedGrid and NewRegularGrid
-@dataclass
-class NewGridBounds:
-    lat: Tuple[float, float]
-    lon: Tuple[float, float]
-
-
-@dataclass
-class NewGridResolution:
-    lat_deg: float
-    lon_deg: float
-
-
-@dataclass
-class NewGridCoordinates:
-    lat: npt.NDArray[np.float64]
-    lon: npt.NDArray[np.float64]
-
-
 def main():
 
     ...
 
 
 # TODO split up new grid construction and nearest neighbor interpolation
+def construct_regular_grid(grid_spec: GridSpec) -> NewRegGrid:
+    """
+    
+    """
+
+    lat_reg = np.arange(
+        grid_spec.lat
+    )
 
 def nearest_neighbor_interpolation(
     grid_resolution_deg: Tuple[float, float], latitude_bounds: Tuple[float, float], longitude_bounds: Tuple[float, float], 
