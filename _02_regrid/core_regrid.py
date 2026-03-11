@@ -13,13 +13,16 @@ from typing import Tuple, Optional
 class OldProjGrid:
     lat_mesh: npt.NDArray[np.float64]
     lon_mesh: npt.NDArray[np.float64]
-    coordinates_are_1D: bool = False
+    coordinates_are_vectors: bool = False
 
     def __post_init__(self):
 
-        # If the old lat and lon variables are 1-Dimensional coordinate variables
-        if self.coordinates_are_1D:
-            # Convert them to 2-Dimensional mesh grid
+        # If it's specified that the old lat and lon are coordinate vectors 
+        # ie: lat[y] and lon[x]
+        if self.coordinates_are_vectors:
+            # Check that they are coordinate vectors
+
+            # Convert them to coordinate grids
             self.convert_to_grid()
 
         # Handle invalid dimensions
@@ -27,8 +30,12 @@ class OldProjGrid:
             
 
     def convert_to_grid(self):
-        # Convert 1-Dimensional coordinate variables to 2-Dimensional mesh grids
-        self.lat_mesh, self.lon_mesh = np.meshgrid(self.lat_mesh, self.lon_mesh)
+        # Create mesh grids from old lon (x) and lat (y)
+        lon_mesh, lat_mesh = np.meshgrid(self.lon_mesh, self.lat_mesh)
+
+        # Replace old lat and lon with mesh grids
+        self.lat_mesh = lat_mesh
+        self.lon_mesh = lon_mesh
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
