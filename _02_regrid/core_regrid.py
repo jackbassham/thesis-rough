@@ -113,8 +113,19 @@ def construct_regular_grid(grid_spec: GridSpec) -> NewRegGrid:
     """
 
     lat_reg = np.arange(
-        grid_spec.lat
+        grid_spec.lat_bounds[0],
+        grid_spec.lat_bounds[1] + grid_spec.resolution_degrees_lat,
+        grid_spec.resolution_degrees_lat
     )
+
+    lon_reg = np.arrange(
+        grid_spec.lon_bounds[0],
+        grid_spec.lon_bounds[1] + grid_spec.resolution_degrees_lon,
+        grid_spec.resolution_degrees_lon
+    )
+
+    return NewRegGrid(lat_reg, lon_reg)
+
 
 def nearest_neighbor_interpolation(
     grid_resolution_deg: Tuple[float, float], latitude_bounds: Tuple[float, float], longitude_bounds: Tuple[float, float], 
