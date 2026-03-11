@@ -65,28 +65,34 @@ class OldGridProj:
 
 @dataclass
 class GridSpec:
-
-    # TODO: specification for new grid (resolution, bounds)
-    ...
-
-    # TODO ?? resolution, convert to degrees within spec?
+    """
+    Specifications for new regular lat/lon grid
+    """
+    latitude_bounds: Tuple[float, float]
+    longitude_bounds: Tuple[float, float]
     resolution_km: float
 
+    # NOTE error handling already covered in DataConvig?
 
-    def _convert_res_to_degrees(self):
+    def resolution_degrees_lat(self):
 
-        ...
+        # Convert latitude resolution to degrees from kilometers
+        return self.resolution_km / 111
 
+    def resolution_degrees_lon(self):
+
+        # Get the average latitude of the region
+        avg_lat = np.mean(self.latitude_bounds)
+
+        # Convert longitude resolution to degrees from kilometers
+        # based on average latitude
+        return self.resolution_km / (111 * np.cos(np.radians(avg_lat)))
 
 
 @dataclass
 class NewRegGrid:
     lat: npt.NDArray[np.float64]
     lon: npt.NDArray[np.float64]
-
-
-
-        
 
 
 @dataclass
