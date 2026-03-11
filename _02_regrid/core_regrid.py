@@ -222,7 +222,8 @@ def rotate_to_East_North(
 
 def regrid_data(data: npt.NDArray[npt.floating], interp_indices: InterpIndices):
     """
-    
+    Regrids data using vectorized indexing into old data with indices jj and ii 
+    that have same shape as new regular grid.
     """
 
     # FIXME use list comprehension for all *data with 'yield' instead of 'return' for gracefulness?
