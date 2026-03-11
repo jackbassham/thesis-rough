@@ -40,7 +40,6 @@ class OldGridProj:
         self.lat_mesh = lat_mesh
         self.lon_mesh = lon_mesh
 
-
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Parameter validation methods
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,19 +62,6 @@ class OldGridProj:
         if self.lat_mesh.shape != self.lon_mesh.shape:
             raise ValueError('old lat[y,x] and lon[y,x] grids are not the same shape')
 
-
-    # TODO convert old grid coordinate variables to lat lon mesh grid (JRA55)
-
-
-    # TODO boolean for case when old lat and lon are not mesh grid?
-
-    
-
-
-    def __post_init__(self):
-        
-        ...
-    
 
 @dataclass
 class GridSpec:
