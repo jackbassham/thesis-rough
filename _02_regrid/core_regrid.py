@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import numpy as np
 import numpy.typing as npt
-from typing import Tuple, Optional
+from typing import Tuple
 
 
 # NOTE: Tuples changed to dataclasses to avoid confusion when unpacking
@@ -97,8 +97,8 @@ class NewRegGrid:
 
 @dataclass
 class InterpIndices:
-
-    ...
+    jj: npt.int32
+    ii: npt.int32
 
 
 def main():
@@ -130,9 +130,54 @@ def construct_regular_grid(grid_spec: GridSpec) -> NewRegGrid:
         )
 
 
-def get_interpolation_indices(
-        
-)
+def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: OldGridProj) -> InterpIndices:
+    """
+    
+    """
+
+    # Get number of new regular grid lat/lon points
+    num_lat = len(new_reg_grid.lat)
+    num_lon = len(new_reg_grid.lon)
+
+    # Initialize interpolation indices
+    jj = np.zeros((num_lat, num_lon))
+    ii = np.zeros((num_lat, num_lon))
+
+    # Iterate through new regular grid lat/lon points
+    for j in range(num_lat):
+        for i in range(num_lon):
+
+            # Calculate vertical distance between new and old latitudes
+            dy = (new_reg_grid.lat[j] - old_grid_proj.lat_mesh)**2
+
+            # Calculate horizontal distance between new and old longitudes
+            # considering multiple cases due to periodicity of longitude
+            # NOTE -180 to 180 longitude should be enforced in config, 
+            # periodicity here in case of function reuse
+            dx1 = (new_reg_grid.lon[i] - old_grid_proj.lon_mesh)**2
+            dx2 = (new_reg_grid.lon[i] - old_grid_proj.lon_mesh + 360)**2
+            dx3 = (new_reg_grid.lon[i] - old_grid_proj.lon_mesh - 360)**2
+
+            # Take the minimum horizontal distance of the cases
+            dx = np.minimum(dx1, np.minimum(dx2, dx3))
+
+            # Find the absolute distances between points (by pythagorean theorem)
+            ds = dx + dy
+
+            # Find indices of minimum absolute distance
+            i_neighbors = np.where(ds == np.min(ds))
+
+            # Take lower left corner minimum for consistency and store in array
+            jj[j,i] = np.min(i_neighbors[0])
+            ii[j,i] = np.min(i_neighbors[1])
+
+    return InterpIndices(
+        jj = jj,
+        ii = ii,
+        )
+
+
+
 
 
 def nearest_neighbor_interpolation(
