@@ -10,25 +10,27 @@ from typing import Tuple, Optional
 
 
 @dataclass
-class OldProjGrid:
+class OldGridProj:
     lat_mesh: npt.NDArray[np.float64]
     lon_mesh: npt.NDArray[np.float64]
     coordinates_are_vectors: bool = False
 
     def __post_init__(self):
 
-        # If it's specified that the old lat and lon are coordinate vectors 
+        # If it's specified that the old lat/lon are coordinate vectors 
         # ie: lat[y] and lon[x]
         if self.coordinates_are_vectors:
             # Check that they are coordinate vectors
-
+            self._validate_coordinate_vectors()
 
             # Convert them to coordinate grids
+            # ie: lat[y, x] and lon[y, x]
             self.convert_to_grid()
 
-        # Handle invalid dimensions
-        self._validate_proj_variable_dims()
-            
+        else:
+            # Check that the old lat/lon coordinate grids are valid
+            self._validate_coordinate_grids()
+
 
     def convert_to_grid(self):
         # Create mesh grids from old lon (x) and lat (y)
@@ -45,15 +47,21 @@ class OldProjGrid:
 
     def _validate_coordinate_vectors(self):
         # Handle case where boolean not set to specify that old lat and lon are 1D coordinate variables
-        if np.ndim(self.lat_mesh) == 1 or np.ndim(self.lon_mesh) == 1:
-            raise ValueError('Old lat and lon projection are 1D coordinate variables, set coordinates_are_1D = False')
+        if self.lat_mesh.ndim != 1 or self.lon_mesh != 1:
+            raise ValueError('coordinates_are_vectors=True but old lat/lon are not 1D vectors')
             
     def _validate_coordinate_grids(self):
+        
+        # Handle case where coordinates are vectors but object specifies grid
+        if self.lat_mesh.ndim == 1 or self.lon_mesh.ndim == 1:
+            raise ValueError('coordinates_are_vectors=False but old lat/lon are 1D vectors')
+
         # Handle any other invalid dimension for the lat lon projection variables
-        if not np.ndim(self.lat_mesh) == 2 or not np.ndim(self.lon_mesh) == 2:
-            raise ValueError('Old lat and lon variables not 1D coordinates or 2D projection, inspect dataset')
-
-
+        if self.lat_mesh.ndim != 2 or self.lon_mesh.ndim != 2:
+            raise ValueError('old lat/lon dimensions are not valid (not 1D vectors or 2D grids), inspect dataset')
+        
+        if self.lat_mesh.shape != self.lon_mesh.shape:
+            raise ValueError('old lat[y,x] and lon[y,x] grids are not the same shape')
 
 
     # TODO convert old grid coordinate variables to lat lon mesh grid (JRA55)
