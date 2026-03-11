@@ -22,6 +22,7 @@ class OldProjGrid:
         if self.coordinates_are_vectors:
             # Check that they are coordinate vectors
 
+
             # Convert them to coordinate grids
             self.convert_to_grid()
 
@@ -42,16 +43,15 @@ class OldProjGrid:
     # Parameter validation methods
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    def _validate_proj_variable_dims(self):
-
-        if not self.coordinates_are_1D():
-            # Handle case where boolean not set to specify that old lat and lon are 1D coordinate variables
-            if np.ndim(self.lat_mesh) == 1 or np.ndim(self.lon_mesh) == 1:
-                raise ValueError('Old lat and lon projection are 1D coordinate variables, set coordinates_are_1D = False')
+    def _validate_coordinate_vectors(self):
+        # Handle case where boolean not set to specify that old lat and lon are 1D coordinate variables
+        if np.ndim(self.lat_mesh) == 1 or np.ndim(self.lon_mesh) == 1:
+            raise ValueError('Old lat and lon projection are 1D coordinate variables, set coordinates_are_1D = False')
             
-            # Handle any other invalid dimension for the lat lon projection variables
-            elif not np.ndim(self.lat_mesh) == 2 or not np.ndim(self.lon_mesh) == 2:
-                raise ValueError('Old lat and lon variables not 1D coordinates or 2D projection, inspect dataset')
+    def _validate_coordinate_grids(self):
+        # Handle any other invalid dimension for the lat lon projection variables
+        if not np.ndim(self.lat_mesh) == 2 or not np.ndim(self.lon_mesh) == 2:
+            raise ValueError('Old lat and lon variables not 1D coordinates or 2D projection, inspect dataset')
 
 
 
