@@ -124,7 +124,15 @@ def construct_regular_grid(grid_spec: GridSpec) -> NewRegGrid:
         grid_spec.resolution_degrees_lon
     )
 
-    return NewRegGrid(lat_reg, lon_reg)
+    return NewRegGrid(
+        lat = lat_reg, 
+        lon = lon_reg,
+        )
+
+
+def get_interpolation_indices(
+        
+)
 
 
 def nearest_neighbor_interpolation(
