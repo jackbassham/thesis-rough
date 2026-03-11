@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import numpy as np
 import numpy.typing as npt
-from typing import Tuple
+from typing import Tuple, Optional
 
 
 # NOTE: Tuples changed to dataclasses to avoid confusion when unpacking
@@ -13,9 +13,49 @@ from typing import Tuple
 class OldProjGrid:
     lat_mesh: npt.NDArray[np.float64]
     lon_mesh: npt.NDArray[np.float64]
+    coordinates_are_1D: bool = False
+
+    def __post_init__(self):
+
+        # If the old lat and lon variables are 1-Dimensional coordinate variables
+        if self.coordinates_are_1D:
+            # Convert them to 2-Dimensional mesh grid
+            self.convert_to_grid()
+
+        # Handle invalid dimensions
+        self._validate_proj_variable_dims()
+            
+
+    def convert_to_grid(self):
+        # Convert 1-Dimensional coordinate variables to 2-Dimensional mesh grids
+        self.lat_mesh, self.lon_mesh = np.meshgrid(self.lat_mesh, self.lon_mesh)
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Parameter validation methods
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    def _validate_proj_variable_dims(self):
+
+        if not self.coordinates_are_1D():
+            # Handle case where boolean not set to specify that old lat and lon are 1D coordinate variables
+            if np.ndim(self.lat_mesh) == 1 or np.ndim(self.lon_mesh) == 1:
+                raise ValueError('Old lat and lon projection are 1D coordinate variables, set coordinates_are_1D = False')
+            
+            # Handle any other invalid dimension for the lat lon projection variables
+            elif not np.ndim(self.lat_mesh) == 2 or not np.ndim(self.lon_mesh) == 2:
+                raise ValueError('Old lat and lon variables not 1D coordinates or 2D projection, inspect dataset')
+
+
+
 
     # TODO convert old grid coordinate variables to lat lon mesh grid (JRA55)
+
+
     # TODO boolean for case when old lat and lon are not mesh grid?
+
+    
+
 
     def __post_init__(self):
         
