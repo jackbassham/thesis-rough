@@ -101,6 +101,15 @@ class InterpIndices:
     ii: npt.int32
 
 
+# FIXME awkward implementation of data class for data used
+# throughout pipeline in regrid methods
+# add variable_config in _00_config?
+@dataclass
+class VectorData:
+    u: npt.NDArray
+    v: npt.NDArray
+
+
 def main():
 
     ...
@@ -132,7 +141,12 @@ def construct_regular_grid(grid_spec: GridSpec) -> NewRegGrid:
 
 def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: OldGridProj) -> InterpIndices:
     """
-    
+    Returns indices of closest old point projection grid point data[y,x] at lat[y,x]/lon[y,x]
+    to each new regular grid point data[lat[y],lon[x]]
+
+    NOTE: jj, and ii are 'y' and 'x' mesh grids of indices, each shaped like the new grid, where each index is an index
+    of the old data (jj; y, ii; x) closest to the index of the new data grid (j of jj and i of ii).
+
     """
 
     # Get number of new regular grid lat/lon points
@@ -177,6 +191,18 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
         )
 
 
+def rotate_to_East_North(
+        old_grid_proj: OldGridProj
+):
+
+
+def regrid_data(
+        *data: npt.NDArray[npt.floating], 
+        interp_indices: InterpIndices, 
+        old_grid_proj: OldGridProj,
+        new_reg_grid: NewRegGrid,
+        rotate_vectors: bool = False,
+):
 
 
 
