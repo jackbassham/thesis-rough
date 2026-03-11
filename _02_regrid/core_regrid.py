@@ -25,14 +25,14 @@ class OldGridProj:
 
             # Convert them to coordinate grids
             # ie: lat[y, x] and lon[y, x]
-            self.convert_to_grid()
+            self._convert_to_grid()
 
         else:
             # Check that the old lat/lon coordinate grids are valid
             self._validate_coordinate_grids()
 
 
-    def convert_to_grid(self):
+    def _convert_to_grid(self):
         # Create mesh grids from old lon (x) and lat (y)
         lon_mesh, lat_mesh = np.meshgrid(self.lon_mesh, self.lat_mesh)
 
