@@ -66,7 +66,7 @@ class OldGridProj:
 @dataclass
 class GridSpec:
     """
-    Specifications for new regular lat/lon grid
+    Specifications for new regular lat/lon grid.
     """
     lat_bounds: Tuple[float, float]
     lon_bounds: Tuple[float, float]
@@ -196,7 +196,8 @@ def rotate_to_East_North(
     old_grid_proj: OldGridProj, hemisphere: str
     ) -> Tuple[npt.NDArray[npt.floating], npt.NDArray[npt.floating]]:
     """
-    Rotates vector components to positive East/ North orientation
+    Rotates vector components to positive East/ North orientation.
+    https://nsidc.org/data/user-resources/help-center/how-convert-horizontal-and-vertical-components-east-and-north
     """
 
     # Get rotation angle from longitude
