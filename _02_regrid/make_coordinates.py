@@ -28,82 +28,41 @@ def main(cfg: PipelineConfig):
     ]
 
 
+    # # Update time to reflect data shift for 'present day' inputs
+    # time_t0 = time_icevel[1:]
 
+    # # Create the destination directory if it doesn't already exist
+    # os.makedirs(PATH_COORDINATES, exist_ok = True)
 
-
-
-    # Load in coordinate variables from motion dataset
-    data = np.load(os.path.join(PATH_REGRID, f'motion_ppv4_latlon.npz'))
-    time_icevel = data['time']
-    lat_icevel = data['lat']
-    lon_icevel = data['lon']
-
-    # Load in coordinate variables from wind dataset
-    data = np.load(os.path.join(PATH_REGRID, f'wind_jra55_latlon.npz'))
-    time_wind = data['time']
-    lat_wind = data['lat']
-    lon_wind = data['lon']
-
-    # Load in coordinate variables from concentration dataset
-    data = np.load(os.path.join(PATH_REGRID, f'con_nimbus7_latlon.npz'))
-    time_con = data['time']
-    lat_con = data['lat']
-    lon_con = data['lon']
-
-    # Assert latitude coordinate variables are consistent accross datasets
-    assert_equal(
-        {
-        "lat_icevel": lat_icevel,
-        "lat_wind": lat_wind,
-        "lat_con": lat_con
-        }
-    )
-
-    # Assert longitude coordinate variables are consistent accross datasets
-    assert_equal(
-        {
-        "lon_icevel": lon_icevel,
-        "lon_wind": lon_wind,
-        "lon_con": lon_con
-        }
-    )
-
-    # Assert time coordinate variables are consistent accross datasets
-    assert_equal(
-        {
-        "time_icevel": time_icevel,
-        "time_wind": time_wind,
-        "time_con": time_con
-        }
-    )
-
-    # Update time to reflect data shift for 'present day' inputs
-    time_t0 = time_icevel[1:]
-
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PATH_COORDINATES, exist_ok = True)
-
-    # Save coordinate variables from one dataset in new file
-    np.savez(
-        os.path.join(PATH_COORDINATES, f'coordinates.npz'),
-        time_total = time_icevel,
-        time_t0 = time_t0,
-        lat = lat_icevel,
-        lon = lon_icevel,
-    )
+    # # Save coordinate variables from one dataset in new file
+    # np.savez(
+    #     os.path.join(PATH_COORDINATES, f'coordinates.npz'),
+    #     time_total = time_icevel,
+    #     time_t0 = time_t0,
+    #     lat = lat_icevel,
+    #     lon = lon_icevel,
+    # )
 
     return
 
-def build_coordinate_dict(path_regrid: path, filenames: list, datanames:list) -> dict:
+def build_coordinate_dicts(path_source: Path, filenames: list[Path], datanames: list[str]) -> dict:
     """
     
     """
 
+    for filename in filenames:
+
+        data = load_npz_data(path_source / filename)
+
+        lats = [{'name'}]
+
+    variables = ['lat']
+
     coordinates = [
-        load_npz_file
+        load_npz_data()
     ]
 
-    return coordinates
+    return lats, lons, times
 
 
 def check_coordinates_equal(coord_dict):
