@@ -234,3 +234,7 @@ def regrid_data(data: npt.NDArray[npt.floating], interp_indices: InterpIndices):
         raise ValueError('data must be shaped [time, lat, lon]')
 
     return data[:,interp_indices.jj, interp_indices.ii]
+
+
+if __name__ == '__main__':
+    main()
