@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 from pathlib import Path
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -18,12 +19,15 @@ def main(cfg: PipelineConfig):
         'wind_regrid_jra55.npz',
         ]
 
-    # Define list of dataset names
-    datanames = [
-        'ice_vel',
-        'ice_conc',
-        'wind',
-    ]
+    # Load coordinate variables from first dataset as reference
+    data_ref = load_npz_data(path_regrid / filenames[0])
+
+    coordinate_refs = {
+        'lat_ref': data_ref['lat'],
+        'lon_ref': data_ref['lon'],
+        'time_ref': data_ref['time'],
+    }
+
 
 
     # # Update time to reflect data shift for 'present day' inputs
@@ -43,24 +47,29 @@ def main(cfg: PipelineConfig):
 
     return
 
-def build_coordinate_dicts(path_source: Path, filenames: list[str], datanames: list[str]) -> dict:
-    """
-    
+def check_coordinates_match(
+        path_source: Path, coordinate_refs: dict[str, npt.NDarray], filenames: list[str],
+        ) -> None:
     """
 
-    for filename in filenames:
+    """
 
+    # Loop through remaining datasets after reference
+    for filename in filenames[1:]:
+
+        # Load in that file's dataset
         data = load_npz_data(path_source / filename)
 
-        lats = [{'name'}]
+        # Check that dataset coordinates match reference 
+        if not np.array_equal(data['lat'], coordinate_refs['lat_ref']):
+            raise ValueError(f'Latitude mistmatch in {filename}')
+        
+        if not np.array_equal(data['lon'], coorinate_refs['lon_ref']:
+            raise ValueError(f'Longitude mismatch in {filename}')
 
-    variables = ['lat']
+        if not np.array_equal(data['time'], coordinate_refs['time_ref']):
+            raise ValueError(f'Time mismatch in {filename}')
 
-    coordinates = [
-        load_npz_data()
-    ]
-
-    return lats, lons, times
 
 
 def check_coordinates_equal(coord_dict):
