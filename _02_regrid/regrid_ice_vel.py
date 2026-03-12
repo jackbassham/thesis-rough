@@ -54,7 +54,8 @@ def main(cfg: PipelineConfig):
     vectors_regrid, scalars_regrid, new_reg_grid = regrid_dataset(
         vectors, scalars, 
         old_grid_proj, grid_specs, 
-        cfg.data_config.hemisphere
+        cfg.data_config.hemisphere,
+        rotate_vectors = True,
     )
 
     # Unpack vectors from tuple

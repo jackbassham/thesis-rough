@@ -13,10 +13,11 @@ from core_regrid import(
 
 def regrid_dataset(
         scalar_fields: dict[str, npt.NDarrsy],
-        vector_fields: dict[str, Tuple[npt.NDarray]],
+        vector_fields: dict[str, Tuple[npt.NDarray, npt.NDarray]],
         old_grid_proj: OldGridProj,
         grid_specs: GridSpecs,
         hemisphere: str,
+        rotate_vectors: bool = False,
 ):
     
     # Construct new regular lat/lon grid
@@ -25,20 +26,21 @@ def regrid_dataset(
     # Compute nearest neighbor interpolation indices using new and old grids
     interp_indices = compute_nearest_neighbor_indices(new_reg_grid, old_grid_proj)
 
-    # Initialize empty dict to store rotated vector field data names and tuples (u, v)
-    vectors_rotated = {}
-    # Iterate through vector field tuples stored in dict
-    for name, (u, v) in vector_fields.items():
-        # Rotate vector components to positive East North from x and y and store in dict
-        vectors_rotated[name] = rotate_to_East_North(
-            u, v, old_grid_proj, hemisphere
-        )
 
     # Initialize empty dict to store regrid vector field data names and tuples (u, v)
     vectors_regrid = {}
+
     # Iterate through vector field tuples stored in dict
-    for name, (u, v) in vectors_rotated.items():
-        # Regrd each vector component in vector field
+    for name, (u, v) in vector_fields.items():
+        
+        # If vector fields call for rotation to postive East/North from x/y
+        if rotate_vectors:
+            # Rotate vector components
+            (u, v) = rotate_to_East_North(
+                u, v, old_grid_proj, hemisphere
+        )
+
+        # Regrd each vector component in vector field and store in dict
         vectors_regrid[name] = (
             regrid_data(u, interp_indices),
             regrid_data(v, interp_indices),
