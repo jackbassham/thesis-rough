@@ -1,5 +1,5 @@
 import numpy.typing as npt
-from typing import Tuple, Optional, TYPE_CHECKING
+from typing import Tuple
 
 from core_regrid import(
     OldGridProj,
@@ -15,8 +15,8 @@ def regrid_dataset(
         old_grid_proj: OldGridProj,
         grid_specs: GridSpecs,
         hemisphere: str,
-        scalar_fields: Optional[dict[str, npt.NDarrsy]] = None,
-        vector_fields: Optional[dict[str, Tuple[npt.NDarray, npt.NDarray]]] = None,
+        scalar_fields: dict[str, npt.NDarray] | None = None,
+        vector_fields: dict[str, Tuple[npt.NDarray, npt.NDarray]] | None = None,
         rotate_vectors: bool = False,
 ):
     
@@ -47,21 +47,15 @@ def regrid_dataset(
                 regrid_data(v, interp_indices),
             )
 
-    else: 
-        # If no vector entries, vectors_regrid remains emtpy
-        pass
-
     # Initialize empty dict to store regrid scalar field data
     scalars_regrid = {}
 
     if scalar_fields is not None:
+        
         # Regrid scalar data and store names and data in dict
         for name, data in scalar_fields.items():
-            scalar_fields[name] = (regrid_data(data, interp_indices))
+            scalars_regrid[name] = (regrid_data(data, interp_indices))
 
-    else:
-        # If no scalar entries, scalars_regrid remains emtpy
-        pass
 
     return vectors_regrid, scalars_regrid, new_reg_grid
 
