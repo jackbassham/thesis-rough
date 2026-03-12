@@ -1,5 +1,30 @@
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import numpy as np
+
+# FIXME move to data download? So user is not downloading entire region
+
+def crop_2Dlatlon(data_old, lat_old, lon_old, lat_limits, lon_limits):
+    """
+    Crops data with 2D lat and lon variables (where lat and lon are used as coordinate variables)
+    """
+    
+    # Check that lon range in (-180, 180)
+    if np.any(lon_old > 180):
+        lon_old = np.where(lon_old > 180, lon_old - 360, lon_old)  # Convert from 0-360 to -180-180
+    elif np.any(lon_old < -180):
+        raise ValueError("Longitude values must be in the range (-180, 180).")
+
+    # * Extract j indices along [0]th dimension
+    j = np.unique(np.where((lat_old >= lat_limits[0]) & (lat_old <= lat_limits[1]) & (lon_old >= lon_limits[0]) & (lon_old <= lon_limits[1]))[0])
+    # * Extract i indices along [1]th dimension
+    i = np.unique(np.where((lat_old >= lat_limits[0]) & (lat_old <= lat_limits[1]) & (lon_old >= lon_limits[0]) & (lon_old <= lon_limits[1]))[1])
+    
+    lat_crop = lat_old[j,:][:,i]
+    lon_crop = lon_old[j,:][:,i]
+    data_crop = data_old[:,j,:][:,:,i]
+
+    return data_crop, lon_crop, lat_crop
 
 # FIXME Clean these up
 
