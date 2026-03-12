@@ -1,6 +1,5 @@
 import numpy as np
 from pathlib import Path
-import sys
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
@@ -23,28 +22,26 @@ def main(cfg: PipelineConfig):
     # Define raw data file name
     filename = 'ice_vel_raw_ppv4_ease.npz'
 
-    # Load numpy data
+    # Load raw data file
     data = load_npz_data(path_raw / filename)
 
-    # Access variables from data
-    ui = data['ui']
-    vi = data['vi']
-    ri = data['ri']
-    lat = data['lat']
-    lon = data['lon']
+    # Load in time variable for saving in new file
     time = data['time']
 
     # Pack vector component tuple data into dict
-    vectors = {'ice_vel': (ui, vi)}
+    vectors = {'ice_vel': (data['ui'], data['vi'])}
 
     # Pack scalar data into dict
-    scalars = {'ri': ri}
+    scalars = {'ri': data['ri']}
 
     # Instantiate old grid projection object
     old_grid_proj = OldGridProj(
-        lat_mesh = lat,
-        lon_mesh = lon,
+        lat_mesh = data['lat'],
+        lon_mesh = data['lon'],
     )
+
+    # Load in time variable
+    time = data['time']
 
     # Instantiate new grid specifications object
     grid_specs = GridSpecs(
@@ -77,6 +74,7 @@ def main(cfg: PipelineConfig):
         ri = ri_regrid,
         lat = new_reg_grid.lat,
         lon = new_reg_grid.lon,
+        time = time,
     )
 
 
