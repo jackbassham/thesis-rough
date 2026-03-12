@@ -1,12 +1,16 @@
 import numpy as np
-import os
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from _00_config.config import PipelineConfig
 
-from _00_config.path import (
-    PATH_REGRID,
-    PATH_COORDINATES,
-)
+from helpers import load_npz_data
 
-def main():
+def main(cfg: PipelineConfig):
+
+
+
+
+
 
     # Load in coordinate variables from motion dataset
     data = np.load(os.path.join(PATH_REGRID, f'motion_ppv4_latlon.npz'))
@@ -71,7 +75,7 @@ def main():
     return
 
 
-def assert_equal(coord_dict):
+def check_coordinates_equal(coord_dict):
     """
     Asserts arrays are equal
     
@@ -92,4 +96,6 @@ def assert_equal(coord_dict):
             
 
 if __name__ == "__main__":
-    main()
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
