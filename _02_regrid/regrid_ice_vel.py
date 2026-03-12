@@ -78,7 +78,6 @@ def main(cfg: PipelineConfig):
     )
 
 
-
 if __name__ == "__main__":
     from _00_config.load_config import load_config
     cfg = load_config()
