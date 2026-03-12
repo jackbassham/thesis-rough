@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
 
+from helpers import load_npz_data
 from core_regrid import OldGridProj, GridSpecs
 from pipeline_regrid import regrid_dataset
 
@@ -22,13 +23,8 @@ def main(cfg: PipelineConfig):
     # Define raw data file name
     filename = 'ice_vel_raw_ppv4_ease.npz'
 
-    # Try to load the raw data
-    try:
-        data = np.load(path_raw / filename)
-
-    # Handle case where file does not exist
-    except FileNotFoundError:
-        sys.exit(f'File at {path_raw / filename} not found')
+    # Load numpy data
+    data = load_npz_data(path_raw / filename)
 
     # Access variables from data
     ui = data['ui']
@@ -57,6 +53,7 @@ def main(cfg: PipelineConfig):
         resolution_km = cfg.data_config.grid_resolution,
     )
 
+    # Regrid vector and scalar data and create new grid lat/lon
     vectors_regrid, scalars_regrid, new_reg_grid = regrid_dataset(
         vectors, scalars, 
         old_grid_proj, grid_specs, 
@@ -66,6 +63,8 @@ def main(cfg: PipelineConfig):
     # Unpack vectors from tuple
     ui_regrid, vi_regrid = vectors_regrid['ice_vel']
 
+    # Unpack scalar from tuple
+    ri_regrid = scalars_regrid['ri']
 
     # Define regrid data file name
     filename = 'ice_vel_regrid_ppv4.npz'
@@ -75,10 +74,11 @@ def main(cfg: PipelineConfig):
         path_regrid / filename,
         ui = ui_regrid,
         vi = vi_regrid,
-        ri = scalars_regrid['ri'],
+        ri = ri_regrid,
         lat = new_reg_grid.lat,
         lon = new_reg_grid.lon,
     )
+
 
 
 if __name__ == "__main__":
