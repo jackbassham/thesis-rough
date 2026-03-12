@@ -1,45 +1,55 @@
 import gc
+from helpers import load_npz_data
 import numpy as np
-import os
+from pathlib import Path
 
 # FIXME pass/ silence numpy RuntimeWarning: Mean of empty slice
 
 
 def main(cfg):
 
-    PATH_REGRID = cfg.path_config.data_stage_path('regrid')
+    # NOTE the below is pretty verbose and seems repetitive but not sure
+    # how to clean it up/ abstract it due to unique methods for different variables
+    # etc.
 
-    # FIXME try to clean up the method execution here
-    PATH_MASK_NORM = cfg.path_config.data_stage_path('mask_norm')
-    cfg.path_config.makedir_if_missing(PATH_MASK_NORM)    
+    # Load regrid data source path
+    path_regrid = cfg.path_config.data_stage_path('regrid')
 
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PATH_MASK_NORM, exist_ok = True)
+    # Load masked/normalized destination path
+    path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
 
-    # Load in variables
-    fnam = 'ice_vel_regrid_ppv4.npz'
-    data = np.load(os.path.join(PATH_REGRID, fnam), allow_pickle=True)
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_mask_norm) 
 
-    ui = data['u'] # zonal ice velocity
-    vi = data['v'] # meridional ice velocity
-    ri = data['r'] # ice velocity uncertainty (same for u and v)
+    # Construct dict of dataset filenames
+    filenames = {
+        'ice_vel': 'ice_vel_regrid_ppv4.npz',
+        'wind': 'wind_regrid_jra55.npz',
+        'ice_conc': 'ice_conc_regrid_nimbus7.py'
+    }
 
-    print('Ice Velocity, Uncertainty Loaded')
+    # FIXME function with all of this that loads data 
+    # into a dataclass?
 
-    fnam = 'ice_conc_regrid_nimbus7.npz'
-    data = np.load(os.path.join(PATH_REGRID, fnam), allow_pickle=True)
+    # Load in ice velocity data
+    data = load_npz_data(path_regrid / filenames['ice_vel'])
 
-    ci = data['ci']# ice concentration
+    # Extract variables from data dict
+    ui = data['ui']
+    vi = data['vi']
+    ri = data['ri']
 
-    print('Concentration Loaded')
+    # Load in wind data
+    data = load_npz_data(path_regrid / filenames['wind'])
 
-    fnam = 'wind_regrid_jra55.npz'
-    data = np.load(os.path.join(PATH_REGRID, fnam), allow_pickle=True)
+    # Extract variables from data dict
+    ua = data['ua']
+    va = data['va']
 
-    ua = data['u']
-    va = data['v']
+    # Load in ice concentration data
+    data = load_npz_data(path_regrid / filenames['ice_conc'])
 
-    print('Wind Loaded')
+    ci = data['ci']
 
     # Delete 'data' from memory
     del data
