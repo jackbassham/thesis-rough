@@ -22,30 +22,34 @@ def main(cfg: PipelineConfig):
     # Load coordinate variables from first dataset as reference
     data_ref = load_npz_data(path_regrid / filenames[0])
 
+    # Build a dictionary of the reference coordinate variables
     coordinate_refs = {
-        'lat_ref': data_ref['lat'],
-        'lon_ref': data_ref['lon'],
-        'time_ref': data_ref['time'],
+        'lat': data_ref['lat'],
+        'lon': data_ref['lon'],
+        'time': data_ref['time'],
     }
 
+    # Check that the remaning dataset coordinates match the reference
+    check_coordinates_match(path_regrid, coordinate_refs, filenames)
 
+    # Shift time to reflect 'present-day' data shift
+    time_t0 = coordinate_refs['time_ref'][1:]
 
-    # # Update time to reflect data shift for 'present day' inputs
-    # time_t0 = time_icevel[1:]
+    # Remove last day to reflect 'previous-day' data shift
+    time_t1 = coordinate_refs['time_ref'][:-1]
 
-    # # Create the destination directory if it doesn't already exist
-    # os.makedirs(PATH_COORDINATES, exist_ok = True)
+    # Define coordinate variable file name
+    filename = 'coordinates.npz'
 
-    # # Save coordinate variables from one dataset in new file
-    # np.savez(
-    #     os.path.join(PATH_COORDINATES, f'coordinates.npz'),
-    #     time_total = time_icevel,
-    #     time_t0 = time_t0,
-    #     lat = lat_icevel,
-    #     lon = lon_icevel,
-    # )
+    # Save the coordinate data
+    np.savez(
+        path_regrid / filename,
+        lat = coordinate_refs['lat'],
+        lon = coordinate_refs['lon'],
+        time_t0 = time_t0,
+        time_t1 = time_t1,
+    )
 
-    return
 
 def check_coordinates_match(
         path_source: Path, coordinate_refs: dict[str, npt.NDarray], filenames: list[str],
@@ -54,42 +58,21 @@ def check_coordinates_match(
 
     """
 
-    # Loop through remaining datasets after reference
+    # Iterate through remaining datasets after reference
     for filename in filenames[1:]:
 
         # Load in that file's dataset
         data = load_npz_data(path_source / filename)
 
-        # Check that dataset coordinates match reference 
+        # Check that dataset coordinate arrays have same shape and elements as reference
         if not np.array_equal(data['lat'], coordinate_refs['lat_ref']):
             raise ValueError(f'Latitude mistmatch in {filename}')
         
-        if not np.array_equal(data['lon'], coorinate_refs['lon_ref']:
+        if not np.array_equal(data['lon'], coordinate_refs['lon_ref']):
             raise ValueError(f'Longitude mismatch in {filename}')
 
         if not np.array_equal(data['time'], coordinate_refs['time_ref']):
             raise ValueError(f'Time mismatch in {filename}')
-
-
-
-def check_coordinates_equal(coord_dict):
-    """
-    Asserts arrays are equal
-    
-    Takes input 'coord_dict' mapping name to array
-        Example: {"a": a, "b": b, "c": c}
-
-    If arrays are equal, program continues.
-    If not, program strops and value error is raised with print statement.
-    """
-
-    # Pull variable names from dict keys
-    names = list(coord_dict.keys())
-    for i in range (len(names)):
-        for j in range(i + 1, len(names)):
-            a, b = names[i] ,names[j]
-            if not np.array_equal(coord_dict[a], coord_dict[b]):
-                raise ValueError(f"ERROR: {a} and {b} not equal")
             
 
 if __name__ == "__main__":
