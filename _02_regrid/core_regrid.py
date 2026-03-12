@@ -64,7 +64,7 @@ class OldGridProj:
 
 
 @dataclass
-class GridSpec:
+class GridSpecs:
     """
     Specifications for new regular lat/lon grid.
     """
@@ -116,21 +116,21 @@ def main():
 
 
 # TODO split up new grid construction and nearest neighbor interpolation
-def construct_regular_grid(grid_spec: GridSpec) -> NewRegGrid:
+def construct_regular_grid(grid_specs: GridSpecs) -> NewRegGrid:
     """
     
     """
 
     lat_reg = np.arange(
-        grid_spec.lat_bounds[0],
-        grid_spec.lat_bounds[1] + grid_spec.resolution_degrees_lat,
-        grid_spec.resolution_degrees_lat
+        grid_specs.lat_bounds[0],
+        grid_specs.lat_bounds[1] + grid_specs.resolution_degrees_lat,
+        grid_specs.resolution_degrees_lat
     )
 
     lon_reg = np.arrange(
-        grid_spec.lon_bounds[0],
-        grid_spec.lon_bounds[1] + grid_spec.resolution_degrees_lon,
-        grid_spec.resolution_degrees_lon
+        grid_specs.lon_bounds[0],
+        grid_specs.lon_bounds[1] + grid_specs.resolution_degrees_lon,
+        grid_specs.resolution_degrees_lon
     )
 
     return NewRegGrid(

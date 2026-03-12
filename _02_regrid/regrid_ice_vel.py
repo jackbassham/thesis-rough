@@ -5,14 +5,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
 
-from core_regrid import(
-    OldGridProj,
-    GridSpec,
-    construct_regular_grid,
-    compute_nearest_neighbor_indices,
-    rotate_to_East_North,
-    regrid_data,
-)
+from core_regrid import OldGridProj, GridSpecs
+from pipeline_regrid import regrid_dataset
 
 def main(cfg: PipelineConfig):
 
@@ -44,36 +38,25 @@ def main(cfg: PipelineConfig):
     lon = data['lon']
     time = data['time']
 
+    # Pack vector component tuple data into dict
+    vectors = {'ice_velocity': (ui, vi)}
+
+    # Pack scalar data into dict
+    scalars = {'ri': ri}
+
     # Instantiate old grid projection object
     old_grid_proj = OldGridProj(
         lat_mesh = lat,
         lon_mesh = lon,
     )
 
-    # Instantiate grid specification object
-    grid_spec = GridSpec(
-        lat_bounds = cfg.data_config.latitude_bounds,
-        lon_bounds = cfg.date_config.lon_bounds,
-        resolution_km = cfg.data_config.grid_resolution,
+    # Instantiate new grid specifications object
+    grid_spec = 
+
+    regrid_dataset(
+        vectors, scalars, old_grid_proj, 
     )
 
-    # Construct new regular lat/lon grid
-    new_reg_grid = construct_regular_grid(grid_spec)
-
-    # Compute nearest neighbor interpolation indices using new and old grids
-    interp_indices = compute_nearest_neighbor_indices(new_reg_grid, old_grid_proj)
-
-    # Rotate vector components to positive East North from x and y
-    ui_rot, vi_rot = rotate_to_East_North(
-        ui, vi,
-        old_grid_proj,
-        cfg.data_config.hemisphere,
-    )
-
-    # Regrid data using nearest neighbor interpolation indices
-    ui_regrid = regrid_data(ui_rot, interp_indices)
-    vi_regrid = regrid_data(vi_rot, interp_indices)
-    ri_regrid = regrid_data(ri, interp_indices)
 
     # Define regrid data file name
     filename = 'ice_vel_regrid_ppv4.npz'
