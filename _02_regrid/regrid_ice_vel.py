@@ -10,6 +10,8 @@ from pipeline_regrid import regrid_dataset
 
 def main(cfg: PipelineConfig):
 
+    # FIXME repeated logic accross 3
+
     # Load raw data source path
     path_raw = cfg.path_config.data_stage_path('raw')
 
