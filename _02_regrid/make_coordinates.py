@@ -1,11 +1,31 @@
 import numpy as np
 from typing import TYPE_CHECKING
+from pathlib import Path
 if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
 
 from helpers import load_npz_data
 
 def main(cfg: PipelineConfig):
+
+    # Load regrid data (source and destination) path
+    path_regrid = cfg.path_config.data_stage_path('regrid')
+
+    # Define list of data file names
+    filenames = Path(
+        [
+        'ice_vel_regrid_ppv4.npz',
+        'ice_conc_regrid_nimbus7.npz',
+        'wind_regrid_jra55.npz',
+        ]
+    )
+
+    # Define list of dataset names
+    datanames = [
+        'ice_vel',
+        'ice_conc',
+        'wind',
+    ]
 
 
 
@@ -73,6 +93,17 @@ def main(cfg: PipelineConfig):
     )
 
     return
+
+def build_coordinate_dict(path_regrid: path, filenames: list, datanames:list) -> dict:
+    """
+    
+    """
+
+    coordinates = [
+        load_npz_file
+    ]
+
+    return coordinates
 
 
 def check_coordinates_equal(coord_dict):
