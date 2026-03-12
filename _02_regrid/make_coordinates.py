@@ -1,6 +1,6 @@
 import numpy as np
-from typing import TYPE_CHECKING
 from pathlib import Path
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
 
@@ -12,13 +12,11 @@ def main(cfg: PipelineConfig):
     path_regrid = cfg.path_config.data_stage_path('regrid')
 
     # Define list of data file names
-    filenames = Path(
-        [
+    filenames = [
         'ice_vel_regrid_ppv4.npz',
         'ice_conc_regrid_nimbus7.npz',
         'wind_regrid_jra55.npz',
         ]
-    )
 
     # Define list of dataset names
     datanames = [
@@ -45,7 +43,7 @@ def main(cfg: PipelineConfig):
 
     return
 
-def build_coordinate_dicts(path_source: Path, filenames: list[Path], datanames: list[str]) -> dict:
+def build_coordinate_dicts(path_source: Path, filenames: list[str], datanames: list[str]) -> dict:
     """
     
     """
