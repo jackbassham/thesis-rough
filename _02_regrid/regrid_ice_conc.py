@@ -8,6 +8,7 @@ from helpers import load_npz_data
 from core_regrid import OldGridProj, GridSpecs
 from pipeline_regrid import regrid_dataset
 
+
 def main(cfg: PipelineConfig):
 
     # FIXME repeated logic accross 3
@@ -22,7 +23,7 @@ def main(cfg: PipelineConfig):
     cfg.path_config.makedir_if_missing(path_regrid)
 
     # Define raw data file name
-    filename = 'ice_vel_raw_ppv4_ease.npz'
+    filename = 'ice_conc_raw_nimbus7_ps.npz'
 
     # Load raw data file
     data = load_npz_data(path_raw / filename)
@@ -30,11 +31,8 @@ def main(cfg: PipelineConfig):
     # Load in time variable for saving in new file
     time = data['time']
 
-    # Pack vector component tuple data into dict
-    vector_field = {'ice_vel': (data['ui'], data['vi'])}
-
     # Pack scalar data into dict
-    scalar_field = {'ri': data['ri']}
+    scalar_field = {'ice_conc': data['ci']}
 
     # Instantiate old grid projection object
     old_grid_proj = OldGridProj(
@@ -56,26 +54,19 @@ def main(cfg: PipelineConfig):
     vectors_regrid, scalars_regrid, new_reg_grid = regrid_dataset(
         old_grid_proj, grid_specs, 
         cfg.data_config.hemisphere,
-        vector_fields = vector_field, 
         scalar_fields = scalar_field, 
-        rotate_vectors = True,
     )
 
-    # Unpack vectors from tuple
-    ui_regrid, vi_regrid = vectors_regrid['ice_vel']
-
     # Unpack scalar from tuple
-    ri_regrid = scalars_regrid['ri']
+    ci_regrid = scalars_regrid['ice_conc']
 
     # Define regrid data file name
-    filename = 'ice_vel_regrid_ppv4.npz'
+    filename = 'ice_conc_regrid_nimbus7.npz'
 
     # Save the regrid data
     np.savez(
         path_regrid / filename,
-        ui = ui_regrid,
-        vi = vi_regrid,
-        ri = ri_regrid,
+        ci = ci_regrid,
         lat = new_reg_grid.lat,
         lon = new_reg_grid.lon,
         time = time,
