@@ -1,0 +1,6 @@
+"""
+NOTE: 
+Nasa Earth Data authorisation and access code adapted from:
+1. Earth Data Login Documentation, 'How to Access Data with Python', https://urs.earthdata.nasa.gov/documentation/for_users/data_access/python
+2. NSIDC example script NSIDC_Parse_HTML_BatchDL.py
+"""
