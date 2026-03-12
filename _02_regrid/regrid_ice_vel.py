@@ -31,10 +31,10 @@ def main(cfg: PipelineConfig):
     time = data['time']
 
     # Pack vector component tuple data into dict
-    vectors = {'ice_vel': (data['ui'], data['vi'])}
+    vector_field = {'ice_vel': (data['ui'], data['vi'])}
 
     # Pack scalar data into dict
-    scalars = {'ri': data['ri']}
+    scalar_field = {'ri': data['ri']}
 
     # Instantiate old grid projection object
     old_grid_proj = OldGridProj(
@@ -54,9 +54,10 @@ def main(cfg: PipelineConfig):
 
     # Regrid vector and scalar data and create new grid lat/lon
     vectors_regrid, scalars_regrid, new_reg_grid = regrid_dataset(
-        vectors, scalars, 
         old_grid_proj, grid_specs, 
         cfg.data_config.hemisphere,
+        vector_fields = vector_field, 
+        scalar_fields = scalar_field, 
         rotate_vectors = True,
     )
 
