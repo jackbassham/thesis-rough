@@ -39,7 +39,7 @@ def main(cfg: PipelineConfig):
     time = data['time']
 
     # Pack vector component tuple data into dict
-    vectors = {'ice_velocity': (ui, vi)}
+    vectors = {'ice_vel': (ui, vi)}
 
     # Pack scalar data into dict
     scalars = {'ri': ri}
@@ -51,11 +51,20 @@ def main(cfg: PipelineConfig):
     )
 
     # Instantiate new grid specifications object
-    grid_spec = 
-
-    regrid_dataset(
-        vectors, scalars, old_grid_proj, 
+    grid_specs = GridSpecs(
+        lat_bounds = cfg.data_config.latitude_bounds,
+        lon_bounds = cfg.data_config.longitude_bounds,
+        resolution_km = cfg.data_config.grid_resolution,
     )
+
+    vectors_regrid, scalars_regrid, new_reg_grid = regrid_dataset(
+        vectors, scalars, 
+        old_grid_proj, grid_specs, 
+        cfg.data_config.hemisphere
+    )
+
+    # Unpack vectors from tuple
+    ui_regrid, vi_regrid = vectors_regrid['ice_vel']
 
 
     # Define regrid data file name
@@ -66,7 +75,7 @@ def main(cfg: PipelineConfig):
         path_regrid / filename,
         ui = ui_regrid,
         vi = vi_regrid,
-        ri = ri_regrid,
+        ri = scalars_regrid['ri'],
         lat = new_reg_grid.lat,
         lon = new_reg_grid.lon,
     )

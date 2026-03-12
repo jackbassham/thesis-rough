@@ -26,30 +26,30 @@ def regrid_dataset(
     interp_indices = compute_nearest_neighbor_indices(new_reg_grid, old_grid_proj)
 
     # Initialize empty dict to store rotated vector field data names and tuples (u, v)
-    rotated_vectors = {}
+    vectors_rotated = {}
     # Iterate through vector field tuples stored in dict
     for name, (u, v) in vector_fields.items():
         # Rotate vector components to positive East North from x and y and store in dict
-        rotated_vectors[name] = rotate_to_East_North(
+        vectors_rotated[name] = rotate_to_East_North(
             u, v, old_grid_proj, hemisphere
         )
 
     # Initialize empty dict to store regrid vector field data names and tuples (u, v)
-    regrid_vectors = {}
+    vectors_regrid = {}
     # Iterate through vector field tuples stored in dict
-    for name, (u, v) in rotated_vectors.items():
+    for name, (u, v) in vectors_rotated.items():
         # Regrd each vector component in vector field
-        regrid_vectors[name] = (
+        vectors_regrid[name] = (
             regrid_data(u, interp_indices),
             regrid_data(v, interp_indices),
         )
 
     # Regrid scalar data and store names and data in dict
-    regrid_scalars = {
+    scalars_regrid = {
         name: regrid_data(data, interp_indices)
         for name, data in scalar_fields.items()
     }
 
-    return regrid_vectors, regrid_scalars, new_reg_grid
+    return vectors_regrid, scalars_regrid, new_reg_grid
 
 
