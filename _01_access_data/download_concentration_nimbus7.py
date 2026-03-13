@@ -3,13 +3,25 @@ import numpy as np
 import os
 import xarray as xr # With h5netcdf
 
+# FIXME Bad URL for sea ice concntration - now hosted on NASA Earth Data 
+# up until 2024.
 
+# NOTE Broken
 
-from .get_nasa_earth_data import get_temp_file
+# NOTE Look into EARTHACCESS library https://earthaccess.readthedocs.io/en/latest/user/access/
+
+"""
+NOTE NASA is in the process of migrating datasets from on-premises archives to the cloud. 
+By July 2026, all NASA data will be hosted in the cloud. During migration, as datasets are moved, 
+access to on-premises archives is being removed. 
+This may cause you to have counts of results different from counts here.
+"""
+
+from get_nasa_earth_data import get_temp_file
 
 HEM = 'sh'
-START_YEAR = '2020'
-END_YEAR = '2021'
+START_YEAR = 2020
+END_YEAR = 2021
 PATH_RAW = '/data/globus/jbassham'
 
 # Downloads Daily NSIDC Sea Ice Concentrations (Nimbus7)
