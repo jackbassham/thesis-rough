@@ -17,8 +17,8 @@ class DataConfig:
 
         Hemisphere String identifier:
         String identifier
-        'sh' Southern Hemisphere
-        'nh' Northern Hemisphere
+        'south' Southern Hemisphere
+        'north' Northern Hemisphere
 
         Temporal Bounds:
         year_range = (1992, 2020)
@@ -69,8 +69,8 @@ class DataConfig:
         self.hemisphere = self.hemisphere.lower().strip()
 
         # Handle invalid hemisphere string
-        if self.hemisphere not in ('sh', 'nh'):
-            raise ValueError('Invalid hemisphere string: Enter "sh" for Southern or "nh" for Northern') 
+        if self.hemisphere not in ('south', 'north'):
+            raise ValueError('Invalid hemisphere string: Enter "south" or "north"') 
         
 
     def _validate_year_range(self):
@@ -111,12 +111,12 @@ class DataConfig:
             raise ValueError('Enter latitude bounds from South to North (where minimum less than maximum)')
 
         # Handle invalid latitude bounds for Southern Hemisphere
-        if self.hemisphere == 'sh':
+        if self.hemisphere.lower().strip() == 'south':
             if min_lat < -90 or max_lat > -37:
                 raise ValueError('Southern Hemisphere latitude bounds limited to (-90, -37) ie: "90degS, 37degS"')
 
         # Handle invalid latitude bounds for Northern Hemisphere
-        if self.hemisphere == 'nh':
+        if self.hemisphere.lower().strip() == 'north':
             if min_lat < 29.7 or max_lat > 90:
                 raise ValueError('Northern Hemisphere latitude bounds limited to (29.7, 90) ie: "29.7degN, 90degN"') 
         
@@ -344,7 +344,7 @@ def main():
 
     # Create instance of data parameters
     dataconfig = DataConfig(
-        hemisphere = 'sh',
+        hemisphere = 'south',
         year_range = (1992, 2020),
         latitude_bounds = (-80, -62),
         longitude_bounds = (-180, 180),
