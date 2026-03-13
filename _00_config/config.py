@@ -25,13 +25,15 @@ class DataConfig:
         # NOTE: Original Hoffman, et. al range is 1989-2020, 1989-1991 corrupted JRA55 data files on Mazloff Server
         # TODO: Script to JRA55 or ERA data from source
 
-        Spatial Bounds: 
+        Spatial Bounds for Reproduction: 
         Southern Hemisphere; Southern Ocean
         latitude_limits = (-80, -62), limited to -90degS to -37degS
+        (max latitude bounds based on datasets (-90, -40))
         longitude_limts = (-180, 180), limited to -180degW to 180degE
         
         Northern Hemisphere; Arctic ('nh')
         latitude_limits = (60, 90), limited to 29.7N to 90N
+        (max latitude bounds based on datasets (31, 90))
         longitude_limts = (-180, 180), limited to -180degW to 180degE
 
         Grid Resolution:
@@ -112,13 +114,13 @@ class DataConfig:
 
         # Handle invalid latitude bounds for Southern Hemisphere
         if self.hemisphere.lower().strip() == 'south':
-            if min_lat < -90 or max_lat > -37:
-                raise ValueError('Southern Hemisphere latitude bounds limited to (-90, -37) ie: "90degS, 37degS"')
+            if min_lat < -90 or max_lat > -40:
+                raise ValueError('Southern Hemisphere latitude bounds limited to (-90, -40) ie: "90degS, 40degS"')
 
         # Handle invalid latitude bounds for Northern Hemisphere
         if self.hemisphere.lower().strip() == 'north':
-            if min_lat < 29.7 or max_lat > 90:
-                raise ValueError('Northern Hemisphere latitude bounds limited to (29.7, 90) ie: "29.7degN, 90degN"') 
+            if min_lat < 31 or max_lat > 90:
+                raise ValueError('Northern Hemisphere latitude bounds limited to (31, 90) ie: "31degN, 90degN"') 
         
 
     def _validate_longitude_bounds(self):
