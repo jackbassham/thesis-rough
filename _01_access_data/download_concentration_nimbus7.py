@@ -3,15 +3,14 @@ import numpy as np
 import os
 import xarray as xr # With h5netcdf
 
-from _00_config.config import (
-    HEM, 
-    START_YEAR,
-    END_YEAR
-)
 
-from _00_config.path import PATH_RAW
 
 from .get_nasa_earth_data import get_temp_file
+
+HEM = 'sh'
+START_YEAR = '2020'
+END_YEAR = '2021'
+PATH_RAW = '/data/globus/jbassham'
 
 # Downloads Daily NSIDC Sea Ice Concentrations (Nimbus7)
 # from https://nsidc.org/data/nsidc-0051/versions/2
