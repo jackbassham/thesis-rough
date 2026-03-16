@@ -24,6 +24,7 @@ class IceConcURL:
     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
     DATA SET ID: NSIDC-0051
     DOI: 10.5067/MPYG15WAA4WX
+    https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837840-NSIDC_CPRD
     """
 
     ...
@@ -34,4 +35,5 @@ class IceConcURL:
 class WindURL:
     
     # TODO implement url for wind data
+    # NOTE try JRA55, ERA, or ECMFW?
     ...
