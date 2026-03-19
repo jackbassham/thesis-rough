@@ -21,6 +21,8 @@ def main(cfg: PipelineConfig):
     # Make destination directory if missing
     cfg.path_config.makedir_if_missing(path_regrid)
 
+    
+    # FIXME master dict or dataclass with filenames
     # Define raw data file name
     filename = 'ice_vel_raw_ppv4_ease.npz'
 
