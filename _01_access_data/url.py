@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
+# TODO Possible dataclass structure for entire datset - download 
+# trough preprocessing?
+
 
 @dataclass
 class IceVelURL:
