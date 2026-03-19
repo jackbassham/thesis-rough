@@ -1,7 +1,7 @@
 import numpy as np
 from pathlib import Path
 import xarray as xr
-from typing import Tuple, TYPE_CHECKING
+from typing import Tuple, Generator, TYPE_CHECKING
 if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
 
@@ -16,7 +16,7 @@ def main(cfg: PipelineConfig):
     ...
 
 
-def construct_ice_vel_urls(hemisphere: str, year_range: Tuple[int, int]) -> str:
+def construct_ice_vel_urls(hemisphere: str, year_range: Tuple[int, int]) -> Generator[str]:
     """
     Builds url for https file system download of daily ice velocity data:
     'Polar Pathfinder Daily 25 km EASE-Grid Sea Ice Motion Vectors, Version 4'
@@ -37,7 +37,7 @@ def construct_ice_vel_urls(hemisphere: str, year_range: Tuple[int, int]) -> str:
     }
 
     # Define dataset directory url
-    data_directory = f'nsidc0116_icemotion_vectors_v4/{hem_dir}/daily/'
+    data_directory = f'nsidc0116_icemotion_vectors_v4/{hem_dir[hemisphere]}/daily/'
 
     # Map hemisphere to string format in file name
     hem_fnam = {
@@ -51,7 +51,7 @@ def construct_ice_vel_urls(hemisphere: str, year_range: Tuple[int, int]) -> str:
     start_year, end_year = year_range
 
     # Iterate through years to create filenames
-    for year in range(start_year, end_year):
+    for year in range(start_year, end_year + 1):
     
         # Construct filename based on host structure
         filename = f'icemotion_daily_{hem_fnam[hemisphere]}_25km_{year}0101_{year}1231_v04.nc'
@@ -62,7 +62,8 @@ def construct_ice_vel_urls(hemisphere: str, year_range: Tuple[int, int]) -> str:
         # Append to list of urls
         download_urls.append(download_url)
 
-    return download_urls
+    # Return download urls through generator
+    yield download_urls
 
 
     
