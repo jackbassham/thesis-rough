@@ -44,6 +44,8 @@ class IceVelURLBuilder(URLBuilder):
     https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vectors_v4/south/daily/
     Example filename:
     icemotion_daily_sh_25km_19900101_19901231_v4.1.nc
+
+    NOTE Subject to change, Nasa Earth Data moving to cloud.
     """
 
     # Define base url for datset download directories
