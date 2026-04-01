@@ -16,54 +16,7 @@ def main(cfg: PipelineConfig):
     ...
 
 
-def construct_ice_vel_urls(hemisphere: str, year_range: Tuple[int, int]) -> Generator[str]:
-    """
-    Builds url for https file system download of daily ice velocity data:
-    'Polar Pathfinder Daily 25 km EASE-Grid Sea Ice Motion Vectors, Version 4'
-    DATA SET ID: NSIDC-0116
-    DOI: 10.5067/INAWUWO7QH7B
-    Access/ Documentation: https://nsidc.org/data/nsidc-0116/versions/4
 
-    NOTE Subject to change, Nasa Earth Data moving to cloud.
-    """
-
-    # Define parent url
-    parent = 'https://daacdata.apps.nsidc.org/pub/DATASETS/'
-
-    # Map hemisphere to string format in host directory
-    hem_dir= {
-        'south': 'south',
-        'north': 'north',
-    }
-
-    # Define dataset directory url
-    data_directory = f'nsidc0116_icemotion_vectors_v4/{hem_dir[hemisphere]}/daily/'
-
-    # Map hemisphere to string format in file name
-    hem_fnam = {
-        'south': 'sh',
-        'north':  'nh',
-    }
-
-    download_urls = []
-
-    # Unpack year range tuple
-    start_year, end_year = year_range
-
-    # Iterate through years to create filenames
-    for year in range(start_year, end_year + 1):
-    
-        # Construct filename based on host structure
-        filename = f'icemotion_daily_{hem_fnam[hemisphere]}_25km_{year}0101_{year}1231_v04.nc'
-
-        # Construct url
-        download_url = parent + data_directory + filename
-
-        # Append to list of urls
-        download_urls.append(download_url)
-
-    # Return download urls through generator
-    yield download_urls
 
 
     
