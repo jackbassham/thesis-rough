@@ -2,11 +2,11 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 # TODO Possible dataclass structure for entire datset - download 
-# trough preprocessing?
+# through preprocessing?
 
 
 @dataclass
-class IceVelURL:
+class IceVelURLBuilder:
     """
     Polar Pathfinder Daily 25 km EASE-Grid Sea Ice Motion Vectors, Version 4
     DATA SET ID: NSIDC-0116
@@ -22,7 +22,7 @@ class IceVelURL:
 
 
 @dataclass
-class IceConcURL:
+class IceConcURLBuilder:
     """
     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
     DATA SET ID: NSIDC-0051
@@ -55,7 +55,7 @@ class IceConcURL:
 
 
 @dataclass
-class WindURL:
+class WindURLBuilder:
     
     # TODO implement url for wind data
     # NOTE try JRA55, ERA, or ECMFW?
