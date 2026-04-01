@@ -8,14 +8,14 @@ class DatasetURLBuilder:
 
     def __init__(
         self,
-        parent_url: str,
+        parent: str,
         dataset_directory_template: str,
         filename_template: str,
         hemisphere_directory_map: None | dict[str, str],
         hemisphere_filename_map: dict[str, str],
     ):
 
-        self.parent_url = parent_url
+        self.parent = parent
         self.dataset_directory_template = dataset_directory_template,
         self.filename_template = filename_template,
         self.hemisphere_directory_map = hemisphere_directory_map,
@@ -26,7 +26,7 @@ class DatasetURLBuilder:
             hemisphere: str,
             start_year: int,
             end_year: int,
-            freq: str
+            file_freq: str
     ) -> Generator[str]:
 
 
