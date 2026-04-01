@@ -23,11 +23,11 @@ def main(cfg: PipelineConfig):
     # Initialize url builder
     url_builder = IceVelURLBuilder(cfg)
 
-    # Yield current URL from builder
-    url = url_builder.build()
+    # Iterate thorugh URLs from generator
+    for url in url_builder.build():
 
-    # Get the temporary file from url
-    temp_file = get_temp_file(url, earth_data_session)
+        # Get the temporary file from url
+        temp_file = get_temp_file(url, earth_data_session)
 
     ...
 
