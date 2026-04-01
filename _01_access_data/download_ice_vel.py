@@ -1,5 +1,6 @@
 import io
 import numpy as np
+import numpy.typing as npt
 from pathlib import Path
 import time
 import xarray as xr
@@ -54,8 +55,8 @@ def open_netcdf_from_response(
                 backend_kwargs={'session': session}
             )
         
-        except Exception:
-            print(f'Attempt {attempt +1} failed: {Exception}')
+        except Exception as e:
+            print(f'Attempt {attempt +1} failed: {e}')
 
             # Wait for delay and retry if not all attempts used
             if attempt < retries - 1:
@@ -66,7 +67,7 @@ def open_netcdf_from_response(
                 raise
 
 
-def load_icevel_data(url: str, session: Session) -> Tuple[np.NDarray, ...]:
+def load_icevel_data(url: str, session: Session) -> Tuple[npt.NDarray, ...]:
     """
     
     """
@@ -76,7 +77,7 @@ def load_icevel_data(url: str, session: Session) -> Tuple[np.NDarray, ...]:
 
         ui = ds['u'].values
         vi = ds['v'].values
-        ri = ds['icemotion_error_estimates'].values
+        ri = ds['icemotion_error_estimate'].values
         time = ds['time'].values
 
     return ui, vi, ri, time
