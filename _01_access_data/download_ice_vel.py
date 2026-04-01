@@ -12,6 +12,13 @@ if TYPE_CHECKING:
 from earthdata_auth import create_earthdata_session
 from urls import IceVelURLBuilder
 
+# TODO before memmaps, log and save array shapes in metadata
+# TODO chunked processing for memory
+# OR TODO np memmaps (through entire ml pipeline) (need metadata)
+# TODO crop with buffer before downloading to save disk space
+# TODO add progress tracking and failure recovery to track each file download success
+
+
 def main(cfg: PipelineConfig):
 
     # Load raw data destination path
@@ -26,13 +33,35 @@ def main(cfg: PipelineConfig):
     # Initialize url builder
     url_builder = IceVelURLBuilder(cfg)
 
+    # Get iterable of URLs from builder
+    url_iter = url_builder.build()
+
+    # Get first URL from builder
+    first_url = next(url_iter)
+
+    # Get lat and lon data from the first url in the iterator
+    lat, lon = load_lat_lon(first_url, earth_data_session)
+
+    # Initialize lists for dataset variables
+    ui_all, vi_all, ri_all, time_all = [], [], [], []
+
     # Iterate thorugh URLs from generator
-    for url in url_builder.build():
+    for url in [first_url, *url_iter]:
 
         # Load current url data
         ui, vi, ri, time = load_icevel_data(url, earth_data_session)
 
+        # Append to lists
+        ui_all.append(ui)
+        vi_all.append(vi)
+        ri_all.append(ri)
+        time_all.append(time)
 
+    # Concatenate data lists along time dimension
+    ui_all = np.concatenate(ui_all, axis = 0)
+    vi_all = np.concatenate(vi_all, axis = 0)
+    ri_all = np.concatenate(ri_all, axis = 0)
+    time_all = np.concatentate(time_all, axis = 0)
 
     ...
 
@@ -81,6 +110,19 @@ def load_icevel_data(url: str, session: Session) -> Tuple[npt.NDarray, ...]:
         time = ds['time'].values
 
     return ui, vi, ri, time
+
+
+def load_lat_lon(url: str, session: Session):
+    """
+    
+    """
+
+    # Attempt to open dataset with xarray
+    with open_netcdf_from_response(url, session) as ds:
+        lat = ds["latitude"].values
+        lon = ds["longitude"].values
+
+    return lat, lon
 
 
 if __name__ == "__main__":
