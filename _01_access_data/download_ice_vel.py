@@ -1,10 +1,9 @@
-import io
 import numpy as np
-import numpy.typing as npt
 from pathlib import Path
+import numpy.typing as npt
 import time
 import xarray as xr
-from typing import Tuple, Generator, TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
     from requests import Session
@@ -17,12 +16,16 @@ from urls import IceVelURLBuilder
 # OR TODO np memmaps (through entire ml pipeline) (need metadata)
 # TODO crop with buffer before downloading to save disk space
 # TODO add progress tracking and failure recovery to track each file download success
+# TODO abstract saving function using dict with variable names to variables
 
 
 def main(cfg: PipelineConfig):
 
     # Load raw data destination path
     path_raw = cfg.path_config.data_stage_path('raw')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_raw)
     
     # Define raw data destination file name
     filename = 'ice_vel_raw_ppv4_ease.npz'
@@ -33,20 +36,11 @@ def main(cfg: PipelineConfig):
     # Initialize url builder
     url_builder = IceVelURLBuilder(cfg)
 
-    # Get iterable of URLs from builder
-    url_iter = url_builder.build()
-
-    # Get first URL from builder
-    first_url = next(url_iter)
-
-    # Get lat and lon data from the first url in the iterator
-    lat, lon = load_lat_lon(first_url, earth_data_session)
-
     # Initialize lists for dataset variables
     ui_all, vi_all, ri_all, time_all = [], [], [], []
 
     # Iterate thorugh URLs from generator
-    for url in [first_url, *url_iter]:
+    for i, url in enumerate(url_builder.build()):
 
         # Load current url data
         ui, vi, ri, time = load_icevel_data(url, earth_data_session)
@@ -57,13 +51,29 @@ def main(cfg: PipelineConfig):
         ri_all.append(ri)
         time_all.append(time)
 
+        # Get lat lon variables once from first url
+        if i == 0:
+            lat, lon = load_lat_lon(url, earth_data_session)
+
     # Concatenate data lists along time dimension
     ui_all = np.concatenate(ui_all, axis = 0)
     vi_all = np.concatenate(vi_all, axis = 0)
     ri_all = np.concatenate(ri_all, axis = 0)
-    time_all = np.concatentate(time_all, axis = 0)
+    time_all = np.concatenate(time_all, axis = 0)
 
-    ...
+    # Convert time to datetime64 object
+    time_all = np.array([np.datetime64(t) for t in time_all])
+
+    # Save the data
+    np.savez(
+        path_raw / filename,
+        ui = ui_all,
+        vi = vi_all,
+        ri = ri_all,
+        lat = lat,
+        lon = lon,
+        time = time_all,
+    )
 
 
 def open_netcdf_from_response(
