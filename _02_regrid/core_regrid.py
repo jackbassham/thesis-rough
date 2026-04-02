@@ -123,14 +123,14 @@ def construct_regular_grid(grid_specs: GridSpecs) -> NewRegGrid:
 
     lat_reg = np.arange(
         grid_specs.lat_bounds[0],
-        grid_specs.lat_bounds[1] + grid_specs.resolution_degrees_lat,
-        grid_specs.resolution_degrees_lat
+        grid_specs.lat_bounds[1] + grid_specs.resolution_degrees_lat(),
+        grid_specs.resolution_degrees_lat()
     )
 
     lon_reg = np.arrange(
         grid_specs.lon_bounds[0],
-        grid_specs.lon_bounds[1] + grid_specs.resolution_degrees_lon,
-        grid_specs.resolution_degrees_lon
+        grid_specs.lon_bounds[1] + grid_specs.resolution_degrees_lon(),
+        grid_specs.resolution_degrees_lon()
     )
 
     return NewRegGrid(
