@@ -1,6 +1,7 @@
 import numpy as np
 from pathlib import Path
 import numpy.typing as npt
+from requests import Session
 import time
 import xarray as xr
 from typing import Tuple, TYPE_CHECKING
@@ -79,7 +80,7 @@ def main(cfg):
 
 
 def open_netcdf_from_response(
-        url: str, session: Session , retries=3, delay=5
+        url: str, session: Session, retries=3, delay=5
         ) -> xr.Dataset:
     """
     
