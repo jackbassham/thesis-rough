@@ -173,8 +173,8 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
     num_lon = len(new_reg_grid.lon)
 
     # Initialize lookup tables to zeros with native integer type
-    jj = np.zeros((num_lat, num_lon), type = np.intp)
-    ii = np.zeros((num_lat, num_lon), type = np.intp)
+    jj = np.zeros((num_lat, num_lon), dtype = np.intp)
+    ii = np.zeros((num_lat, num_lon), dtype = np.intp)
 
     # Iterate through new regular grid lat/lon points
     for j in range(num_lat):
