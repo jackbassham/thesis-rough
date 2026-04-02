@@ -1,6 +1,7 @@
+import io
 import numpy as np
-from pathlib import Path
 import numpy.typing as npt
+from pathlib import Path
 from requests import Session
 import time
 import xarray as xr
@@ -89,15 +90,17 @@ def open_netcdf_from_response(
     # Attempt to access file for number of retries
     for attempt in range(retries):
 
-        print(f'Attmpe {attempt +1} Opening {url}')
-
         try:
-            # Return xarray dataset object from session response
-            return xr.open_dataset(
-                url,
-                engine='h5netcdf',
-                backend_kwargs={'session': session}
-            )
+
+            # Get response from session
+            response = session.get(url)
+            print(f'Attempt {attempt +1} Response {response}')
+
+            # Raise HTTP error if unsucessful
+            response.raise_for_status()
+
+            # Return xarray dataset from session response object
+            return xr.open_dataset(io.BytesIO(response.content))
         
         except Exception as e:
             print(f'Attempt {attempt +1} failed: {e}')
