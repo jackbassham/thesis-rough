@@ -111,7 +111,7 @@ def open_netcdf_from_response(
                 raise
 
 
-def load_icevel_data(url: str, session: Session) -> Tuple[npt.NDarray, ...]:
+def load_icevel_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
     """
     
     """
