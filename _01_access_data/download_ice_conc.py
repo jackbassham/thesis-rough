@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from requests import Session
 
 from .earthdata_auth import create_earthdata_session
-from .urls import IceVelURLBuilder
+from .urls import IceConcURLBuilder
 from .utils import (
     open_netcdf_from_response,
     load_lat_lon,
@@ -30,7 +30,7 @@ def main(cfg):
     earth_data_session = create_earthdata_session()
 
     # Initialize url builder
-    url_builder = IceVelURLBuilder(cfg)
+    url_builder = IceConcURLBuilder(cfg)
 
     # Initialize lists for dataset variables
     ci_all, time_all = [], []
@@ -93,8 +93,12 @@ def load_iceconc_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
         # Get set of variable names in dataset
         ds_var_names = set(ds.data_vars)
 
+        print(ds_var_names)
+
         # Match dataset variable names to list of possible names
         names_match = ds_var_names.intersection(possible_names)
+
+        print(names_match)
 
         if names_match:
             # Extract data with variable name from set
