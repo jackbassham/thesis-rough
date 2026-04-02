@@ -72,85 +72,27 @@ class IceVelURLBuilderNSIDC0016(URLBuilder):
             yield(f'{parent}/{filename}')
 
 
-class IceConcURLBuilderNSIDC0079(URLBuilder):
-    """
-    Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
-    DATA SET ID: NSIDC-0079
-    DOI: 10.5067/X5LG68MH013O
-    https://nsidc.org/data/nsidc-0079/versions/4
-    NOTE It seems that the above sea ice concentrations only go until 2026.
-    2023 - Present Concentrations are in this dataset;
-    AMSR2 Daily Polar Gridded Sea Ice Concentrations, Version 2
-    https://nsidc.org/data/nsidc-0803/versions/2
-
-
-    NOTE 
-    Url:
-    https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837864-NSIDC_CPRD/temporal
-    Filename:
-    NSIDC0079_SEAICE_PS_S25km_{YYYYMMDD}_v4.0.nc
-    """
-
-    # Define base url for datset download directories
-    BASE_URL = 'https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837864-NSIDC_CPRD'
-
-    # Define mapping dict from hemisphere parameter to dataset labels
-    HEM_MAP_FILE = {'south': 'S', 'north': 'N'}
-
-    def build(self):
-
-        # Start URLs at first day of start year
-        start_date = date(self.start_year, 1, 1)
-
-        # End URLs at last day of end year
-        end_date = date(self.end_year, 12, 31)
-
-        # Get hemisphere from mapping
-        hem_file = self.HEM_MAP_FILE[self.hemisphere]
-
-        # Initialize current date
-        current_date = start_date
-        
-        while current_date <= end_date:
-            # Get current year, month, day
-            yyyy = current_date.strftime('%Y')
-            mm = current_date.strftime('%m')
-            dd = current_date.strftime('%d')
-
-            # Yield full URL for current day's data download
-            yield(
-                # Base and directory
-                f'{self.BASE_URL}/temporal/{yyyy}/{mm}/{dd}/'
-                # Filename
-                f'NSIDC0079_SEAICE_PS_{hem_file}25km_{yyyy}{mm}{dd}_v4.0.nc'
-            )
-
-            # Move to next day
-            current_date += timedelta(days=1)
-
-
-# class IceConcURLBuilderNSIDC0051(URLBuilder):
+# class IceConcURLBuilderNSIDC0079(URLBuilder):
 #     """
-#     NOTE Dataset is not currently accessible
 #     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
-#     DATA SET ID: NSIDC-0051
-#     DOI: 10.5067/MPYG15WAA4WX
-#     https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837840-NSIDC_CPRD
-#     NOTE It seems that Nimbus-7 sea ice concentrations only go until 2024.
+#     DATA SET ID: NSIDC-0079
+#     DOI: 10.5067/X5LG68MH013O
+#     https://nsidc.org/data/nsidc-0079/versions/4
+#     NOTE It seems that the above sea ice concentrations only go until 2026.
 #     2023 - Present Concentrations are in this dataset;
 #     AMSR2 Daily Polar Gridded Sea Ice Concentrations, Version 2
 #     https://nsidc.org/data/nsidc-0803/versions/2
+    
 
-
-#     NOTE 
-#     New url:
-#     https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837840-NSIDC_CPRD/temporal/1989/01/01
-#     New filename:
-#     NSIDC0051_SEAICE_PS_S25km_19890101_v2.0.nc
+#     NOTE Below URLs are currently faulty
+#     Url:
+#     https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837864-NSIDC_CPRD/temporal
+#     Filename:
+#     NSIDC0079_SEAICE_PS_S25km_{YYYYMMDD}_v4.0.nc
 #     """
 
 #     # Define base url for datset download directories
-#     BASE_URL = 'https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837840-NSIDC_CPRD/temporal/'
+#     BASE_URL = 'https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837864-NSIDC_CPRD'
 
 #     # Define mapping dict from hemisphere parameter to dataset labels
 #     HEM_MAP_FILE = {'south': 'S', 'north': 'N'}
@@ -180,11 +122,74 @@ class IceConcURLBuilderNSIDC0079(URLBuilder):
 #                 # Base and directory
 #                 f'{self.BASE_URL}/temporal/{yyyy}/{mm}/{dd}/'
 #                 # Filename
-#                 f'NSIDC0051_SEAICE_PS_{hem_file}25km_{yyyy}{mm}{dd}_v2.0.nc'
+#                 f'NSIDC0079_SEAICE_PS_{hem_file}25km_{yyyy}{mm}{dd}_v4.0.nc'
 #             )
 
 #             # Move to next day
 #             current_date += timedelta(days=1)
+
+
+class IceConcURLBuilderNSIDC0051(URLBuilder):
+    """
+    NOTE Dataset is not currently accessible
+    Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
+    DATA SET ID: NSIDC-0051
+    DOI: 10.5067/MPYG15WAA4WX
+    https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837840-NSIDC_CPRD
+    NOTE It seems that Nimbus-7 sea ice concentrations only go until 2024.
+    2023 - Present Concentrations are in this dataset;
+    AMSR2 Daily Polar Gridded Sea Ice Concentrations, Version 2
+    https://nsidc.org/data/nsidc-0803/versions/2
+
+    NOTE this URL below is currently valid:
+    https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/PM/NSIDC-0051/2/2024/12/31/NSIDC0051_SEAICE_PS_S25km_20241231_v2.0.nc
+
+    Obtained from the Nasa Earth Data serach tool here:
+    https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/PM/NSIDC-0051/2
+
+
+    NOTE BAD URLs below are currently faulty
+    Url:
+    https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837840-NSIDC_CPRD/temporal/1989/01/01
+    Filename:
+    NSIDC0051_SEAICE_PS_S25km_19890101_v2.0.nc
+    """
+
+    # Define base url for datset download directories
+    BASE_URL = 'https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/PM/NSIDC-0051/2'
+    # Define mapping dict from hemisphere parameter to dataset labels
+    HEM_MAP_FILE = {'south': 'S', 'north': 'N'}
+
+    def build(self):
+
+        # Start URLs at first day of start year
+        start_date = date(self.start_year, 1, 1)
+
+        # End URLs at last day of end year
+        end_date = date(self.end_year, 12, 31)
+
+        # Get hemisphere from mapping
+        hem_file = self.HEM_MAP_FILE[self.hemisphere]
+
+        # Initialize current date
+        current_date = start_date
+        
+        while current_date <= end_date:
+            # Get current year, month, day
+            yyyy = current_date.strftime('%Y')
+            mm = current_date.strftime('%m')
+            dd = current_date.strftime('%d')
+
+            # Yield full URL for current day's data download
+            yield(
+                # Base and directory
+                f'{self.BASE_URL}/{yyyy}/{mm}/{dd}/'
+                # Filename
+                f'NSIDC0051_SEAICE_PS_{hem_file}25km_{yyyy}{mm}{dd}_v2.0.nc'
+            )
+
+            # Move to next day
+            current_date += timedelta(days=1)
 
 
 # TODO
