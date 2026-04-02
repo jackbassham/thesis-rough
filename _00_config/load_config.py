@@ -30,7 +30,7 @@ def load_config():
     data_config = DataConfig(
         hemisphere = 'south',
         year_range = (2018, 2020),
-        latitude_bounds = (-80, 62),
+        latitude_bounds = (-80, -62),
         longitude_bounds = (-180, 180),
         grid_resolution = 25
     )
