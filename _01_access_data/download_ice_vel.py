@@ -95,7 +95,7 @@ def open_netcdf_from_response(
             # Return xarray dataset object from session response
             return xr.open_dataset(
                 url,
-                engine='netcdf4',
+                engine='h5netcdf',
                 backend_kwargs={'session': session}
             )
         
