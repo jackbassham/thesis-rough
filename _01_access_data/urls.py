@@ -49,7 +49,7 @@ class IceVelURLBuilder(URLBuilder):
     """
 
     # Define base url for datset download directories
-    BASE_URL = 'https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vectors_v4/'
+    BASE_URL = 'https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0116_icemotion_vectors_v4'
     
     # Define mapping dict from hemisphere parameter to dataset labels
     HEM_MAP_DIR = {'south': 'south', 'north': 'north'}
@@ -92,7 +92,7 @@ class IceConcURLBuilder(URLBuilder):
     """
 
     # Define base url for datset download directories
-    BASE_URL = 'https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837864-NSIDC_CPRD/temporal'
+    BASE_URL = 'https://cmr.earthdata.nasa.gov/virtual-directory/collections/C3177837864-NSIDC_CPRD/'
 
     # Define mapping dict from hemisphere parameter to dataset labels
     HEM_MAP_FILE = {'south': 'S', 'north': 'N'}
