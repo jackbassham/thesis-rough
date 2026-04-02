@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pathlib import Path
 
-def load_npz_data(file_path: Path) -> dict[str, npt.NDarray]:
+def load_npz_data(file_path: Path) -> dict[str, npt.NDArray]:
     # Try to load the raw data
     try:
         # Get data dict {variable_name: array} from numpy data loader
