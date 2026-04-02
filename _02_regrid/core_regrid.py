@@ -204,18 +204,18 @@ def rotate_to_East_North(
     theta = np.radians(old_grid_proj.lon_mesh)
 
     # Rotate u and v vector components for Southern Hemisphere
-    if hemisphere.lower().strip() == 'sh':
+    if hemisphere.lower().strip() == 'south':
         u_rot = u * np.cos(theta) - v * np.sin(theta) 
         v_rot = u * np.sin(theta) + v * np.cos(theta)
 
     # Rotate u and v vector components for Northern Hemisphere
-    elif hemisphere.lower().strip() == 'nh':
+    elif hemisphere.lower().strip() == 'north':
         u_rot = u * np.cos(theta) + v * np.sin(theta)
         v_rot = -u * np.sin(theta) + v * np.cos(theta)
 
     else:
         # Handle case where hemisphere is not entered corectly
-        raise ValueError('"hemisphere" str must be "sh" (Southern) or "nh" (Northern)')
+        raise ValueError('"hemisphere" string must be "south" or "north"')
 
     # FIXME dataclass to return vectorfield instead of Tuple to avoid mixup in returns?
     return u_rot, v_rot
