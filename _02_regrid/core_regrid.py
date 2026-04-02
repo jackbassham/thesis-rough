@@ -230,7 +230,7 @@ def regrid_data(data: npt.NDArray[np.float64], interp_indices: InterpIndices):
     # FIXME use list comprehension for all *data with 'yield' instead of 'return' for gracefulness?
 
     # Handle case where data is not shaped [time, lat, lon]
-    if data.ndims != 3:
+    if data.ndim != 3:
         raise ValueError('data must be shaped [time, lat, lon]')
 
     return data[:,interp_indices.jj, interp_indices.ii]
