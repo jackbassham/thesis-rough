@@ -5,11 +5,10 @@ import time
 import xarray as xr
 from typing import Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
-    from _00_config.config import PipelineConfig
     from requests import Session
 
-from earthdata_auth import create_earthdata_session
-from urls import IceVelURLBuilder
+from .earthdata_auth import create_earthdata_session
+from .urls import IceVelURLBuilder
 
 # TODO before memmaps, log and save array shapes in metadata
 # TODO chunked processing for memory
@@ -19,7 +18,7 @@ from urls import IceVelURLBuilder
 # TODO abstract saving function using dict with variable names to variables
 
 
-def main(cfg: PipelineConfig):
+def main(cfg):
 
     # Load raw data destination path
     path_raw = cfg.path_config.data_stage_path('raw')
