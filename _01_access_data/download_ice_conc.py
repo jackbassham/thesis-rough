@@ -33,7 +33,7 @@ def main(cfg):
     url_builder = IceVelURLBuilder(cfg)
 
     # Initialize lists for dataset variables
-    ci_all, time_all = [], [], [], []
+    ci_all, time_all = [], []
 
     # Iterate thorugh URLs from generator
     for i, url in enumerate(url_builder.build()):
