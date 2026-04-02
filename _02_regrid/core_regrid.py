@@ -97,8 +97,8 @@ class NewRegGrid:
 
 @dataclass
 class InterpIndices:
-    jj: npt.int32
-    ii: npt.int32
+    jj: int
+    ii: int
 
 
 # FIXME awkward implementation of data class for data used
