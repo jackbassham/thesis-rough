@@ -33,7 +33,7 @@ class URLBuilder(ABC):
 
 # Define child classes for each data set
 
-class IceVelURLBuilder(URLBuilder):
+class IceVelURLBuilderNSIDC0016(URLBuilder):
     """
     Polar Pathfinder Daily 25 km EASE-Grid Sea Ice Motion Vectors, Version 4
     DATA SET ID: NSIDC-0116
@@ -72,7 +72,7 @@ class IceVelURLBuilder(URLBuilder):
             yield(f'{parent}/{filename}')
 
 
-class IceConcURLBuilder(URLBuilder):
+class IceConcURLBuilderNSIDC0079(URLBuilder):
     """
     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
     DATA SET ID: NSIDC-0079
@@ -129,7 +129,7 @@ class IceConcURLBuilder(URLBuilder):
             current_date += timedelta(days=1)
 
 
-# class OldIceConcURLBuilder(URLBuilder):
+# class IceConcURLBuilderNSIDC0051(URLBuilder):
 #     """
 #     NOTE Dataset is not currently accessible
 #     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
