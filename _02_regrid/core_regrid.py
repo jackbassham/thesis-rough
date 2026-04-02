@@ -146,7 +146,7 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
 
     NOTE:
     At each (j, i) iteration of the new grid, vertical and horizontal distances are computed between that new
-    gridpoint's latitude and longitude (in degrees) and all old grid latitude and longitudes (in degrees). 
+    gridpoint's latitude and longitude (in degrees) and all old grid latitudes and longitudes (in degrees). 
     The absolute distance is taken by adding dx and dy (pythagorean theorem here). 
     Neighbor indices are taken from the minimum absolute distances, and then the minimum of those indices 
     (lower left hand corner) are taken for consistencey.
