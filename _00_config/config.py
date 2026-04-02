@@ -88,8 +88,8 @@ class DataConfig:
             raise ValueError('Invalid year input: Enter years as integers in format YYYY')
 
         # Handle years out of range
-        if start < 1989 or end > 2020:
-            raise ValueError('Years out of range: Enter in range 1989 to 2020')
+        if start < 1989 or end > 2024:
+            raise ValueError('Years out of range: Enter in range 1989 to 2024')
 
         # Handle invalid order of range
         if not start < end:
