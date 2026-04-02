@@ -72,7 +72,7 @@ class IceVelURLBuilder(URLBuilder):
             yield(f'{parent}/{filename}')
 
 
-class IceConcURLBuilder:
+class IceConcURLBuilder(URLBuilder):
     """
     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
     DATA SET ID: NSIDC-0051
@@ -130,7 +130,7 @@ class IceConcURLBuilder:
 
 
 # TODO
-class WindURLBuilder:
+class WindURLBuilder(URLBuilder):
     
     # TODO implement url for wind data
     # NOTE try JRA55, ERA, or ECMFW?
