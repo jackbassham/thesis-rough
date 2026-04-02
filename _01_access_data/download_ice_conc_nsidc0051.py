@@ -105,13 +105,11 @@ def load_iceconc_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
             name = next(iter(names_match))
             ci = ds[name].values
             time = ds['time'].values
-            return ci
+            return ci, time
         
         # Handle case where datset name not in set
         else:
             raise ValueError('Sensor specific vairable name not in dataset, inspect dataset')
-
-    return ci, time
 
 
 if __name__ == "__main__":
