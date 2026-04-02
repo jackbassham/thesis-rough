@@ -102,12 +102,8 @@ def load_iceconc_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
         # Get set of variable names in dataset
         ds_var_names = set(ds.data_vars)
 
-        print(ds_var_names)
-
         # Match dataset variable names to list of possible names
         names_match = ds_var_names.intersection(possible_names)
-
-        print(names_match)
 
         if names_match:
             # Extract data with variable name from set
