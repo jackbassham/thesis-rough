@@ -131,7 +131,6 @@ class IceVelURLBuilderNSIDC0016(URLBuilder):
 
 class IceConcURLBuilderNSIDC0051(URLBuilder):
     """
-    NOTE Dataset is not currently accessible
     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
     DATA SET ID: NSIDC-0051
     DOI: 10.5067/MPYG15WAA4WX
@@ -191,10 +190,35 @@ class IceConcURLBuilderNSIDC0051(URLBuilder):
             # Move to next day
             current_date += timedelta(days=1)
 
+class PSGridURLBuilder(URLBuilder):
+    """
+    Polar Stereographic grid referenced from 
+    """
+
+    BASE_URL = 'https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_anc_grid_info'
+    HEM_MAP_FILE = {'south': 'S', 'north': 'N'}
+
+    def build(self):
+
+        # Get hemisphere from mapping
+        hem_file = self.HEM_MAP_FILE[self.hemisphere]
+
+        # Construct filename for hemisphere
+        filename = f'NSIDC0771_LatLon_PS_{hem_file}25km_v1.1.nc'
+
+        # Yield full URL
+        yield f'{self.BASE_URL}/{filename}'
+
+
+    
+
+
+
 
 # TODO
-class WindURLBuilder(URLBuilder):
+class WindURLBuilderERA5(URLBuilder):
     
+    # NOTE ECMFW login: jbassham@ucsd.edu, password: I2oJegf8cgY8NrX
     # TODO implement url for wind data
     # NOTE try JRA55, ERA, or ECMFW?
     ...
