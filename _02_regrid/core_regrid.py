@@ -144,30 +144,49 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
     Returns indices of closest old point projection grid point data[y,x] at lat[y,x]/lon[y,x]
     to each new regular grid point data[lat[y],lon[x]]
 
-    NOTE: jj, and ii are 'y' and 'x' mesh grids of indices, each shaped like the new grid, where each index is an index
-    of the old data (jj; y, ii; x) closest to the index of the new data grid (j of jj and i of ii).
+    NOTE:
+    At each (j, i) iteration of the new grid, vertical and horizontal distances are computed between that new
+    gridpoint's latitude and longitude (in degrees) and all old grid latitude and longitudes (in degrees). 
+    The absolute distance is taken by adding dx and dy (pythagorean theorem here). 
+    Neighbor indices are taken from the minimum absolute distances, and then the minimum of those indices 
+    (lower left hand corner) are taken for consistencey.
 
+    At each iteration, these indices are stored in lookup tables (jj, ii) representing the vertical and horizontal indices
+    of each gridpoint.
+
+    ie:
+    jj = [[100, 99, 99, 100],
+    [101, 100, 99, 100]]
+
+    ii = [[91, 90, 90, 91].
+    [93, 92, 91, 92]]
+
+    So (0,0) on the new grid corresponds to index (100, 91) on the old grid.
+
+    NOTE:
+    (j,i) is used against the convention (i,j) to represent (vertical, horizontal) indexing 
+    when plotting arrays in Python.
     """
 
     # Get number of new regular grid lat/lon points
     num_lat = len(new_reg_grid.lat)
     num_lon = len(new_reg_grid.lon)
 
-    # Initialize interpolation indices
-    jj = np.zeros((num_lat, num_lon))
-    ii = np.zeros((num_lat, num_lon))
+    # Initialize lookup tables to zeros with native integer type
+    jj = np.zeros((num_lat, num_lon), type = np.intp)
+    ii = np.zeros((num_lat, num_lon), type = np.intp)
 
     # Iterate through new regular grid lat/lon points
     for j in range(num_lat):
         for i in range(num_lon):
 
-            # Calculate vertical distance between new and old latitudes
+            # Calculate vertical distance between new lat at current index and all old lats
             dy = (new_reg_grid.lat[j] - old_grid_proj.lat_mesh)**2
 
-            # Calculate horizontal distance between new and old longitudes
-            # considering multiple cases due to periodicity of longitude
-            # NOTE -180 to 180 longitude should be enforced in config, 
-            # periodicity here in case of function reuse
+            # Calculate horizontal distance between new lon at current index and all old lons
+            # NOTE Considering multiple cases due to periodicity of longitude
+            # although -180 to 180 longitude should be enforced in config, 
+            # periodicity used here for function reusability
             dx1 = (new_reg_grid.lon[i] - old_grid_proj.lon_mesh)**2
             dx2 = (new_reg_grid.lon[i] - old_grid_proj.lon_mesh + 360)**2
             dx3 = (new_reg_grid.lon[i] - old_grid_proj.lon_mesh - 360)**2
@@ -178,12 +197,19 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
             # Find the absolute distances between points (by pythagorean theorem)
             ds = dx + dy
 
-            # Find indices of minimum absolute distance
+            # Find indices of the minimum absolute distances
             i_neighbors = np.where(ds == np.min(ds))
 
-            # Take lower left corner minimum for consistency and store in array
+            # Take minimum of the minimums (ie: lower left corner) for consistency
             jj[j,i] = np.min(i_neighbors[0])
             ii[j,i] = np.min(i_neighbors[1])
+
+            print(type(jj))
+            print(type(ii))
+            print(np.shape(ii))
+            print(np.shape(jj))
+            print(ii[j,i])
+            print(jj[j,i])
 
     return InterpIndices(
         jj = jj,
