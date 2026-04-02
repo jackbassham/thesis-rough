@@ -204,13 +204,6 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
             jj[j,i] = np.min(i_neighbors[0])
             ii[j,i] = np.min(i_neighbors[1])
 
-            print(type(jj))
-            print(type(ii))
-            print(np.shape(ii))
-            print(np.shape(jj))
-            print(ii[j,i])
-            print(jj[j,i])
-
     return InterpIndices(
         jj = jj,
         ii = ii,
