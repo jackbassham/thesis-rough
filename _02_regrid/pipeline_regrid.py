@@ -15,8 +15,8 @@ def regrid_dataset(
         old_grid_proj: OldGridProj,
         grid_specs: GridSpecs,
         hemisphere: str,
-        scalar_fields: dict[str, npt.NDarray] | None = None,
-        vector_fields: dict[str, Tuple[npt.NDarray, npt.NDarray]] | None = None,
+        scalar_fields: dict[str, npt.NDArray] | None = None,
+        vector_fields: dict[str, Tuple[npt.NDArray, npt.NDArray]] | None = None,
         rotate_vectors: bool = False,
 ):
     
