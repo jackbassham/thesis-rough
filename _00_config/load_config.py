@@ -15,18 +15,16 @@ def main():
 
 
 def load_config():
-
-    # Instantiate argument parser
-    args = parse_args()
-
-    # --------------------- NOTE ----------------------------
-    # temporal bounds for current reproduction
-    # year_range = (1989, 2020)
-    # latitude longitude bounds for current reproduction
-    # north: latitude_bounds = (60, 90)        
-    # south: latitdue_bounds = (-80, -62)
-    # all: longitude_bounds = (-180, 180)
-    # -------------------------------------------------------
+    """
+    --------------------- NOTE ----------------------------
+    temporal bounds for current reproduction
+    year_range = (1989, 2020)
+    latitude longitude bounds for current reproduction
+    north: latitude_bounds = (60, 90)        
+    south: latitdue_bounds = (-80, -62)
+    all: longitude_bounds = (-180, 180)
+    -------------------------------------------------------
+    """
 
     # Create instance of data parameters specific to run
     data_config = DataConfig(
@@ -36,6 +34,9 @@ def load_config():
         longitude_bounds = (-180, 180),
         grid_resolution = 25
     )
+
+    # Instantiate argument parser
+    args = parse_args()
 
     # Create instance of timestamp version
     # With argument parsing for optional data step timestamps,
