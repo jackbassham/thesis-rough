@@ -192,9 +192,9 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
 
 
 def rotate_to_East_North(
-    u: npt.NDArray[npt.floating], v: npt.NDArray[npt.floating], 
+    u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], 
     old_grid_proj: OldGridProj, hemisphere: str
-    ) -> Tuple[npt.NDArray[npt.floating], npt.NDArray[npt.floating]]:
+    ) -> Tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
     """
     Rotates vector components to positive East/ North orientation.
     https://nsidc.org/data/user-resources/help-center/how-convert-horizontal-and-vertical-components-east-and-north
@@ -221,7 +221,7 @@ def rotate_to_East_North(
     return u_rot, v_rot
 
 
-def regrid_data(data: npt.NDArray[npt.floating], interp_indices: InterpIndices):
+def regrid_data(data: npt.NDArray[np.float64], interp_indices: InterpIndices):
     """
     Regrids data using vectorized indexing into old data with indices jj and ii 
     that have same shape as new regular grid.
