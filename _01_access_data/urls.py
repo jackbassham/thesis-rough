@@ -190,7 +190,7 @@ class IceConcURLBuilderNSIDC0051(URLBuilder):
             # Move to next day
             current_date += timedelta(days=1)
 
-class PSGridURLBuilder(URLBuilder):
+class PSGridURLBuilderNSIDC0771(URLBuilder):
     """
     Polar Stereographic grid referenced from 
     """
@@ -208,11 +208,6 @@ class PSGridURLBuilder(URLBuilder):
 
         # Yield full URL
         yield f'{self.BASE_URL}/{filename}'
-
-
-    
-
-
 
 
 # TODO

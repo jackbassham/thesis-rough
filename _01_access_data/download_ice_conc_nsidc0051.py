@@ -7,7 +7,10 @@ if TYPE_CHECKING:
     from requests import Session
 
 from .earthdata_auth import create_earthdata_session
-from .urls import IceConcURLBuilderNSIDC0051
+from .urls import (
+    IceConcURLBuilderNSIDC0051,
+    PSGridURLBuilderNSIDC0771,
+)
 from .utils import (
     open_netcdf_from_response,
     load_lat_lon,
@@ -47,11 +50,17 @@ def main(cfg):
 
         # Get lat lon variables and coordinates once from first url
         if i == 0:
-            lat, lon = load_lat_lon(url, earth_data_session)
             y, x = load_spatial_coordinates(url, earth_data_session)
 
         # Print step
         print(f'url index {i} loaded')
+
+    # Initialize Polar Stereographic grid URL builder
+    url_builder = PSGridURLBuilderNSIDC0771(cfg)
+
+    # Load lat and lon variables once from the polar stereographic grid
+    for url in url_builder.build():
+        lat, lon = load_lat_lon(url, earth_data_session)    
 
     # Concatenate data lists along time dimension
     ci_all = np.concatenate(ci_all, axis = 0)
