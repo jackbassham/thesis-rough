@@ -61,9 +61,9 @@ def create_earthdata_session() -> requests.Session:
     # Load in pipeline configuration
     pipeline_config = load_config()
 
-    # Get login credentials from pipeline configuration
-    username, password = pipeline_config.login_credentials
-
     # Return instantiated earth data session
-    return EarthdataSession(username, password)
+    return EarthdataSession(
+        pipeline_config.login_credentials.username, 
+        pipeline_config.login_credentials.password
+        )
 
