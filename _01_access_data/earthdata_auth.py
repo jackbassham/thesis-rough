@@ -6,8 +6,8 @@ from _00_config.load_config import load_config
 """
 NOTE: 
 Nasa Earth Data authorisation and access code adapted from:
-1. Earth Data Login Documentation, 'How to Access Data with Python', https://urs.earthdata.nasa.gov/documentation/for_users/data_access/python
-2. NSIDC example script; NSIDC_Parse_HTML_BatchDL.py
+1. Earth Data Login Documentation, 'How to Access Data with Python', 
+https://urs.earthdata.nasa.gov/documentation/for_users/data_access/python
 with help from ChatGPT
 """
 
@@ -17,7 +17,7 @@ EARTHDATA_HOST = 'urs.earthdata.nasa.gov'
 
 class EarthdataSession(requests.Session):
     """
-    Adapted from authentication SessionWithHeaderRedirection'. Create class that inherits from 
+    Adapted from authentication class 'SessionWithHeaderRedirection'. Create class that inherits from 
     the class requests.Sesssion (extending class provided by Requests) with rebuild_auth method change
     because of redirects with NASA Earthdata's authentication system.
     """
