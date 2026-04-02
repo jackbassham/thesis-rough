@@ -52,9 +52,10 @@ def main(cfg):
         ri_all.append(ri)
         time_all.append(time)
 
-        # Get lat lon variables once from first url
+        # Get lat lon variables and coordinates once from first url
         if i == 0:
             lat, lon = load_lat_lon(url, earth_data_session)
+            y, x = load_spatial_coordinates(url, earth_data_session)
 
         # Print step
         print(f'url index {i} loaded')
@@ -76,6 +77,8 @@ def main(cfg):
         ri = ri_all,
         lat = lat,
         lon = lon,
+        y = y,
+        x = x,
         time = time_all,
     )
 
@@ -109,7 +112,7 @@ def open_netcdf_from_response(
             if attempt < retries - 1:
                 time.sleep(delay)
             
-            # Raise exeption
+            # Raise exeption if all attempts used
             else:
                 raise
 
@@ -141,6 +144,19 @@ def load_lat_lon(url: str, session: Session):
         lon = ds["longitude"].values
 
     return lat, lon
+
+
+def load_spatial_coordinates(url: str, session: Session):
+    """
+    
+    """
+    
+    # Attempt to open dataset with xarray
+    with open_netcdf_from_response(url, session) as ds:
+        y = ds["y"].values
+        x = ds["x"].values
+
+    return y, x
 
 
 if __name__ == "__main__":
