@@ -55,6 +55,9 @@ def main(cfg: PipelineConfig):
         if i == 0:
             lat, lon = load_lat_lon(url, earth_data_session)
 
+        # Print step
+        print(f'url index {i} loaded')
+
     # Concatenate data lists along time dimension
     ui_all = np.concatenate(ui_all, axis = 0)
     vi_all = np.concatenate(vi_all, axis = 0)
@@ -85,6 +88,8 @@ def open_netcdf_from_response(
     
     # Attempt to access file for number of retries
     for attempt in range(retries):
+
+        print(f'Attmpe {attempt +1} Opening {url}')
 
         try:
             # Return xarray dataset object from session response
