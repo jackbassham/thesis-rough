@@ -24,7 +24,7 @@ def main(cfg):
     cfg.path_config.makedir_if_missing(path_raw)
     
     # Define raw data destination file name
-    filename = 'ice_vel_raw_ppv4_ease.npz'
+    filename = 'ice_conc_raw_n7v2_ps.npz'
     
     # Create Nasa Earth Data session
     earth_data_session = create_earthdata_session()
@@ -33,18 +33,16 @@ def main(cfg):
     url_builder = IceVelURLBuilder(cfg)
 
     # Initialize lists for dataset variables
-    ui_all, vi_all, ri_all, time_all = [], [], [], []
+    ci_all, time_all = [], [], [], []
 
     # Iterate thorugh URLs from generator
     for i, url in enumerate(url_builder.build()):
 
         # Load current url data
-        ui, vi, ri, time = load_icevel_data(url, earth_data_session)
+        ci, time = load_iceconc_data(url, earth_data_session)
 
         # Append to lists
-        ui_all.append(ui)
-        vi_all.append(vi)
-        ri_all.append(ri)
+        ci_all.append(ci)
         time_all.append(time)
 
         # Get lat lon variables and coordinates once from first url
@@ -56,9 +54,7 @@ def main(cfg):
         print(f'url index {i} loaded')
 
     # Concatenate data lists along time dimension
-    ui_all = np.concatenate(ui_all, axis = 0)
-    vi_all = np.concatenate(vi_all, axis = 0)
-    ri_all = np.concatenate(ri_all, axis = 0)
+    ci_all = np.concatenate(ci_all, axis = 0)
     time_all = np.concatenate(time_all, axis = 0)
 
     # Convert time to datetime64 object
@@ -67,9 +63,7 @@ def main(cfg):
     # Save the data
     np.savez(
         path_raw / filename,
-        ui = ui_all,
-        vi = vi_all,
-        ri = ri_all,
+        ci = ci_all,
         lat = lat,
         lon = lon,
         y = y,
