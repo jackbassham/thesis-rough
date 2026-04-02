@@ -24,7 +24,7 @@ def main(cfg):
     
     # FIXME master dict or dataclass with filenames
     # Define raw data file name
-    filename = 'ice_vel_raw_ppv4_ease.npz'
+    filename = 'ice_vel_raw_nsidc0116_ease.npz'
 
     # Load raw data file
     data = load_npz_data(path_raw / filename)
@@ -70,7 +70,7 @@ def main(cfg):
     ri_regrid = scalars_regrid['ri']
 
     # Define regrid data file name
-    filename = 'ice_vel_regrid_ppv4.npz'
+    filename = 'ice_vel_regrid_nsidc0116.npz'
 
     # Save the regrid data
     np.savez(
