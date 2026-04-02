@@ -1,7 +1,7 @@
 import numpy.typing as npt
 from typing import Tuple
 
-from core_regrid import(
+from .core_regrid import(
     OldGridProj,
     GridSpecs,
     construct_regular_grid,
