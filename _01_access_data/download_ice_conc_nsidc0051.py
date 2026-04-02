@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from requests import Session
 
 from .earthdata_auth import create_earthdata_session
-from .urls import IceConcURLBuilder
+from .urls import IceConcURLBuilderNSIDC0051
 from .utils import (
     open_netcdf_from_response,
     load_lat_lon,
@@ -30,7 +30,7 @@ def main(cfg):
     earth_data_session = create_earthdata_session()
 
     # Initialize url builder
-    url_builder = IceConcURLBuilder(cfg)
+    url_builder = IceConcURLBuilderNSIDC0051(cfg)
 
     # Initialize lists for dataset variables
     ci_all, time_all = [], []
