@@ -1,9 +1,21 @@
 import gc
 from helpers import load_npz_data
 import numpy as np
+import numpy.typing as npt
 from pathlib import Path
 
 # FIXME pass/ silence numpy RuntimeWarning: Mean of empty slice
+
+# FIXME move to configuration object
+# Define loading keys for each variable
+VARIABLE_CONFIG = {
+    'ui': {'file': 'ice_vel', 'keys': ['ui']},
+    'vi': {'file': 'ice_vel', 'keys': ['vi']},
+    'ri': {'file': 'ice_vel', 'keys': ['ri']},
+    'ua': {'file': 'wind', 'keys': ['ua']},
+    'va': {'file': 'wind', 'keys': ['va']},
+    'ci': {'file': 'ice_conc', 'keys': ['ci']},
+}
 
 
 def main(cfg):
@@ -23,29 +35,15 @@ def main(cfg):
         # Build filename for each regrid dataset
         filenames[name] = cfg.dataset_config.build_filename(ds, 'regrid')
 
-    # Load in ice velocity data
-    data = load_npz_data(path_regrid / filenames['ice_vel'])
+    # Load data into data store variable
+    data = load_all_variables(path_regrid, filenames)
 
-    # Extract variables from data dict
     ui = data['ui']
     vi = data['vi']
     ri = data['ri']
-
-    # Load in wind data
-    data = load_npz_data(path_regrid / filenames['wind'])
-
-    # Extract variables from data dict
     ua = data['ua']
-    va = data['va']
-
-    # Load in ice concentration data
-    data = load_npz_data(path_regrid / filenames['ice_conc'])
-
+    vi = data['va']
     ci = data['ci']
-
-    # Delete 'data' from memory
-    del data
-    gc.collect()
 
     # Mask ice concentration based on NSIDC dataset mask values
     ci_raw = np.round(ci * 250) # raw value ice concentration (NSIDC)
@@ -244,6 +242,33 @@ def main(cfg):
         ua_std = ua_std, va_std = va_std, 
         ci_std = ci_std
     )
+
+
+def load_all_variables(path_regrid: Path, filenames: dict[str: str]) -> dict[str: npt.NDArray]:
+    """
+    
+    """
+
+    # Initialize empty dict to store data
+    data_store = {}
+
+    # Iterate through variable configurations
+    for var_config in VARIABLE_CONFIG.vaules():
+        
+        # Get key for variable
+        file_key = var_config['file']
+
+        # Load dataset file if it hasn't already
+        if file_key not in data_store:
+            data_store[file_key] = load_npz_data(path_regrid / filenames[file_key])
+
+        # Iterate through dataset variable keys
+        for key in var_config['keys']:
+            # Load data variable into data store
+            data_store[key] = data_store[file_key][key]
+
+        return data_store
+
 
 
 def present_day(variable):
