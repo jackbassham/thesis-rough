@@ -56,7 +56,7 @@ def main(cfg):
     )
 
     # Unpack vectors from tuple
-    ua_regrid, va_regrid = vectors_regrid['ice_vel']
+    ua_regrid, va_regrid = vectors_regrid['wind']
 
 
     # Define regrid data file name
