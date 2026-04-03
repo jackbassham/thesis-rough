@@ -33,7 +33,7 @@ class URLBuilder(ABC):
 
 # Define child classes for each data set
 
-class IceVelURLBuilderNSIDC0016(URLBuilder):
+class IceVelURLBuilder(URLBuilder):
     """
     Polar Pathfinder Daily 25 km EASE-Grid Sea Ice Motion Vectors, Version 4
     DATA SET ID: NSIDC-0116
@@ -129,7 +129,7 @@ class IceVelURLBuilderNSIDC0016(URLBuilder):
 #             current_date += timedelta(days=1)
 
 
-class IceConcURLBuilderNSIDC0051(URLBuilder):
+class IceConcURLBuilder(URLBuilder):
     """
     Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data, Version 2
     DATA SET ID: NSIDC-0051
@@ -190,9 +190,15 @@ class IceConcURLBuilderNSIDC0051(URLBuilder):
             # Move to next day
             current_date += timedelta(days=1)
 
-class PSGridURLBuilderNSIDC0771(URLBuilder):
+
+class PSGridURLBuilder(URLBuilder):
     """
-    Polar Stereographic grid referenced from 
+    Polar Stereographic reference grid for NSIDC concentration datasets
+    Dataset ID: NSIDC0771
+    DOI: 10.5067/N6INPBT8Y104
+
+    Accessed from: 
+    https://nsidc.org/data/nsidc-0771/versions/1
     """
 
     BASE_URL = 'https://daacdata.apps.nsidc.org/pub/DATASETS/nsidc0771_polarstereo_anc_grid_info'
