@@ -15,17 +15,11 @@ def main(cfg):
     # Load regrid data source path
     path_regrid = cfg.path_config.data_stage_path('regrid')
 
-    # Load masked/normalized destination path
-    path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
-
-    # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_mask_norm) 
-
     # Construct dict of dataset filenames
     filenames = {
-        'ice_vel': 'ice_vel_regrid_ppv4.npz',
+        'ice_vel': 'ice_vel_regrid_nsidc0016v4.npz',
         'wind': 'wind_regrid_jra55.npz',
-        'ice_conc': 'ice_conc_regrid_nimbus7.py'
+        'ice_conc': 'ice_conc_regrid_nsidc0051v2.py'
     }
 
     # FIXME function with all of this that loads data 
@@ -114,12 +108,18 @@ def main(cfg):
     print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
     print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
 
+    # Load masked/normalized destination path
+    path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_mask_norm) 
+
     # Define filename for mask
-    fnam = 'nan_mask.npz'
+    filename = 'nan_mask.npz'
 
     # Save the mask
     np.savez(
-        os.path.join(PATH_MASK_NORM, fnam),
+        path_mask_norm / filename,
         nan_mask = nan_mask,
     )
 
@@ -127,11 +127,11 @@ def main(cfg):
     land_mask = np.all(np.isnan(ci_t0), axis = 0)
 
     # Define filename for mask
-    fnam = 'land_mask.npz'
+    filename = 'land_mask.npz'
 
     # Save the mask
     np.savez(
-        os.path.join(PATH_MASK_NORM, fnam),
+        path_mask_norm / filename,
         land_mask = land_mask,
     )
 
@@ -223,33 +223,29 @@ def main(cfg):
         print(f"frac nan (invalid) {n / p}")
     
     # Define data file name for normalized data
-    fnam = 'masked_normalized.npz'
+    filename = 'masked_normalized.npz'
 
     # Save the normalized data
     np.savez(
-        os.path.join(PATH_MASK_NORM, fnam),
+        path_mask_norm / filename,
         ui_t0 = ui_norm, vi_t0 = vi_norm, 
         ri_t0 = ri_norm, 
         ua_t0 = ua_norm, va_t0 = va_norm,
         ci_t1 = ci_norm
         )
-
-    print(f"Normalized inputs saved at: \n {PATH_MASK_NORM}/{fnam}")
-
+    
     # Define file name for normalization statistics
-    fnam = 'stats_for_normalization.npz'
+    filename = 'stats_for_normalization.npz'
 
     # Save the normalization statistics
     np.savez(
-        os.path.join(PATH_MASK_NORM, fnam),
+        path_mask_norm / filename,
         ui_bar = ui_bar, vi_bar = vi_bar,
         ua_bar = ua_bar, va_bar = va_bar, 
         ci_bar = ci_bar,
         ua_std = ua_std, va_std = va_std, 
         ci_std = ci_std
     )
-
-    print(f"Stats for normalizing saved at {PATH_MASK_NORM}/{fnam}")
 
 
 if __name__ == "__main__":
