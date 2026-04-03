@@ -1,5 +1,7 @@
 from .config import(
-    DataConfig, 
+    DataConfig,
+    DatasetInfo,
+    DatasetConfig, 
     VersionConfig, 
     PathConfig, 
     LoginCredentials,
@@ -35,6 +37,12 @@ def load_config():
         grid_resolution = 25
     )
 
+    dataset_config = DatasetConfig(
+        ice_vel = DatasetInfo('nsidc0016', 'v4', 'ease'),
+        wind = DatasetInfo('jra55', 'v1', 'gaussian'),
+        ice_conc = DatasetInfo('nsidc0051', 'v2', 'ps')
+    )
+
     # Instantiate argument parser
     args = parse_args()
 
@@ -63,6 +71,7 @@ def load_config():
     # Return entire pipeline configuration object
     return PipelineConfig(
         data_config = data_config,
+        dataset_config = dataset_config,
         version_config = version_config,
         path_config = path_config,
         login_credentials = login_credentials,

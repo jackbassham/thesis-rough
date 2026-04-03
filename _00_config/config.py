@@ -148,7 +148,57 @@ class DataConfig:
         # Handle invalid grid resolution
         if not isinstance(self.grid_resolution, (float, int)) or self.grid_resolution <= 0:
             raise ValueError('Invalid grid resolution, enter as positive, nonzero integer or float')
+        
 
+@dataclass
+class DatasetInfo:
+    """
+
+    """
+
+    # Construct parameters
+    id: str
+    version: str
+    original_grid: str
+    ext: str
+
+
+
+@dataclass
+class DatasetConfig:
+    """
+    
+    """
+
+    # Construct parameters
+    ice_vel: DatasetInfo
+    wind: DatasetInfo
+    ice_conc: DatasetInfo
+
+    # List valid dataset states
+    DATASET_STAGES = [
+        'raw', 
+        'regrid',
+    ]
+
+    def build_filename(self, ds: DatasetInfo, stage: str) -> str:
+        """
+        
+        """
+        
+        # Handle case where stage not properly defined in script
+        if stage not in self.DATASET_STAGES:
+            raise ValueError(f'Unknown dataset stage: {stage}')
+        
+        # Handle raw data case
+        if stage == 'raw':
+            # Include original grid in filename
+            return f'{ds.name}_{stage}_{ds.id}_{ds.version}_{ds.original_grid}.{ds.ext}'
+        
+        else:
+            # Don't include original grid in regrid
+            return f'{ds.name}_{stage}_{ds.id}_{ds.version}.{ds.ext}'
+        
 
 @dataclass
 class VersionConfig:
@@ -337,6 +387,7 @@ class PipelineConfig:
     Container for all pipeline configuration objects.
     """
     data_config: DataConfig
+    dataset_config: DatasetConfig
     version_config: VersionConfig
     path_config: PathConfig
     login_credentials: LoginCredentials
