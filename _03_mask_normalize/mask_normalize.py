@@ -26,10 +26,6 @@ VARIABLE_CONFIG = {
 
 def main(cfg):
 
-    # NOTE the below is pretty verbose and seems repetitive but not sure
-    # how to clean it up/ abstract it due to unique methods for different variables
-    # etc.
-
     # Load regrid data source path
     path_regrid = cfg.path_config.data_stage_path('regrid')
 
@@ -59,24 +55,14 @@ def main(cfg):
     # Shift variables to previous day input parameters
     ci_t1 = previous_day(ci)
 
-    # Mask ice concentration based on NSIDC dataset mask values
-    ci_raw = np.round(ci * 250) # raw value ice concentration (NSIDC)
+    # Create masks for bad points and land/ open ocean
+    mask_bad, mask_land_ocean = create_data_masks(
+        ci_t0, ui_t0, vi_t0
+    )
 
-    # NSIDC Mask values
-    # 251 pole hole
-    # 252 unused data
-    # 253 coastline
-    # 254 land
-    ci = np.where((ci_raw == 251) | (ci_raw == 252) | (ci_raw == 253) | (ci_raw == 254), np.nan, ci)
+    
 
-    print('Raw concentration masked based on NSIDC masks.')
 
-    # Shift present day parameters forward one day
-    ui_t0 = ui[1:,:,:]
-    vi_t0 = vi[1:,:,:]
-    ua_t0 = ua[1:,:,:]
-    va_t0 = va[1:,:,:]
-    ri_t0 = ri[1:,:,:]
 
     # Take absolute value of uncertainty
     # NOTE negatives exist where data points are close to coastlines (NSIDC)
@@ -87,36 +73,8 @@ def main(cfg):
     ri_t0 = np.abs(ri_t0)
 
 
-    # Get present day ice concentration for masking
-    ci_t0 = ci[1:,:,:]
-
-    # Remove last day from previous day parameters
-    ci_t1 = ci[:-1,:,:]
-
     # Create list of input variables
     invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
-
-    # Get number of days in concentration variable
-    nt, _, _ = np.shape(ci_t0)
-
-    # Assign threshold for number of ice free days at a spatial gridpoint
-    thresh_ice_free = .70 * nt # 70% of days
-
-    # Count number of ice free days at each spatial gridpoint
-    # NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
-    n_ice_free = np.sum(ci_t0 <= 0.15, axis = 0)
-
-    # Define threshold for ice concentration at single point
-    ci_thresh = 0.15
-
-    # Create mask at spatial gridpoints where ice free days excede threshold
-    # and at single data points where concentration below threshold
-    # and where concentration or velocity is nan
-
-    nan_mask = (np.isnan(ci_t0)) | (np.isnan(ui_t0)) | (np.isnan(vi_t0)) | (ci_t0 <= ci_thresh) | (n_ice_free > thresh_ice_free)
-
-    print(f'Mask defined at gridpoints where "ice free" >= {thresh_ice_free} days')
-    print(f'and where ice concentration values <= {ci_thresh} (ice edge)')
 
     # Load masked/normalized destination path
     path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
@@ -304,7 +262,7 @@ def create_data_masks(
         ice_conc_threshold: float=0.15
 ) -> tuple[Mask3D, Mask2D]:
     """
-    
+    NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
     """
 
     # Get NSIDC pre-normalization raw ice conentration
@@ -340,11 +298,10 @@ def create_data_masks(
         | (n_ice_free > (perc_ice_free_threshold * n_days))
     )
 
-    # Define land mask, assuming points always nan are land
-    # NOTE mostly used for plotting
-    mask_land = np.all(np.isnan(ci_t0), axis = 0)
+    # Define land/ open ocean mask, assuming these points always nan
+    mask_land_ocean = np.all(np.isnan(ci_t0), axis = 0)
 
-    return mask_bad, mask_land
+    return mask_bad, mask_land_ocean
 
 
 
