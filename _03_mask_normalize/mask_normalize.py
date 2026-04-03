@@ -3,6 +3,12 @@ from helpers import load_npz_data
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
+from typing import Annotated
+from types import (
+    Array3D, 
+    Mask2D, 
+    Mask3D
+)
 
 # FIXME pass/ silence numpy RuntimeWarning: Mean of empty slice
 
@@ -45,12 +51,12 @@ def main(cfg):
     vi = data['va']
     ci = data['ci']
 
-    # Create present day data parameters
+    # Shift variables to present day input parameters
     ui_t0, vi_t0, ri_t0 = present_day(ui), present_day(vi), present_day(ri)
     ua_t0, va_t0 = present_day(ua), present_day(va)
     ci_t0 = present_day(ci)
 
-    # Create previous day parameters
+    # Shift variables to previous day input parameters
     ci_t1 = previous_day(ci)
 
     # Mask ice concentration based on NSIDC dataset mask values
@@ -278,7 +284,6 @@ def load_all_variables(path_regrid: Path, filenames: dict[str: str]) -> dict[str
         return data_store
 
 
-
 def present_day(variable):
     """
     
@@ -291,6 +296,59 @@ def previous_day(variable):
     
     """
     return variable[-1:,:,:]
+
+
+def create_data_masks(
+        ci_t0: Array3D, ui_t0: Array3D, vi_t0: Array3D,
+        perc_ice_free_threshold: float=0.70,
+        ice_conc_threshold: float=0.15
+) -> tuple[Mask3D, Mask2D]:
+    """
+    
+    """
+
+    # Get NSIDC pre-normalization raw ice conentration
+    ci_t0_raw = np.round(ci_t0 * 250)
+
+    # List NSIDC flag values
+    nsidc_flags = [
+        251, # pole hole
+        252, # unused data
+        253, # coastline
+        254, # land
+    ]
+
+    # Mask concentration based on NSIDC flag values
+    ci_t0 = np.where(
+        np.isin(ci_t0_raw, nsidc_flags),
+        np.nan,
+        ci_t0
+    )
+
+    # Get the number of days from ice concentration
+    n_days = ci_t0.shape[0]
+
+    # Count number of days ice free at each gridpoint
+    n_ice_free = np.sum(ci_t0 <= ice_conc_threshold, axis = 0)
+
+    # Create mask of nan values at bad data points
+    mask_bad = (
+        np.isnan(ci_t0)
+        | np.isnan(ui_t0)
+        | np.isnan(vi_t0)
+        | (ci_t0 <= ice_conc_threshold)
+        | (n_ice_free > (perc_ice_free_threshold * n_days))
+    )
+
+    # Define land mask, assuming points always nan are land
+    # NOTE mostly used for plotting
+    mask_land = np.all(np.isnan(ci_t0), axis = 0)
+
+    return mask_bad, mask_land
+
+
+
+
 
 
 if __name__ == "__main__":
