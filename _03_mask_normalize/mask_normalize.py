@@ -45,6 +45,14 @@ def main(cfg):
     vi = data['va']
     ci = data['ci']
 
+    # Create present day data parameters
+    ui_t0, vi_t0, ri_t0 = present_day(ui), present_day(vi), present_day(ri)
+    ua_t0, va_t0 = present_day(ua), present_day(va)
+    ci_t0 = present_day(ci)
+
+    # Create previous day parameters
+    ci_t1 = previous_day(ci)
+
     # Mask ice concentration based on NSIDC dataset mask values
     ci_raw = np.round(ci * 250) # raw value ice concentration (NSIDC)
 
