@@ -190,14 +190,16 @@ class DatasetConfig:
         if stage not in self.DATASET_STAGES:
             raise ValueError(f'Unknown dataset stage: {stage}')
         
+        # Construct base of filename
+        base = f'{ds.name}_{stage}_{ds.id}_{ds.version}'
+        
         # Handle raw data case
         if stage == 'raw':
             # Include original grid in filename
-            return f'{ds.name}_{stage}_{ds.id}_{ds.version}_{ds.original_grid}.{ds.ext}'
+            base += f'_{ds.original_grid}'
         
-        else:
-            # Don't include original grid in regrid
-            return f'{ds.name}_{stage}_{ds.id}_{ds.version}.{ds.ext}'
+        # Return full filename with extension
+        return base + ds.ext
         
 
 @dataclass
