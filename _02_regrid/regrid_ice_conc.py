@@ -9,7 +9,7 @@ from .core_regrid import OldGridProj, GridSpecs
 from .pipeline_regrid import regrid_dataset
 
 
-def main(cfg: PipelineConfig):
+def main(cfg):
 
     # FIXME repeated logic accross 3
 

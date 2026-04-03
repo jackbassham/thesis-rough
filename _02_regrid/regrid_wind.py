@@ -5,10 +5,10 @@ if TYPE_CHECKING:
     from _00_config.config import PipelineConfig
 
 from helpers import load_npz_data
-from core_regrid import OldGridProj, GridSpecs
-from pipeline_regrid import regrid_dataset
+from .core_regrid import OldGridProj, GridSpecs
+from .pipeline_regrid import regrid_dataset
 
-def main(cfg: PipelineConfig):
+def main(cfg):
 
     # Load raw source path
     path_raw = cfg.path_config.data_stage_path('raw')
