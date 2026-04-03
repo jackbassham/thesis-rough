@@ -38,9 +38,9 @@ def load_config():
     )
 
     dataset_config = DatasetConfig(
-        ice_vel = DatasetInfo('nsidc0016', 'v4', 'ease'),
-        wind = DatasetInfo('jra55', 'v1', 'gaussian'),
-        ice_conc = DatasetInfo('nsidc0051', 'v2', 'ps')
+        ice_vel = DatasetInfo('nsidc0016', 'v4', 'ease', '.npz'),
+        wind = DatasetInfo('jra55', 'v1', 'gaussian', '.npz'),
+        ice_conc = DatasetInfo('nsidc0051', 'v2', 'ps', '.npz')
     )
 
     # Instantiate argument parser
