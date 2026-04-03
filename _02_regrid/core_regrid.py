@@ -46,7 +46,7 @@ class OldGridProj:
 
     def _validate_coordinate_vectors(self):
         # Handle case where boolean not set to specify that old lat and lon are 1D coordinate variables
-        if self.lat_mesh.ndim != 1 or self.lon_mesh != 1:
+        if self.lat_mesh.ndim != 1 or self.lon_mesh.ndim != 1:
             raise ValueError('coordinates_are_vectors=True but old lat/lon are not 1D vectors')
             
     def _validate_coordinate_grids(self):
