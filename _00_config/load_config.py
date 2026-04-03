@@ -37,10 +37,11 @@ def load_config():
         grid_resolution = 25
     )
 
+    # Create configuration instance of dataset info
     dataset_config = DatasetConfig(
-        ice_vel = DatasetInfo('nsidc0016', 'v4', 'ease', '.npz'),
-        wind = DatasetInfo('jra55', 'v1', 'gaussian', '.npz'),
-        ice_conc = DatasetInfo('nsidc0051', 'v2', 'ps', '.npz')
+        ice_vel=DatasetInfo('ice_vel', 'nsidc0016', 'v4', 'ease', '.npz'),
+        wind=DatasetInfo('wind', 'jra55', 'v1', 'gaussian', '.npz'),
+        ice_conc=DatasetInfo('ice_conc', 'nsidc0051', 'v2', 'ps', '.npz')
     )
 
     # Instantiate argument parser

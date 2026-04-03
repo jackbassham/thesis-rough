@@ -157,6 +157,7 @@ class DatasetInfo:
     """
 
     # Construct parameters
+    name: str
     id: str
     version: str
     original_grid: str
