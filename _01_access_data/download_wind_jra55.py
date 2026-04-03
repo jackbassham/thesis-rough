@@ -1,6 +1,16 @@
 import numpy as np
-from pathlib import Path
+import os
 import sys
+
+from _00_config.config import (
+    HEM, 
+    START_YEAR, # 1989 on Mazloff Server not valid
+    END_YEAR,
+    LAT_LIMITS,
+    LON_LIMITS,
+)
+
+from _00_config.path import PATH_RAW
 
 # Reads binary JRA-55 daily 3-Hourly near-surface (10m) wind vector data from Mazloff server and writes into .npz file
 # Oringinal Data from: "https://rda.ucar.edu/datasets/d628000/"
@@ -17,19 +27,7 @@ FNAM_V = "jra55_v10m_{year}" # source file name v component
 PATH_SOURCE = "/project_shared/jra55/" # Mazloff lab server file source path
 
 
-def main(cfg):
-
-    # Load raw data destination path
-    path_raw = cfg.path_config.data_stage_path('raw')
-
-    # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_raw)
-    
-    # Define raw data destination file name
-    filename = 'wind_raw_jra55_gaussian.npz'
-
-    # Extract start year, end year from year range tuple
-    START_YEAR, END_YEAR = cfg.data_config.year_range
+def main():
 
     # Create time array of dates for year range
     time = generate_datetime_array(START_YEAR, END_YEAR)
@@ -71,15 +69,24 @@ def main(cfg):
     u_total = np.concatenate(u_total, axis = 0)
     v_total = np.concatenate(v_total, axis = 0)
 
+    # Define name for data file
+    fnam = 'wind_raw_jra55_gaussian.npz'
+
+    # Create directory for the data if it doesn't already exist
+    os.makedirs(PATH_RAW, exist_ok = True)
+
+
     # Save the data
     np.savez_compressed(
-        path_raw / filename, 
-        ua = u_total, 
-        va = v_total, 
+        os.path.join(PATH_RAW, fnam), 
+        u = u_total, 
+        v = v_total, 
         time = time, 
         lat = lat, 
         lon = lon
     )
+    
+    print(f'Variables Saved at path {PATH_RAW}/{fnam}')
     
     return
 
