@@ -65,8 +65,8 @@ def main(cfg):
     # Save the regrid data
     np.savez(
         path_regrid / filename,
-        ui = ua_regrid,
-        vi = va_regrid,
+        ua = ua_regrid,
+        va = va_regrid,
         lat = new_reg_grid.lat,
         lon = new_reg_grid.lon,
         time = time,
