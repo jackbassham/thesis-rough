@@ -246,6 +246,20 @@ def main(cfg):
     )
 
 
+def present_day(variable):
+    """
+    
+    """
+    return variable[1:,:,:]
+
+
+def previous_day(variable):
+    """
+    
+    """
+    return variable[-1:,:,:]
+
+
 if __name__ == "__main__":
     # NOTE remember this block is for direct script execution
     # know this because __name__ called is "__main__" (script!)
