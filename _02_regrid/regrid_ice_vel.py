@@ -15,16 +15,11 @@ def main(cfg):
     # Load raw data source path
     path_raw = cfg.path_config.data_stage_path('raw')
 
-    # Load regrid data destination path
-    path_regrid = cfg.path_config.data_stage_path('regrid')
-
-    # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_regrid)
-
-    
-    # FIXME master dict or dataclass with filenames
-    # Define raw data file name
-    filename = 'ice_vel_raw_nsidc0116_ease.npz'
+    # Define raw data source file name
+    filename = cfg.dataset_config.build_filename(
+        cfg.dataset_config.ice_vel,
+        'raw',
+    )    
 
     # Load raw data file
     data = load_npz_data(path_raw / filename)
@@ -69,8 +64,17 @@ def main(cfg):
     # Unpack scalar from tuple
     ri_regrid = scalars_regrid['ri']
 
-    # Define regrid data file name
-    filename = 'ice_vel_regrid_nsidc0116.npz'
+    # Load regrid data destination path
+    path_regrid = cfg.path_config.data_stage_path('regrid')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_regrid)
+
+    # Define regrid data destination file name
+    filename = cfg.dataset_config.build_filename(
+        cfg.dataset_config.ice_vel,
+        'regrid',
+    )
 
     # Save the regrid data
     np.savez(

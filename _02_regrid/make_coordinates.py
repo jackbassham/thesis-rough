@@ -12,12 +12,13 @@ def main(cfg: PipelineConfig):
     # Load regrid data (source and destination) path
     path_regrid = cfg.path_config.data_stage_path('regrid')
 
-    # Define list of data file names
-    filenames = [
-        'ice_vel_regrid_ppv4.npz',
-        'ice_conc_regrid_nimbus7.npz',
-        'wind_regrid_jra55.npz',
-        ]
+    # Initialize empty dict for filenames
+    filenames = {}
+
+    # Iterate through datastet dicts
+    for name, ds in cfg.dataset_config.datasets().items():
+        # Build filename for each regrid dataset
+        filenames[name] = cfg.dataset_config.build_filename(ds, 'regrid')
 
     # Load coordinate variables from first dataset as reference
     data_ref = load_npz_data(path_regrid / filenames[0])
@@ -52,7 +53,9 @@ def main(cfg: PipelineConfig):
 
 
 def check_coordinates_match(
-        path_source: Path, coordinate_refs: dict[str, npt.NDarray], filenames: list[str],
+        path_source: Path, 
+        coordinate_refs: dict[str, npt.NDarray], 
+        filenames: list[str],
         ) -> None:
     """
 

@@ -27,7 +27,10 @@ def main(cfg):
     cfg.path_config.makedir_if_missing(path_raw)
     
     # Define raw data destination file name
-    filename = 'ice_conc_raw_nsidc0051v2_ps.npz'
+    filename = cfg.dataset_config.build_filename(
+        cfg.dataset_config.ice_conc,
+        'raw',
+    )
     
     # Create Nasa Earth Data session
     earth_data_session = create_earthdata_session()

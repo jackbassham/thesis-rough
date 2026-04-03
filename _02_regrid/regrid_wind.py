@@ -10,17 +10,14 @@ from .pipeline_regrid import regrid_dataset
 
 def main(cfg):
 
-    # Load raw source path
+    # Load raw data source path
     path_raw = cfg.path_config.data_stage_path('raw')
 
-    # Load regrid data destination path
-    path_regrid = cfg.path_config.data_stage_path('regrid')
-
-    # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_regrid)
-
-    # Define raw data file name
-    filename = 'wind_raw_jra55_gaussian.npz'
+    # Define raw data source file name
+    filename = cfg.dataset_config.build_filename(
+        cfg.dataset_config.wind,
+        'raw',
+    )    
 
     # Load raw data file
     data = load_npz_data(path_raw / filename)
@@ -58,9 +55,17 @@ def main(cfg):
     # Unpack vectors from tuple
     ua_regrid, va_regrid = vectors_regrid['wind']
 
+    # Load regrid data destination path
+    path_regrid = cfg.path_config.data_stage_path('regrid')
 
-    # Define regrid data file name
-    filename = 'wind_regrid_jra55.npz'
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_regrid)
+
+    # Define regrid data destination file name
+    filename = cfg.dataset_config.build_filename(
+        cfg.dataset_config.wind,
+        'regrid',
+    )
 
     # Save the regrid data
     np.savez(

@@ -15,15 +15,13 @@ def main(cfg):
     # Load regrid data source path
     path_regrid = cfg.path_config.data_stage_path('regrid')
 
-    # Construct dict of dataset filenames
-    filenames = {
-        'ice_vel': 'ice_vel_regrid_nsidc0016v4.npz',
-        'wind': 'wind_regrid_jra55.npz',
-        'ice_conc': 'ice_conc_regrid_nsidc0051v2.py'
-    }
+    # Initialize empty dict for filenames
+    filenames = {}
 
-    # FIXME function with all of this that loads data 
-    # into a dataclass?
+    # Iterate through datastet dicts
+    for name, ds in cfg.dataset_config.datasets().items():
+        # Build filename for each regrid dataset
+        filenames[name] = cfg.dataset_config.build_filename(ds, 'regrid')
 
     # Load in ice velocity data
     data = load_npz_data(path_regrid / filenames['ice_vel'])

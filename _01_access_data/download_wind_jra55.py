@@ -26,7 +26,10 @@ def main(cfg):
     cfg.path_config.makedir_if_missing(path_raw)
     
     # Define raw data destination file name
-    filename = 'wind_raw_jra55_gaussian.npz'
+    filename = cfg.dataset_config.build_filename(
+        cfg.dataset_config.wind,
+        'raw',
+    )
 
     # Extract start year, end year from year range tuple
     START_YEAR, END_YEAR = cfg.data_config.year_range
