@@ -153,7 +153,7 @@ def read_JRA55(year, fnam, lat, lon):
     Option to crop to bounds with upper and lower lat and lon inputs
     
     """
-    path = os.path.join(PATH_SOURCE, fnam)
+    path = Path(PATH_SOURCE) / fnam
 
     # Define number of days, handling condition for leap years
     if (year % 4 == 0) & (year % 100 != 0):
