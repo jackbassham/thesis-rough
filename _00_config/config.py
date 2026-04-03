@@ -182,6 +182,17 @@ class DatasetConfig:
         'regrid',
     ]
 
+    # Construct dict of datasets
+    def datasets(self):
+        """
+        
+        """
+        return{
+            'ice_vel': self.ice_vel,
+            'wind': self.wind,
+            'ice_conc': self.ice_conc,
+        }
+
     def build_filename(self, ds: DatasetInfo, stage: str) -> str:
         """
         
