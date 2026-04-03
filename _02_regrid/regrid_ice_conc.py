@@ -23,7 +23,7 @@ def main(cfg: PipelineConfig):
     cfg.path_config.makedir_if_missing(path_regrid)
 
     # Define raw data file name
-    filename = 'ice_conc_raw_nimbus7_ps.npz'
+    filename = 'ice_conc_raw_nsidc0051v2_ps.npz'
 
     # Load raw data file
     data = load_npz_data(path_raw / filename)
@@ -61,7 +61,7 @@ def main(cfg: PipelineConfig):
     ci_regrid = scalars_regrid['ice_conc']
 
     # Define regrid data file name
-    filename = 'ice_conc_regrid_nimbus7.npz'
+    filename = 'ice_conc_regrid_nsidc0051v2.npz'
 
     # Save the regrid data
     np.savez(
