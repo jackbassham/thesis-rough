@@ -97,7 +97,7 @@ def main(cfg):
     global_stds = compute_global_stds(inputs)
 
     print('global_stds:')
-    print(global_stds.values())
+    print(global_stds.items())
     print()
 
     # Perform Z-score normalization of inputs, add ice speed std to dict
