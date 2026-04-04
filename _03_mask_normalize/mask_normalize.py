@@ -1,4 +1,3 @@
-import gc
 from helpers import (
     load_ice_vel,
     load_wind,
