@@ -274,7 +274,7 @@ def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None
     """
 
     # Create path if it doesn't already exist
-    path.mkdir(partents=True, exist_ok=True)
+    path.mkdir(parents=True, exist_ok=True)
 
     # Save all key (varable name), value pairs (array)
     np.savez(path, **arrays)
