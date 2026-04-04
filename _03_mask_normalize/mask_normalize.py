@@ -45,10 +45,9 @@ def main(cfg):
     ua_t0, va_t0 = present_day(ua), present_day(va)
     ci_t0 = present_day(ci)
 
-    print(ui_t0[0])
     plt.pcolormesh(ui_t0[0])
     plt.title('ui_t0')
-    plt.show()
+    plt.savefig('1debug_plot.png')
 
     # Shift variables to create previous day input parameters
     ci_t1 = previous_day(ci)
@@ -58,10 +57,9 @@ def main(cfg):
         ci_t0, ui_t0, vi_t0
     )
 
-    print(f'mask_bad {mask_bad[0]}')
     plt.pcolormesh(mask_bad[0])
     plt.title('mask_bad')
-    plt.show()
+    plt.savefig('2debug_plot.png')
 
     # Save masks
     np.savez(
@@ -77,34 +75,30 @@ def main(cfg):
         'ci_t1': ci_t1,
     }
 
-    print(f'inputs {inputs['ui_t0']}')
     plt.pcolormesh(inputs['ui_t0'][0])
     plt.title('inputs')
-    plt.show()
+    plt.savefig('3debug_plot.png')
 
     # Mask bad points to nan (in place, no copy made)
     mask_inputs(inputs, mask_bad)
 
-    print(f'mask {inputs['ui_t0'][0]}')
     plt.pcolormesh(inputs['ui_t0'][0])
     plt.title('masked inputs')
-    plt.show()
+    plt.savefig('4debug_plot.png')
 
     # Compute the gridwise temporal mean of each input
     gridwise_means = compute_gridwise_means(inputs)
 
-    print(f'means {gridwise_means['ui_t0'][0]}')
-    plt.pcolormesh(gridwise_means['ui_t0'][0])
+    plt.pcolormesh(gridwise_means['ui_t0'])
     plt.title('gridwise_means')
-    plt.show()
+    plt.savefig('5debug_plot.png')
 
     # Compute the global standard deviations of each input
     global_stds = compute_global_stds(inputs)
 
-    print(f'stds {global_stds['ui_t0'][0]}')
-    plt.pcolormesh(global_stds['ui_t0'][0])
-    plt.title('global_stds')
-    plt.show()
+    print('global_stds:')
+    print(**global_stds)
+    print()
 
     # Perform Z-score normalization of inputs, add ice speed std to dict
     normalized, global_stds = z_score_normalize_inputs(
