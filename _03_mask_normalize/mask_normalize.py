@@ -97,7 +97,7 @@ def main(cfg):
     global_stds = compute_global_stds(inputs)
 
     print('global_stds:')
-    print(**global_stds)
+    print(global_stds.values())
     print()
 
     # Perform Z-score normalization of inputs, add ice speed std to dict
@@ -241,8 +241,6 @@ def z_score_normalize_inputs(
     # Initialize dict for normalized inputs
     normalized = {}
 
-    print(f'zscore_in {inputs['ui_t0'][0]}')
-
     # Get standard deviation of ice speed for noralization
     Ui_t0_std = np.nanstd(
         np.sqrt(inputs['ui_t0']**2 + inputs['vi_t0']**2)
@@ -270,7 +268,7 @@ def z_score_normalize_inputs(
     return normalized, global_stds
 
 
-def save_arrays(path: Path, filename: str, arrays: dict[str, npt.NDArray[np.floating]]) -> None:
+def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None:
     """
     
     """
@@ -279,7 +277,7 @@ def save_arrays(path: Path, filename: str, arrays: dict[str, npt.NDArray[np.floa
     path.mkdir(partents=True, exist_ok=True)
 
     # Save all key (varable name), value pairs (array)
-    np.savez(path / filename, **arrays)
+    np.savez(path, **arrays)
 
 
 if __name__ == "__main__":
