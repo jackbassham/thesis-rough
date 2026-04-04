@@ -12,29 +12,26 @@ from types import (
 
 # FIXME pass/ silence numpy RuntimeWarning: Mean of empty slice
 
-# FIXME move to configuration object
-# Define loading keys for each variable
-VARIABLE_CONFIG = {
-    'ui': {'file': 'ice_vel', 'keys': ['ui']},
-    'vi': {'file': 'ice_vel', 'keys': ['vi']},
-    'ri': {'file': 'ice_vel', 'keys': ['ri']},
-    'ua': {'file': 'wind', 'keys': ['ua']},
-    'va': {'file': 'wind', 'keys': ['va']},
-    'ci': {'file': 'ice_conc', 'keys': ['ci']},
-}
-
+# FIXME verbose and lots of logic in main, dealing with memory 
+# usage vs modularity/ readability
 
 def main(cfg):
 
     # Load regrid data source path
     path_regrid = cfg.path_config.data_stage_path('regrid')
 
-    # Initialize empty dict for filenames
+    # Load masked/normalized destination path
+    path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_mask_norm) 
+    
+    # Initialize empty dict for dataset filenames
     filenames = {}
 
     # Iterate through datastet dicts
     for name, ds in cfg.dataset_config.datasets().items():
-        # Build filename for each regrid dataset
+        # Build filename for each regrid source dataset
         filenames[name] = cfg.dataset_config.build_filename(ds, 'regrid')
 
     # Load data into data store variable
@@ -44,7 +41,7 @@ def main(cfg):
     vi = data['vi']
     ri = data['ri']
     ua = data['ua']
-    vi = data['va']
+    va = data['va']
     ci = data['ci']
 
     # Shift variables to present day input parameters
@@ -60,48 +57,17 @@ def main(cfg):
         ci_t0, ui_t0, vi_t0
     )
 
-    
-
-
-
-    # Take absolute value of uncertainty
-    # NOTE negatives exist where data points are close to coastlines (NSIDC)
-    # due to the possibility of False Ice, so that users can remove 
-    # from dataset
-    # NOTE
-    # TODO see what abs value does, then consider removing entirely
-    ri_t0 = np.abs(ri_t0)
-
+    # Save masks
+    np.savez(path_mask_norm / 'masks.npz', 
+             mask_bad=mask_bad, 
+             mask_land_ocean = mask_land_ocean,
+             )
 
     # Create list of input variables
     invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
 
-    # Load masked/normalized destination path
-    path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
-
-    # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_mask_norm) 
-
     # Define filename for mask
     filename = 'nan_mask.npz'
-
-    # Save the mask
-    np.savez(
-        path_mask_norm / filename,
-        nan_mask = nan_mask,
-    )
-
-    # Define land mask (just in case)
-    land_mask = np.all(np.isnan(ci_t0), axis = 0)
-
-    # Define filename for mask
-    filename = 'land_mask.npz'
-
-    # Save the mask
-    np.savez(
-        path_mask_norm / filename,
-        land_mask = land_mask,
-    )
 
     # NaN out points meeting mask condition
     invars_masked = [np.where(nan_mask, np.nan, var) for var in invars]
@@ -124,6 +90,10 @@ def main(cfg):
 
     # Unpacked masked variables
     ui_masked, vi_masked, ri_masked, ua_masked, va_masked, ci_masked = invars_masked
+
+    # Take absolute value of uncertainty
+    # NOTE negatives exist where data points are close to coastlines (NSIDC)
+    ri_t0 = np.abs(ri_t0)
 
     # Delete unused arrays from memory
     del invars
@@ -302,6 +272,14 @@ def create_data_masks(
     mask_land_ocean = np.all(np.isnan(ci_t0), axis = 0)
 
     return mask_bad, mask_land_ocean
+
+
+def mask_data_variables(mask, *variables):
+    """
+    FIXME Using lists like this might be bad for memory,
+    ok on AHA but for open source think about changing
+    """
+    return [np.where(mask, np.nan, variable) for variable in variables]
 
 
 
