@@ -221,6 +221,8 @@ def compute_global_stds(
         # Compute global standard deviations
         global_stds[name] = np.nanstd(array)
 
+    return global_stds
+
 
 def z_score_normalize_inputs(
         inputs: dict[str, npt.NDArray[np.floating]],
