@@ -42,12 +42,12 @@ def main(cfg):
     ua, va = load_wind(path_regrid, filenames['wind'])
     ci = load_ice_conc(path_regrid, filenames['ice_conc'])
 
-    # Shift variables to present day input parameters
+    # Shift variables to create present day input parameters
     ui_t0, vi_t0, ri_t0 = present_day(ui), present_day(vi), present_day(ri)
     ua_t0, va_t0 = present_day(ua), present_day(va)
     ci_t0 = present_day(ci)
 
-    # Shift variables to previous day input parameters
+    # Shift variables to create previous day input parameters
     ci_t1 = previous_day(ci)
 
     # Create masks for bad points and land/ open ocean
@@ -61,7 +61,7 @@ def main(cfg):
              mask_land_ocean = mask_land_ocean,
              )
 
-    # Create dict of input variables
+    # Create dict of input parameters
     inputs = {
         'ui_t0': ui_t0, 'vi_t0': vi_t0, 'ri_t0': ri_t0,
         'ua_t0': ua_t0, 'va_t0': va_t0,
@@ -261,15 +261,26 @@ def get_gridwise_means(inputs: dict, axis = 0):
     """
     
     """
-
+    # Initialize empty dict
     gridwise_means = {}
 
     # Iterate through inputs
     for input_name, value in inputs.items():
-        # Compute
-        gridwise_means['input_name'] = np.nanmean(value, axis = axis)
+        # Compute gridwise temporal means
+        gridwise_means[input_name] = np.nanmean(value, axis = axis)
 
     return gridwise_means
+
+
+def get_global_stds(inputs: dict):
+    
+    # Initialize empty dict
+    global_stds = {}
+
+    # Iterate through inputs
+    for input_name, value in inputs.items():
+        # Compute global standard deviations
+        global_stds
 
 
 
