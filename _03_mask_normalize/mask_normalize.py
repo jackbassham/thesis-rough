@@ -1,8 +1,4 @@
-from helpers import (
-    load_ice_vel,
-    load_wind,
-    load_ice_conc,
-)
+import helpers
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
@@ -37,9 +33,9 @@ def main(cfg):
         filenames[name] = cfg.dataset_config.build_filename(ds, 'regrid')
 
     # Load in data variables
-    ui, vi, ri = load_ice_vel(path_regrid, filenames['ice_vel'])
-    ua, va = load_wind(path_regrid, filenames['wind'])
-    ci = load_ice_conc(path_regrid, filenames['ice_conc'])
+    ui, vi, ri = helpers.load_ice_vel(path_regrid, filenames['ice_vel'])
+    ua, va = helpers.load_wind(path_regrid, filenames['wind'])
+    ci = helpers.load_ice_conc(path_regrid, filenames['ice_conc'])
 
     # Shift variables to create present day input parameters
     ui_t0, vi_t0, ri_t0 = present_day(ui), present_day(vi), present_day(ri)
