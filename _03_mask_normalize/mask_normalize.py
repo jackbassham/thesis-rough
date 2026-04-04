@@ -257,7 +257,9 @@ def mask_inputs(inputs: dict, mask: Mask3D):
         np.putmask(value, mask, np.nan)
 
 
-def get_gridwise_means(inputs: dict, axis = 0):
+def get_gridwise_means(
+        inputs: dict[str, npt.NDArray[np.floating]], axis: int=0
+    ) -> dict[str, npt.NDArray[np.floating]]:
     """
     
     """
@@ -272,7 +274,12 @@ def get_gridwise_means(inputs: dict, axis = 0):
     return gridwise_means
 
 
-def get_global_stds(inputs: dict):
+def get_global_stds(
+        inputs: dict[str, npt.NDArray[np.floating]]
+    ) -> dict[str, npt.NDArray[np.floating]]:
+    """
+    
+    """
     
     # Initialize empty dict
     global_stds = {}
@@ -280,24 +287,24 @@ def get_global_stds(inputs: dict):
     # Iterate through inputs
     for input_name, value in inputs.items():
         # Compute global standard deviations
-        global_stds
+        global_stds[input_name] = np.nanstd(value)
 
 
+def normalize_inputs(
+        inputs: dict[str, npt.NDArray[np.floating]],
+        gridwise_means: dict[str, npt.NDArray[np.floating]],
+        global_stds: dict[str, npt.NDArray[np.floating]],
+    ) -> dict[str, npt.NDArray[np.floating]]:
 
+    # TODO normalize cases one by one accessing dict[input_name] ie dict['ui']
 
+    # Normalize ice velocity by std of ice speed
 
+    # Do not remove mean from uncertainty, take absolute value and normalize by std ice speed
 
-def mask_data_variables(mask, *variables):
-    """
-    FIXME Using lists like this might be bad for memory,
-    ok on AHA but for open source think about changing
-    """
-    return [np.where(mask, np.nan, variable) for variable in variables]
-
-
-
-
-
+    # Normalize remaning inputs by respective global standard deviations
+     
+    
 
 if __name__ == "__main__":
     # NOTE remember this block is for direct script execution
