@@ -2,11 +2,13 @@ import helpers
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
-from types import (
-    Array3D, 
-    Mask2D, 
-    Mask3D
-)
+
+# TODO figure out project - specific types
+# from types import (
+#     Array3D, 
+#     Mask2D, 
+#     Mask3D
+# )
 
 # FIXME pass/ silence numpy RuntimeWarning: Mean of empty slice
 
@@ -104,10 +106,10 @@ def previous_day(variable):
 
 
 def create_data_masks(
-        ci_t0: Array3D, ui_t0: Array3D, vi_t0: Array3D,
+        ci_t0: npt.NDArray[np.floating], ui_t0: npt.NDArray[np.floating], vi_t0: npt.NDArray[np.floating],
         perc_ice_free_threshold: float=0.70,
         ice_conc_threshold: float=0.15
-) -> tuple[Mask3D, Mask2D]:
+) -> tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]:
     """
     NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
     """
