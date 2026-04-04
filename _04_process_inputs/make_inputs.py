@@ -1,8 +1,23 @@
 import numpy as np
 import os
 
+# TODO make a split generator to split years based on data config
+# to a ruffled split with 2 test, 2 val, and the rest train
+# (later on, can make it work with smaller data sets, for one year etc?)
 
+# TODO option to randomly shuffle split (2 consecutive test, 2 consecutive val, and the rest
+# train) (Hoffman) to move to ensemble
 
+# TODO ensemble to run the split generator 10 times 
+
+# TODO experiment with complete random shuffle of years
+
+# TODO Experiment optionally include buffer year for temporal edge leakage?
+
+# TODO One input data file with nans, bad_mask?, and land_ocean_mask. Fill nans with 0 later (and convert
+# to pytorch or vice versa???), for CNN training. 
+
+# TODO Experiment with including mask in the input or a masked loss for land_ocean_mask
 
 def main(cfg):
 
