@@ -58,7 +58,7 @@ def main(cfg):
     # Save masks
     np.savez(
         path_mask_norm / 'masks.npz', 
-        mask_bad=mask_bad, 
+        mask_bad = mask_bad, 
         mask_land_ocean = mask_land_ocean,
              )
 
@@ -83,30 +83,15 @@ def main(cfg):
         inputs, gridwise_means, global_stds,
     )
     
-    # Define data file name for normalized data
-    filename = 'masked_normalized.npz'
-
     # Save the normalized data
-    np.savez(
-        path_mask_norm / filename,
-        ui_t0 = ui_norm, vi_t0 = vi_norm, 
-        ri_t0 = ri_norm, 
-        ua_t0 = ua_norm, va_t0 = va_norm,
-        ci_t1 = ci_norm
-        )
-    
-    # Define file name for normalization statistics
-    filename = 'stats_for_normalization.npz'
+    save_arrays(path_mask_norm / 'masked_normalized.npz', normalized)
 
-    # Save the normalization statistics
-    np.savez(
-        path_mask_norm / filename,
-        ui_bar = ui_bar, vi_bar = vi_bar,
-        ua_bar = ua_bar, va_bar = va_bar, 
-        ci_bar = ci_bar,
-        ua_std = ua_std, va_std = va_std, 
-        ci_std = ci_std
-    )
+    # Save the gridwise means
+    save_arrays(path_mask_norm / 'gridwise_means.nps', gridwise_means)
+
+    # Save the global standard deviations
+    save_arrays(path_mask_norm / 'global_stds.npz', global_stds)
+
 
 
 def present_day(variable):
@@ -192,9 +177,9 @@ def compute_gridwise_means(
     gridwise_means = {}
 
     # Iterate through inputs
-    for input_name, value in inputs.items():
+    for name, array in inputs.items():
         # Compute gridwise temporal means
-        gridwise_means[input_name] = np.nanmean(value, axis = axis)
+        gridwise_means[name] = np.nanmean(array, axis = axis)
 
     return gridwise_means
 
@@ -210,9 +195,9 @@ def compute_global_stds(
     global_stds = {}
 
     # Iterate through inputs
-    for input_name, value in inputs.items():
+    for name, array in inputs.items():
         # Compute global standard deviations
-        global_stds[input_name] = np.nanstd(value)
+        global_stds[name] = np.nanstd(array)
 
 
 def z_score_normalize_inputs(
@@ -226,7 +211,7 @@ def z_score_normalize_inputs(
     # 2. Compute global standard deviation
     # 3. Remove mean and divde by standard deviation
     # 4. ** Ice velocities here are normalized by the standard deviation of the speed
-    # 5. ** Uncertainty here is scaled by ci_std
+    # 5. ** Uncertainty here is scaled by speed
     """
 
     # Initialize dict for normalized inputs
@@ -255,8 +240,18 @@ def z_score_normalize_inputs(
 
     return normalized, global_stds
 
-     
+
+def save_arrays(path: Path, filename: str, arrays: dict[str, npt.NDArray[np.floating]]) -> None:
+    """
     
+    """
+
+    # Create path if it doesn't already exist
+    path.mkdir(partents=True, exist_ok=True)
+
+    # Save all key (varable name), value pairs (array)
+    np.savez(path / filename, **arrays)
+
 
 if __name__ == "__main__":
     # NOTE remember this block is for direct script execution
