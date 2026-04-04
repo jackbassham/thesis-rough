@@ -1,13 +1,10 @@
 import numpy as np
 import os
 
-from _00_config.path import(
-    PATH_MASK_NORM,
-    PATH_COORDINATES,
-    PATH_MODEL_INPUTS,
-)
 
-def main():
+
+
+def main(cfg):
 
     # Load in normalized data
     fnam = 'masked_normalized.npz'
@@ -134,4 +131,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
