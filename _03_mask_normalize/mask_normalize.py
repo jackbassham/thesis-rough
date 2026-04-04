@@ -61,14 +61,16 @@ def main(cfg):
              mask_land_ocean = mask_land_ocean,
              )
 
-    # Create list of input variables
-    invars = [ui_t0, vi_t0, ri_t0, ua_t0, va_t0, ci_t1]
+    # Create dict of input variables
+    inputs = {
+        'ui_t0': ui_t0, 'vi_t0': vi_t0, 'ri_t0': ri_t0,
+        'ua_t0': ua_t0, 'va_t0': va_t0,
+        'ci_t1': ci_t1,
+    }
 
-    # Define filename for mask
-    filename = 'nan_mask.npz'
+    # Mask bad points to nan
+    mask_inputs(inputs, mask_bad)
 
-    # NaN out points meeting mask condition
-    invars_masked = [np.where(nan_mask, np.nan, var) for var in invars]
 
     print('Mask defined where ci is nan')
     print('')
@@ -244,6 +246,20 @@ def create_data_masks(
     mask_land_ocean = np.all(np.isnan(ci_t0), axis = 0)
 
     return mask_bad, mask_land_ocean
+
+
+def mask_inputs(inputs: dict, mask: Mask3D):
+    """
+    
+    """
+    
+    # Iterate through inputs
+    for value in inputs.values():
+        # Fill masked points with nan in place
+        np.putmask(value, mask, np.nan)
+
+
+
 
 
 def mask_data_variables(mask, *variables):
