@@ -68,12 +68,10 @@ def main(cfg):
         'ci_t1': ci_t1,
     }
 
-    # Mask bad points to nan
+    # Mask bad points to nan (in place, no copy made)
     mask_inputs(inputs, mask_bad)
 
 
-    print('Mask defined where ci is nan')
-    print('')
 
     # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
     # 1. Compute temporal mean, gridwise
@@ -257,6 +255,22 @@ def mask_inputs(inputs: dict, mask: Mask3D):
     for value in inputs.values():
         # Fill masked points with nan in place
         np.putmask(value, mask, np.nan)
+
+
+def get_gridwise_means(inputs: dict, axis = 0):
+    """
+    
+    """
+
+    gridwise_means = {}
+
+    # Iterate through inputs
+    for input_name, value in inputs.items():
+        # Compute
+        gridwise_means['input_name'] = np.nanmean(value, axis = axis)
+
+    return gridwise_means
+
 
 
 
