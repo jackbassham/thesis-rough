@@ -1,4 +1,5 @@
 import helpers
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
@@ -44,6 +45,11 @@ def main(cfg):
     ua_t0, va_t0 = present_day(ua), present_day(va)
     ci_t0 = present_day(ci)
 
+    print(ui_t0[0])
+    plt.pcolormesh(ui_t0[0])
+    plt.title('ui_t0')
+    plt.show()
+
     # Shift variables to create previous day input parameters
     ci_t1 = previous_day(ci)
 
@@ -51,6 +57,11 @@ def main(cfg):
     mask_bad, mask_land_ocean = create_data_masks(
         ci_t0, ui_t0, vi_t0
     )
+
+    print(f'mask_bad {mask_bad[0]}')
+    plt.pcolormesh(mask_bad[0])
+    plt.title('mask_bad')
+    plt.show()
 
     # Save masks
     np.savez(
@@ -66,14 +77,34 @@ def main(cfg):
         'ci_t1': ci_t1,
     }
 
+    print(f'inputs {inputs['ui_t0']}')
+    plt.pcolormesh(inputs['ui_t0'][0])
+    plt.title('inputs')
+    plt.show()
+
     # Mask bad points to nan (in place, no copy made)
     mask_inputs(inputs, mask_bad)
+
+    print(f'mask {inputs['ui_t0'][0]}')
+    plt.pcolormesh(inputs['ui_t0'][0])
+    plt.title('masked inputs')
+    plt.show()
 
     # Compute the gridwise temporal mean of each input
     gridwise_means = compute_gridwise_means(inputs)
 
+    print(f'means {gridwise_means['ui_t0'][0]}')
+    plt.pcolormesh(gridwise_means['ui_t0'][0])
+    plt.title('gridwise_means')
+    plt.show()
+
     # Compute the global standard deviations of each input
     global_stds = compute_global_stds(inputs)
+
+    print(f'stds {global_stds['ui_t0'][0]}')
+    plt.pcolormesh(global_stds['ui_t0'][0])
+    plt.title('global_stds')
+    plt.show()
 
     # Perform Z-score normalization of inputs, add ice speed std to dict
     normalized, global_stds = z_score_normalize_inputs(
@@ -214,10 +245,15 @@ def z_score_normalize_inputs(
     # Initialize dict for normalized inputs
     normalized = {}
 
+    print(f'zscore_in {inputs['ui_t0'][0]}')
+
     # Get standard deviation of ice speed for noralization
     Ui_t0_std = np.nanstd(
         np.sqrt(inputs['ui_t0']**2 + inputs['vi_t0']**2)
     )
+
+    print(f'Ui_t0_std {Ui_t0_std}')
+
     # Add to dict for saving
     global_stds['Ui_t0'] = Ui_t0_std
 
