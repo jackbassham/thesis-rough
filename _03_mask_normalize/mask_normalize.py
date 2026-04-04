@@ -1,9 +1,12 @@
 import gc
-from helpers import load_npz_data
+from helpers import (
+    load_ice_vel,
+    load_wind,
+    load_ice_conc,
+)
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
-from typing import Annotated
 from types import (
     Array3D, 
     Mask2D, 
@@ -34,15 +37,10 @@ def main(cfg):
         # Build filename for each regrid source dataset
         filenames[name] = cfg.dataset_config.build_filename(ds, 'regrid')
 
-    # Load data into data store variable
-    data = load_all_variables(path_regrid, filenames)
-
-    ui = data['ui']
-    vi = data['vi']
-    ri = data['ri']
-    ua = data['ua']
-    va = data['va']
-    ci = data['ci']
+    # Load in data variables
+    ui, vi, ri = load_ice_vel(path_regrid, filenames['ice_vel'])
+    ua, va = load_wind(path_regrid, filenames['wind'])
+    ci = load_ice_conc(path_regrid, filenames['ice_conc'])
 
     # Shift variables to present day input parameters
     ui_t0, vi_t0, ri_t0 = present_day(ui), present_day(vi), present_day(ri)
@@ -186,32 +184,6 @@ def main(cfg):
     )
 
 
-def load_all_variables(path_regrid: Path, filenames: dict[str: str]) -> dict[str: npt.NDArray]:
-    """
-    
-    """
-
-    # Initialize empty dict to store data
-    data_store = {}
-
-    # Iterate through variable configurations
-    for var_config in VARIABLE_CONFIG.vaules():
-        
-        # Get key for variable
-        file_key = var_config['file']
-
-        # Load dataset file if it hasn't already
-        if file_key not in data_store:
-            data_store[file_key] = load_npz_data(path_regrid / filenames[file_key])
-
-        # Iterate through dataset variable keys
-        for key in var_config['keys']:
-            # Load data variable into data store
-            data_store[key] = data_store[file_key][key]
-
-        return data_store
-
-
 def present_day(variable):
     """
     
@@ -223,7 +195,7 @@ def previous_day(variable):
     """
     
     """
-    return variable[-1:,:,:]
+    return variable[:-1,:,:]
 
 
 def create_data_masks(
