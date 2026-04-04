@@ -56,9 +56,10 @@ def main(cfg):
     )
 
     # Save masks
-    np.savez(path_mask_norm / 'masks.npz', 
-             mask_bad=mask_bad, 
-             mask_land_ocean = mask_land_ocean,
+    np.savez(
+        path_mask_norm / 'masks.npz', 
+        mask_bad=mask_bad, 
+        mask_land_ocean = mask_land_ocean,
              )
 
     # Create dict of input parameters
@@ -71,92 +72,16 @@ def main(cfg):
     # Mask bad points to nan (in place, no copy made)
     mask_inputs(inputs, mask_bad)
 
+    # Compute the gridwise temporal mean of each input
+    gridwise_means = compute_gridwise_means(inputs)
 
+    # Compute the global standard deviations of each input
+    global_stds = compute_global_stds(inputs)
 
-    # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
-    # 1. Compute temporal mean, gridwise
-    # 2. Compute global standard deviation
-    # 3. Remove mean and divde by standard deviation
-    # 4. ** Ice velocities here are normalized by the standard deviation of the speed
-    # 5. ** Uncertainty here is scaled by ci_std
-
-    # Compute temporal mean of inputs at every gridpoint
-    grid_means = [np.nanmean(var, axis = 0) for var in invars_masked]
-
-    # Compute global stds
-    global_stds = [np.nanstd(var) for var in invars_masked]
-
-    # Unpacked masked variables
-    ui_masked, vi_masked, ri_masked, ua_masked, va_masked, ci_masked = invars_masked
-
-    # Take absolute value of uncertainty
-    # NOTE negatives exist where data points are close to coastlines (NSIDC)
-    ri_t0 = np.abs(ri_t0)
-
-    # Delete unused arrays from memory
-    del invars
-    del ui, vi, ri, ua, va, ci
-    gc.collect()
-
-    # Unpack statistics
-    ui_bar, vi_bar, _, ua_bar, va_bar, ci_bar = grid_means
-
-    _, _, _, ua_std, va_std, ci_std = global_stds
-
-    # Delete unused arrays from memory
-    del _
-    gc.collect()
-
-    # Calculate speed
-    Ui = np.sqrt(ui_masked ** 2 + vi_masked ** 2)
-
-    # Get standard deviation of speed for normalization
-    Ui_std = np.nanstd(Ui)
-
-    # Delete unused arrays from memory
-    del invars_masked, grid_means, global_stds
-    gc.collect()
-
-    # Normalize ice velocity and uncertainty by ice speed global standard deviation 
-    # (z-score normalization)
-
-    ui_norm = (ui_masked - ui_bar) / Ui_std
-    vi_norm = (vi_masked - vi_bar) / Ui_std
-
-    print("'uit_bar', 'vit_bar' normalized by 'cit_std:'")
-    print(f"   {Ui_std:.3f} cm/s")
-    print('')
-
-    # Normalize uncertainty by standard deviation of speed
-    ri_norm = ri_masked / Ui_std
-
-    print(f"'rt' scaled by {Ui_std:.3f} cm/s:")
-    print('')
-
-    # Normalize remaning variables
-    ua_norm = (ua_masked - ua_bar) / ua_std
-
-    va_norm = (va_masked - va_bar) / va_std
-
-    ci_norm = (ci_masked - ci_bar) / ci_std
-
-    print("'ua', 'va', and 'ci' normalized by respective standard devations:")
-    print(f"   {ua_std:.3f} cm/s, {va_std:.3f} cm/s, {ci_std:.3f}")
-    print('')
-
-    # Pack normalized input variables into list
-    invars_norm = [ui_norm, vi_norm, ri_norm, ua_norm, va_norm, ci_norm]
-
-    # Count number of data points in each variable
-    total_points = [var.size for var in invars_norm]
-
-    # Count the number of nans in each variable
-    total_nan = [np.isnan(var).sum() for var in invars_norm]
-
-    for p, n in zip(total_points, total_nan):
-        print(f"total points/ total nan: {p} / {n}")
-        print(f"num valid points {p - n}")
-        print(f"frac nan (invalid) {n / p}")
+    # Perform Z-score normalization of inputs, add ice speed std to dict
+    normalized, global_stds = z_score_normalize_inputs(
+        inputs, gridwise_means, global_stds,
+    )
     
     # Define data file name for normalized data
     filename = 'masked_normalized.npz'
@@ -257,7 +182,7 @@ def mask_inputs(inputs: dict, mask: Mask3D):
         np.putmask(value, mask, np.nan)
 
 
-def get_gridwise_means(
+def compute_gridwise_means(
         inputs: dict[str, npt.NDArray[np.floating]], axis: int=0
     ) -> dict[str, npt.NDArray[np.floating]]:
     """
@@ -274,7 +199,7 @@ def get_gridwise_means(
     return gridwise_means
 
 
-def get_global_stds(
+def compute_global_stds(
         inputs: dict[str, npt.NDArray[np.floating]]
     ) -> dict[str, npt.NDArray[np.floating]]:
     """
@@ -290,19 +215,46 @@ def get_global_stds(
         global_stds[input_name] = np.nanstd(value)
 
 
-def normalize_inputs(
+def z_score_normalize_inputs(
         inputs: dict[str, npt.NDArray[np.floating]],
         gridwise_means: dict[str, npt.NDArray[np.floating]],
         global_stds: dict[str, npt.NDArray[np.floating]],
-    ) -> dict[str, npt.NDArray[np.floating]]:
+    ) -> tuple[dict[str, npt.NDArray[np.floating]], dict[str, npt.NDArray[np.floating]]]:
+    """
+    # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
+    # 1. Compute temporal mean, gridwise
+    # 2. Compute global standard deviation
+    # 3. Remove mean and divde by standard deviation
+    # 4. ** Ice velocities here are normalized by the standard deviation of the speed
+    # 5. ** Uncertainty here is scaled by ci_std
+    """
 
-    # TODO normalize cases one by one accessing dict[input_name] ie dict['ui']
+    # Initialize dict for normalized inputs
+    normalized = {}
 
-    # Normalize ice velocity by std of ice speed
+    # Get standard deviation of ice speed for noralization
+    Ui_t0_std = np.nanstd(
+        np.sqrt(inputs['ui_t0']**2 + inputs['vi_t0']**2)
+    )
+    # Add to dict for saving
+    global_stds['Ui_t0'] = Ui_t0_std
 
-    # Do not remove mean from uncertainty, take absolute value and normalize by std ice speed
+    # Ice Velocity: remove each point's mean and nornalize by std dev speed
+    normalized['ui_t0'] = (inputs['ui_t0'] - gridwise_means['ui_t0']) / Ui_t0_std
+    normalized['vi_t0'] = (inputs['vi_t0'] - gridwise_means['vi_t0']) / Ui_t0_std
 
-    # Normalize remaning inputs by respective global standard deviations
+    # Uncertainty: take absolute value and normalize by std ice speed
+    normalized['ri_t0'] = np.abs(inputs['ri_t0']) / Ui_t0_std
+
+    # Wind: remove each point's mean and normalize by respective std dev
+    normalized['ua_t0'] = (inputs['ua_t0'] - gridwise_means['ua_t0']) / global_stds['ua_t0']
+    normalized['va_t0'] = (inputs['va_t0'] - gridwise_means['va_t0']) / global_stds['va_t0']
+
+    # Ice Concentration: remove each point's mean and normalize by respective std dev
+    normalized['ci_t1'] = (inputs['ci_t1'] - gridwise_means['ci_t1']) / global_stds['ci_t1']
+
+    return normalized, global_stds
+
      
     
 
