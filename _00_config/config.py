@@ -381,7 +381,7 @@ class PathConfig:
         raising FileExistsError.
         """
         # FIXME no return necessary?
-        path.mkdir(parents=True, exist_ok = True)
+        path.mkdir(parents=True, exist_ok=True)
         return path
         
 
