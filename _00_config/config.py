@@ -380,6 +380,7 @@ class PathConfig:
         parents = True and exist_ok = True prevents path.mkdir from
         raising FileExistsError.
         """
+        # FIXME no return necessary?
         path.mkdir(parents=True, exist_ok = True)
         return path
         
