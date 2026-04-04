@@ -153,7 +153,7 @@ def create_data_masks(
     return mask_bad, mask_land_ocean
 
 
-def mask_inputs(inputs: dict, mask: Mask3D):
+def mask_inputs(inputs: dict, mask: npt.NDArray[np.floating]):
     """
     
     """
