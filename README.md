@@ -165,7 +165,11 @@ Before getting started, modify the desired data parameters using an instance of 
 
 - `year_range` Tuple defining the temporal range of the dataset used for training and evaluation. Maximum supported range is (1989, 2024).
 
-- ``
+- `latitude_bounds` Tuple defining the meridional bounds of the dataset used, in degrees. Entered as (southernmost, northernmost). Use negative values for Southern Hemisphere (degrees South). Maximum supported Southern/ Northern Hemisphere ranges are (-90, -40)/ (31, 90). 
+
+- `longitude_bounds` Tuple defining the zonal bounds of thd dataset used, in degrees. Entered as (westernmost, easternmost). Use Maximum supported range is (-180, 180).
+
+- `grid_resolution`
 
 
 * 'hemisphere' is a string indicator, enter 'south' for Southern Ocean forecasts or 'north' for Arctic forecats
