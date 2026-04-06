@@ -109,7 +109,7 @@ def main(cfg):
     save_arrays(path_mask_norm / 'masked_normalized.npz', normalized)
 
     # Save the gridwise means
-    save_arrays(path_mask_norm / 'gridwise_means.nps', gridwise_means)
+    save_arrays(path_mask_norm / 'gridwise_means.npz', gridwise_means)
 
     # Save the global standard deviations
     save_arrays(path_mask_norm / 'global_stds.npz', global_stds)
