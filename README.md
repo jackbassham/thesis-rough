@@ -177,6 +177,12 @@ Before getting started, modify the desired data parameters using an instance of 
 
 ### Option A: Run Entire Pipeline
 
+To run the entire machine learning pipeline (data  download -> data preprocessing -> model traning -> model evalutaion):
+
+1. Navigate to the root directory.
+
+2. 
+
 
 ### Option B: Run Partial Pipeline
 
