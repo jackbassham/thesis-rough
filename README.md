@@ -142,6 +142,55 @@ To get a local copy up and running follow these simple example steps.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+## Data Structure
+
+Data used for training and evaluation are stored to disk in a root data directory within the repository (unless 'root_directory' is speficied to another loaction ie: a server scratch directory). Data are currently stored to disk for multiple processing stages. 
+
+Data used for training and evaluation are stored to disk for multiple stages under the following directory hiercy: 
+
+```text
+<data_root>/
+├── <raw>/
+├── <regrid>/
+├── <mask_norm>/
+├── <model_inputs>/
+├── <model_output>/
+    ├── <ps>/
+    ├── <lr-cf>/
+    ├── <lr-cf-wtd>/
+    ├── <cnn-pt>/
+    ├── <cnn-pt-wtd>/
+```
+
+**Description:**
+
+*Stages*
+- `raw` - Original datasets, downloaded from the source
+- `regrid` - Data projected to a common grid within configuration bounds
+- `mask-norm` - Masked and normalized data
+- `model_inputs` - Processed training, validation, and testing inputs
+- `model_outputs` - Model weights and predictions
+
+*Models*
+- `ps` - Persistence
+- `lr-cf` - Closed Form Linear Regression
+- `lr-cf-wtd` - Weighted Closed Form Linear Regression
+- `cnn-pt` - CNN (via PyTorch)
+- `cnn-pt-wtd` - Weighted CNN (via PyTorch)
+
+Versioned datasets then are stored within each stage under the following hierchy:
+
+```text
+ <data_stage>/
+ ├── <hemisphere>/
+ │   ├── <timestamp>/
+ │   │   └── <data_file>
+```
+
+**Description**
+- `hemisphere` - 'south' (Southern Ocean) or 'north' (Arctic Ocean)
+- `timestamp` - Version of data assigned at runtime 'MMDDYY_HHMM'. Timestamp options are outlined in *Usage*.
+- `data_file` - All data files are currently stored as numpy arrays (.npz), with the acception of CNN weightes (.pth). 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -175,9 +224,10 @@ Before getting started, modify the desired data parameters using an instance of 
 - `grid_resolution` Float or int defining the resolution (in kilometers) of the data projection onto a regular latitude longitude grid. Recommended use is 25 km, based on the raw resolution of the sea ice velocity data. 
 
 
-### Option A: Run Entire Pipeline
+### Option A: Run Full Pipeline
 
-To run the entire machine learning pipeline (data  download -> data preprocessing -> model traning -> model evalutaion):
+To run the machine learning pipeline from start to finish 
+*(data  download &rarr; data preprocessing &rarr; model traning &rarr; model evalutaion)*:
 
 1. Navigate to the root directory.
 
@@ -185,7 +235,7 @@ To run the entire machine learning pipeline (data  download -> data preprocessin
 cd thesis-rough
 ```
 
-2. Use "run_pipeline.py" to run the pipeline from start to finish.
+2. Run the pipeline script:
 
 ```sh
 python -m run_pipeline
@@ -193,7 +243,7 @@ python -m run_pipeline
 
 **Note:** 
 
-The timestamp generated at run time for data version control will be used throughout the entire pipeline.
+A timestamp is generated at runtime for data version control and is used consistently through pipeline steps.
 
 
 ### Option B: Run Partial Pipeline
@@ -257,9 +307,9 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Jack Bassham - jbassham@ucsd.edu
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/jackbassham/thesis-rough](https://github.com/jackbassham/thesis-rough)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -268,9 +318,29 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+This open source software builds on the methodology and findings presented in:
+
+* Hoffman, L., et al. (2023). *Machine Learning for Daily Forecasts of Arctic Sea Ice Motion: An Attribution Assessment of Model Predictive Skill*.  
+  *Artificial Intelligence for the Earth Systems*. https://doi.org/10.1175/AIES-D-23-0004.1
+*  Zhai, J., and C. M. Bitz (2021). *A machine learning model of Arctic sea ice motions*.  
+  arXiv:2108.10925. https://arxiv.org/abs/2108.10925
+
+
+## Datasets
+
+### Sea Ice Velocity
+Tschudi, M., Meier, W. N., Stewart, J. S., Fowler, C. & Maslanik, J. (2019). *Polar Pathfinder Daily 25 km EASE-Grid Sea Ice Motion Vectors. (NSIDC-0116, Version 4)*. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/INAWUWO7QH7B. Date Accessed 04-06-2026.
+
+
+### Wind
+TODO ERA5 Wind
+
+Japan Meteorological Agency/Japan. 2013, updated monthly. *JRA-55: Japanese 55-year Reanalysis, Daily 3-Hourly and 6-Hourly Data*. NSF National Center for Atmospheric Research. https://doi.org/10.5065/D6HH6H41. Accessed from Mazloff lab server 04-06-2026.
+
+
+
+### Sea Ice Concentration
+DiGirolamo, N., Parkinson, C. L., Cavalieri, D. J., Gloersen, P. & Zwally, H. J. (2022). *Sea Ice Concentrations from Nimbus-7 SMMR and DMSP SSM/I-SSMIS Passive Microwave Data. (NSIDC-0051, Version 2)*. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/MPYG15WAA4WX. Date Accessed 04-06-2026.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -279,7 +349,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
+[contributors-url]: https://github.com/jackbassham/thesis-rough/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
 [forks-url]: https://github.com/github_username/repo_name/network/members
 [stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
