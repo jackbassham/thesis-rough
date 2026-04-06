@@ -1,0 +1,38 @@
+# NOTE relied heavily on ChatGPT 
+# and pipreqs (run pipreqs from project root after
+# pip install pipreqs) for this, 
+# need to read up.
+
+name: thesis-rough #replace latter
+
+channels: 
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Core
+  - python=3.10
+
+  # Raw data download
+  - xarray
+  - h5netcdf # for NSIDC netcdf's
+  - h5py # for NSIDC netcdf's
+
+  # Computing
+  - numpy
+  - scipy # sparse matrix in weighted lr
+
+  # ML Models
+  - pytorch
+
+  # Plotting
+  - matplotlib
+  - cartopy # map plots
+  - cmocean # oceanography color maps
+
+  # Utilities
+  - tqdm
+  - requests
+  
+
