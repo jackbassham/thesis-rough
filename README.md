@@ -181,7 +181,19 @@ To run the entire machine learning pipeline (data  download -> data preprocessin
 
 1. Navigate to the root directory.
 
-2. 
+```sh
+cd thesis-rough
+```
+
+2. Use "run_pipeline.py" to run the pipeline from start to finish.
+
+```sh
+python -m run_pipeline
+```
+
+**Note:** 
+
+The timestamp generated at run time for data version control will be used throughout the entire pipeline.
 
 
 ### Option B: Run Partial Pipeline
