@@ -91,7 +91,7 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
 
 
-### Built With
+<!-- ### Built With
 
 * [![Next][Next.js]][Next-url]
 * [![React][React.js]][React-url]
@@ -102,7 +102,7 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![JQuery][JQuery.com]][JQuery-url]
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 
 
@@ -114,30 +114,27 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+<!-- This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
   npm install npm@latest -g
-  ```
+  ``` -->
 
 ### Installation
 
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/jackbassham/thesis-rough.git
    ```
-3. Install NPM packages
+3. Install Dependencies
    ```sh
-   npm install
+   pip install -requirements.txt
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
+
+4. Change git remote url to avoid accidental pushes to base project
    ```sh
-   git remote set-url origin github_username/repo_name
+   git remote set-url origin git@github.com<github_username/repo_name>.git
    git remote -v # confirm the changes
    ```
 
@@ -148,7 +145,42 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### 1. Configure Data Parameters
+Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 32-37 in  "_00_config.load_config.py"). 
+
+**Example:**
+```py
+    data_config = DataConfig(
+        hemisphere = 'south',
+        year_range = (1992, 2020),
+        latitude_bounds = (-80, -62),
+        longitude_bounds = (-180, 180),
+        grid_resolution = 25
+    )
+```
+
+**Parameter Descriptions**
+
+- `hemisphere` Defines the region of interest. Use 'south' for Southern Ocean forecasts or 'north' for Arctic Ocean forecasts.
+
+- `year_range` Tuple defining the temporal range of the dataset used for training and evaluation. Maximum supported range is (1989, 2024).
+
+- ``
+
+
+* 'hemisphere' is a string indicator, enter 'south' for Southern Ocean forecasts or 'north' for Arctic forecats
+* 'year_range' is a tuple of the temporal range of the data used for traning and evaluation. The maximum range is (1989, 2024).
+* 'latitude bounds' 
+
+
+
+### Option A: Run Entire Pipeline
+
+
+### Option B: Run Partial Pipeline
+
+
+### Option C: Run Single Module
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
