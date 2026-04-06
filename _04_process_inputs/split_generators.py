@@ -13,7 +13,7 @@ class SplitIndices:
     train: npt.NDArray
 
 
-def chronological_split(
+def chronological_indices(
         time: npt.NDArray[np.datetime64],
         n_val: int = 2, n_test: int = 2) -> SplitIndices:
     """
@@ -46,7 +46,7 @@ def chronological_split(
     return split_indices
 
 
-def randomized_split():
+def randomized_indices():
     """
     
     """
@@ -56,7 +56,7 @@ def randomized_split():
     ...
 
 
-def ensemble_spllit():
+def ensemble():
     """
     
     """

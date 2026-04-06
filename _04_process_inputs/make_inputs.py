@@ -2,6 +2,7 @@ import helpers
 import numpy as np
 import numpy.typing as npt
 from pathlib import Paths
+from . import split_generators
 
 # TODO make a split generator to split years based on data config
 # to a ruffled split with 2 test, 2 val, and the rest train
@@ -65,7 +66,10 @@ def main(cfg):
     # Load in present-day time variable from coordinates
     time_t0 = np.load(path_coordinates / 'coordinates.npz')['time_t0']
 
+    # Get split indices from time array
+    split_indices = split_generators.chronological_indices(time_t0)
 
+    # 
 
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
