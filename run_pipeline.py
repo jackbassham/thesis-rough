@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
 def main():
 
+    # TODO make updates look at readme
+
     # Define pipeline steps in dict with argument keys and callable values
     pipeline_steps = {
         'download_motion': step_download_motion,
