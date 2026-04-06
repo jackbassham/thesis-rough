@@ -122,12 +122,13 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/jackbassham/thesis-rough.git
    ```
-3. Install Dependencies
+
+<!-- TODO conda package instalation -->
+2. Install dependencies
    ```sh
    pip install -requirements.txt
    ```
@@ -144,6 +145,8 @@ To get a local copy up and running follow these simple example steps.
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+
+<!-- TODO 1. Before getting started, make accounts for to access data..., make a file with account info -->
 
 ### 1. Configure Data Parameters
 Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 32-37 in  "_00_config.load_config.py"). 
@@ -165,17 +168,11 @@ Before getting started, modify the desired data parameters using an instance of 
 
 - `year_range` Tuple defining the temporal range of the dataset used for training and evaluation. Maximum supported range is (1989, 2024).
 
-- `latitude_bounds` Tuple defining the meridional bounds of the dataset used, in degrees. Entered as (southernmost, northernmost). Use negative values for Southern Hemisphere (degrees South). Maximum supported Southern/ Northern Hemisphere ranges are (-90, -40)/ (31, 90). 
+- `latitude_bounds` Tuple defining the meridional bounds (in degrees) of the dataset used. Entered as (southernmost, northernmost). Use negative values for Southern Hemisphere (degrees South). Maximum supported Southern/ Northern Hemisphere ranges are (-90, -40)/ (31, 90). 
 
-- `longitude_bounds` Tuple defining the zonal bounds of thd dataset used, in degrees. Entered as (westernmost, easternmost). Use Maximum supported range is (-180, 180).
+- `longitude_bounds` Tuple defining the zonal bounds (in degrees) of the dataset used. Entered as (westernmost, easternmost). Maximum supported range is (-180, 180). Use (-180, 0) for degrees West and (0, 180) for degrees East
 
-- `grid_resolution`
-
-
-* 'hemisphere' is a string indicator, enter 'south' for Southern Ocean forecasts or 'north' for Arctic forecats
-* 'year_range' is a tuple of the temporal range of the data used for traning and evaluation. The maximum range is (1989, 2024).
-* 'latitude bounds' 
-
+- `grid_resolution` Float or int defining the resolution (in kilometers) of the data projection onto a regular latitude longitude grid. Recommended use is 25 km, based on the raw resolution of the sea ice velocity data. 
 
 
 ### Option A: Run Entire Pipeline
