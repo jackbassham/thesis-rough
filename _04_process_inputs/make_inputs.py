@@ -30,6 +30,8 @@ from pathlib import Paths
 # NOTE question: issues with ice edge when training, could a mask improve skill on ice edge? Especially
 # when dealing with monthly skills?
 
+# TODO memmap or torch Dataset for memmory efficiency
+
 def main(cfg):
 
     # Load masked/ normalized data source path
@@ -50,11 +52,11 @@ def main(cfg):
     # Convert boolean values to 0, 1 floats
     mask_bad = mask_bad.astype(np.float32)
 
-    # Add to inputs
+    # Add mask to inputs
     inputs['mask'] = mask_bad
 
-
-    
+    # Fill target, feature, and separate unertainty arrays from inputs
+    y, x, ri_t0 = make_target_feature_arrays(inputs)
 
 
     # Load regrid data source path for coordinates
@@ -65,47 +67,6 @@ def main(cfg):
 
 
 
-    # Initialize nan mask input, where mask = 1 where valid and 0 where data is nan
-    nan_mask_input = np.ones_like(nan_mask)
-
-    # Convert indices where nans exist to 0
-    nan_mask_input = np.where(np.isnan(nan_mask), 0, nan_mask_input)
-
-    # Define number of input channels
-    n_in = 4
-
-    # Define number of output channels
-    n_out = 2
-
-    # Get data dimensions
-    nt, nlat, nlon = np.shape(ui_t0) # time, latitude, longitude
-
-    # Initialize feature and target arrays (batch, channels, height, width)
-    x = np.zeros((nt, n_in, nlat, nlon)) # Features
-    y = np.zeros((nt, n_out, nlat, nlon)) # Targets
-
-    # Fill feature arrays
-    x[:, 0, :, :] = ua_t0 # Zonal Wind, present day
-    x[:, 1, :, :] = va_t0 # Meridional Wind, present day
-    x[:, 2, :, :] = ci_t1 # Ice Concentration, previous day
-    x[:, 3, :, :] = nan_mask_input
-
-    # Fill target arrays
-    y[:, 0, :, :] = ui_t0 # Zonal Ice Velocity, present day
-    y[:, 1, :, :] = vi_t0 # Meridional Ice Velocity, present day
-
-    print("Feature and Target Arrays filled")
-
-    # Reshape uncertainty
-    ri_t0 = np.expand_dims(ri_t0, axis = 1) # [nt, 1, nlat, nlon]
-    
-    # Extract time (dates)
-    fnam = f"coordinates.npz"
-    data = np.load(os.path.join(PATH_COORDINATES, fnam), allow_pickle=True)
-    # time_t0 = data['time_t0']
-
-    # TODO remove the below, new coordinates file does this
-    time_t0 = data['time_t0']
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 
@@ -165,10 +126,17 @@ def main(cfg):
     
     print(f"Split indices saved at {PATH_MODEL_INPUTS}")
 
-def make_target_feature_arrays(inputs: dict[str, npt.NDArray]):
+def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
+                               ) -> tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
     """
     
     """
+
+    # Define target variables
+    targets = [
+        'ui_t0',
+        'vi_t0',
+    ]
 
     # Define feature variables
     features = [
@@ -178,11 +146,34 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]):
         'mask'
     ]
 
-    # Define target variables
-    targets = [
-        'ui_t0',
-        'vi_t0',
+    # Uncertainty lives in separate array (for now)
+    uncertainty = [
+        'ri_t0'
     ]
+
+    # Get input dimensions from first input
+    nt, nlat, nlon = next(iter(inputs.values())).shape
+
+    # Initialize target, feature arrays
+    y = np.zeros((nt, len(targets), nlat, nlon))
+    x = np.zeros((nt, len(features), nlat, nlon))
+
+    # Fill target array
+    for i, name in enumerate(targets):
+        y[:, i] = inputs[name]
+
+    # Fill feature array
+    for i, name in enumerate(features):
+        x[:, i] = inputs[name]
+
+    # Add channel dimension on uncertainty to match targets, features
+    ri_t0 = inputs['ri_t0'][:, np.newaxis, :, :]
+
+    return y, x, ri_t0
+
+
+
+
 
 
 if __name__ == "__main__":
