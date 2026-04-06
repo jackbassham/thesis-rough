@@ -1,5 +1,6 @@
 import helpers
 import numpy as np
+import numpy.typing as npt
 from pathlib import Paths
 
 # TODO make a split generator to split years based on data config
@@ -43,8 +44,18 @@ def main(cfg):
     # Load in masked/ normalized input parameters
     inputs = np.load(path_mask_norm / 'masked_normalized.npz')
 
-    # Load in masks
-    masks = np.load(path_mask_norm / 'masks.npz')
+    # Load in mask
+    mask_bad = np.load(path_mask_norm / 'masks.npz')['mask_bad']
+
+    # Convert boolean values to 0, 1 floats
+    mask_bad = mask_bad.astype(np.float32)
+
+    # Add to inputs
+    inputs['mask'] = mask_bad
+
+
+    
+
 
     # Load regrid data source path for coordinates
     path_coordinates = cfg.path_config.data_stage_path('regrid')
@@ -154,7 +165,24 @@ def main(cfg):
     
     print(f"Split indices saved at {PATH_MODEL_INPUTS}")
 
-    return
+def make_target_feature_arrays(inputs: dict[str, npt.NDArray]):
+    """
+    
+    """
+
+    # Define feature variables
+    features = [
+        'ua_t0',
+        'va_t0',
+        'ci_t1',
+        'mask'
+    ]
+
+    # Define target variables
+    targets = [
+        'ui_t0',
+        'vi_t0',
+    ]
 
 
 if __name__ == "__main__":
