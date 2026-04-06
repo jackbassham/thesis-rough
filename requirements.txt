@@ -1,0 +1,9 @@
+cartopy==0.25.0
+cmocean==4.0.3
+matplotlib==3.10.8
+numpy==2.4.4
+Requests==2.33.1
+scipy==1.17.1
+torch==2.11.0
+tqdm==4.65.0
+xarray==2026.2.0
