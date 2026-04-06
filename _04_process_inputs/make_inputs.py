@@ -68,12 +68,8 @@ def main(cfg):
     # Get split indices from time array
     indices = split_generators.chronological_indices(time_t0)
 
-    # 
-
-    # Fill train, validation, and test data arrays
-    x_train, y_train, r_train, nan_mask_train = x[train_idx], y[train_idx], ri_t0[train_idx], nan_mask[train_idx]
-    x_val, y_val, r_val, nan_mask_val = x[val_idx], y[val_idx], ri_t0[val_idx], nan_mask[val_idx]
-    x_test, y_test, r_test, nan_mask_test = x[test_idx], y[test_idx], ri_t0[test_idx], nan_mask[test_idx]
+    # Split arrays based on indices
+    splits = split_arrays(arrays)
 
     # Create the destination directory if it doesn't already exist
     os.makedirs(PATH_MODEL_INPUTS, exist_ok = True)
