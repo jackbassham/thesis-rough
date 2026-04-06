@@ -187,10 +187,10 @@ Versioned datasets then are stored within each stage under the following hierchy
  │   │   └── <data_file>
 ```
 
-**Description**
-- `hemisphere` - 'south' (Southern Ocean) or 'north' (Arctic Ocean)
-- `timestamp` - Version of data assigned at runtime 'MMDDYY_HHMM'. Timestamp options are outlined in *Usage*.
-- `data_file` - All data files are currently stored as numpy arrays (.npz), with the acception of CNN weightes (.pth). 
+**Description:**
+- `hemisphere` - Defines the data subregion. Uses 'south' (Southern Ocean) or 'north' (Arctic Ocean).
+- `timestamp` - Version of data assigned at runtime using format 'MMDDYY_HHMM'. Timestamp flexibility and options are explained further in *Usage*.
+- `data_file` - All data files are currently stored as numpy arrays (.npz), with the acception of CNN weights (.pth). 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -207,7 +207,7 @@ Before getting started, modify the desired data parameters using an instance of 
         year_range = (1992, 2020),
         latitude_bounds = (-80, -62),
         longitude_bounds = (-180, 180),
-        grid_resolution = 25
+        grid_resolution = 25,
     )
 ```
 
@@ -241,17 +241,67 @@ cd thesis-rough
 python -m run_pipeline
 ```
 
-**Note:** 
-
-A timestamp is generated at runtime for version control of data and is used consistently through pipeline steps.
+*Note:* 
+A default timestamp `timestamp_out` (formatted 'MMDDYYYY_HHMM') is generated at runtime for data version control and is used consistently through pipeline. This timestamp version can be specified manually using the additional command line argument:
+ ```sh
+ python -m run_pipeline --timestamp_out <MMDDYYYY_HHMM>
+ ```
 
 
 ### Option B: Run Partial Pipeline
 
+Series of steps can be run from any start point to any end point specific by the user as a command line argument, as long as there are pre-existing input data available for the chosen steps:
 
+1. Navigate to the root directory:
+
+```sh
+cd thesis-rough
+```
+
+2. Run the pipeline script with command line arguments:
+
+```sh
+python -m run_pipeline --start <step_name> --end <step_name> --timestamp_out <MMDDYYYY_HHMM>
+```
+
+*Note:* 
+If either `--start` or `--end` points are omttited, the pipeline will run from the beggining to the specified end-point or from the specified start-point to the end of the pipeline. 
+
+**Step Names:**
+
+- `download_ice_vel`, `download_wind`, or `download_ice_conc` Download raw ice velocity, wind, or ice concntration datasets.
+- `regrid_ice_vel`, `regrid_wind`, or `regrid_ice_conc` Project raw ice velocity, wind, or ice concentration to common grid with parameter bounds.
+- `mask_normalize` Masks invalid data points and normalizes model inputs.
+- `process_inputs` Processes model inputs into train, test, and validation splits.
+- `ps`, `lr`, `lr_wtd`, `cnn`, or `cnn_wtd` Train and evaluate persistence, linear regression, weighted linear regression, CNN, or weighted CNN models.
+
+*Note:* 
+A timestamp version, with format 'MMDDYYYY_HHMM', must be assigned to specify pre-existing source data if the pipeline is run after the raw data download steps. `timestamp_out` is the default command used to cover all steps in the pipeline. The user, however, can specify a versions of data using arguments:
+
+- `--timestamp_raw`  Original dataset version
+- `--timestamp_regrid`  Regrid data version
+- `--timestamp_mask_norm` Masked and normalized data version
+- `--timestamp_model_inputs` Processed training, validation, and testing inputs version
+- `--timestamp_model_outputs` Model output (weights and predictions) version
 
 
 ### Option C: Run Single Module
+
+The user has the ability to run a single script as a python module for debugging or experimentation:
+
+1. Navigate to the root directory:
+
+```sh
+cd thesis-rough
+```
+
+2. Run the pipeline script:
+
+*Note:* `--timestamp_out` or a step-specific timestamp version must be specified for steps other than raw data download.
+
+```sh
+python -m <script_directory>.<script_name>
+```
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
