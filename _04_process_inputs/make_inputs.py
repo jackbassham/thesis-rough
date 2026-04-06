@@ -1,5 +1,6 @@
+import helpers
 import numpy as np
-import os
+from pathlib import Paths
 
 # TODO make a split generator to split years based on data config
 # to a ruffled split with 2 test, 2 val, and the rest train
@@ -15,31 +16,43 @@ import os
 # TODO Experiment optionally include buffer year for temporal edge leakage?
 
 # TODO One input data file with nans, bad_mask?, and land_ocean_mask. Fill nans with 0 later (and convert
-# to pytorch or vice versa???), for CNN training. 
+# numpy to pytorch or vice versa???), for CNN training. 
+# NOTE Convert numpy to PyTorch in CNN training
 
 # TODO Experiment with including mask in the input or a masked loss for land_ocean_mask
+# (incorperate in LR and PS as well?)
+# NOTE Move to:
+# 1. Keep replacing NaN's in CNN with 0
+# 2. Include the mask (bad_mask) as an input (1 = Valid, 0 = Missing)
+# 3. Use the mask in the loss function as well
+# NOTE read up on: 1. Bayesian regression, 2. heteroscedastic neural networks
+# NOTE question: issues with ice edge when training, could a mask improve skill on ice edge? Especially
+# when dealing with monthly skills?
 
 def main(cfg):
 
-    # Load in normalized data
-    fnam = 'masked_normalized.npz'
-    data = np.load(os.path.join(PATH_MASK_NORM, fnam))
+    # Load masked/ normalized data source path
+    path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
 
-    # Unpack input variables from .npz file
-    ui_t0 = data['ui_t0']
-    vi_t0 = data['vi_t0']
-    ri_t0 = data['ri_t0']
-    ua_t0 = data['ua_t0']
-    va_t0 = data['va_t0']
-    ci_t1 = data['ci_t1']
+    # Load model inputs deestination path
+    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
 
-    print("Input Variables Loaded")
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_model_inputs)
 
-    # Load in nan mask
-    fnam = 'nan_mask.npz'
-    data = np.load(os.path.join(PATH_MASK_NORM, fnam))
+    # Load in masked/ normalized input parameters
+    inputs = np.load(path_mask_norm / 'masked_normalized.npz')
 
-    nan_mask = data['nan_mask']
+    # Load in masks
+    masks = np.load(path_mask_norm / 'masks.npz')
+
+    # Load regrid data source path for coordinates
+    path_coordinates = cfg.path_config.data_stage_path('regrid')
+
+    # Load in present-day time variable from coordinates
+    time_t0 = np.load(path_coordinates / 'coordinates.npz')['time_t0']
+
+
 
     # Initialize nan mask input, where mask = 1 where valid and 0 where data is nan
     nan_mask_input = np.ones_like(nan_mask)
@@ -81,8 +94,7 @@ def main(cfg):
     # time_t0 = data['time_t0']
 
     # TODO remove the below, new coordinates file does this
-    time = data['time']
-    time_t0 = time[1:]
+    time_t0 = data['time_t0']
 
     years = time_t0.astype('datetime64[Y]').astype(int) + 1970
 
