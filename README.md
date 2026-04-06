@@ -122,6 +122,8 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
+<!-- TODO: GPU vs CPU installs for PyTorch? -->
+
 1. Clone the repo
    ```sh
    git clone https://github.com/jackbassham/thesis-rough.git
@@ -144,7 +146,7 @@ To get a local copy up and running follow these simple example steps.
 
 ## Data Structure
 
-Data used for training and evaluation are stored to disk in a root data directory within the repository (unless 'root_directory' is speficied to another loaction ie: a server scratch directory). Data are currently stored to disk for multiple processing stages. 
+Data used for training and evaluation are stored to disk in a root data directory within the repository (unless 'root_directory' is speficied to another location, ie: a scratch directory). Data are currently stored to disk for multiple processing stages. 
 
 Data used for training and evaluation are stored to disk for multiple stages under the following directory hiercy: 
 
@@ -265,7 +267,7 @@ python -m run_pipeline --start <step_name> --end <step_name> --timestamp_out <MM
 ```
 
 *Note:* 
-If either `--start` or `--end` points are omttited, the pipeline will run from the beggining to the specified end-point or from the specified start-point to the end of the pipeline. 
+If either `--start` or `--end` point arguments are omttited, the pipeline will run from the beggining to the specified end-point or from the specified start-point to the end of the pipeline. 
 
 **Step Names:**
 
