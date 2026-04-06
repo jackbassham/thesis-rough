@@ -59,7 +59,6 @@ def main(cfg):
     # Fill target, feature, and separate unertainty arrays from inputs
     y, x, ri_t0 = make_target_feature_arrays(inputs)
 
-
     # Load regrid data source path for coordinates
     path_coordinates = cfg.path_config.data_stage_path('regrid')
 
@@ -67,22 +66,9 @@ def main(cfg):
     time_t0 = np.load(path_coordinates / 'coordinates.npz')['time_t0']
 
     # Get split indices from time array
-    split_indices = split_generators.chronological_indices(time_t0)
+    indices = split_generators.chronological_indices(time_t0)
 
     # 
-
-
-    years = time_t0.astype('datetime64[Y]').astype(int) + 1970
-
-    # Define split mask based on years
-    train_mask = (years >= 1992) & (years <= 2016)
-    val_mask   = (years >= 2017) & (years <= 2018)
-    test_mask  = (years >= 2019) & (years <= 2020)
-
-    # Get split indices
-    train_idx = np.where(train_mask)[0]
-    val_idx   = np.where(val_mask)[0]
-    test_idx  = np.where(test_mask)[0]
 
     # Fill train, validation, and test data arrays
     x_train, y_train, r_train, nan_mask_train = x[train_idx], y[train_idx], ri_t0[train_idx], nan_mask[train_idx]
@@ -174,6 +160,14 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     ri_t0 = inputs['ri_t0'][:, np.newaxis, :, :]
 
     return y, x, ri_t0
+
+
+def make_splits(arrays):
+    """
+    
+    """
+
+    # Initialize dicts for test, train, and val
 
 
 
