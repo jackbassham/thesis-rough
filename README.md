@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/jackbassham/thesis-rough">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -39,14 +39,14 @@
   <p align="center">
     project_description
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/jackbassham/thesis-rough"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/jackbassham/thesis-rough">View Demo</a>
     &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/jackbassham/thesis-rough/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/jackbassham/thesis-rough/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -85,7 +85,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`, `project_license`
+Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `jackbassham`, `thesis-rough`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`, `project_license`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -135,7 +135,7 @@ To get a local copy up and running follow these simple example steps.
 
 4. Change git remote url to avoid accidental pushes to base project
    ```sh
-   git remote set-url origin git@github.com<github_username/repo_name>.git
+   git remote set-url origin git@github.com<jackbassham/thesis-rough>.git
    git remote -v # confirm the changes
    ```
 
@@ -229,7 +229,7 @@ Before getting started, modify the desired data parameters using an instance of 
 To run the machine learning pipeline from start to finish 
 *(data  download &rarr; data preprocessing &rarr; model traning &rarr; model evalutaion)*:
 
-1. Navigate to the root directory.
+1. Navigate to the root directory:
 
 ```sh
 cd thesis-rough
@@ -243,10 +243,12 @@ python -m run_pipeline
 
 **Note:** 
 
-A timestamp is generated at runtime for data version control and is used consistently through pipeline steps.
+A timestamp is generated at runtime for version control of data and is used consistently through pipeline steps.
 
 
 ### Option B: Run Partial Pipeline
+
+
 
 
 ### Option C: Run Single Module
@@ -265,7 +267,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/jackbassham/thesis-rough/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -289,8 +291,8 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/github_username/repo_name/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
+<a href="https://github.com/jackbassham/thesis-rough/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jackbassham/thesis-rough" alt="contrib.rocks image" />
 </a>
 
 
@@ -348,16 +350,16 @@ DiGirolamo, N., Parkinson, C. L., Cavalieri, D. J., Gloersen, P. & Zwally, H. J.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/jackbassham/thesis-rough.svg?style=for-the-badge
 [contributors-url]: https://github.com/jackbassham/thesis-rough/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[forks-shield]: https://img.shields.io/github/forks/jackbassham/thesis-rough.svg?style=for-the-badge
+[forks-url]: https://github.com/jackbassham/thesis-rough/network/members
+[stars-shield]: https://img.shields.io/github/stars/jackbassham/thesis-rough.svg?style=for-the-badge
+[stars-url]: https://github.com/jackbassham/thesis-rough/stargazers
+[issues-shield]: https://img.shields.io/github/issues/jackbassham/thesis-rough.svg?style=for-the-badge
+[issues-url]: https://github.com/jackbassham/thesis-rough/issues
+[license-shield]: https://img.shields.io/github/license/jackbassham/thesis-rough.svg?style=for-the-badge
+[license-url]: https://github.com/jackbassham/thesis-rough/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/jackbassham
 [product-screenshot]: images/screenshot.png
