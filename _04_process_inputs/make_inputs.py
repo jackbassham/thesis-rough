@@ -57,7 +57,7 @@ def main(cfg):
     inputs['mask'] = mask_bad
 
     # Fill target, feature, and separate unertainty arrays from inputs
-    y, x, ri_t0 = make_target_feature_arrays(inputs)
+    arrays = make_target_feature_arrays(inputs)
 
     # Load regrid data source path for coordinates
     path_coordinates = cfg.path_config.data_stage_path('regrid')
@@ -159,16 +159,32 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     # Add channel dimension on uncertainty to match targets, features
     ri_t0 = inputs['ri_t0'][:, np.newaxis, :, :]
 
-    return y, x, ri_t0
+    return {
+        'y': y,
+        'x': x,
+        'ri_t0': ri_t0
+    }
 
 
-def make_splits(arrays):
+def split_arrays(arrays: dict[str, npt.NDArray], indices
+                 ) -> dict[str, dict[str, npt.NDArray]]:
     """
     
     """
 
-    # Initialize dicts for test, train, and val
+    # Initialize train, val, and test split dics
+    splits = {
+        'train': {},
+        'test': {},
+        'val': {},
+    }
 
+    for name, array in arrays.items():
+        splits['train'][name] = array[indices.train],
+        splits['val'][name] = array[indices.val],
+        splits['test'][name] = array[indices.test]
+
+    return splits
 
 
 
