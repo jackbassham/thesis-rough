@@ -46,6 +46,24 @@ def chronological_split(
     return split_indices
 
 
+def randomized_split():
+    """
+    
+    """
+
+    # TODO generate seed in config
+
+    ...
+
+
+def ensemble_spllit():
+    """
+    
+    """
+
+    ...
+
+
 def validate_split_years(
         years: npt.NDArray[np.datetime64], 
         n_val: int, n_test: int) -> None:
