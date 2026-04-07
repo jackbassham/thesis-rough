@@ -109,11 +109,7 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
+Set up the project locally by following these steps.
 <!-- This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
@@ -129,19 +125,60 @@ To get a local copy up and running follow these simple example steps.
    git clone https://github.com/jackbassham/thesis-rough.git
    ```
 
-<!-- TODO conda package instalation -->
-2. Install dependencies
-   ```sh
-   pip install -requirements.txt
-   ```
-
-4. Change git remote url to avoid accidental pushes to base project
+3. Change git remote url to avoid accidental pushes to base project
    ```sh
    git remote set-url origin git@github.com<jackbassham/thesis-rough>.git
    git remote -v # confirm the changes
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Requirements
+
+  <!-- NOTE versions -->
+
+  The following packages are required to run the pipeline:
+
+ * Python 
+ * cartopy
+ * cmocean
+ * matplotlib
+ * numpy
+ * Requests
+ * scipy
+ * torch
+ * tqdm
+ * xarray
+
+### Option A: Create a Conda Virtual Environment *(recommended)*
+
+1. If you haven't already, Install conda or miniconda:
+https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
+
+2. Navigate to the root directory:
+
+    ```sh
+    cd thesis-rough
+    ```
+
+3. Intstall dependencies by creating the environment `thesisrough`:
+
+    ```sh
+    conda env create -f environmnet.yml
+    ```
+
+4. Activate the environment before running code 
+
+    ```sh
+    conda activate thesisrough
+    ```
+
+<!-- ### Option B: DONT DO THIS YET Use PIP
+1. Install dependencies:
+
+   ```sh
+   pip install -requirements.txt
+   ``` -->
 
 
 ## Data Structure
