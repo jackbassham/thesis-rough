@@ -32,7 +32,7 @@ dependencies:
   - cmocean # oceanography color maps
 
   # Utilities
-  - tqdm
+  - tqdm # progress bars
   - requests
   
 
