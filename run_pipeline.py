@@ -36,17 +36,17 @@ def main():
     # Instantiate configuration from loader
     pipeline_config = load_config()
 
-    # Run pipeline with configuration instance and optional start end points
+    # Run pipeline with configuration instance and optional start stop points
     run_pipeline(
         pipeline_steps,
         pipeline_config,
         start = args.start,
-        end = args.end,
+        stop = args.stop,
     )
 
 
 def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config, 
-                 start: str | None = None, end: str |None = None):
+                 start: str | None = None, stop: str |None = None):
     """
     
     """
@@ -57,8 +57,8 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
     # Initialize start index
     start_index = 0
 
-    # Initialize end index
-    end_index = len(steps)
+    # Initialize stop index
+    stop_index = len(steps)
 
     # Move start index if command line argument provided by user
     if start:
@@ -70,17 +70,17 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
             # Retrieve index from start step
             start_index = steps.index(start)
 
-    # Move end index if command line argument provided by user
-    if end:
-        if end not in steps:
-            raise ValueError(f'Unknown pipeline end step: "{end}"')
+    # Move stop index if command line argument provided by user
+    if stop:
+        if stop not in steps:
+            raise ValueError(f'Unknown pipeline stop step: "{stop}"')
         
         else:
-            # Retrieve index from end step (exclusive of end, add 1)
-            end_index = steps.index(end) + 1
+            # Retrieve index from stop step (exclusive of stop, add 1)
+            stop_index = steps.index(stop) + 1
 
     # Iterate through pipeline steps given indices
-    for step in steps[start_index:end_index]:
+    for step in steps[start_index:stop_index]:
 
         print(f'Running pipeline step: {step}')
 

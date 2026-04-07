@@ -287,7 +287,7 @@ A default timestamp `timestamp_out` (formatted 'MMDDYYYY_HHMM') is generated at 
 
 ### Option B: Run Partial Pipeline
 
-Series of steps can be run from any start point to any end point specific by the user as a command line argument, as long as there are pre-existing input data available for the chosen steps:
+Series of steps can be run from any starting point to any stopping point specified by the user as a command line argument, as long as there are pre-existing input data available for the chosen steps:
 
 1. Navigate to the root directory:
 
@@ -298,11 +298,11 @@ cd thesis-rough
 2. Run the pipeline script with command line arguments:
 
 ```sh
-python -m run_pipeline --start <step_name> --end <step_name> --timestamp_out <MMDDYYYY_HHMM>
+python -m run_pipeline --start <step_name> --stop <step_name> --timestamp_out <MMDDYYYY_HHMM>
 ```
 
 *Note:* 
-If either `--start` or `--end` point arguments are omttited, the pipeline will run from the beggining to the specified end-point or from the specified start-point to the end of the pipeline. 
+If either `--start` or `--stop` point arguments are omttited, the pipeline will run from the beggining to the specified end-point or from the specified start-point to the end of the pipeline. 
 
 **Step Names:**
 
