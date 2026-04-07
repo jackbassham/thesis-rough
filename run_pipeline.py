@@ -24,11 +24,11 @@ def main():
         'regrid_wind': step_regrid_wind,
         'mask_normalize': step_mask_normalize,
         'process_inputs': step_process_inputs,
-        'ps': step_ps,
-        'lr': step_lr,
-        'lr_wtd': step_lr_wtd,
+        # 'ps': step_ps,
+        # 'lr': step_lr,
+        # 'lr_wtd': step_lr_wtd,
         'cnn': step_cnn,
-        'cnn_wtd': step_cnn_wtd,
+        # 'cnn_wtd': step_cnn_wtd,
     }
 
     # Instantiate argument parser
@@ -140,33 +140,33 @@ def step_process_inputs(config):
     main(config)
 
 
-def step_ps(config):
-    from ._05_ps.ps import main
-    main(config)
+# def step_ps(config):
+#     from ._05_ps.ps import main
+#     main(config)
 
 
-def step_lr(config):
-    from ._06_lr.lr_cf import main
-    main(config)
+# def step_lr(config):
+#     from ._06_lr.lr_cf import main
+#     main(config)
 
 
-def step_lr_wtd(config):
-    from ._07_lr_weighted.lr_wtd_cf import main
-    main(config)
+# def step_lr_wtd(config):
+#     from ._07_lr_weighted.lr_wtd_cf import main
+#     main(config)
 
 
 def step_cnn(config):
     from ._08_cnn.cnn_pt import main
     main(config)
 
-    from ._10_evaluate.quick_eval import main
-    # Run quick eval with command line argument for model type
-    main(config) --cnn
+    from ._10_evaluate.quick_eval import run_eval
+    # Run quick eval for the cnn-pt
+    run_eval(config, 'cnn_pt')
 
 
-def step_cnn_wtd(config):
-    from ._09_cnn_weighted.cnn_wtd_pt import main
-    main(config)
+# def step_cnn_wtd(config):
+#     from ._09_cnn_weighted.cnn_wtd_pt import main
+#     main(config)
 
 
 if __name__ == '__main__':
