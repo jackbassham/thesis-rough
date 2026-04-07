@@ -191,7 +191,7 @@ def main(cfg):
     plot_losses(path_cnn_out, 'cnn_pt_lossses', num_epochs, train_losses, val_losses)
 
     # Load in model outputs destination path
-    path_cnn_out = cfg.path_config.data_stage_path('cnn_pt')
+    path_cnn_out = cfg.path_config.model_path('cnn_pt')
 
     # Make destination directory if missing
     cfg.path_config.makedir_if_missing('cnn_pt')
@@ -199,7 +199,7 @@ def main(cfg):
     # Save model weights
     torch.save(
         model.state_dict(), 
-        path_cnn_out / 'cnn_pt_weights.pt'
+        path_cnn_out / 'weights.pt'
         )
 
     print('Model weights saved')
@@ -224,7 +224,7 @@ def main(cfg):
 
     # Save predictions and true values
     np.savez(
-        path_cnn_out / 'preds_cnn_pt.npz', 
+        path_cnn_out / 'preds.npz', 
         y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
