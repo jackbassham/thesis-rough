@@ -12,15 +12,6 @@ cuda_available = torch.cuda.is_available()
 MODEL_STR = 'cnn_pt'
 
 
-def set_seed(seed=42):
-    torch.manual_seed(seed) # PyTorch Reproducibility
-    torch.cuda.manual_seed(seed) # Required if using GPU
-    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
-    torch.backends.cudnn.benchmark = False # Paired with above
-
-    return
-
-
 class CNN(nn.Module):
     """
     CNN architecture taken directly from Hoffman et al. (2023)
@@ -77,41 +68,9 @@ class CNN(nn.Module):
         x = self.fc(x)
         x = x.view(-1, self.out_channels, self.height, self.width)
         return x
-    
-
-def NRMSEloss(pred, true, eps=1e-6):
-    """
-    Norm Root Mean Squared Loss
-    """
-
-    mse = torch.mean((pred - true) ** 2)
-    std = torch.std(true, unbiased = False) + eps # Unbiased=True To match default pop. std. in tf 
-
-    return torch.sqrt(mse) / std
-
-
-def plot_losses(num_epochs, train_losses, val_losses):
-    epochs = np.arange(1, num_epochs + 1)
-
-    
-    plt.figure()
-    plt.plot(epochs, train_losses, label = 'Train')
-    plt.plot(epochs, val_losses, label = 'Validation')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.title(f"{MODEL_STR} Loss")
-
-    plt.savefig(os.path.join(PATH_CNN_PT_OUT, f'loss_{MODEL_STR}.png'))
-
-    # plt.show()
-
-    return
 
 
 def main(cfg):
-
-    
 
     # Set random seed for reproducibility
     set_seed(42)
@@ -255,7 +214,45 @@ def main(cfg):
 
     print("Predictions saved")
 
+
+def set_seed(seed=42):
+    torch.manual_seed(seed) # PyTorch Reproducibility
+    torch.cuda.manual_seed(seed) # Required if using GPU
+    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
+    torch.backends.cudnn.benchmark = False # Paired with above
+
     return
+
+
+def plot_losses(num_epochs, train_losses, val_losses):
+    epochs = np.arange(1, num_epochs + 1)
+
+    
+    plt.figure()
+    plt.plot(epochs, train_losses, label = 'Train')
+    plt.plot(epochs, val_losses, label = 'Validation')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.title(f"{MODEL_STR} Loss")
+
+    plt.savefig(os.path.join(PATH_CNN_PT_OUT, f'loss_{MODEL_STR}.png'))
+
+    # plt.show()
+
+    return
+
+
+def NRMSEloss(pred, true, eps=1e-6):
+    """
+    Norm Root Mean Squared Loss
+    """
+
+    mse = torch.mean((pred - true) ** 2)
+    std = torch.std(true, unbiased = False) + eps # Unbiased=True To match default pop. std. in tf 
+
+    return torch.sqrt(mse) / std
+
 
 if __name__ == "__main__":
     from _00_config.load_config import load_config
