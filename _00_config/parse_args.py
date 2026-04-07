@@ -32,5 +32,13 @@ def parse_args():
         help = 'Pipeline step to end on, runs up until stop point'
     )
 
+    # Define command line argument for model type (for evalutation)
+    parser.add_argument(
+        '--model_name',
+        type = str,
+        default = None,
+        help = 'Argument for name of model (ie: "cnn_pt"), for plotting, etc.'
+    )
+
     # Return the arguments
     return parser.parse_args()
