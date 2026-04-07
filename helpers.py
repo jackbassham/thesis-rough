@@ -71,3 +71,12 @@ def load_ice_conc(path: Path, filename: str):
     del data
 
     return ci
+
+
+def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None:
+    """
+    
+    """
+
+    # Save all key (varable name), value pairs (array)
+    np.savez(path, **arrays)

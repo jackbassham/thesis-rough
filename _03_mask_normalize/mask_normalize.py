@@ -106,14 +106,13 @@ def main(cfg):
     )
     
     # Save the normalized data
-    save_arrays(path_mask_norm / 'masked_normalized.npz', normalized)
+    helpers.save_arrays(path_mask_norm / 'masked_normalized.npz', normalized)
 
     # Save the gridwise means
-    save_arrays(path_mask_norm / 'gridwise_means.npz', gridwise_means)
+    helpers.save_arrays(path_mask_norm / 'gridwise_means.npz', gridwise_means)
 
     # Save the global standard deviations
-    save_arrays(path_mask_norm / 'global_stds.npz', global_stds)
-
+    helpers.save_arrays(path_mask_norm / 'global_stds.npz', global_stds)
 
 
 def present_day(variable):
@@ -266,15 +265,6 @@ def z_score_normalize_inputs(
     normalized['ci_t1'] = (inputs['ci_t1'] - gridwise_means['ci_t1']) / global_stds['ci_t1']
 
     return normalized, global_stds
-
-
-def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None:
-    """
-    
-    """
-
-    # Save all key (varable name), value pairs (array)
-    np.savez(path, **arrays)
 
 
 if __name__ == "__main__":

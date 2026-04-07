@@ -72,12 +72,12 @@ def main(cfg):
     cfg.path_config.makedir_if_missing(path_model_inputs)
 
     # Save splits
-    save_arrays(path_model_inputs / 'train.npz', splits['train'])
-    save_arrays(path_model_inputs / 'val.npz', splits['val'])
-    save_arrays(path_model_inputs / 'test.npz', splits['test'])
+    helpers.save_arrays(path_model_inputs / 'train.npz', splits['train'])
+    helpers.save_arrays(path_model_inputs / 'val.npz', splits['val'])
+    helpers.save_arrays(path_model_inputs / 'test.npz', splits['test'])
 
     # Save split indices
-    save_arrays(path_model_inputs / 'split_indices.npz', indices)
+    helpers.save_arrays(path_model_inputs / 'split_indices.npz', indices)
     
 
 def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
@@ -149,18 +149,6 @@ def split_arrays(arrays: dict[str, npt.NDArray], indices
         splits['test'][name] = array[indices.test]
 
     return splits
-
-
-def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None:
-    """
-    
-    """
-
-    # Save all key (varable name), value pairs (array)
-    np.savez(path, **arrays)
-
-
-
 
 
 if __name__ == "__main__":
