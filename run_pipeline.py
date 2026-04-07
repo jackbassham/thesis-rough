@@ -16,11 +16,11 @@ def main():
 
     # Define pipeline steps in dict with argument keys and callable values
     pipeline_steps = {
-        'download_motion': step_download_motion,
-        'download_concentration': step_download_concentration,
+        'download_ice_vel': step_download_ice_vel,
+        'download_ice_conc': step_download_ice_conc,
         'download_wind': step_download_wind,
-        'regrid_motion': step_regrid_motion,
-        'regrid_concentration': step_regrid_concentration,
+        'regrid_ice_vel': step_regrid_ice_vel,
+        'regrid_ice_conc': step_regrid_ice_conc,
         'regrid_wind': step_regrid_wind,
         'mask_normalize': step_mask_normalize,
         'process_inputs': step_process_inputs,
@@ -100,33 +100,33 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config: PipelineC
 # TODO quick eval in each model step
 
 
-def step_download_motion(config):
-    from ._01_download.download_motion_pp import main
+def step_download_ice_vel(config):
+    from ._01_access_data.download_ice_vel import main
     main(config)
 
 
-def step_download_concentration(config):
-    from ._01_download.download_concentration_nimbus7 import main
+def step_download_ice_conc(config):
+    from ._01_access_data.download_ice_conc import main
     main(config)
 
 
 def step_download_wind(config):
-    from ._01_download.download_wind_jra55 import main
+    from ._01_access_data.download_wind_jra55 import main
     main(config)
 
 
-def step_regrid_motion(config):
-    from ._02_regrid.regrid_motion_pp import main
+def step_regrid_ice_vel(config):
+    from ._02_regrid.regrid_ice_vel import main
     main(config)
 
 
-def step_regrid_concentration(config):
-    from ._02_regrid.regrid_concentration_nimbus7 import main
+def step_regrid_ice_conc(config):
+    from ._02_regrid.regrid_ice_conc import main
     main(config)
 
 
 def step_regrid_wind(config):
-    from ._02_regrid.regrid_wind_jra55 import main
+    from ._02_regrid.regrid_wind import main
     main(config)
 
 
