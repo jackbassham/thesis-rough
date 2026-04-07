@@ -7,3 +7,6 @@ scipy==1.17.1
 torch==2.11.0
 tqdm==4.65.0
 xarray==2026.2.0
+cftime==1.6.3 # For NSIDC netcdf's; verified my version in 'seaice'
+h5netcdf # for NSIDC netcdf's
+h5py # for NSIDC netcdf's

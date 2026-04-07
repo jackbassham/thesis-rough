@@ -147,6 +147,9 @@ Set up the project locally by following these steps.
  * torch
  * tqdm
  * xarray
+ * cftime
+ * h5netcdf
+ * h5py
 
 ### Option A: Create a Conda Virtual Environment *(recommended)*
 
