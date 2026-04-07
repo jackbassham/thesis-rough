@@ -3,15 +3,13 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
-from parse_args import parse_args
+from _00_config.parse_args import parse_args
 
 # TODO silence mean of empty slice warning
 
 
 def main():
     
-    ...
-
     # Instantiate argumnet parser
     args = parse_args()
 
