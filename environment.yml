@@ -1,9 +1,4 @@
-# NOTE relied heavily on ChatGPT 
-# and pipreqs (run pipreqs from project root after
-# pip install pipreqs) for this, 
-# need to read up.
-
-name: thesis-rough #replace latter
+name: thesisrough #replace latter
 
 channels: 
   - pytorch
