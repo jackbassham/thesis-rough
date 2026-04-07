@@ -58,7 +58,7 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
     start_index = 0
 
     # Initialize stop index
-    stop_index = len(steps)
+    stop_index = len(pipeline_steps)
 
     # Move start index if command line argument provided by user
     if start:
