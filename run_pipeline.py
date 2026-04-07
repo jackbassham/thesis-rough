@@ -88,6 +88,9 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config: PipelineC
         # Get function for pipeline step and run
         pipeline_steps[step](pipeline_config)
 
+        print(f'Completed pipeline step: {step}')
+        print(' ')
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Helper Functions for Pipeline Steps
