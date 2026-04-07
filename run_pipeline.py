@@ -30,10 +30,6 @@ def main():
     # Instantiate argument parser
     args = parse_args()
 
-    print(args.start)
-    print(args.stop)
-    print(' ')
-
     # Instantiate configuration from loader
     pipeline_config = load_config()
 
@@ -63,7 +59,6 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
 
     # Move start index if command line argument provided by user
     if start:
-        print('start')
         # Handle case where start is not valid
         if start not in steps:
             raise ValueError(f'Unknown pipeline start step: "{start}"')
@@ -74,7 +69,6 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
 
     # Move stop index if command line argument provided by user
     if stop:
-        print(f"stop value: {stop!r}, type: {type(stop)}")
         if stop not in steps:
             raise ValueError(f'Unknown pipeline stop step: "{stop}"')
         
@@ -106,71 +100,71 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
 
 
 def step_download_ice_vel(config):
-    from ._01_access_data.download_ice_vel import main
+    from _01_access_data.download_ice_vel import main
     main(config)
 
 
 def step_download_ice_conc(config):
-    from ._01_access_data.download_ice_conc import main
+    from _01_access_data.download_ice_conc import main
     main(config)
 
 
 def step_download_wind(config):
-    from ._01_access_data.download_wind_jra55 import main
+    from _01_access_data.download_wind_jra55 import main
     main(config)
 
 
 def step_regrid_ice_vel(config):
-    from ._02_regrid.regrid_ice_vel import main
+    from _02_regrid.regrid_ice_vel import main
     main(config)
 
 
 def step_regrid_ice_conc(config):
-    from ._02_regrid.regrid_ice_conc import main
+    from _02_regrid.regrid_ice_conc import main
     main(config)
 
 
 def step_regrid_wind(config):
-    from ._02_regrid.regrid_wind import main
+    from _02_regrid.regrid_wind import main
     main(config)
 
 
 def step_mask_normalize(config):
-    from ._03_mask_normalize.mask_normalize import main 
+    from _03_mask_normalize.mask_normalize import main 
     main(config)
 
 
 def step_process_inputs(config):
-    from ._04_process_inputs.make_inputs import main
+    from _04_process_inputs.make_inputs import main
     main(config)
 
 
 # def step_ps(config):
-#     from ._05_ps.ps import main
+#     from _05_ps.ps import main
 #     main(config)
 
 
 # def step_lr(config):
-#     from ._06_lr.lr_cf import main
+#     from _06_lr.lr_cf import main
 #     main(config)
 
 
 # def step_lr_wtd(config):
-#     from ._07_lr_weighted.lr_wtd_cf import main
+#     from _07_lr_weighted.lr_wtd_cf import main
 #     main(config)
 
 
 def step_cnn(config):
-    from ._08_cnn.cnn_pt import main
+    from _08_cnn.cnn_pt import main
     main(config)
 
-    from ._10_evaluate.quick_eval import run_eval
+    from _10_evaluate.quick_eval import run_eval
     # Run quick eval for the cnn-pt
     run_eval(config, 'cnn_pt')
 
 
 # def step_cnn_wtd(config):
-#     from ._09_cnn_weighted.cnn_wtd_pt import main
+#     from _09_cnn_weighted.cnn_wtd_pt import main
 #     main(config)
 
 
