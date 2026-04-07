@@ -1,7 +1,7 @@
 import helpers
 import numpy as np
 import numpy.typing as npt
-from pathlib import Paths
+from pathlib import Path
 from . import split_generators
 
 # TODO make a split generator to split years based on data config
@@ -38,12 +38,6 @@ def main(cfg):
     # Load masked/ normalized data source path
     path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
 
-    # Load model inputs deestination path
-    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
-
-    # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_model_inputs)
-
     # Load in masked/ normalized input parameters
     inputs = np.load(path_mask_norm / 'masked_normalized.npz')
 
@@ -69,48 +63,22 @@ def main(cfg):
     indices = split_generators.chronological_indices(time_t0)
 
     # Split arrays based on indices
-    splits = split_arrays(arrays)
+    splits = split_arrays(arrays, indices)
 
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PATH_MODEL_INPUTS, exist_ok = True)
+    # Load model inputs deestination path
+    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_model_inputs)
 
     # Save splits
-    np.savez(
-        os.path.join(PATH_MODEL_INPUTS, 'train.npz'),
-        x_train = x_train,
-        y_train = y_train,
-        r_train = r_train,
-        nan_mask_train = nan_mask_train,
-    )
-
-    np.savez(
-        os.path.join(PATH_MODEL_INPUTS, 'val.npz'),
-        x_val = x_val,
-        y_val = y_val,
-        r_val = r_val,
-        nan_mask_val = nan_mask_val,
-    )
-
-    np.savez(
-        os.path.join(PATH_MODEL_INPUTS, 'test.npz'),
-        x_test = x_test,
-        y_test = y_test,
-        r_test = r_test,
-        nan_mask_test = nan_mask_test,
-    )
-
-    print(f'Splits saved at {PATH_MODEL_INPUTS}')
+    save_arrays(path_model_inputs / 'train.npz', splits['train'])
+    save_arrays(path_model_inputs / 'val.npz', splits['val'])
+    save_arrays(path_model_inputs / 'test.npz', splits['test'])
 
     # Save split indices
-
-    np.savez_compressed(
-    os.path.join(PATH_MODEL_INPUTS, f"split_indices.npz"),
-        train_idx=train_idx,
-        val_idx=val_idx,
-        test_idx=test_idx,
-    )
+    save_arrays(path_model_inputs / 'split_indices.npz', indices)
     
-    print(f"Split indices saved at {PATH_MODEL_INPUTS}")
 
 def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
                                ) -> tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
@@ -181,6 +149,15 @@ def split_arrays(arrays: dict[str, npt.NDArray], indices
         splits['test'][name] = array[indices.test]
 
     return splits
+
+
+def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None:
+    """
+    
+    """
+
+    # Save all key (varable name), value pairs (array)
+    np.savez(path, **arrays)
 
 
 
