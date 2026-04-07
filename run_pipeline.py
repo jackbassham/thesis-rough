@@ -4,9 +4,6 @@ from _00_config.parse_args import parse_args
 from typing import Callable
 # TODO Import PipelineConfig for type checking only??
 
-
-
-
 # FIXME parse_args import into both load_config and run_pipeline
 
 def main():
@@ -33,6 +30,10 @@ def main():
     # Instantiate argument parser
     args = parse_args()
 
+    print(args.start)
+    print(args.stop)
+    print(' ')
+
     # Instantiate configuration from loader
     pipeline_config = load_config()
 
@@ -46,7 +47,7 @@ def main():
 
 
 def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config, 
-                 start: str | None = None, stop: str |None = None):
+                 start: str | None = None, stop: str | None = None):
     """
     
     """
@@ -62,6 +63,7 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
 
     # Move start index if command line argument provided by user
     if start:
+        print('start')
         # Handle case where start is not valid
         if start not in steps:
             raise ValueError(f'Unknown pipeline start step: "{start}"')
@@ -72,6 +74,7 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config,
 
     # Move stop index if command line argument provided by user
     if stop:
+        print(f"stop value: {stop!r}, type: {type(stop)}")
         if stop not in steps:
             raise ValueError(f'Unknown pipeline stop step: "{stop}"')
         

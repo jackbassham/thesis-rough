@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument(
         '--stop',
         type = str,
-        default = 'None',
+        default = None,
         help = 'Pipeline step to end on, runs up until stop point'
     )
 
