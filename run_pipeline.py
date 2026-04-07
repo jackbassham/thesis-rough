@@ -2,10 +2,9 @@ from _00_config.load_config import load_config
 from _00_config.parse_args import parse_args
 
 from typing import Callable
-# Import PipelineConfig for type checking only
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from _00_config.config import PipelineConfig
+# TODO Import PipelineConfig for type checking only??
+
+
 
 
 # FIXME parse_args import into both load_config and run_pipeline
@@ -46,7 +45,7 @@ def main():
     )
 
 
-def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config: PipelineConfig, 
+def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config, 
                  start: str | None = None, end: str |None = None):
     """
     
