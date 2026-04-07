@@ -3,7 +3,6 @@ import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
 import numpy as np
-import os
 import matplotlib.pyplot as plt
 cuda_available = torch.cuda.is_available()
 
@@ -75,13 +74,19 @@ def main(cfg):
     # Set random seed for reproducibility
     set_seed(42)
 
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PATH_CNN_PT_OUT, exist_ok = True)
+    # Load model inputs source path
+    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
 
-    # Load input data
-    x_train, y_train, _ = torch.load(os.path.join(PATH_MODEL_INPUTS,f'train.pt'))
-    x_val, y_val, _ = torch.load(os.path.join(PATH_MODEL_INPUTS,f'val.pt'))
-    x_test, y_test, _ = torch.load(os.path.join(PATH_MODEL_INPUTS,f'test.pt'))
+    # Load in input data
+    train = np.load(path_model_inputs / 'train.npz')
+    val = np.load(path_model_inputs / 'val.npz')
+    test = np.load(path_model_inputs / 'test.npz')
+
+    # Get input variables from splits and convert to PyTorch tensors
+    # Leaving off mask (last channel)
+    x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]), torch.from_numpy(train['y'][:,:-1,:,:])
+    x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]), torch.from_numpy(val['y'][:,:-1,:,:])
+    x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]), torch.from_numpy(test['y'][:,:-1,:,:])
 
     print("Input Data Loaded")
 
@@ -183,11 +188,19 @@ def main(cfg):
         print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {avg_train:.4f} - Val Loss: {avg_val:.4f}")
 
     # Plot losses
-    plot_losses(num_epochs, train_losses, val_losses)
+    plot_losses(path_cnn_out, 'cnn_pt_lossses', num_epochs, train_losses, val_losses)
+
+    # Load in model outputs destination path
+    path_cnn_out = cfg.path_config.data_stage_path('cnn_pt')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing('cnn_pt')
 
     # Save model weights
-    fnam = f'wts_{MODEL_STR}.pth'
-    torch.save(model.state_dict(), os.path.join(PATH_CNN_PT_OUT,fnam))
+    torch.save(
+        model.state_dict(), 
+        path_cnn_out / 'cnn_pt_weights.pt'
+        )
 
     print('Model weights saved')
 
@@ -208,9 +221,11 @@ def main(cfg):
     y_pred = np.concatenate(all_preds, axis=0)
     y_true = np.concatenate(all_targets, axis=0)
 
-    # Save to .npz
-    fnam = f"preds_{MODEL_STR}.npz"
-    np.savez(os.path.join(PATH_CNN_PT_OUT, fnam), y_pred = y_pred, y_true = y_true)
+
+    # Save predictions and true values
+    np.savez(
+        path_cnn_out / 'preds_cnn_pt.npz', 
+        y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
 
@@ -224,7 +239,7 @@ def set_seed(seed=42):
     return
 
 
-def plot_losses(num_epochs, train_losses, val_losses):
+def plot_losses(path, filename, num_epochs, train_losses, val_losses):
     epochs = np.arange(1, num_epochs + 1)
 
     
@@ -236,7 +251,7 @@ def plot_losses(num_epochs, train_losses, val_losses):
     plt.legend()
     plt.title(f"{MODEL_STR} Loss")
 
-    plt.savefig(os.path.join(PATH_CNN_PT_OUT, f'loss_{MODEL_STR}.png'))
+    plt.savefig(path / filename)
 
     # plt.show()
 
