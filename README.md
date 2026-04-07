@@ -153,7 +153,7 @@ Set up the project locally by following these steps.
 
 ### Option A: Create a Conda Virtual Environment *(recommended)*
 
-1. If you haven't already, Install conda or miniconda:
+1. If you haven't already, install conda or miniconda:
 https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 
 2. Navigate to the root directory:
@@ -162,7 +162,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
     cd thesis-rough
     ```
 
-3. Intstall dependencies by creating the environment `thesisrough`:
+3. Create `thesisrough` environment and install dependencies from the included file:
 
     ```sh
     conda env create -f environmnet.yml
