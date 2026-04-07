@@ -30,7 +30,7 @@ def load_config():
 
     # Create instance of data parameters specific to run
     data_config = DataConfig(
-        hemisphere = 'north',
+        hemisphere = 'south',
         year_range = (1989, 2020),
         latitude_bounds = (60, 90),
         longitude_bounds = (-180, 180),
