@@ -17,13 +17,13 @@ def main():
     run_eval(cfg, model_str=args.model)
 
 
-def run_eval(cfg, model_type: str) -> None:
+def run_eval(cfg, model_name: str) -> None:
     """
     
     """
 
     # Load path to model predictions
-    path_model = cfg.path_config.model_path(model_type)
+    path_model = cfg.path_config.model_path(model_name)
 
     # Load in model predictions
     data = np.load(path_model / 'preds.npz') 
@@ -60,7 +60,7 @@ def run_eval(cfg, model_type: str) -> None:
     print('')
 
     # If the model is persistance
-    if model_type == 'ps':
+    if model_name == 'ps':
 
         # Shift nan mask one day forward
         mask_bad = mask_bad[1:,:,:]
@@ -82,7 +82,7 @@ def run_eval(cfg, model_type: str) -> None:
 
     # If the model is persistance
     # TODO dynamic strings and error conditions
-    if model_type == 'ps':
+    if model_name == 'ps':
         
         # Shift ri_test array forward one day
         ri_test = ri_test[1:,:,:]
@@ -228,7 +228,7 @@ def weighted_skill(pred, true, r, epsilon = 1e-4):
     return weighted_skill
 
 
-def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_type, cfg):
+def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, cfg):
 
     # Set longitude bounds for plot (full zonal coverage)
     lon_min = -180
@@ -311,10 +311,10 @@ def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_type, cfg):
     fnam = f"{metric}.png"
 
     # Load model plot path
-    path_plot = cfg.path_config.model_path(model_type, plot_path = True)
+    path_plot = cfg.path_config.model_path(model_name, plot_path = True)
 
     # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(model_type)
+    cfg.path_config.makedir_if_missing(model_name)
 
     # Save figure
     plt.savefig(path_plot / fnam, bbox_inches = 'tight')
