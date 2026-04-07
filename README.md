@@ -137,8 +137,6 @@ Set up the project locally by following these steps.
 
   <!-- NOTE versions -->
 
-  The following packages are required to run the pipeline:
-
  * Python 
  * cartopy
  * cmocean
