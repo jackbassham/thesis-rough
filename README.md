@@ -314,10 +314,16 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] Concicse pipeline logging.
+    - [ ] Data parameters, normalization, etc.
+    - [ ] Global evaluation metrics
+    - [ ] Memory usage and model train/ eval time
+    
+- [ ] Improve memory usage, (np.memmap, or torch Datasets)
+- [ ] Allow GPU flexibility
+
+- [ ] Experiment with other datasets.
+- [ ] Cronjob for daily forecasts operationally.
 
 See the [open issues](https://github.com/jackbassham/thesis-rough/issues) for a full list of proposed features (and known issues).
 
