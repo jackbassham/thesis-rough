@@ -7,13 +7,10 @@ import os
 import matplotlib.pyplot as plt
 cuda_available = torch.cuda.is_available()
 
-from _00_config.path import(
-    PATH_MODEL_INPUTS,
-    PATH_CNN_PT_OUT,
-)
 
 # Define model type string for saving predictions
 MODEL_STR = 'cnn_pt'
+
 
 def set_seed(seed=42):
     torch.manual_seed(seed) # PyTorch Reproducibility
@@ -22,6 +19,7 @@ def set_seed(seed=42):
     torch.backends.cudnn.benchmark = False # Paired with above
 
     return
+
 
 class CNN(nn.Module):
     """
@@ -57,6 +55,7 @@ class CNN(nn.Module):
         # Final fully connected layer
         self.fc = nn.Linear(flat_size, out_channels * height * width)
 
+
     def forward_features(self, x):
         x = self.relu(self.layer1(x))
         x = self.pool(x)
@@ -71,6 +70,7 @@ class CNN(nn.Module):
         x = self.dropout(x)
         return x
 
+
     def forward(self, x):
         x = self.forward_features(x)
         x = torch.flatten(x, start_dim=1)
@@ -78,6 +78,7 @@ class CNN(nn.Module):
         x = x.view(-1, self.out_channels, self.height, self.width)
         return x
     
+
 def NRMSEloss(pred, true, eps=1e-6):
     """
     Norm Root Mean Squared Loss
@@ -87,6 +88,7 @@ def NRMSEloss(pred, true, eps=1e-6):
     std = torch.std(true, unbiased = False) + eps # Unbiased=True To match default pop. std. in tf 
 
     return torch.sqrt(mse) / std
+
 
 def plot_losses(num_epochs, train_losses, val_losses):
     epochs = np.arange(1, num_epochs + 1)
@@ -106,7 +108,10 @@ def plot_losses(num_epochs, train_losses, val_losses):
 
     return
 
-def main():
+
+def main(cfg):
+
+    
 
     # Set random seed for reproducibility
     set_seed(42)
@@ -253,4 +258,6 @@ def main():
     return
 
 if __name__ == "__main__":
-    main()
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
