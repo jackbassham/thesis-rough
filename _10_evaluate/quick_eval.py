@@ -1,34 +1,32 @@
 import cmocean as cmo
-import gc
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
-import os
+from pathlib import Path
 
 # TODO silence mean of empty slice warning
 
-from _00_config.config import(
-    MODEL_STR,
-    HEM,
-    TIMESTAMP_OUTPUTS,
-)
 
-from _00_config.path import(
-    build_model_output_path,
-    build_plot_path,
-    PATH_MODEL_INPUTS,
-    PATH_NAN_MASK,
-    PATH_COORDINATES,
-)
 def main():
+    
+    ...
 
-    MODEL_OUTPUT_PATH = build_model_output_path(MODEL_STR.replace('_', '-'))
+    # 
+    args = 'insert_arg_parse'
 
-    # Get filename for model predictions, based on the model string given
-    fnam = f"preds_{MODEL_STR}.npz"
+    run_eval(cfg, model_str=args.model)
+
+
+def run_eval(cfg, model_type: str) -> None:
+    """
+    
+    """
+
+    # Load path to model predictions
+    path_model = cfg.path_config.model_path(model_type)
 
     # Load in model predictions
-    data = np.load(os.path.join(MODEL_OUTPUT_PATH, fnam)) 
+    data = np.load(path_model / 'preds.npz') 
 
     upred = data['y_pred'][:,0,:,:]
     vpred = data['y_pred'][:,1,:,:]
@@ -39,66 +37,61 @@ def main():
     print(f'Shape utrue {np.shape(utrue)}')
     print('')
 
+    # Load path to split indices
+    path_inputs = cfg.path_config.data_stage_path('model_input')
+
     # Get filename for test train split
     fnam = f'split_indices.npz'
 
     # Load split indices file
-    data = np.load(os.path.join(PATH_MODEL_INPUTS, fnam))
+    split_indices = np.load(path_inputs / 'split_indices.npz')
 
-    # Load test indices
-    test_idx = data['test_idx']
+    # TODO can get mask for test split from inputs
 
-    # Get filename for nan mask
-    fnam = f"nan_mask.npz"
+    # Load path to time variable nan mask (bad points)
+    mask_path = cfg.path_config.data_stage_path('mask_norm')
 
-    # Load time variable nan mask file
-    data = np.load(os.path.join(PATH_NAN_MASK, fnam))
+    # NOTE masking out bad points, not just land/ ocean for plotting
 
-    # Load in nan mask and slice to test indices
-    nan_mask = data['nan_mask'][test_idx]
+    # Load time variable nan mask file and slice to test split time indices
+    mask_bad = np.load(mask_path / 'masks.npz')['mask_bad'][split_indices['test']]
 
-    print(f'Shape nan_mask {np.shape(nan_mask)}')
+    print(f'Shape mask_bad {np.shape(mask_bad)}')
     print('')
 
     # If the model is persistance
-    if MODEL_STR == 'ps':
+    if model_type == 'ps':
 
         # Shift nan mask one day forward
-        nan_mask = nan_mask[1:,:,:]
-
+        mask_bad = mask_bad[1:,:,:]
 
     # Mask invalid points in model output before evaluation
     # NOTE CNN input of 0 at invalid points and LR output of 0 for vi (imag) component
 
-    upred = np.where(nan_mask, np.nan, upred)
-    vpred = np.where(nan_mask, np.nan, vpred)
+    upred = np.where(mask_bad, np.nan, upred)
+    vpred = np.where(mask_bad, np.nan, vpred)
 
-    utrue = np.where(nan_mask, np.nan, utrue)
-    vtrue = np.where(nan_mask, np.nan, vtrue)
+    utrue = np.where(mask_bad, np.nan, utrue)
+    vtrue = np.where(mask_bad, np.nan, vtrue)
 
     # Get filemane for uncertainty test split
     fnam = f"test.npz"
 
     # Load in uncertainty
-    data = np.load(os.path.join(PATH_MODEL_INPUTS, fnam))
-
-    # Ice Velocity Uncertainty
-    # Includes flag values (r_raw + 1000, cm/s)
-    # Normalized by std ice speed
-    r_test = data['r_test']
+    ri_test = np.load(path_inputs / 'test.npz')['ri_t0']
 
     # If the model is persistance
     # TODO dynamic strings and error conditions
-    if MODEL_STR == 'ps':
+    if model_type == 'ps':
         
-        # Shift r_test array forward one day
-        r_test = r_test[1:,:,:]
+        # Shift ri_test array forward one day
+        ri_test = ri_test[1:,:,:]
 
-    # Get filename for lat lon coordinate variables
-    fnam = f"coordinates.npz"
+    # Load path to coordinates
+    path_coordinates = cfg.path_config.data_stage_path('regrid')
 
     # Load in lat and lon
-    data = np.load(os.path.join(PATH_COORDINATES, fnam))
+    data = np.load(path_coordinates / 'coordinates.npz')
     lon = data['lon']
     lat = data['lat']
     
@@ -115,8 +108,8 @@ def main():
 
     # Calculate and plot weighted skill
     plot_metric(
-        weighted_skill(upred, utrue, r_test),
-        weighted_skill(vpred, vtrue, r_test),
+        weighted_skill(upred, utrue, ri_test),
+        weighted_skill(vpred, vtrue, ri_test),
         lon,
         lat,
         "Wtd Skill"
@@ -139,8 +132,8 @@ def main():
 
     # Calculate and plot correlation
     plot_metric(
-        weighted_correlation(upred, utrue, r_test),
-        weighted_correlation(vpred, vtrue, r_test),
+        weighted_correlation(upred, utrue, ri_test),
+        weighted_correlation(vpred, vtrue, ri_test),
         lon,
         lat,
         "Wtd Corr"
@@ -150,8 +143,6 @@ def main():
     print("")
 
     print("All Metrics Plotted")
-    
-    return
 
 
 def correlation(pred, true):
@@ -218,6 +209,7 @@ def skill(pred, true, epsilon = 1e-4):
 
     return skill
 
+
 def weighted_skill(pred, true, r, epsilon = 1e-4):
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
@@ -235,24 +227,25 @@ def weighted_skill(pred, true, r, epsilon = 1e-4):
 
     return weighted_skill
 
-def plot_metric(u_data, v_data, lon, lat, metric):
+
+def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_type, cfg):
 
     # Set longitude bounds for plot (full zonal coverage)
     lon_min = -180
     lon_max = 180
 
     # Set latitude bounds based on hemisphere
-    if HEM == 'sh':
+    if cfg.data_config.hemisphere == 'south':
         lat_min = -90
         lat_max = -65
-    elif HEM =='nh':
+    elif cfg.data_config.hemisphere == 'north':
         lat_min = 65
         lat_max = 90
 
     # Define plot proection based on hempisphere
-    if HEM == 'sh':
+    if cfg.data_config.hemisphere == 'south':
         projection = ccrs.SouthPolarStereo()
-    elif HEM == 'nh':
+    elif cfg.data_config.hemisphere == 'north':
         projection = ccrs.NorthPolarStereo()
 
     # Define data-to-plot's coordinate reference system
@@ -301,8 +294,11 @@ def plot_metric(u_data, v_data, lon, lat, metric):
     # Add colorbar
     plt.colorbar(pcm_1, ax = axs[1], orientation = 'vertical')
 
-    # Add title to plot
-    fig.suptitle(f"{metric}; {MODEL_STR.upper()} v{TIMESTAMP_OUTPUTS}", fontweight = 'bold')
+    # TODO get timestamp version from path
+    # NOTE this could be metadata in the model outputs
+
+    # Add title to plot (version specific part of the path)
+    fig.suptitle(path_model.split('model_output', maxsplit = 1)[1], fontweight = 'bold')
 
     # Format with tight layout
     fig.tight_layout
@@ -312,17 +308,21 @@ def plot_metric(u_data, v_data, lon, lat, metric):
     fig.text(0.5, -0.05, f"mean meridional {metric}: {np.nanmean(v_data):.4f}")
 
     # Define filemane for figure
-    fnam = f"{metric}_{MODEL_STR}_{TIMESTAMP_OUTPUTS}.png"
+    fnam = f"{metric}.png"
 
-    PLOT_PATH = build_plot_path(MODEL_STR)
+    # Load model plot path
+    path_plot = cfg.path_config.model_path(model_type, plot_path = True)
 
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PLOT_PATH, exist_ok = True)
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(model_type)
 
     # Save figure
-    plt.savefig(os.path.join(PLOT_PATH, fnam), bbox_inches = 'tight')
+    plt.savefig(path_plot / fnam, bbox_inches = 'tight')
 
     return
 
+
 if __name__ == "__main__":
-    main()
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
