@@ -3,6 +3,7 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
+from parse_args import parse_args
 
 # TODO silence mean of empty slice warning
 
@@ -11,19 +12,20 @@ def main():
     
     ...
 
-    # 
-    args = 'insert_arg_parse'
+    # Instantiate argumnet parser
+    args = parse_args()
 
-    run_eval(cfg, model_str=args.model)
+    # Run model 
+    run_eval(cfg, model_str=args.model_name)
 
 
-def run_eval(cfg, model_name: str) -> None:
+def run_eval(config, model_name: str) -> None:
     """
     
     """
 
     # Load path to model predictions
-    path_model = cfg.path_config.model_path(model_name)
+    path_model = config.path_config.model_path(model_name)
 
     # Load in model predictions
     data = np.load(path_model / 'preds.npz') 
@@ -38,7 +40,7 @@ def run_eval(cfg, model_name: str) -> None:
     print('')
 
     # Load path to split indices
-    path_inputs = cfg.path_config.data_stage_path('model_input')
+    path_inputs = config.path_config.data_stage_path('model_input')
 
     # Get filename for test train split
     fnam = f'split_indices.npz'
@@ -49,7 +51,7 @@ def run_eval(cfg, model_name: str) -> None:
     # TODO can get mask for test split from inputs
 
     # Load path to time variable nan mask (bad points)
-    mask_path = cfg.path_config.data_stage_path('mask_norm')
+    mask_path = config.path_config.data_stage_path('mask_norm')
 
     # NOTE masking out bad points, not just land/ ocean for plotting
 
@@ -61,7 +63,6 @@ def run_eval(cfg, model_name: str) -> None:
 
     # If the model is persistance
     if model_name == 'ps':
-
         # Shift nan mask one day forward
         mask_bad = mask_bad[1:,:,:]
 
@@ -88,7 +89,7 @@ def run_eval(cfg, model_name: str) -> None:
         ri_test = ri_test[1:,:,:]
 
     # Load path to coordinates
-    path_coordinates = cfg.path_config.data_stage_path('regrid')
+    path_coordinates = config.path_config.data_stage_path('regrid')
 
     # Load in lat and lon
     data = np.load(path_coordinates / 'coordinates.npz')
@@ -101,7 +102,8 @@ def run_eval(cfg, model_name: str) -> None:
         skill(vpred, vtrue),
         lon,
         lat,
-        "Skill"
+        "Skill",
+        path_model, model_name, config,
     )
 
     print("Skill Plotted")
@@ -112,7 +114,8 @@ def run_eval(cfg, model_name: str) -> None:
         weighted_skill(vpred, vtrue, ri_test),
         lon,
         lat,
-        "Wtd Skill"
+        "Wtd Skill",
+        path_model, model_name, config,
     )
 
     print("Weighted Skill Plotted")
@@ -124,7 +127,8 @@ def run_eval(cfg, model_name: str) -> None:
         correlation(vpred, vtrue),
         lon,
         lat,
-        "Corr"
+        "Corr",
+        path_model, model_name, config,
     )
 
     print("Correlation Plotted")
@@ -136,7 +140,8 @@ def run_eval(cfg, model_name: str) -> None:
         weighted_correlation(vpred, vtrue, ri_test),
         lon,
         lat,
-        "Wtd Corr"
+        "Wtd Corr",
+        path_model, model_name, config,
     )
 
     print("Weighted Correlation Plotted")
@@ -228,24 +233,24 @@ def weighted_skill(pred, true, r, epsilon = 1e-4):
     return weighted_skill
 
 
-def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, cfg):
+def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, config):
 
     # Set longitude bounds for plot (full zonal coverage)
     lon_min = -180
     lon_max = 180
 
     # Set latitude bounds based on hemisphere
-    if cfg.data_config.hemisphere == 'south':
+    if config.data_config.hemisphere == 'south':
         lat_min = -90
         lat_max = -65
-    elif cfg.data_config.hemisphere == 'north':
+    elif config.data_config.hemisphere == 'north':
         lat_min = 65
         lat_max = 90
 
     # Define plot proection based on hempisphere
-    if cfg.data_config.hemisphere == 'south':
+    if config.data_config.hemisphere == 'south':
         projection = ccrs.SouthPolarStereo()
-    elif cfg.data_config.hemisphere == 'north':
+    elif config.data_config.hemisphere == 'north':
         projection = ccrs.NorthPolarStereo()
 
     # Define data-to-plot's coordinate reference system
@@ -311,10 +316,10 @@ def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, cfg):
     fnam = f"{metric}.png"
 
     # Load model plot path
-    path_plot = cfg.path_config.model_path(model_name, plot_path = True)
+    path_plot = config.path_config.model_path(model_name, plot_path = True)
 
     # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(model_name)
+    config.path_config.makedir_if_missing(model_name)
 
     # Save figure
     plt.savefig(path_plot / fnam, bbox_inches = 'tight')

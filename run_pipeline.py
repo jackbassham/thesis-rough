@@ -89,9 +89,9 @@ def run_pipeline(pipeline_steps: dict[str, Callable], pipeline_config: PipelineC
         pipeline_steps[step](pipeline_config)
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Pipeline Step Functions
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Helper Functions for Pipeline Steps
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # TODO reduce repetition, add error handling, allow for different datasets?
 
@@ -158,6 +158,10 @@ def step_lr_wtd(config):
 def step_cnn(config):
     from ._08_cnn.cnn_pt import main
     main(config)
+
+    from ._10_evaluate.quick_eval import main
+    # Run quick eval with command line argument for model type
+    main(config) --cnn
 
 
 def step_cnn_wtd(config):
