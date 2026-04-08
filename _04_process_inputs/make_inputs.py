@@ -38,8 +38,9 @@ def main(cfg):
     # Load masked/ normalized data source path
     path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
 
-    # Load in masked/ normalized input parameters
-    inputs = np.load(path_mask_norm / 'masked_normalized.npz')
+    # NOTE the dict might break here when moving to memmap, or using pickle=True
+    # Load in masked/ normalized input parameters as dict
+    inputs = dict(np.load(path_mask_norm / 'masked_normalized.npz'))
 
     # Load in mask
     mask_bad = np.load(path_mask_norm / 'masks.npz')['mask_bad']
