@@ -124,6 +124,9 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     # Add channel dimension on uncertainty to match targets, features
     ri_t0 = inputs['ri_t0'][:, np.newaxis, :, :]
 
+    print(y.shape)
+    print(x.shape)
+
     return {
         'y': y,
         'x': x,
@@ -147,8 +150,8 @@ def split_arrays(
     }
 
     for name, array in arrays.items():
-        splits['train'][name] = array[indices['train']],
-        splits['val'][name] = array[indices['val']],
+        splits['train'][name] = array[indices['train']]
+        splits['val'][name] = array[indices['val']]
         splits['test'][name] = array[indices['test']]
 
     return splits
