@@ -88,6 +88,11 @@ def main(cfg):
     x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]), torch.from_numpy(val['y'][:,:-1,:,:])
     x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]), torch.from_numpy(test['y'][:,:-1,:,:])
 
+    # Convert nans to zeros
+    x_train, y_train = torch.nan_to_num(x_train), torch.nan_to_num(y_train)
+    x_val, y_val = torch.nan_to_num(x_val), torch.nan_to_num(y_val)
+    x_test, y_test = torch.nan_to_num(x_test), torch.nan_to_num(y_test)
+
     print("Input Data Loaded")
 
     # Use cuda if available
