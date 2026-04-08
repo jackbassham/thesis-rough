@@ -20,7 +20,7 @@ def load_config():
     """
     --------------------- NOTE ----------------------------
     temporal bounds for current reproduction
-    year_range = (1989, 2020)
+    year_range = (1992, 2020) (NOTE 1989-1991 JRA55 issue)
     latitude longitude bounds for current reproduction
     north: latitude_bounds = (60, 90)        
     south: latitdue_bounds = (-80, -62)
@@ -31,7 +31,7 @@ def load_config():
     # Create instance of data parameters specific to run
     data_config = DataConfig(
         hemisphere = 'south',
-        year_range = (1989, 2020),
+        year_range = (1992, 2020),
         latitude_bounds = (-80, -62),
         longitude_bounds = (-180, 180),
         grid_resolution = 25
