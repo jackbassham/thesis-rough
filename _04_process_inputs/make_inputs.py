@@ -142,8 +142,8 @@ def split_arrays(
     # Initialize train, val, and test split dics
     splits = {
         'train': {},
-        'test': {},
         'val': {},
+        'test': {},
     }
 
     for name, array in arrays.items():
