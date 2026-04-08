@@ -31,10 +31,10 @@ def main(cfg):
     check_coordinates_match(path_regrid, coordinate_refs, filenames)
 
     # Shift time to reflect 'present-day' data shift
-    time_t0 = coordinate_refs['time_ref'][1:]
+    time_t0 = coordinate_refs['time'][1:]
 
     # Remove last day to reflect 'previous-day' data shift
-    time_t1 = coordinate_refs['time_ref'][:-1]
+    time_t1 = coordinate_refs['time'][:-1]
 
     # Define coordinate variable file name
     filename = 'coordinates.npz'
@@ -52,26 +52,26 @@ def main(cfg):
 def check_coordinates_match(
         path_source: Path, 
         coordinate_refs: dict[str, npt.NDArray], 
-        filenames: list[str],
+        filenames: dict[str, str],
         ) -> None:
     """
 
     """
 
     # Iterate through remaining datasets after reference
-    for filename in filenames[1:]:
+    for filename in filenames.values():
 
         # Load in that file's dataset
         data = load_npz_data(path_source / filename)
 
         # Check that dataset coordinate arrays have same shape and elements as reference
-        if not np.array_equal(data['lat'], coordinate_refs['lat_ref']):
+        if not np.array_equal(data['lat'], coordinate_refs['lat']):
             raise ValueError(f'Latitude mistmatch in {filename}')
         
-        if not np.array_equal(data['lon'], coordinate_refs['lon_ref']):
+        if not np.array_equal(data['lon'], coordinate_refs['lon']):
             raise ValueError(f'Longitude mismatch in {filename}')
 
-        if not np.array_equal(data['time'], coordinate_refs['time_ref']):
+        if not np.array_equal(data['time'], coordinate_refs['time']):
             raise ValueError(f'Time mismatch in {filename}')
             
 
