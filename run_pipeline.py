@@ -18,6 +18,7 @@ def main():
         'regrid_ice_vel': step_regrid_ice_vel,
         'regrid_ice_conc': step_regrid_ice_conc,
         'regrid_wind': step_regrid_wind,
+        'make_coordinates': step_make_coordinates,
         'mask_normalize': step_mask_normalize,
         'process_inputs': step_process_inputs,
         # 'ps': step_ps,
@@ -126,6 +127,10 @@ def step_regrid_ice_conc(config):
 
 def step_regrid_wind(config):
     from _02_regrid.regrid_wind import main
+    main(config)
+
+def step_make_coordinates(config):
+    from _02_regrid.make_coordinates import main
     main(config)
 
 
