@@ -4,18 +4,18 @@ import numpy.typing as npt
 import warnings
 
 
-@dataclass
-class SplitIndices:
+# @dataclass
+# class SplitIndices:
 
-    # Construct parameters
-    test: npt.NDArray
-    val: npt.NDArray
-    train: npt.NDArray
+#     # Construct parameters
+#     test: npt.NDArray
+#     val: npt.NDArray
+#     train: npt.NDArray
 
 
 def chronological_indices(
         time: npt.NDArray[np.datetime64],
-        n_val: int = 2, n_test: int = 2) -> SplitIndices:
+        n_val: int = 2, n_test: int = 2) -> dict[str, npt.NDArray[np.floating]]:
     """
     
     """
@@ -36,14 +36,12 @@ def chronological_indices(
     # The remaining years in range make the training split
     train_years = unique_years[:-(n_test + n_val)]
 
-    # Get split indices where data years in split years
-    split_indices = SplitIndices(
-        test = np.where(np.isin(years, test_years))[0],
-        val = np.where(np.isin(years, val_years))[0],
-        train = np.where(np.isin(years, train_years))[0]
-    )
-
-    return split_indices
+    # Return split indices as a dict
+    return {
+        'test': np.where(np.isin(years, test_years))[0],
+        'val': np.where(np.isin(years, val_years))[0],
+        'train': np.where(np.isin(years, train_years))[0]
+    }
 
 
 def randomized_indices():

@@ -131,8 +131,10 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     }
 
 
-def split_arrays(arrays: dict[str, npt.NDArray], indices
-                 ) -> dict[str, dict[str, npt.NDArray]]:
+def split_arrays(
+        arrays: dict[str, npt.NDArray[np.floating]], 
+        indices: dict[str, npt.NDArray[np.floating]],
+    ) -> dict[str, dict[str, npt.NDArray[np.floating]]]:
     """
     
     """
@@ -145,9 +147,9 @@ def split_arrays(arrays: dict[str, npt.NDArray], indices
     }
 
     for name, array in arrays.items():
-        splits['train'][name] = array[indices.train],
-        splits['val'][name] = array[indices.val],
-        splits['test'][name] = array[indices.test]
+        splits['train'][name] = array[indices['train']],
+        splits['val'][name] = array[indices['val']],
+        splits['test'][name] = array[indices['test']]
 
     return splits
 
