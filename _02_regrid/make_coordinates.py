@@ -51,7 +51,7 @@ def main(cfg):
 
 def check_coordinates_match(
         path_source: Path, 
-        coordinate_refs: dict[str, npt.NDarray], 
+        coordinate_refs: dict[str, npt.NDArray], 
         filenames: list[str],
         ) -> None:
     """
