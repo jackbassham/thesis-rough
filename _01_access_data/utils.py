@@ -3,6 +3,8 @@ import time
 from requests import Session
 import xarray as xr
 
+#TODO use tqdm for progress
+
 
 
 def open_netcdf_from_response(
