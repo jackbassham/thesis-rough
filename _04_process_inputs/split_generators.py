@@ -24,7 +24,7 @@ def chronological_indices(
     years = time.astype('datetime64[Y]')
 
     # Check that years will work for split
-    validate_split_years(years)
+    validate_split_years(years, n_val, n_test)
 
     # Create array of unique years in split
     unique_years = np.unique(years)
