@@ -9,16 +9,16 @@ def main(cfg):
     # Load regrid data (source and destination) path
     path_regrid = cfg.path_config.data_stage_path('regrid')
 
-    # Initialize empty dict for filenames
-    filenames = {}
-
-    # Iterate through datastet dicts
-    for name, ds in cfg.dataset_config.datasets().items():
-        # Build filename for each regrid dataset
-        filenames[name] = cfg.dataset_config.build_filename(ds, 'regrid')
+    # Build filenames for each regrid dataset
+    filenames = {
+        name: cfg.dataset_config.build_filename(ds, 'regrid')
+        for name, ds in cfg.dataset_config.datasets().items()
+    }
 
     # Load coordinate variables from first dataset as reference
-    data_ref = load_npz_data(path_regrid / filenames[0])
+    data_ref = load_npz_data(
+        path_regrid / next(iter(filenames.values()))
+        )
 
     # Build a dictionary of the reference coordinate variables
     coordinate_refs = {
