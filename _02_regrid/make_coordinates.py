@@ -1,13 +1,10 @@
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from _00_config.config import PipelineConfig
 
 from helpers import load_npz_data
 
-def main(cfg: PipelineConfig):
+def main(cfg):
 
     # Load regrid data (source and destination) path
     path_regrid = cfg.path_config.data_stage_path('regrid')
