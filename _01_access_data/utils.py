@@ -5,8 +5,6 @@ import xarray as xr
 
 #TODO use tqdm for progress
 
-
-
 def open_netcdf_from_response(
         url: str, session: Session, retries=3, delay=5
         ) -> xr.Dataset:
