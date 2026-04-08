@@ -82,11 +82,14 @@ def main(cfg):
     val = np.load(path_model_inputs / 'val.npz')
     test = np.load(path_model_inputs / 'test.npz')
 
+
+    # FIXME Converting from numpy Double (float64) to PyTorch default Float (float32)
+    # NOTE DO THIS EARLIER ON (ie: download step)
     # Get input variables from splits and convert to PyTorch tensors
     # Leaving off mask (last channel)
-    x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]), torch.from_numpy(train['y'][:,:-1,:,:])
-    x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]), torch.from_numpy(val['y'][:,:-1,:,:])
-    x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]), torch.from_numpy(test['y'][:,:-1,:,:])
+    x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]).float(), torch.from_numpy(train['y'][:,:-1,:,:]).float()
+    x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]).float(), torch.from_numpy(val['y'][:,:-1,:,:]).float()
+    x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]).float(), torch.from_numpy(test['y'][:,:-1,:,:]).float()
 
     # Convert nans to zeros
     x_train, y_train = torch.nan_to_num(x_train), torch.nan_to_num(y_train)
