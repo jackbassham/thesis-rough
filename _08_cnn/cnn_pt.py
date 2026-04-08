@@ -115,6 +115,9 @@ def main(cfg):
 
     print("Tensor datasets created")
 
+    print(f'x shape: {x_train.shape}')
+    print(f'y shape: {y_train.shape}')
+
     # Get input and output shapes for model
     _, n_in, ny, nx = x_train.shape
     n_out = y_train.shape[1]
