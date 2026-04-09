@@ -162,7 +162,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
     cd thesis-rough
     ```
 
-3. Create an environment named `thesisrough` and install the requirements from the `environment.yml` file included in the repo:
+3. Install the requirements from the `environment.yml` file (included in the repo) in a new environment. The environment is named `thesisrough` by default:
 
     ```sh
     conda env create -f environmnet.yml
