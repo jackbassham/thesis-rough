@@ -372,7 +372,7 @@ class PathConfig:
         
         # Return path for the model outputs
         else:
-            return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp)
+            return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp) 
 
 
     def makedir_if_missing(self, path: Path) -> Path:
