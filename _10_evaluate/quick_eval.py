@@ -116,6 +116,8 @@ def run_eval(config, model_name: str) -> None:
         path_model, model_name, config,
     )
 
+    # FIXME big memmory suck for plotting here? Where does it come from?
+
     print("Weighted Skill Plotted")
     print("")
 
