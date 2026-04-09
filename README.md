@@ -168,7 +168,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
     conda env create -f environmnet.yml
     ```
 
-4. Activate the environment before running code 
+4. Activate the environment before running code:
 
     ```sh
     conda activate thesisrough
