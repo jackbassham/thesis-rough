@@ -198,14 +198,14 @@ def main(cfg):
         
         print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {avg_train:.4f} - Val Loss: {avg_val:.4f}")
 
-    # Plot losses
-    plot_losses(path_cnn_out, 'cnn_pt_lossses', num_epochs, train_losses, val_losses)
-
     # Load in model outputs destination path
     path_cnn_out = cfg.path_config.model_path('cnn_pt')
 
     # Make destination directory if missing
     cfg.path_config.makedir_if_missing('cnn_pt')
+
+    # Plot losses
+    plot_losses(path_cnn_out, 'cnn_pt_lossses', num_epochs, train_losses, val_losses)
 
     # Save model weights
     torch.save(
