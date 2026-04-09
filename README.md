@@ -316,13 +316,13 @@ If either `--start` or `--stop` point arguments are omttited, the pipeline will 
 - `ps`, `lr`, `lr_wtd`, `cnn`, or `cnn_wtd` Train and evaluate persistence, linear regression, weighted linear regression, CNN, or weighted CNN models.
 
 *Note:* 
-A timestamp version, with format 'MMDDYYYY_HHMM', must be assigned to specify pre-existing source data if the pipeline is run after the raw data download steps. `timestamp_out` is the default command used to cover all steps in the pipeline. The user, however, can specify a versions of data using arguments:
+A timestamp version, with format 'MMDDYYYY_HHMM', must be assigned to specify pre-existing source data if the pipeline is run after the raw data download steps. `timestamp_out` is the default command used to cover all steps in the pipeline. The user, however, can specify a version of step-specific data using the arguments:
 
-- `--timestamp_raw`  Original dataset version
-- `--timestamp_regrid`  Regrid data version
-- `--timestamp_mask_norm` Masked and normalized data version
-- `--timestamp_model_inputs` Processed training, validation, and testing inputs version
-- `--timestamp_model_outputs` Model output (weights and predictions) version
+- `--timestamp_raw` Specifies version of raw data
+- `--timestamp_regrid` Specifies version of regrid data  
+- `--timestamp_mask_norm` Specifies version of masked and normalized data
+- `--timestamp_model_inputs` Specifies version of training, validation, and testing split inputs
+- `--timestamp_model_output` Specifies version of model output
 
 
 ### Option C: Run Single Module
