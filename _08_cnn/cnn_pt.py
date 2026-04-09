@@ -162,7 +162,9 @@ def main(cfg):
     optimizer = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=weight_decay)
 
     # Define number of epochs
-    num_epochs = 50 # Hoffman
+    # num_epochs = 50 # Hoffman
+
+    num_epochs = 2 # For testing
 
     # Initialize losses
     train_losses = []

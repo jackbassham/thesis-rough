@@ -315,10 +315,10 @@ class PathConfig:
     # List valid model names
     MODEL_NAMES = [
         'ps',
-        'lr-cf',
-        'lr-cf-wtd',
-        'cnn-pt',
-        'cnn-pt-wtd',
+        'lr_cf',
+        'lr_cf_wtd',
+        'cnn_pt',
+        'cnn_pt_wtd',
     ]
 
     # Pass in instance of data configuratino and version configuration
