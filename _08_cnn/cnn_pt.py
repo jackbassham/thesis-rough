@@ -87,9 +87,9 @@ def main(cfg):
     # NOTE DO THIS EARLIER ON (ie: download step)
     # Get input variables from splits and convert to PyTorch tensors
     # Leaving off mask (last channel)
-    x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]).float(), torch.from_numpy(train['y'][:,:-1,:,:]).float()
-    x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]).float(), torch.from_numpy(val['y'][:,:-1,:,:]).float()
-    x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]).float(), torch.from_numpy(test['y'][:,:-1,:,:]).float()
+    x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]).float(), torch.from_numpy(train['y']).float()
+    x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]).float(), torch.from_numpy(val['y']).float()
+    x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]).float(), torch.from_numpy(test['y']).float()
 
     # Convert nans to zeros
     x_train, y_train = torch.nan_to_num(x_train), torch.nan_to_num(y_train)
@@ -129,6 +129,8 @@ def main(cfg):
     # Get input and output shapes for model
     _, n_in, ny, nx = x_train.shape
     n_out = y_train.shape[1]
+
+    print('n_out:', n_out)
 
     # Complile model
     model = CNN(n_in, n_out, ny, nx).to(device)
@@ -234,6 +236,8 @@ def main(cfg):
     y_pred = np.concatenate(all_preds, axis=0)
     y_true = np.concatenate(all_targets, axis=0)
 
+    print('y_pred shape:', y_pred.shape)
+    print('y_true shape:', y_true.shape)
 
     # Save predictions and true values
     np.savez(
