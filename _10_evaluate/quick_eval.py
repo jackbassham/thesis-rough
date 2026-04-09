@@ -301,7 +301,9 @@ def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, config
     # NOTE this could be metadata in the model outputs
 
     # Add title to plot (version specific part of the path)
-    fig.suptitle(str(path_model).split('model_output', maxsplit = 1)[1], fontweight = 'bold')
+    fig.suptitle(
+        f'{model_name}: {config.version_config.timestamp_model_output}', 
+        fontweight = 'bold')
 
     # Format with tight layout
     fig.tight_layout
