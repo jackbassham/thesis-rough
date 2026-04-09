@@ -368,11 +368,11 @@ class PathConfig:
 
         # Return path for the quick evaluation plots
         if plot_path:
-            return self.project_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp
+            return Path(self.project_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp)
         
         # Return path for the model outputs
         else:
-            return self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp
+            return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp)
 
 
     def makedir_if_missing(self, path: Path) -> Path:
