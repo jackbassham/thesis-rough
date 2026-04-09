@@ -364,7 +364,7 @@ class PathConfig:
             raise ValueError(f'Uknown model name entry in path config: {model_name}')
 
         # Get timestamp for model output
-        timestamp = self.version_config.timestamp_model_outputs
+        timestamp = self.version_config.timestamp_model_output
 
         # Return path for the quick evaluation plots
         if plot_path:
