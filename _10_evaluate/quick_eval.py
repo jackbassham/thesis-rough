@@ -8,13 +8,13 @@ from _00_config.parse_args import parse_args
 # TODO silence mean of empty slice warning
 
 
-def main():
+def main(cfg):
     
     # Instantiate argumnet parser
     args = parse_args()
 
     # Run model 
-    run_eval(cfg, model_str=args.model_name)
+    run_eval(cfg, model_name = args.model_name)
 
 
 def run_eval(config, model_name: str) -> None:
@@ -38,7 +38,7 @@ def run_eval(config, model_name: str) -> None:
     print('')
 
     # Load path to split indices
-    path_inputs = config.path_config.data_stage_path('model_input')
+    path_inputs = config.path_config.data_stage_path('model_inputs')
 
     # Get filename for test train split
     fnam = f'split_indices.npz'
@@ -301,7 +301,7 @@ def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, config
     # NOTE this could be metadata in the model outputs
 
     # Add title to plot (version specific part of the path)
-    fig.suptitle(path_model.split('model_output', maxsplit = 1)[1], fontweight = 'bold')
+    fig.suptitle(str(path_model).split('model_output', maxsplit = 1)[1], fontweight = 'bold')
 
     # Format with tight layout
     fig.tight_layout
