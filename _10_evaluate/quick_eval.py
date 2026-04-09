@@ -73,11 +73,11 @@ def run_eval(config, model_name: str) -> None:
     utrue = np.where(mask_bad, np.nan, utrue)
     vtrue = np.where(mask_bad, np.nan, vtrue)
 
-    # Get filemane for uncertainty test split
-    fnam = f"test.npz"
-
     # Load in uncertainty
     ri_test = np.load(path_inputs / 'test.npz')['ri_t0']
+
+    # Remove channel dimension from uncertainty
+    ri_test = np.squeeze(ri_test, axis = 1)
 
     # If the model is persistance
     # TODO dynamic strings and error conditions
@@ -115,8 +115,6 @@ def run_eval(config, model_name: str) -> None:
         "Wtd Skill",
         path_model, model_name, config,
     )
-
-    # FIXME big memmory suck for plotting here? Where does it come from?
 
     print("Weighted Skill Plotted")
     print("")
