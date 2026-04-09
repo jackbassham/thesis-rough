@@ -1,0 +1,34 @@
+name: thesisrough #replace latter
+
+channels: 
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Core
+  - python=3.10
+
+  # Raw data download
+  - xarray
+  - cftime
+  - h5netcdf # for NSIDC netcdf's
+  - h5py # for NSIDC netcdf's
+
+  # Computing
+  - numpy
+  - scipy # sparse matrix in weighted lr
+
+  # ML Models
+  - pytorch
+
+  # Plotting
+  - matplotlib
+  - cartopy # map plots
+  - cmocean # oceanography color maps
+
+  # Utilities
+  - tqdm # progress bars
+  - requests
+  
+

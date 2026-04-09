@@ -105,6 +105,11 @@ directory structure
 - Consolidate param and path to one script?
 - Use python script for orchestration, but can keep bash script
 for running ('HPC?') for now?
+* Read up on
+The Turing Way:
+https://book.the-turing-way.org/reproducible-research/reproducible-research/
+Designing Machine Learning Systems, Chip Huyen
+
 
 
 3. Try to include mask as a CNN input and a masked loss function!
