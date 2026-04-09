@@ -118,16 +118,19 @@ Set up the project locally by following these steps.
 
 ### Installation
 
-<!-- TODO: GPU vs CPU installs for PyTorch? -->
-
 1. Clone the repo
    ```sh
-   git clone https://github.com/jackbassham/thesis-rough.git
+   git clone git@github.com:jackbassham/thesis-rough.git
    ```
 
-3. Change git remote url to avoid accidental pushes to base project
+2. Change git remote url to avoid accidental pushes to base project
    ```sh
-   git remote set-url origin git@github.com<jackbassham/thesis-rough>.git
+   git remote set-url origin git@github.com:<YOUR_USERNAME>/thesis-rough.git
+   ```
+
+3. Add the original repo as the upstream remote url to pull any updates to base project
+   ```sh
+   git remote add upstream git@github.com:jackbassham/thesis-rough.git
    git remote -v # confirm the changes
    ```
 
