@@ -319,7 +319,7 @@ def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, config
     path_plot = config.path_config.model_path(model_name, plot_path = True)
 
     # Make destination directory if missing
-    config.path_config.makedir_if_missing(model_name)
+    config.path_config.makedir_if_missing(path_plot)
 
     # Save figure
     plt.savefig(path_plot / fnam, bbox_inches = 'tight')
