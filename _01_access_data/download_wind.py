@@ -13,6 +13,11 @@ def main(cfg):
 
     client = cdsapi.Client()
 
+    print(str(cfg.data_config.latitude_bounds[0]))
+    print(str(cfg.data_config.latitude_bounds[1]))
+    print(str(cfg.data_config.longitude_bounds[1]))
+    print(str(cfg.data_config.longitude_bounds[0]))
+
 
     request = get_cds_request(
         '2019', 
@@ -59,8 +64,8 @@ def get_cds_request(year: str,
         "10m_u_component_of_wind",
         "10m_v_component_of_wind"
     ],
-    "year": [year]
-    ,
+    "year": [year],
+    
     "month": [
         "01", "02", "03",
         "04", "05", "06",
