@@ -142,6 +142,7 @@ Set up the project locally by following these steps.
 
  * Python 
  * cartopy
+ * cdsapi
  * cmocean
  * matplotlib
  * numpy
@@ -183,6 +184,18 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
    ```sh
    pip install -requirements.txt
    ``` -->
+
+## Data Access
+
+### Option A: Download Sample Set *(provided)*
+**TODO**
+
+### Option B: Access Data Through Pipeline
+
+## For NSIDC Data Access
+1. 
+
+
 
 
 ## Data Structure
