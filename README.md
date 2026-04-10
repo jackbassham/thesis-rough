@@ -214,8 +214,22 @@ chmod 600 ~/.netrc
 
 3. Create a `.cdsapirc` file in your home directory with your API Key *(Mac/Linux)*:
 ```sh
+vim ~/.cdspirc
+```
+Type `i` for insert and enter the following:
+```sh
+url: https://cds.climate.copernicus.eu/api
+key: <YOUR_API_KEY>
+```
+Type `esc` and `:wq` to write the file.
+
+4. Now the repo code will automatically recoginize the API key for the request.
+
+*-Or-*
+
+```sh
 cat << EOF > ~/.cdsapirc
-url: https://cds.climate.copernicus.eu/api/v2
+url: https://cds.climate.copernicus.eu/api
 key: <YOUR_API_KEY>
 EOF
 ```
