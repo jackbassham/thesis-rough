@@ -221,6 +221,7 @@ EOF
 ```
 
 4. Accept the dataset agreement [here](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=download) before runnning code.
+*Note: click on the `CC-BY license` under 'Terms of use', toward the bottom of the page*
 
 
 
