@@ -102,6 +102,8 @@ def get_cds_request(year: str,
     ]
     }
 
+    return request
+
 
 if __name__ == "__main__":
     from _00_config.load_config import load_config
