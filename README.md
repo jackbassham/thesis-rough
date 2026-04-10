@@ -220,7 +220,7 @@ key: <YOUR_API_KEY>
 EOF
 ```
 
-4. Accept the dataset agreement [here]() before runnning code.
+4. Accept the dataset agreement [here](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=download) before runnning code.
 
 
 
