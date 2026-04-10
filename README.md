@@ -152,6 +152,7 @@ Set up the project locally by following these steps.
  * tqdm
  * xarray
  * cftime
+ * cfgrib
  * h5netcdf
  * h5py
 

@@ -12,9 +12,10 @@ dependencies:
   # Raw data download
   - xarray
   - cftime # decodes time units for climate forecasting netCDF convention
-  - h5netcdf # for NSIDC netcdf's
-  - h5py # for NSIDC netcdf's
-  - cdsapi # climate data store api library
+  - cfgrib # engine for grib xarray
+  - h5netcdf # engine for NSIDC netcdf's xarray
+  - h5py # engine for NSIDC netcdf's xarray
+  - cdsapi # engine climate data store api library xarray
 
 
   # Computing
