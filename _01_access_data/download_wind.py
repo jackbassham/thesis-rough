@@ -93,12 +93,12 @@ def get_cds_request(year: str,
     "data_format": "grib",
     "download_format": "unarchived",
 
-    # Area with buffer for regrid
+    # NOTE area has no buffer for regrid, should be ok reg lat/ lon?
     "area": [
-        str(latitude_bounds[1] + 5),
-        str(longitude_bounds[0] + 5),
-        str(latitude_bounds[0] + 5),
-        str(longitude_bounds[1] + 5) 
+        str(latitude_bounds[1]),
+        str(longitude_bounds[0]),
+        str(latitude_bounds[0]),
+        str(longitude_bounds[1]) 
     ]
     }
 
