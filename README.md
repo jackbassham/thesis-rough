@@ -195,7 +195,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 ### For NSIDC Data Access *(Sea Ice Velocity, Sea Ice Concentration)*:
 1. [Register here](https://urs.earthdata.nasa.gov/users/new) for a free Nasa Earthdata account. 
 
-2. Create a .netrc file in your home directory for Earthdata login information *(Mac/Linux)*:
+2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
 ```sh
 echo 'machine urs.earthdata.nasa.gov login <YOUR_USERNAME> password <YOUR_PASSWORD>' >> ~/.netrc
 ```
@@ -205,14 +205,14 @@ echo 'machine urs.earthdata.nasa.gov login <YOUR_USERNAME> password <YOUR_PASSWO
 chmod 600 ~/.netrc
 ```
 
-4. Now the repo scripts will automatically recognnize the `~/.netrc` file and authenticate the requests.
+4. Now the repo code will automatically recognnize the credentials and authenticate the requests.
 
 ### For ERA5 Data Access *(Wind)*:
 1. [Register here](https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cds&tab_id=Tc-gbldHPtE) for a free Climate Data Store (ECMWF) account.
 
 2. Copy the API key from your [profile](https://cds.climate.copernicus.eu/profile)
 
-3. Create a .cdsapirc file in your home directory with your API Key *(Mac/Linux)*:
+3. Create a `.cdsapirc` file in your home directory with your API Key *(Mac/Linux)*:
 ```sh
 cat << EOF > ~/.cdsapirc
 url: https://cds.climate.copernicus.eu/api/v2
