@@ -100,10 +100,10 @@ def get_cds_request(year: str,
 
     # NOTE area has no buffer for regrid, should be ok reg lat/ lon?
     "area": [
-        str(latitude_bounds[1]),
-        str(longitude_bounds[0]),
-        str(latitude_bounds[0]),
-        str(longitude_bounds[1]) 
+        str(latitude_bounds[1]), # North
+        str(longitude_bounds[0]), # West
+        str(latitude_bounds[0]), # South
+        str(longitude_bounds[1]) # East
     ]
     }
 
