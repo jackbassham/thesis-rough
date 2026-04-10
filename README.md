@@ -190,10 +190,38 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 ### Option A: Download Sample Set *(provided)*
 **TODO**
 
-### Option B: Access Data Through Pipeline
+### Option B: Download Data Via Pipeline
 
-## For NSIDC Data Access
-1. 
+### For NSIDC Data Access *(Sea Ice Velocity, Sea Ice Concntration)*
+1. [Register here](https://urs.earthdata.nasa.gov/users/new) for Nasa Earthdata. 
+
+2. Create a .netrc file in your home directory for Earthdata login information *(Mac/Linux)*:
+```sh
+echo 'machine urs.earthdata.nasa.gov login <YOUR_USERNAME> password <YOUR_PASSWORD>' >> ~/.netrc
+```
+
+3. Enable permissions:
+```sh
+chmod 600 ~/.netrc
+```
+
+4. Now the repo scripts will automatically recognnize the `~/.netrc` file and authenticate the requests.
+
+### For ERA5 Data Access: *Wind*
+1. [Register here](https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cds&tab_id=Tc-gbldHPtE) for a Climate Data Store (ECMWF) account.
+
+2. Copy the API key from your [profile](https://cds.climate.copernicus.eu/profile)
+
+3. Create a .cdsapirc file in your home directory with your API Key *(Mac/Linux)*:
+```sh
+cat << EOF > ~/.cdsapirc
+url: https://cds.climate.copernicus.eu/api/v2
+key: <YOUR_API_KEY>
+EOF
+```
+
+4. Accept the dataset agreement [here]() before runnning code.
+
 
 
 
