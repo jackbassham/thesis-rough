@@ -221,25 +221,22 @@ Type `i` for insert and enter the following:
 url: https://cds.climate.copernicus.eu/api
 key: <YOUR_API_KEY>
 ```
-Type `esc` and `:wq` to write the file.
+Hit `esc`, type `:wq`, and `return` to write the file.
 
-4. Now the repo code will automatically recoginize the API key for the request.
-
-*-Or-*
+<!-- *-Or paste the following-*
 
 ```sh
 cat << EOF > ~/.cdsapirc
 url: https://cds.climate.copernicus.eu/api
 key: <YOUR_API_KEY>
 EOF
-```
+``` -->
 
 4. Accept the dataset agreement [here](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=download) before runnning code.
 
 *Note: Click on the `CC-BY license` under 'Terms of use', towards the bottom of the page to accept the agreement.*
 
-
-
+5. Now the repo code will automatically recoginize the API key for the request.
 
 
 ## Data Structure
