@@ -5,6 +5,7 @@
 **.tab
 **/*.tiff
 **.grib
+**.idx
 
 
 # Training variables
