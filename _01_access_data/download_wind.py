@@ -168,20 +168,17 @@ def download_daily_era5_wind(
         client.retrieve(dataset, request, target)
 
         # Load the grib dataset file with xarray and resample to daily means
-        ds_daily = xr.load_dataset(target, engine = 'cfgrib').resample(time='1D').mean()
+        with xr.open_dataset(target, engine = 'cfgrib').resample(time='1D').mean() as ds_daily:
 
-        # Store lat and lon coordinate variables for the first year
-        if i == 0:
-            data['lat'] = ds_daily.latitude
-            data['lon'] = ds_daily.longitude
+            # Store lat and lon coordinate variables for the first year
+            if i == 0:
+                data['lat'] = ds_daily.latitude
+                data['lon'] = ds_daily.longitude
 
-        # Append data to variable lists as numpy objects
-        data['ua'].append(ds_daily.u10.values)
-        data['va'].append(ds_daily.v10.values)
-        data['time'].append(ds_daily.time.values)
-
-        # Remove current year from memory
-        del(ds_daily)
+            # Append data to variable lists as numpy objects
+            data['ua'].append(ds_daily.u10.values)
+            data['va'].append(ds_daily.v10.values)
+            data['time'].append(ds_daily.time.values)
 
     # Delete the temporary target file
     os.remove(target)
