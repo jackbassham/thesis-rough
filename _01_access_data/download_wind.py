@@ -12,6 +12,9 @@ import xarray as xr
 # Example code at:
 # https://cds.climate.copernicus.eu/how-to-api
 
+# NOTE 'url' in the .cdsapirc file from the instructions above is incorrect
+# must be entered as 'url: https://cds.climate.copernicus.eu/api'
+
 
 def main(cfg):
 
