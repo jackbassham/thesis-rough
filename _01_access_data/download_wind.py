@@ -4,6 +4,8 @@ import numpy as np
 import numpy.typing as npt
 import os
 from pathlib import Path
+import time
+from tqdm import tqdm
 from typing import Tuple
 import xarray as xr
 
@@ -127,11 +129,14 @@ def get_3hrly_cds_request(year: str,
     return request
 
 
+# TODO abstract functions
 def download_daily_era5_wind(
         path: Path,
         year_range: Tuple[int, int], 
         latitude_bounds: Tuple[int | float, int | float], 
         longitude_bounds: Tuple[int | float, int | float],
+        retries: int = 3,
+        delay: int = 5
         ) -> dict[npt.NDArray[np.floating]]:
     """
     
@@ -159,13 +164,26 @@ def download_daily_era5_wind(
     # Loop through years
     for i, year in enumerate(years):
 
-        # Make a request for a year's worth of 3hrly data
-        request = get_3hrly_cds_request(
-            year, latitude_bounds, longitude_bounds
-        )
+        for attempt in range(retries):
+            try:
 
-        # Download the data into temporary grib file
-        client.retrieve(dataset, request, target)
+                # Try to make a request for a year's worth of 3hrly data
+                request = get_3hrly_cds_request(
+                year, latitude_bounds, longitude_bounds
+                )
+                # Download the data into temporary grib file
+                client.retrieve(dataset, request, target)
+
+            except Exception as e:
+                print(f'Attempt {attempt + 1} failed: {e}')
+
+                # Wait for delay and retry if not all attempts used
+                if attempt < retries - 1:
+                    time.sleep(delay)
+                
+                # Raise exeption if all attempts used
+                else:
+                    raise
 
         # Load the grib dataset file with xarray and resample to daily means
         with xr.open_dataset(target, engine = 'cfgrib').resample(time='1D').mean() as ds_daily:

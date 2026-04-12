@@ -63,3 +63,11 @@ def load_spatial_coordinates(url: str, session: Session):
         x = ds["x"].values
 
     return y, x
+
+
+def download_with_retries():
+    """
+    
+    """
+
+    
