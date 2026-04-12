@@ -39,6 +39,8 @@ def open_netcdf_from_response(
             # Raise HTTP error if unsucessful
             response.raise_for_status()
 
+            print(response.headers['Content-Type'])
+
             debug_open(response.content)
 
             # # Return xarray dataset from session response object
