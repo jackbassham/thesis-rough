@@ -30,11 +30,6 @@ def main(cfg):
         'raw',
     )
 
-    print(add_buffer(cfg.data_config.latitude_bounds[1], coord_type = 'lat')), # North
-    print(add_buffer(cfg.data_config.longitude_bounds[0], coord_type = 'lon')), # West
-    print(add_buffer(cfg.data_config.latitude_bounds[0], coord_type = 'lat')), # South
-    print(add_buffer(cfg.data_config.longitude_bounds[1], coord_type = 'lon')) # East
-
     # Load daily ERA5 data into dict of numpy arrays
     data = load_daily_era5_wind(
         path_raw,
@@ -121,10 +116,10 @@ def get_3hrly_cds_request(year: int,
 
     # Define lat/ lon box with 5 degree buffer
     "area": [
-        str(latitude_bounds[1]), # North
-        str(longitude_bounds[0]), # West
-        str(latitude_bounds[0]), # South
-        str(longitude_bounds[1]) # East
+        str(add_buffer(latitude_bounds[1], coord_type = 'lat')), # North
+        str(add_buffer(longitude_bounds[0], coord_type = 'lon')), # West
+        str(add_buffer(latitude_bounds[0], coord_type = 'lat')), # South
+        str(add_buffer(longitude_bounds[1], coord_type = 'lon')) # East
     ]
     }
 
@@ -173,8 +168,6 @@ def load_daily_era5_wind(
                 request = get_3hrly_cds_request(
                 year, latitude_bounds, longitude_bounds
                 )
-
-                print(request)
 
                 # Download the data into temporary grib file
                 client.retrieve(dataset, request, target)
