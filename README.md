@@ -198,8 +198,15 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 
 2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
 ```sh
-echo 'machine urs.earthdata.nasa.gov login <YOUR_USERNAME> password <YOUR_PASSWORD>' >> ~/.netrc
+vim ~/.netrc
 ```
+Type `i` for insert and enter the following:
+```sh
+machine urs.earthdata.nasa.gov
+        login <YOUR_LOGIN>
+        password <YOUR_PASSWORD>
+```
+Hit `esc`, type `:wq`, and `return` to write the file.
 
 3. Enable permissions:
 ```sh
