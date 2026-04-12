@@ -110,7 +110,7 @@ def get_3hrly_cds_request(year: int,
         "12:00", 
         "15:00", 
         "18:00", 
-        "21:00", 
+        "21:00" 
     ],
 
     "data_format": "grib",
@@ -170,7 +170,7 @@ def load_daily_era5_wind(
                 request = get_3hrly_cds_request(
                 year, latitude_bounds, longitude_bounds
                 )
-                
+
                 print(request)
 
                 # Download the data into temporary grib file
