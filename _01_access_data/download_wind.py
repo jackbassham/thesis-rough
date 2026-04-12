@@ -1,4 +1,5 @@
 import cdsapi
+import helpers
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
@@ -15,8 +16,28 @@ import xarray as xr
 
 def main(cfg):
 
+    # Load raw data destination path
+    path_raw = cfg.path_config.data_stage_path('raw')
 
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_raw)
+    
+    # Define raw data destination file name
+    filename = cfg.dataset_config.build_filename(
+        cfg.dataset_config.wind,
+        'raw',
+    )
 
+    # Load daily ERA5 data into dict of numpy arrays
+    data = load_daily_era5_wind(
+        path_raw,
+        cfg.data_config.year_range,
+        cfg.data_config.latitude_bounds,
+        cfg.data_config.longitude_bounds,
+    )
+
+    # Save ERA5 wind data to npz file
+    helpers.save_arrays(path_raw / filename, data)
 
 
 def add_buffer(coord: int | float, coord_type: str, deg: int = 5):
@@ -95,9 +116,7 @@ def get_3hrly_cds_request(year: str,
     "data_format": "grib",
     "download_format": "unarchived",
 
-    # NOTE area has no buffer for regrid, should be ok reg lat/ lon?
-    # Need to consider 0 < abs(lat) + buffer < 90
-    # and 0 < abs(lon) + buffer < 180
+    # Define lat/ lon box with 5 degree buffer
     "area": [
         str(add_buffer(latitude_bounds[1], coord_type = 'lat')), # North
         str(add_buffer(longitude_bounds[0], coord_type = 'lon')), # West
@@ -110,7 +129,7 @@ def get_3hrly_cds_request(year: str,
 
 
 # TODO abstract functions
-def download_daily_era5_wind(
+def load_daily_era5_wind(
         path: Path,
         year_range: Tuple[int, int], 
         latitude_bounds: Tuple[int | float, int | float], 
