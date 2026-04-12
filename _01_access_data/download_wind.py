@@ -1,5 +1,6 @@
 import cdsapi
 import matplotlib.pyplot as plt
+import numpy as np
 import xarray as xr
 
 # Example code at:
@@ -43,6 +44,28 @@ def retrieve_era5_reanalysis(dataset: str, request) -> None:
     """
     
     """
+
+
+def add_buffer(coord: int | float, coord_type: str, deg: int = 5):
+    """
+    
+    """
+
+    # Convert to integer
+    coord = int(np.round(coord))
+
+    # Expand with buffer
+    new_coord = coord - deg if coord < 0 else coord + deg
+
+    # Clip lat values to (-90, 90) if exceding
+    if coord_type == 'lat':
+        return(max(-90, min(90, new_coord)))
+    # Clip lon values to (-180, 180) if exceding
+    elif coord_type == 'lon':
+        return(max(-180, min(180, new_coord)))
+    # Raise exception if invalid 'coordinate type'
+    else:
+        raise ValueError('Invalid coord_type, enter argument "lat" or "lon"')
 
 
 def get_cds_request(year: str, 
@@ -103,10 +126,10 @@ def get_cds_request(year: str,
     # Need to consider 0 < abs(lat) + buffer < 90
     # and 0 < abs(lon) + buffer < 180
     "area": [
-        str(latitude_bounds[1]), # North
-        str(longitude_bounds[0]), # West
-        str(latitude_bounds[0]), # South
-        str(longitude_bounds[1]) # East
+        str(add_buffer(latitude_bounds[1], coord_type = 'lat')), # North
+        str(add_buffer(longitude_bounds[0], coord_type = 'lon')), # West
+        str(add_buffer(latitude_bounds[0], coord_type = 'lat')), # South
+        str(add_buffer(longitude_bounds[1], coord_type = 'lon')) # East
     ]
     }
 
