@@ -27,24 +27,24 @@ def load_config():
     -------------------------------------------------------
     """
 
-    # Create instance of data parameters specific to run
-    # NOTE TEST INSTANCE, Weddell Sea,  3 years
-    data_config = DataConfig(
-        hemisphere = 'south',
-        year_range = (1992, 1995),
-        latitude_bounds = (-79, -60),
-        longitude_bounds = (-70, -15),
-        grid_resolution = 25
-    )
-
     # # Create instance of data parameters specific to run
+    # # NOTE TEST INSTANCE, Weddell Sea,  3 years
     # data_config = DataConfig(
     #     hemisphere = 'south',
-    #     year_range = (1992, 2020),
-    #     latitude_bounds = (-80, -62),
-    #     longitude_bounds = (-180, 180),
+    #     year_range = (1992, 1995),
+    #     latitude_bounds = (-79, -60),
+    #     longitude_bounds = (-70, -15),
     #     grid_resolution = 25
     # )
+
+    # Create instance of data parameters specific to run
+    data_config = DataConfig(
+        hemisphere = 'south',
+        year_range = (1992, 2020),
+        latitude_bounds = (-80, -62),
+        longitude_bounds = (-180, 180),
+        grid_resolution = 25
+    )
 
     # Create configuration instance of dataset info
     dataset_config = DatasetConfig(
