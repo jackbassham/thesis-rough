@@ -42,7 +42,7 @@ def main(cfg):
     helpers.save_arrays(path_raw / filename, data)
 
 
-def add_buffer(coord: int | float, coord_type: str, deg: int = 5):
+def add_buffer(coord: int | float, coord_type: str, deg: int = 20):
     """
     
     """
