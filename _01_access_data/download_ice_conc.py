@@ -17,6 +17,7 @@ from .utils import (
     load_spatial_coordinates,
 )
 
+# TODO remove hardcoded authentication and replace with .netrc in home
 
 def main(cfg):
 

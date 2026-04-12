@@ -21,6 +21,7 @@ from .utils import (
 # TODO add progress tracking and failure recovery to track each file download success
 # TODO abstract saving function using dict with variable names to variables
 
+# TODO remove hardcoded authentication and replace with .netrc in home
 
 def main(cfg):
 
