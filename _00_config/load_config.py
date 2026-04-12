@@ -4,6 +4,7 @@ from .config import(
     DatasetConfig, 
     VersionConfig, 
     PathConfig, 
+    LoginCredentials,
     PipelineConfig,
 )
 from .parse_args import parse_args
@@ -12,7 +13,7 @@ from .parse_args import parse_args
 def main():
 
     # Load in configuration defined in function below
-    data_config, version_config, paths = load_config()
+    data_config, version_config, paths, login_credentials = load_config()
 
 
 def load_config():
@@ -26,16 +27,6 @@ def load_config():
     all: longitude_bounds = (-180, 180)
     -------------------------------------------------------
     """
-
-    # # Create instance of data parameters specific to run
-    # # NOTE TEST INSTANCE, Weddell Sea,  3 years
-    # data_config = DataConfig(
-    #     hemisphere = 'south',
-    #     year_range = (1992, 1995),
-    #     latitude_bounds = (-79, -60),
-    #     longitude_bounds = (-70, -15),
-    #     grid_resolution = 25
-    # )
 
     # Create instance of data parameters specific to run
     data_config = DataConfig(
@@ -72,12 +63,19 @@ def load_config():
     # Create instance of paths
     path_config = PathConfig(data_config, version_config)
 
+    # Create instance of login credentials for Nasa Earth Data access
+    login_credentials = LoginCredentials(
+        username = 'jbassham',
+        password = '$EarthDataPass2026'
+    )
+
     # Return entire pipeline configuration object
     return PipelineConfig(
         data_config = data_config,
         dataset_config = dataset_config,
         version_config = version_config,
         path_config = path_config,
+        login_credentials = login_credentials,
     )
 
 
