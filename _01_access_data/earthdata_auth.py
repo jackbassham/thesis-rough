@@ -14,6 +14,9 @@ with help from ChatGPT
 # Define Nasa Earthdata Host
 EARTHDATA_HOST = 'urs.earthdata.nasa.gov'
 
+# NOTE hardcoded authentication removed:
+# urls must match 'https://urs.earthdata.nasa.gov/...' 
+# or there could be issues
 
 class EarthdataSession(requests.Session):
     """
@@ -28,9 +31,8 @@ class EarthdataSession(requests.Session):
 
     # FIXME move username and password from LoginCredentials to .netrc file
     # See https://nsidc.org/data/user-resources/help-center/creating-netrc-file-earthdata-login
-    def __init__(self, username: str, password: str):
+    def __init__(self):
         super().__init__()
-        self.auth = (username, password)
 
     def rebuild_auth(self, prepared_request, response):
         """
@@ -58,12 +60,5 @@ def create_earthdata_session() -> requests.Session:
     
     """
 
-    # Load in pipeline configuration
-    pipeline_config = load_config()
-
-    # Return instantiated earth data session
-    return EarthdataSession(
-        pipeline_config.login_credentials.username, 
-        pipeline_config.login_credentials.password
-        )
+    return EarthdataSession()
 
