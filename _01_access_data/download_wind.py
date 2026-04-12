@@ -67,16 +67,12 @@ def add_buffer(coord: int | float, coord_type: str, deg: int = 5):
         raise ValueError('Invalid coord_type, enter argument "lat" or "lon"')
 
 
-def get_3hrly_cds_request(year: str, 
+def get_3hrly_cds_request(year: int, 
                 latitude_bounds: int | float,
                 longitude_bounds: int | float,):
     """
     
     """
-
-    client = cdsapi.Client()
-
-    dataset = 'reanalysis-era5-single-levels'
 
     request = {
     "product_type": ["reanalysis"],
@@ -84,7 +80,7 @@ def get_3hrly_cds_request(year: str,
         "10m_u_component_of_wind",
         "10m_v_component_of_wind"
     ],
-    "year": [year],
+    "year": [str(year)],
     
     "month": [
         "01", "02", "03",
