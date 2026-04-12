@@ -45,11 +45,9 @@ def retrieve_era5_reanalysis(dataset: str, request) -> None:
     """
 
 
-
-
 def get_cds_request(year: str, 
-                latitude_bounds: str,
-                longitude_bounds: str):
+                latitude_bounds: int,
+                longitude_bounds: int,):
     """
     
     """
@@ -85,20 +83,25 @@ def get_cds_request(year: str,
         "28", "29", "30",
         "31"
     ],
+
+    # 3-hourly data
     "time": [
-        "00:00", "01:00", "02:00",
-        "03:00", "04:00", "05:00",
-        "06:00", "07:00", "08:00",
-        "09:00", "10:00", "11:00",
-        "12:00", "13:00", "14:00",
-        "15:00", "16:00", "17:00",
-        "18:00", "19:00", "20:00",
-        "21:00", "22:00", "23:00"
+        "00:00",
+        "03:00", 
+        "06:00", 
+        "09:00", 
+        "12:00", 
+        "15:00", 
+        "18:00", 
+        "21:00", 
     ],
+
     "data_format": "grib",
     "download_format": "unarchived",
 
     # NOTE area has no buffer for regrid, should be ok reg lat/ lon?
+    # Need to consider 0 < abs(lat) + buffer < 90
+    # and 0 < abs(lon) + buffer < 180
     "area": [
         str(latitude_bounds[1]), # North
         str(longitude_bounds[0]), # West
