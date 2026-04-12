@@ -15,27 +15,7 @@ import xarray as xr
 
 def main(cfg):
 
-    # Define dataset
-    dataset = "reanalysis-era5-single-levels"
 
-    client = cdsapi.Client()
-
-    request = get_cds_request(
-        '2019', 
-        cfg.data_config.latitude_bounds, 
-        cfg.data_config.longitude_bounds
-        )
-
-    target = 'download.grib'
-
-    client.retrieve(dataset, request, target)
-
-    # Open with array
-    ds = xr.load_dataset('download.grib', engine ='cfgrib')
-
-    print('ds objects: {ds}')
-
-    # TODO Plot both varibales
 
 
 
@@ -162,7 +142,7 @@ def download_daily_era5_wind(
     }
 
     # Loop through years
-    for i, year in enumerate(years):
+    for i, year in tqdm(enumerate(years), total=len(years), desc='Years'):
 
         for attempt in range(retries):
             try:
@@ -202,9 +182,9 @@ def download_daily_era5_wind(
     os.remove(target)
 
     # Concatentate the variables along the time dimension
-    data['ua'] = np.concatenate(data['ua'], axis = 0).values
-    data['va'] = np.concatenate(data['va'], axis = 0).values
-    data['time'] = np.concatenate(data['time'], axis = 0).values
+    data['ua'] = np.concatenate(data['ua'], axis = 0)
+    data['va'] = np.concatenate(data['va'], axis = 0)
+    data['time'] = np.concatenate(data['time'], axis = 0)
 
     return data
 
