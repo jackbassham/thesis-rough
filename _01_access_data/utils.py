@@ -5,8 +5,23 @@ import xarray as xr
 
 #TODO use tqdm for progress
 
+# DEBUGGING
+import tempfile
+
+def debug_open(response):
+    print("Content-Type:", response.headers.get("Content-Type"))
+    print("First bytes:", response.content[:100])
+
+    with tempfile.NamedTemporaryFile(suffix=".nc") as f:
+        f.write(response.content)
+        f.flush()
+
+        return xr.open_dataset(f.name, engine="netcdf4")
+
 def open_netcdf_from_response(
-        url: str, session: Session, retries=3, delay=5
+        url: str, session: Session, 
+        engine: str | None = None,
+        retries=3, delay=5
         ) -> xr.Dataset:
     """
     
@@ -24,8 +39,10 @@ def open_netcdf_from_response(
             # Raise HTTP error if unsucessful
             response.raise_for_status()
 
-            # Return xarray dataset from session response object
-            return xr.open_dataset(io.BytesIO(response.content))
+            debug_open(response.content)
+
+            # # Return xarray dataset from session response object
+            # return xr.open_dataset(io.BytesIO(response.content), engine = engine)
         
         except Exception as e:
             print(f'Attempt {attempt +1} failed: {e}')
@@ -70,4 +87,3 @@ def download_with_retries():
     
     """
 
-    
