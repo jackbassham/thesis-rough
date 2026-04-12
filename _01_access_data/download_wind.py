@@ -1,6 +1,10 @@
 import cdsapi
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.typing as npt
+import os
+from pathlib import Path
+from typing import Tuple
 import xarray as xr
 
 # Example code at:
@@ -13,12 +17,6 @@ def main(cfg):
     dataset = "reanalysis-era5-single-levels"
 
     client = cdsapi.Client()
-
-    print(str(cfg.data_config.latitude_bounds[0]))
-    print(str(cfg.data_config.latitude_bounds[1]))
-    print(str(cfg.data_config.longitude_bounds[1]))
-    print(str(cfg.data_config.longitude_bounds[0]))
-
 
     request = get_cds_request(
         '2019', 
@@ -37,13 +35,6 @@ def main(cfg):
 
     # TODO Plot both varibales
 
-
-
-
-def retrieve_era5_reanalysis(dataset: str, request) -> None:
-    """
-    
-    """
 
 
 def add_buffer(coord: int | float, coord_type: str, deg: int = 5):
@@ -68,9 +59,9 @@ def add_buffer(coord: int | float, coord_type: str, deg: int = 5):
         raise ValueError('Invalid coord_type, enter argument "lat" or "lon"')
 
 
-def get_cds_request(year: str, 
-                latitude_bounds: int,
-                longitude_bounds: int,):
+def get_3hrly_cds_request(year: str, 
+                latitude_bounds: int | float,
+                longitude_bounds: int | float,):
     """
     
     """
@@ -134,6 +125,73 @@ def get_cds_request(year: str,
     }
 
     return request
+
+
+def download_daily_era5_wind(
+        path: Path,
+        year_range: Tuple[int, int], 
+        latitude_bounds: Tuple[int | float, int | float], 
+        longitude_bounds: Tuple[int | float, int | float],
+        ) -> dict[npt.NDArray[np.floating]]:
+    """
+    
+    """
+
+    # Define dataset
+    dataset = "reanalysis-era5-single-levels"
+
+    # Instantiate CDS API client
+    client = cdsapi.Client()
+
+    # Define target path for a temporary file
+    target = path / 'download.grib'
+
+    # Create array of download years
+    years = np.arange(year_range[0], year_range[1]+1)
+
+    # Initialize a dict container for the data
+    data = {
+        'ua': [],
+        'va': [],
+        'time': [],
+    }
+
+    # Loop through years
+    for i, year in enumerate(years):
+
+        # Make a request for a year's worth of 3hrly data
+        request = get_3hrly_cds_request(
+            year, latitude_bounds, longitude_bounds
+        )
+
+        # Download the data into temporary grib file
+        client.retrieve(dataset, request, target)
+
+        # Load the grib dataset file with xarray and resample to daily means
+        ds_daily = xr.load_dataset(target, engine = 'cfgrib').resample(time='1D').mean()
+
+        # Store lat and lon coordinate variables for the first year
+        if i == 0:
+            data['lat'] = ds_daily.latitude
+            data['lon'] = ds_daily.longitude
+
+        # Append data to variable lists as numpy objects
+        data['ua'].append(ds_daily.u10.values)
+        data['va'].append(ds_daily.v10.values)
+        data['time'].append(ds_daily.time.values)
+
+        # Remove current year from memory
+        del(ds_daily)
+
+    # Delete the temporary target file
+    os.remove(target)
+
+    # Concatentate the variables along the time dimension
+    data['ua'] = np.concatenate(data['ua'], axis = 0).values
+    data['va'] = np.concatenate(data['va'], axis = 0).values
+    data['time'] = np.concatenate(data['time'], axis = 0).values
+
+    return data
 
 
 if __name__ == "__main__":
