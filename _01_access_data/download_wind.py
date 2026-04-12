@@ -142,7 +142,7 @@ def download_daily_era5_wind(
     }
 
     # Loop through years
-    for i, year in tqdm(enumerate(years), total=len(years), desc='Years'):
+    for i, year in enumerate(tqdm(years, desc = 'Years')):
 
         for attempt in range(retries):
             try:
