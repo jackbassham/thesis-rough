@@ -1,6 +1,5 @@
 import cdsapi
 import helpers
-import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 import os
@@ -171,6 +170,9 @@ def load_daily_era5_wind(
                 request = get_3hrly_cds_request(
                 year, latitude_bounds, longitude_bounds
                 )
+                
+                print(request)
+
                 # Download the data into temporary grib file
                 client.retrieve(dataset, request, target)
 
