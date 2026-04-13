@@ -42,6 +42,7 @@ def main(cfg):
     helpers.save_arrays(path_raw / filename, data)
 
 
+# FIXME this shifts, need buffer
 def add_buffer(coord: int | float, coord_type: str, deg: int = 20):
     """
     
@@ -116,10 +117,10 @@ def get_3hrly_cds_request(year: int,
 
     # Define lat/ lon box with 5 degree buffer
     "area": [
-        str(add_buffer(latitude_bounds[1], coord_type = 'lat')), # North
-        str(add_buffer(longitude_bounds[0], coord_type = 'lon')), # West
-        str(add_buffer(latitude_bounds[0], coord_type = 'lat')), # South
-        str(add_buffer(longitude_bounds[1], coord_type = 'lon')) # East
+        str(latitude_bounds[1], coord_type = 'lat'), # North
+        str(longitude_bounds[0], coord_type = 'lon'), # West
+        str(latitude_bounds[0], coord_type = 'lat'), # South
+        str(longitude_bounds[1], coord_type = 'lon') # East
     ]
     }
 
