@@ -43,6 +43,13 @@ def load_config():
         grid_resolution = 25
     )
 
+    # FIXME use .netrc (Earthdata rec) for login credentials, or prompt user
+    # Create instance of login credentials for Nasa Earth Data access
+    Earthdata_login_credentials = LoginCredentials(
+        username = 'jbassham',
+        password = '$EarthDataPass2026'
+    )
+
     # Create configuration instance of dataset info
     dataset_config = DatasetConfig(
         ice_vel=DatasetInfo('ice_vel', 'nsidc0016', 'v4', 'ease', '.npz'),
@@ -69,19 +76,13 @@ def load_config():
     # Create instance of paths
     path_config = PathConfig(data_config, version_config, user_data_root = USER_DATA_ROOT)
 
-    # Create instance of login credentials for Nasa Earth Data access
-    login_credentials = LoginCredentials(
-        username = 'jbassham',
-        password = '$EarthDataPass2026'
-    )
-
     # Return entire pipeline configuration object
     return PipelineConfig(
         data_config = data_config,
         dataset_config = dataset_config,
         version_config = version_config,
         path_config = path_config,
-        login_credentials = login_credentials,
+        login_credentials = Earthdata_login_credentials,
     )
 
 

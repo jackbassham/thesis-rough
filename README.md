@@ -196,6 +196,13 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 ### For NSIDC Data Access *(Sea Ice Velocity, Sea Ice Concentration)*:
 1. [Register here](https://urs.earthdata.nasa.gov/users/new) for a free Nasa Earthdata account. 
 
+2. Enter your Earthdata username and password as strings in an instance of the LoginCredentials dataclass (see lines 49-50 in  "_00_config/load_config.py"):
+```py
+    Earthdata_login_credentials = LoginCredentials(
+        username = '<YOUR_USERNAME>',
+        password = '<YOUR_PASSWORD'
+    )
+```
 
 <!-- 2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
 ```sh
@@ -304,9 +311,9 @@ Versioned datasets then are stored within each stage under the following hierchy
 <!-- TODO 1. Before getting started, make accounts for to access data..., make a file with account info -->
 
 ### 1. Configure Data Parameters
-Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 38-43 in  "_00_config.load_config.py"). 
+Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 38-43 in  "_00_config/load_config.py"). 
 
-If you want to keep the data in anpther directory, modify `USER_DATA_ROOT` (see line 35 in  "_00_config.load_config.py"):
+If you want to store the data in another directory, modify `USER_DATA_ROOT` (see line 35 in  "_00_config/load_config.py"):
 py```
 USER_DATA_ROOT = '/<YOUR_DIRECTORY>/thesis-rough'
 ```
