@@ -327,7 +327,7 @@ USER_DATA_ROOT = None
 ```py
     data_config = DataConfig(
         hemisphere = 'south',
-        year_range = (1992, 2020),
+        year_range = (2010, 2016), # At least 6 years
         latitude_bounds = (-79, -62), # Weddell Sea, small subset
         longitude_bounds = (-70, -15),
         grid_resolution = 25,
