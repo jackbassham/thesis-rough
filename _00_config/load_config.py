@@ -40,7 +40,7 @@ def load_config():
     # Create configuration instance of dataset info
     dataset_config = DatasetConfig(
         ice_vel=DatasetInfo('ice_vel', 'nsidc0016', 'v4', 'ease', '.npz'),
-        wind=DatasetInfo('wind', 'era5', 'v1', 'reg', '.npz'),
+        wind=DatasetInfo('wind', 'jra55', 'v1', 'gaussian', '.npz'),
         ice_conc=DatasetInfo('ice_conc', 'nsidc0051', 'v2', 'ps', '.npz')
     )
 
