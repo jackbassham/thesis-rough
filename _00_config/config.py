@@ -322,7 +322,15 @@ class PathConfig:
     ]
 
     # Pass in instance of data configuratino and version configuration
-    def __init__(self, data_config: DataConfig, version_config: VersionConfig):
+    def __init__(self, 
+                 data_config: DataConfig, version_config: VersionConfig,
+                 user_data_root: str | None = None):
+
+        # Get root to project directory
+        if user_data_root is not None:
+            self.data_root = Path(user_data_root)
+        else:
+            self.data_root = Path('./data')
 
         # Instantiate configuration objects
         self.data_config = data_config

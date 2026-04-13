@@ -303,15 +303,25 @@ Versioned datasets then are stored within each stage under the following hierchy
 <!-- TODO 1. Before getting started, make accounts for to access data..., make a file with account info -->
 
 ### 1. Configure Data Parameters
-Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 32-37 in  "_00_config.load_config.py"). 
+Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 36-42 in  "_00_config.load_config.py"). 
 
-**Example:**
+If you want to keep the data in anpther directory, modify `USER_DATA_ROOT` (see line 33 in  "_00_config.load_config.py"):
+py```
+USER_DATA_ROOT = '/<YOUR_DIRECTORY>/thesis-rough'
+```
+
+Otherwise, set to `None`:
+py```
+USER_DATA_ROOT = None
+```
+
+**Example:** 
 ```py
     data_config = DataConfig(
         hemisphere = 'south',
         year_range = (1992, 2020),
-        latitude_bounds = (-80, -62),
-        longitude_bounds = (-180, 180),
+        latitude_bounds = (-79, -62), # Weddell Sea, small subset
+        longitude_bounds = (-70, -15),
         grid_resolution = 25,
     )
 ```

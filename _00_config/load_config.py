@@ -28,6 +28,10 @@ def load_config():
     -------------------------------------------------------
     """
 
+    # Define root data directory
+    # If None, data is downloaded to repo directory
+    USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
+
     # Create instance of data parameters specific to run
     data_config = DataConfig(
         hemisphere = 'south',
@@ -61,7 +65,7 @@ def load_config():
     )
 
     # Create instance of paths
-    path_config = PathConfig(data_config, version_config)
+    path_config = PathConfig(data_config, version_config, user_data_root = USER_DATA_ROOT)
 
     # Create instance of login credentials for Nasa Earth Data access
     login_credentials = LoginCredentials(
