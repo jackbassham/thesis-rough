@@ -19,7 +19,7 @@ def main():
 def load_config():
     """
     --------------------- NOTE ----------------------------
-    temporal bounds for current reproduction
+    temporal bounds for full-region reproduction
     year_range = (1992, 2020) (NOTE 1989-1991 JRA55 issue)
     latitude longitude bounds for current reproduction
     north: latitude_bounds = (60, 90)        
@@ -28,14 +28,16 @@ def load_config():
     -------------------------------------------------------
     """
 
-    # Define root data directory
-    # If None, data is downloaded to repo directory
+    # FIXME move data root and data config to .yaml file
+
+    # Define root to data directory
+    # If 'USER_DATA_ROOT = None', data is downloaded to repo directory
     USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
 
     # Create instance of data parameters specific to run
     data_config = DataConfig(
         hemisphere = 'south',
-        year_range = (1992, 2020),
+        year_range = (1992, 2020), # At least 6 years
         latitude_bounds = (-80, -62),
         longitude_bounds = (-180, 180),
         grid_resolution = 25
