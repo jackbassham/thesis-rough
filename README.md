@@ -196,9 +196,8 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 ### For NSIDC Data Access *(Sea Ice Velocity, Sea Ice Concentration)*:
 1. [Register here](https://urs.earthdata.nasa.gov/users/new) for a free Nasa Earthdata account. 
 
-# Skip the below .netrc step for now
 
-2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
+<!-- 2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
 ```sh
 vim ~/.netrc
 ```
@@ -215,7 +214,7 @@ Hit `esc`, type `:wq`, and `return` to write the file.
 chmod 600 ~/.netrc
 ```
 
-4. Now the repo code will automatically recognnize the credentials and authenticate the requests.
+4. Now the repo code will automatically recognnize the credentials and authenticate the requests. -->
 
 ### For ERA5 Data Access *(Wind)*:
 1. [Register here](https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cds&tab_id=Tc-gbldHPtE) for a free Climate Data Store (ECMWF) account.
