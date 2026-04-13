@@ -31,6 +31,5 @@ __pycache__/
 # Log files
 **.log
 
-# JRA55 Readme
-jra55README.txt
-
+# Shell scripts
+**/*.sh
