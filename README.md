@@ -196,6 +196,8 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 ### For NSIDC Data Access *(Sea Ice Velocity, Sea Ice Concentration)*:
 1. [Register here](https://urs.earthdata.nasa.gov/users/new) for a free Nasa Earthdata account. 
 
+# Skip the below .netrc step for now
+
 2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
 ```sh
 vim ~/.netrc
