@@ -117,10 +117,10 @@ def get_3hrly_cds_request(year: int,
 
     # Define lat/ lon box with 5 degree buffer
     "area": [
-        str(latitude_bounds[1], coord_type = 'lat'), # North
-        str(longitude_bounds[0], coord_type = 'lon'), # West
-        str(latitude_bounds[0], coord_type = 'lat'), # South
-        str(longitude_bounds[1], coord_type = 'lon') # East
+        str(latitude_bounds[1]), # North
+        str(longitude_bounds[0]), # West
+        str(latitude_bounds[0]), # South
+        str(longitude_bounds[1]) # East
     ]
     }
 
