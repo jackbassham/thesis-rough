@@ -99,7 +99,7 @@ class DataConfig:
         
         # Check for valid range of years
         n_min_years = 6 # minimum number of years in subset
-        if len(range(self.year_range)) < n_min_years:
+        if len(range(self.year_range[0], self.year_range[1])) < n_min_years:
             raise ValueError(f'Year subset not big enough, "year_range" must span at least {n_min_years} years')
 
 

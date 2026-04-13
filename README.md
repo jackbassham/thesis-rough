@@ -304,9 +304,9 @@ Versioned datasets then are stored within each stage under the following hierchy
 <!-- TODO 1. Before getting started, make accounts for to access data..., make a file with account info -->
 
 ### 1. Configure Data Parameters
-Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 36-42 in  "_00_config.load_config.py"). 
+Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 38-43 in  "_00_config.load_config.py"). 
 
-If you want to keep the data in anpther directory, modify `USER_DATA_ROOT` (see line 33 in  "_00_config.load_config.py"):
+If you want to keep the data in anpther directory, modify `USER_DATA_ROOT` (see line 35 in  "_00_config.load_config.py"):
 py```
 USER_DATA_ROOT = '/<YOUR_DIRECTORY>/thesis-rough'
 ```
