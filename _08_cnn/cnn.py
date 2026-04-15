@@ -12,16 +12,16 @@ cuda_available = torch.cuda.is_available()
 MODEL_STR = 'cnn_pt'
 
 
-class CNN(nn.Module):
-    """
-    CNN architecture taken directly from Hoffman et al. (2023)
+class Hoffman_CNN(nn.Module):
     
-    """
 
+
+class CNN(nn.Module):
     def __init__(self, in_channels, out_channels, height, width):
         super().__init__()
 
-        self.out_channels = out_channels
+        # Input dimensions
+        self.in_channels = in_channels
         self.height = height
         self.width = width
 
