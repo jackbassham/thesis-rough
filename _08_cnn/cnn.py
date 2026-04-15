@@ -1,4 +1,4 @@
-import torch
+import torch.nn.functional as F
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
@@ -8,12 +8,30 @@ cuda_available = torch.cuda.is_available()
 
 # TODO Refactor THIS ONE
 
+# TODO NOTE: nn.Conv2d supports complex types! Try complex input with CNN?
+
 # Define model type string for saving predictions
 MODEL_STR = 'cnn_pt'
 
 
 class Hoffman_CNN(nn.Module):
-    
+    def __init__(self, in_channels, height, width):
+        super().__init__()
+        # Get input dimensions
+        self.in_channels = in_channels
+        self.height = height
+        self.width = width
+
+        # Define the convolutional layers
+        # NOTE padding='same' preserves the 
+        self.conv1 = nn.Conv2d(in_channels, 7, kernel_size=3, stride=1, padding='same')
+        self.conv2 = nn.Conv2d(7, 14, kernel_size=3, stride=1, padding='same')
+        self.conv3 = nn.Conv2d(14, 28, kernel_size=3, stride=1, padding='same')
+        self.conv4 = nn.Conv2d(28, 56, kernel_size=3, stride=1, padding='same')
+        self.conv5 = nn.Conv2d(56, 112, kernel_size=3, stride=1, padding='same')
+
+    def forward(self, xb):        
+
 
 
 class CNN(nn.Module):
@@ -25,7 +43,7 @@ class CNN(nn.Module):
         self.height = height
         self.width = width
 
-        # Convolutional layers
+        # Convolutional convs
         self.layer1 = nn.Conv2d(in_channels, 7, kernel_size=3, stride=1, padding='same')
         self.layer2 = nn.Conv2d(7, 14, kernel_size=3, stride=1, padding='same')
         self.layer3 = nn.Conv2d(14, 28, kernel_size=3, stride=1, padding='same')
