@@ -30,7 +30,22 @@ class Hoffman_CNN(nn.Module):
         self.conv4 = nn.Conv2d(28, 56, kernel_size=3, stride=1, padding='same')
         self.conv5 = nn.Conv2d(56, 112, kernel_size=3, stride=1, padding='same')
 
-    def forward(self, xb):        
+
+    def forward(self, xb):
+        xb = F.relu(self.conv1(xb))
+        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        xb = F.relu(self.conv2(xb))
+        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        xb = F.relu(self.conv3(xb))
+        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        xb = F.relu(self.conv4(xb))
+        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        xb = F.relu(self.conv5(xb))
+        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        xb = F.dropout(xb, p=0.2)
+        xb = 
+
+
 
 
 
