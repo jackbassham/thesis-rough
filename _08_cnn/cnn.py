@@ -78,66 +78,10 @@ class Hoffman_CNN(nn.Module):
         return xb
 
 
-
-
-class CNN(nn.Module):
-    def __init__(self, in_channels, out_channels, height, width):
-        super().__init__()
-
-        # Input dimensions
-        self.in_channels = in_channels
-        self.height = height
-        self.width = width
-
-        # Convolutional convs
-        self.layer1 = nn.Conv2d(in_channels, 7, kernel_size=3, stride=1, padding='same')
-        self.layer2 = nn.Conv2d(7, 14, kernel_size=3, stride=1, padding='same')
-        self.layer3 = nn.Conv2d(14, 28, kernel_size=3, stride=1, padding='same')
-        self.layer4 = nn.Conv2d(28, 56, kernel_size=3, stride=1, padding='same')
-        self.layer5 = nn.Conv2d(56, 112, kernel_size=3, stride=1, padding='same')
-
-        # Pooling, activation, dropout
-        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(p=0.2)
-
-        # Dynamically compute flattened size using dummy input
-        with torch.no_grad():
-            dummy_input = torch.zeros(1, in_channels, height, width)
-            dummy_out = self.forward_features(dummy_input)
-            flat_size = dummy_out.view(1, -1).shape[1]
-
-        # Final fully connected layer
-        self.fc = nn.Linear(flat_size, out_channels * height * width)
-
-
-    def forward_features(self, x):
-        x = self.relu(self.layer1(x))
-        x = self.pool(x)
-        x = self.relu(self.layer2(x))
-        x = self.pool(x)
-        x = self.relu(self.layer3(x))
-        x = self.pool(x)
-        x = self.relu(self.layer4(x))
-        x = self.pool(x)
-        x = self.relu(self.layer5(x))
-        x = self.pool(x)
-        x = self.dropout(x)
-        return x
-
-
-    def forward(self, x):
-        x = self.forward_features(x)
-        x = torch.flatten(x, start_dim=1)
-        x = self.fc(x)
-        x = x.view(-1, self.out_channels, self.height, self.width)
-        return x
-
-
 def main(cfg):
 
     # Set random seed for reproducibility
-    set_seed(42)
+    set_seed(0)
 
     # Load model inputs source path
     path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
@@ -192,13 +136,14 @@ def main(cfg):
     print(f'y shape: {y_train.shape}')
 
     # Get input and output shapes for model
-    _, n_in, ny, nx = x_train.shape
+    _, in_channels, height, width = x_train.shape
     n_out = y_train.shape[1]
 
     print('n_out:', n_out)
 
     # Complile model
-    model = CNN(n_in, n_out, ny, nx).to(device)
+    model = Hoffman_CNN(
+        in_channels, height, width).to(device)
 
     print('model compiled')
 
@@ -229,7 +174,7 @@ def main(cfg):
     optimizer = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=weight_decay)
 
     # Define number of epochs
-    num_epochs = 50 # Hoffman
+    num_epochs = 1 # Hoffman
 
     # Initialize losses
     train_losses = []
