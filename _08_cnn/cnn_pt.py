@@ -7,6 +7,8 @@ from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
 cuda_available = torch.cuda.is_available()
 
+from . import models
+
 
 # Define model type string for saving predictions
 MODEL_STR = 'cnn_pt'
@@ -133,8 +135,11 @@ def main(cfg):
 
     print('n_out:', n_out)
 
-    # Complile model
-    model = CNN(n_in, n_out, ny, nx).to(device)
+    # # Complile model
+    # model = CNN(n_in, n_out, ny, nx).to(device)
+
+    # NOTE Trying to use new model
+    model = models.Hoffman_CNN(n_in, ny, nx).to(device)
 
     print('model compiled')
 
