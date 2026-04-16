@@ -35,6 +35,9 @@ class Hoffman_CNN(nn.Module):
     def forward(self, xb):
         print(f'inputs: {xb.shape}')
 
+        print(xb.dtype)
+        print(next(self.parameters()).dtype)
+
         xb = F.relu(self.conv1(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
         print(f'layer 1: {xb.shape}')
