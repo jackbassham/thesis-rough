@@ -106,8 +106,8 @@ def main(cfg):
     weight_decay = 1e-4 # L2 Norm Regularization, changed from 0.01 in TensorFlow
     # NOTE TensorFLow multiplies Regularization by 0.05 0.01*0.05 -> 5e-4
 
-    # Define Learnig Rate
-    lr = 1e-3
+    # Define Learning Rate
+    lr = 1e-4
 
     # Initialize optimizer with weight decay (l2 regularization)
     opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=0.01)
