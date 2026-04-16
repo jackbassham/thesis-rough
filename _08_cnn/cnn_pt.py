@@ -6,7 +6,6 @@ import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
 cuda_available = torch.cuda.is_available()
-import utils
 
 
 # Define model type string for saving predictions
