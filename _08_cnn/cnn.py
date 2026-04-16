@@ -121,7 +121,7 @@ def main(cfg):
     opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=0.01)
 
     # Define number of epochs
-    num_epochs = 1 # Hoffman
+    num_epochs = 50 # Hoffman
 
     # Initialize losses
     train_losses = []
@@ -131,25 +131,25 @@ def main(cfg):
     for epoch in range(num_epochs):
         model.train()
         train_loss = 0
-        for xb, yb in tqdm(trainData, desc=f"Train Epoch {epoch+1}/{num_epochs}", leave=False):
+        for xb, yb in tqdm(train_dl, desc=f"Train Epoch {epoch+1}/{num_epochs}", leave=False):
             # print(torch.isnan(xb).any(), torch.isinf(xb).any())
-            optimizer.zero_grad()
+            opt.zero_grad()
             preds = model(xb)
             loss = NRMSEloss(preds, yb)
             loss.backward()
-            optimizer.step()
+            opt.step()
             train_loss += loss.item()
 
         model.eval()
         val_loss = 0
-        for xb, yb in tqdm(valData, desc=f"Val   Epoch {epoch+1}/{num_epochs}", leave=False):
+        for xb, yb in tqdm(val_dl, desc=f"Val   Epoch {epoch+1}/{num_epochs}", leave=False):
             with torch.no_grad():
                 preds = model(xb)
                 loss = NRMSEloss(preds, yb)
                 val_loss += loss.item()
 
-        avg_train = train_loss / len(trainData)
-        avg_val   = val_loss   / len(valData)
+        avg_train = train_loss / len(train_dl)
+        avg_val   = val_loss   / len(val_dl)
 
         
         train_losses.append(avg_train)
@@ -182,7 +182,7 @@ def main(cfg):
     all_targets = []
 
     with torch.no_grad():
-        for xb, yb in testData:
+        for xb, yb in test_dl:
             preds = model(xb)
             all_preds.append(preds.cpu().numpy())
             all_targets.append(yb.cpu().numpy())
