@@ -46,7 +46,7 @@ class Hoffman_CNN(nn.Module):
 
 
     def forward(self, xb):
-        
+
         # Five convolutional layers
         xb = F.relu(self.conv1(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
@@ -68,14 +68,9 @@ class Hoffman_CNN(nn.Module):
 
         # Flatten to 1D vector
         xb = torch.flatten(xb, start_dim=1)
-        print(f'flatten: {xb.shape}')
-
-        # TODO think about removing fully connected layer
-        # # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
-        # xb = F.linear(xb.shape, 2 * self.height * self.width)
-        # print(f'fully connected: {xb.shape}')
 
         # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
+        # TODO think about removing fully connected layer
         self.fc = nn.LazyLinear(2 * self.height * self.width)
         xb = self.fc(xb)
 
