@@ -93,10 +93,14 @@ def get_input_dimensions(dataloader):
 
 
 # Apply Xavier initialization to match TensorFlow default
-def weights_bisas_xavier_inialization(m):
-    if isinstance(m, (nn.Conv2d, nn.Linear)):
-        # Apply Xavier unniform to weights of Conv2d and Linear layers (TensorFlow default)
-        nn.init.xavier_uniform_(m.weight)
-        # Initialize bias to zero (TensorFlow default)
-        if m.bias is not None:
-            nn.init.zeros_(m.bias)
+def initialize_weights_biases(layer):
+
+    # If the layer is convolutional or linear (fully connected)
+    if isinstance(layer, (nn.Conv2d, nn.Linear, nn.LazyLinear)):
+    # Initilaize that layer's weights to Xavier uniform distribution
+        nn.init.xavier_uniform_(layer.weight)
+
+        # Initialize layer has bias
+        if layer.bias is not None:
+            # Set that layer's bias to zero
+            nn.init.zeros_(layer.bias)

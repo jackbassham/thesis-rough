@@ -101,6 +101,9 @@ def main(cfg):
     # TODO If Kaiming is bad, use function in utils to apply Xavier initializtion
     model = Hoffman_CNN(
         in_channels, height, width).to(device)
+    
+    # Recursively apply xavier initialization to each layer's weights, set biases to zero
+    model.apply(utils.initialize_weights_biases)
 
     # Define regularization
     weight_decay = 1e-2 
@@ -111,7 +114,7 @@ def main(cfg):
     # Define Learning Rate
     lr = 1e-4
 
-    for name, param in model.named_parameters():
+    for name, param in model.parameters():
         print(f'name: {name}')
         print(f'param: {param}')
 
