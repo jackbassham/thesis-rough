@@ -4,15 +4,13 @@ from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
-cuda_available = torch.cuda.is_available()
 
 # TODO Refactor THIS ONE
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 # TODO NOTE: nn.Conv2d supports complex types! Try complex input with CNN?
-
-# Define model type string for saving predictions
-MODEL_STR = 'cnn_pt'
-
 
 class Hoffman_CNN(nn.Module):
     def __init__(self, in_channels, height, width):
@@ -32,19 +30,52 @@ class Hoffman_CNN(nn.Module):
 
 
     def forward(self, xb):
+        print(f'inputs: {xb.shape}')
+
         xb = F.relu(self.conv1(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        print(f'layer 1: {xb.shape}')
+
         xb = F.relu(self.conv2(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        print(f'layer 2: {xb.shape}')
+        
+
         xb = F.relu(self.conv3(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        print(f'layer 3: {xb.shape}')
+
+
         xb = F.relu(self.conv4(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
+        print(f'layer 4: {xb.shape}')
+
+
         xb = F.relu(self.conv5(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-        xb = F.dropout(xb, p=0.2)
-        xb = 
+        print(f'layer 5: {xb.shape}')
 
+
+        # 20% random dropout
+        xb = F.dropout(xb, p=0.2)
+        print(f'dropout layer: {xb.shape}')
+
+
+        # Flatten to 1D vector
+        xb = torch.flatten(xb, start_dim=1)
+        print(f'flatten: {xb.shape}')
+
+
+        # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
+        xb = F.linear()
+        print(f'fully connected: {xb.shape}')
+
+        # Return the batch of ui and vi outputs
+        xb = xb.view(-1, 2, self.height, self.width)
+        print(f'outputs: {xb.shape}')
+
+
+        return xb
 
 
 
