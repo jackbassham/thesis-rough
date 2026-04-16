@@ -1,3 +1,4 @@
+import helpers
 import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader
@@ -20,6 +21,9 @@ def get_datasets(config, device):
     """
     
     """
+
+    # Set seed for reproducibility
+    helpers.set_seed()
 
     # Load model inputs source path
     path_model_inputs = config.path_config.data_stage_path('model_inputs')
@@ -58,6 +62,9 @@ def get_batched_data(
     """
     
     """
+
+    # Set seed for reproducibility
+    helpers.set_seed()
 
     # Return batches in DataLoader
     return(

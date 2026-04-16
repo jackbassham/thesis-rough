@@ -1,9 +1,9 @@
-import torch.nn.functional as F
-import torch.nn as nn
-from torch.utils.data import TensorDataset, DataLoader
-from tqdm import tqdm
+import helpers
 import numpy as np
 import matplotlib.pyplot as plt
+import torch.nn.functional as F
+import torch.nn as nn
+from tqdm import tqdm
 
 # TODO Refactor THIS ONE
 import torch
@@ -82,15 +82,13 @@ class Hoffman_CNN(nn.Module):
         xb = xb.view(-1, 2, self.height, self.width)
         print(f'outputs: {xb.shape}')
 
-        raise ValueError('STOP')
-
         return xb
 
 
 def main(cfg):
 
     # Set random seed for reproducibility
-    set_seed(0)
+    helpers.set_seed()
 
     # Load model inputs source path
     path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
