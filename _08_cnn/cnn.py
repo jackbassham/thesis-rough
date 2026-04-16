@@ -103,14 +103,16 @@ def main(cfg):
         in_channels, height, width).to(device)
 
     # Define regularization
-    weight_decay = 1e-4 # L2 Norm Regularization, changed from 0.01 in TensorFlow
+    weight_decay = 1e-2 
+    # weight_decay = 1e-4
+    # NOTE NOT TRUE: # L2 Norm Regularization, changed from 0.01 in TensorFlow
     # NOTE TensorFLow multiplies Regularization by 0.05 0.01*0.05 -> 5e-4
 
     # Define Learning Rate
     lr = 1e-4
 
     # Initialize optimizer with weight decay (l2 regularization)
-    opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=0.01)
+    opt = torch.optim.Adam(model.parameters(), lr = lr)
 
     # Define number of epochs
     num_epochs = 50 # Hoffman
