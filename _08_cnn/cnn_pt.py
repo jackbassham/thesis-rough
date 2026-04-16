@@ -245,15 +245,6 @@ def main(cfg):
     print("Predictions saved")
 
 
-def set_seed(seed=42):
-    torch.manual_seed(seed) # PyTorch Reproducibility
-    torch.cuda.manual_seed(seed) # Required if using GPU
-    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
-    torch.backends.cudnn.benchmark = False # Paired with above
-
-    return
-
-
 def plot_losses(path, filename, num_epochs, train_losses, val_losses):
     epochs = np.arange(1, num_epochs + 1)
 
