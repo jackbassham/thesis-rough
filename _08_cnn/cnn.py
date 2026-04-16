@@ -111,6 +111,10 @@ def main(cfg):
     # Define Learning Rate
     lr = 1e-4
 
+    for name, param in model.named_parameters():
+        print(f'name: {name}')
+        print(f'param: {param}')
+
     # Initialize optimizer with weight decay (l2 regularization)
     opt = torch.optim.Adam(model.parameters(), lr = lr)
 
