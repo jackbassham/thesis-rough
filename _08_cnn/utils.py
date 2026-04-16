@@ -81,7 +81,7 @@ def get_input_dimensions(dataloader):
     xb = batch[0]
 
     # Get dimensions from batch
-    _, in_channels, height, width = xb.shape
+    in_channels, height, width = xb.shape[1:]
 
     return(
         in_channels,
