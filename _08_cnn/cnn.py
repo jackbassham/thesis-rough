@@ -105,7 +105,7 @@ def main(cfg):
 
     # Complile model
     # NOTE using PyTorch Default 'Kaiming Uniform' weights/bias initialization
-    # Tensorflow Default is Xavier (used in Hoffman)
+    # Tensorflow Default is Xavier (used by Hoffman)
     # TODO If Kaiming is bad, use function in utils to apply Xavier initializtion
     model = Hoffman_CNN(
         in_channels, height, width).to(device)
@@ -115,7 +115,7 @@ def main(cfg):
     # NOTE TensorFLow multiplies Regularization by 0.05 0.01*0.05 -> 5e-4
 
     # Define Learnig Rate
-    lr = 1e-4 # changed from 1e-3 in TensorFlow
+    lr = 1e-3
 
     # Initialize optimizer with weight decay (l2 regularization)
     opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=0.01)
