@@ -104,24 +104,11 @@ def main(cfg):
     in_channels, height, width = utils.get_input_dimensions(train_dl)
 
     # Complile model
+    # NOTE using PyTorch Default 'Kaiming Uniform' weights/bias initialization
+    # Tensorflow Default is Xavier (used in Hoffman)
+    # TODO If Kaiming is bad, use function in utils to apply Xavier initializtion
     model = Hoffman_CNN(
         in_channels, height, width).to(device)
-
-    # Apply Xavier initialization to match TensorFlow default
-    def init_weights(m):
-        if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
-            # Apply Xavier unniform to weights of Conv2d and Linear layers (TensorFlow default)
-            nn.init.xavier_uniform_(m.weight)
-            # Initialize bias to zero (TensorFlow default)
-            if m.bias is not None:
-                nn.init.zeros_(m.bias)
-
-        return
-
-    # Apply 
-    model.apply(init_weights)
-
-    print('Xavier initialization complete') 
 
     # Define regularization
     weight_decay = 1e-4 # L2 Norm Regularization, changed from 0.01 in TensorFlow

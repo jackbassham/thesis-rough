@@ -88,3 +88,13 @@ def get_input_dimensions(dataloader):
         height,
         width
     )
+
+
+# Apply Xavier initialization to match TensorFlow default
+def weights_bisas_xavier_inialization(m):
+    if isinstance(m, (nn.Conv2d, nn.Linear)):
+        # Apply Xavier unniform to weights of Conv2d and Linear layers (TensorFlow default)
+        nn.init.xavier_uniform_(m.weight)
+        # Initialize bias to zero (TensorFlow default)
+        if m.bias is not None:
+            nn.init.zeros_(m.bias)
