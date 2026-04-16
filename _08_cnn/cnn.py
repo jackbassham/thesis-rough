@@ -12,6 +12,8 @@ import torch.nn.functional as F
 
 # TODO NOTE: nn.Conv2d supports complex types! Try complex input with CNN?
 
+MODEL_STR = 'cnn'
+
 class Hoffman_CNN(nn.Module):
     def __init__(self, in_channels, height, width):
         super().__init__()
@@ -66,14 +68,21 @@ class Hoffman_CNN(nn.Module):
         print(f'flatten: {xb.shape}')
 
 
+        # # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
+        # xb = F.linear(xb.shape, 2 * self.height * self.width)
+        # print(f'fully connected: {xb.shape}')
+
         # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
-        xb = F.linear(xb.shape, 2 * self.height * self.width)
+        self.fc = nn.LazyLinear(2 * self.height * self.width)
+        xb = self.fc(xb)
         print(f'fully connected: {xb.shape}')
+
 
         # Return the batch of ui and vi outputs
         xb = xb.view(-1, 2, self.height, self.width)
         print(f'outputs: {xb.shape}')
 
+        raise ValueError('STOP')
 
         return xb
 
