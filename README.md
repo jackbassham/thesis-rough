@@ -273,6 +273,14 @@ Data used for training and evaluation are stored to disk for multiple stages und
     ├── <lr-cf-wtd>/
     ├── <cnn-pt>/
     ├── <cnn-pt-wtd>/
+
+<plots>
+├── <quick_eval>/
+    ├── <ps>/
+    ├── <lr-cf>/
+    ├── <lr-cf-wtd>/
+    ├── <cnn-pt>/
+    ├── <cnn-pt-wtd>/
 ```
 
 **Description:**
@@ -291,7 +299,10 @@ Data used for training and evaluation are stored to disk for multiple stages und
 - `cnn-pt` - CNN (via PyTorch)
 - `cnn-pt-wtd` - Weighted CNN (via PyTorch)
 
-Versioned datasets then are stored within each stage under the following hierchy:
+*Plots*
+- `quick_eval` - Spatial plots generated for post-training model evaluation metrics
+
+Versioned datasets then are stored within each stage or model under the following hierchy:
 
 ```text
  <data_stage>/
@@ -370,6 +381,10 @@ A default timestamp `timestamp_out` (formatted 'MMDDYYYY_HHMM') is generated at 
  python -m run_pipeline --timestamp_out <MMDDYYYY_HHMM>
  ```
 
+3. View plots generated for post-training model evaluation at:
+``` 
+plots/quick-eval/<model_name>/<hemisphere>/<timestamp>
+```
 
 ### Option B: Run Partial Pipeline
 
