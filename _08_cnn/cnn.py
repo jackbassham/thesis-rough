@@ -13,6 +13,19 @@ import torch.nn.functional as F
 
 # TODO NOTE: nn.Conv2d supports complex types! Try complex input with CNN?
 
+"""
+NOTE forward shapes from print statements
+layer 1: torch.Size([365, 7, 40, 261])
+layer 2: torch.Size([365, 14, 20, 130])
+layer 3: torch.Size([365, 28, 10, 65])
+layer 4: torch.Size([365, 56, 5, 32])
+layer 5: torch.Size([365, 112, 2, 16])
+dropout layer: torch.Size([365, 112, 2, 16])
+flatten: torch.Size([365, 3584])
+fully connected: torch.Size([365, 84564])
+outputs: torch.Size([365, 2, 81, 522])
+"""
+
 MODEL_STR = 'cnn'
 
 class Hoffman_CNN(nn.Module):
@@ -33,45 +46,31 @@ class Hoffman_CNN(nn.Module):
 
 
     def forward(self, xb):
-        print(f'inputs: {xb.shape}')
-
-        print(xb.dtype)
-        print(next(self.parameters()).dtype)
-
+        
+        # Five convolutional layers
         xb = F.relu(self.conv1(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-        print(f'layer 1: {xb.shape}')
 
         xb = F.relu(self.conv2(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-        print(f'layer 2: {xb.shape}')
-        
 
         xb = F.relu(self.conv3(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-        print(f'layer 3: {xb.shape}')
-
 
         xb = F.relu(self.conv4(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-        print(f'layer 4: {xb.shape}')
-
 
         xb = F.relu(self.conv5(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-        print(f'layer 5: {xb.shape}')
-
 
         # 20% random dropout
         xb = F.dropout(xb, p=0.2)
-        print(f'dropout layer: {xb.shape}')
-
 
         # Flatten to 1D vector
         xb = torch.flatten(xb, start_dim=1)
         print(f'flatten: {xb.shape}')
 
-
+        # TODO think about removing fully connected layer
         # # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
         # xb = F.linear(xb.shape, 2 * self.height * self.width)
         # print(f'fully connected: {xb.shape}')
@@ -79,14 +78,9 @@ class Hoffman_CNN(nn.Module):
         # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
         self.fc = nn.LazyLinear(2 * self.height * self.width)
         xb = self.fc(xb)
-        print(f'fully connected: {xb.shape}')
 
-
-        # Return the batch of ui and vi outputs
-        xb = xb.view(-1, 2, self.height, self.width)
-        print(f'outputs: {xb.shape}')
-
-        return xb
+        # Return the reshaped batch of ui and vi outputs
+        return xb.view(-1, 2, self.height, self.width)
 
 
 def main(cfg):
