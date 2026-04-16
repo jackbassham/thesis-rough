@@ -67,7 +67,7 @@ class Hoffman_CNN(nn.Module):
 
 
         # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
-        xb = F.linear()
+        xb = F.linear(xb.shape, 2 * self.height * self.width)
         print(f'fully connected: {xb.shape}')
 
         # Return the batch of ui and vi outputs
