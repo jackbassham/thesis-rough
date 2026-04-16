@@ -49,3 +49,21 @@ def get_datasets(config, device):
         TensorDataset(x_val, y_val),
         TensorDataset(x_test, y_test),
     )
+
+
+def get_batched_data(
+        train_ds, val_ds, test_ds,
+        batch_size: int = 365
+        ):
+    """
+    
+    """
+
+    # Return batches in DataLoader
+    return(
+        DataLoader(train_ds, batch_size=batch_size, shuffle=True),
+        # NOTE CHANGED to not shuffling val
+        # TODO? Use batch_size*2 for val, like torch nn tutorial?
+        DataLoader(val_ds, batch_size=batch_size, shuffle=False),
+        DataLoader(test_ds,batch_size=batch_size, shuffle=False)
+    )
