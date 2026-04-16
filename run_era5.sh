@@ -9,7 +9,7 @@ python -m _01_access_data.download_wind --timestamp_raw $TS_RAW
 echo "finished downloading era5"
 
 echo "regridding era5..."
-python -m _02_regrid.regrid_wind --timestamp_raw $TS_RAW
+python -m _02_regrid.regrid_wind --timestamp_raw $TS_RAW --timestamp_regrid $TS_RAW
 echo "finished regridding era5..."
 
 echo "running rest of pipeline with era5..."
