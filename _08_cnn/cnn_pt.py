@@ -1,9 +1,10 @@
+import helpers
+import numpy as np
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
-import numpy as np
-import matplotlib.pyplot as plt
 cuda_available = torch.cuda.is_available()
 
 
@@ -72,7 +73,7 @@ class CNN(nn.Module):
 def main(cfg):
 
     # Set random seed for reproducibility
-    set_seed(42)
+    helpers.set_seed()
 
     # Load model inputs source path
     path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
