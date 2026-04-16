@@ -118,7 +118,7 @@ def main(cfg):
     lr = 1e-4 # changed from 1e-3 in TensorFlow
 
     # Initialize optimizer with weight decay (l2 regularization)
-    optimizer = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=weight_decay)
+    opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay=0.01)
 
     # Define number of epochs
     num_epochs = 1 # Hoffman
