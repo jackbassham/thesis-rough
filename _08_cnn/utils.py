@@ -74,3 +74,23 @@ def get_batched_data(
         DataLoader(val_ds, batch_size=batch_size, shuffle=False),
         DataLoader(test_ds,batch_size=batch_size, shuffle=False)
     )
+
+
+def get_input_dimensions(dataloader):
+    """
+    
+    """
+    # Get one batch from the dataloader
+    batch = next(iter(dataloader))
+
+    # Get features from the first element of the batch
+    xb = batch[0]
+
+    # Get dimensions from batch
+    _, in_channels, height, width = xb.shape
+
+    return(
+        in_channels,
+        height,
+        width
+    )

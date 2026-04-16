@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import torch.nn.functional as F
 import torch.nn as nn
 from tqdm import tqdm
+from . import utils
 
 # TODO Refactor THIS ONE
 import torch
@@ -90,69 +91,21 @@ def main(cfg):
     # Set random seed for reproducibility
     helpers.set_seed()
 
-    # Load model inputs source path
-    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
+    # Get device
+    device = utils.check_for_accelerator()
 
-    # Load in input data
-    train = np.load(path_model_inputs / 'train.npz')
-    val = np.load(path_model_inputs / 'val.npz')
-    test = np.load(path_model_inputs / 'test.npz')
+    # Load tensor datasets from numpy arrays
+    train_ds, val_ds, test_ds = utils.get_datasets(cfg, device)
 
+    # Get batched data loaders from tensor datasets
+    train_dl, val_dl, test_dl = utils.get_batched_data(train_ds, val_ds, test_ds)
 
-    # FIXME Converting from numpy Double (float64) to PyTorch default Float (float32)
-    # NOTE DO THIS EARLIER ON (ie: download step)
-    # Get input variables from splits and convert to PyTorch tensors
-    # Leaving off mask (last channel)
-    x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]).float(), torch.from_numpy(train['y']).float()
-    x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]).float(), torch.from_numpy(val['y']).float()
-    x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]).float(), torch.from_numpy(test['y']).float()
-
-    # Convert nans to zeros
-    x_train, y_train = torch.nan_to_num(x_train), torch.nan_to_num(y_train)
-    x_val, y_val = torch.nan_to_num(x_val), torch.nan_to_num(y_val)
-    x_test, y_test = torch.nan_to_num(x_test), torch.nan_to_num(y_test)
-
-    print("Input Data Loaded")
-
-    # Use cuda if available
-    use_cuda = torch.cuda.is_available()
-    if use_cuda:
-        device = torch.device("cuda")
-        print('Using CUDA')
-    else:
-        device = torch.device("cpu")
-        print('USING CPU')
-
-
-    # Move tensors to device
-    x_train, y_train = x_train.to(device), y_train.to(device)
-    x_val, y_val = x_val.to(device), y_val.to(device)
-    x_test, y_test = x_test.to(device), y_test.to(device)
-
-    # Define batch size
-    batch_size = 365 # 365, Hoffman
-
-    # Create Tensor Datasets
-    trainData = DataLoader(TensorDataset(x_train, y_train), batch_size=batch_size, shuffle=True)
-    valData = DataLoader(TensorDataset(x_val, y_val), batch_size=batch_size, shuffle=True)
-    testData = DataLoader(TensorDataset(x_test, y_test), batch_size=batch_size, shuffle=False)
-
-    print("Tensor datasets created")
-
-    print(f'x shape: {x_train.shape}')
-    print(f'y shape: {y_train.shape}')
-
-    # Get input and output shapes for model
-    _, in_channels, height, width = x_train.shape
-    n_out = y_train.shape[1]
-
-    print('n_out:', n_out)
+    # Get input dimensions
+    in_channels, height, width = utils.get_input_dimensions(train_dl)
 
     # Complile model
     model = Hoffman_CNN(
         in_channels, height, width).to(device)
-
-    print('model compiled')
 
     # Apply Xavier initialization to match TensorFlow default
     def init_weights(m):
