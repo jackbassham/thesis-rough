@@ -20,10 +20,15 @@ class Hoffman_CNN(nn.Module):
         self.conv5 = nn.Conv2d(56, 112, kernel_size=3, stride=1, padding='same')
 
         # Dynamically compute flattened size using dummy input
+        # NOTE THIS WORKS, LAZY LINEAR DOES NOT
         with torch.no_grad():
             dummy_input = torch.zeros(1, in_channels, height, width)
             dummy_out = self.forward_features(dummy_input)
+            print(f'dummy out shape: {dummy_out.shape}')
+            print(f'dummy_out.view(1, -1).shape {dummy_out.view(1, -1).shape}')
             flat_size = dummy_out.view(1, -1).shape[1]
+            print(f'flat size shape: {flat_size.shape}')
+
 
         # Final fully connected layer
         self.fc = nn.Linear(flat_size, 2 * height * width)
@@ -73,10 +78,10 @@ class Hoffman_CNN(nn.Module):
         # 20% random dropout
         xb = F.dropout(xb, p=0.2)
 
-        # Flatten to 1D vector
+        # Flatten features to 1D vector
         xb = torch.flatten(xb, start_dim=1)
 
-        # # Fully Connected Layer: Regress to 1D vector of ui and vi outputs
+        # # Fully Connected Layer: Regress features to 1D vector of ui and vi outputs
         # # TODO think about removing fully connected layer
         # self.fc = nn.LazyLinear(2 * self.height * self.width)
 
