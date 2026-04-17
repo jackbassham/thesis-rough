@@ -82,6 +82,8 @@ def get_input_dimensions(dataloader):
     # Get features from the first element of the batch
     xb = batch[0]
 
+    print(f'xb.shape[1:] {xb.shape[1:]}')
+
     # Get dimensions from batch
     in_channels, height, width = xb.shape[1:]
 
