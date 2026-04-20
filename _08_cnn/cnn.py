@@ -102,53 +102,17 @@ def main(cfg):
         path_cnn_out / 'parameters.pt'
         )
 
-    print('Model weights saved')
-
-    # Evaluate trained model
-    model.eval()
-
-    # Get predictions on test set
-    all_preds = []
-    all_targets = []
-
-    with torch.no_grad():
-        for xb, yb in test_dl:
-            preds = model(xb)
-            all_preds.append(preds.cpu().numpy())
-            all_targets.append(yb.cpu().numpy())
-
-    # Concatenate all batches
-    y_pred = np.concatenate(all_preds, axis=0)
-    y_true = np.concatenate(all_targets, axis=0)
-
-    print('y_pred shape:', y_pred.shape)
-    print('y_true shape:', y_true.shape)
+    # Get test predictions as numpy arrays from the trained model
+    test_predictions, test_targets = utils.evaluate(model, test_dl)
 
     # Save predictions and true values
     np.savez(
         path_cnn_out / 'preds.npz', 
-        y_pred = y_pred, y_true = y_true)
+        y_pred = test_predictions, 
+        y_true = test_targets
+        )
 
     print("Predictions saved")
-
-
-def plot_losses(path, filename, num_epochs, train_losses, val_losses):
-    epochs = np.arange(1, num_epochs + 1)
-
-    
-    plt.figure()
-    plt.plot(epochs, train_losses, label = 'Train')
-    plt.plot(epochs, val_losses, label = 'Validation')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.title(f"{MODEL_STR} Loss")
-
-    plt.savefig(path / filename)
-
-    # plt.show()
-
-    return
 
 
 if __name__ == "__main__":
