@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
+from tqdm import tqdm 
 
 
 def check_for_accelerator():
@@ -124,5 +125,28 @@ def loss_batch(model, loss_func, xb, yb, opt=None):
         # Update the weights, biases using the gradient
         opt.step()
         
-    # Return the loss
+    # Return the loss and size of batch
     return loss.item(), len(xb)
+
+
+def fit(epochs, model, loss_func, opt, train_dl, val_dl):
+    """
+    
+    """
+
+    # Initialize lists of losses for each epoch
+    train_losses = []
+    val_losses = []
+
+    for epoch in range(epochs):
+        model.train()
+        # Iterate through batches and show progress bar
+        for xb, yb in tqdm(train_dl, desc=f'Train Epoch {epoch+1}/{epochs}', leave=False):
+            loss, bs = loss_batch(model, loss_func, xb, yb, opt=opt)
+
+
+        model.eval()
+        with torch.no_grad():
+            # Iterate through batches and show progress bar
+            for xb, yb in tqdm(val_dl, desc=f'Val Epoch {epoch+1}/{epochs}', leave=False):
+                loss, bs = loss_batch(model, loss_func, xb, yb)
