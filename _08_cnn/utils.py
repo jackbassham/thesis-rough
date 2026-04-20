@@ -1,5 +1,7 @@
 import helpers
 import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
@@ -177,3 +179,29 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
         print(f'Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f} - Val Loss: {val_loss:.4f}')
 
         return train_losses, val_losses
+    
+
+def plot_losses(train_losses: list[float], val_losses: list[float], 
+                model_name: str, timestamp: str | None = None, path: Path | None = None,) -> None:
+    """
+    
+    """
+
+    # Get range of epochs
+    epochs = np.arange(1, len(train_losses) + 1)
+
+    plt.figure()
+    plt.plot(epochs, train_losses, label = 'Train')
+    plt.plot(epochs, val_losses, label = 'Validation')
+    plt.xlabel('Epochs')
+    plt.legend()
+
+    title = f'{model_name.title} Loss'
+
+    if timestamp is not None:
+        title += timestamp
+
+    plt.title(title)
+
+    if path is not None:
+        plt.savefig(path / 'training_losses.png')

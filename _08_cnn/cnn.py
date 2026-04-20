@@ -82,6 +82,14 @@ def main(cfg):
     # Train the model
     train_losses, val_losses = utils.fit(epochs, model, loss_func, opt, train_dl, val_dl)
 
+    # Save plot of training losses
+    utils.plot_losses(
+        train_losses, val_losses,
+        'CNN',
+        timestamp=cfg.version_congig.timestamp_model_output,
+        path=cfg.path_config.model_path('cnn_pt', plot_path=True)
+    )
+
     # Load in model outputs destination path
     path_cnn_out = cfg.path_config.model_path('cnn_pt')
 
@@ -127,15 +135,6 @@ def main(cfg):
     print("Predictions saved")
 
 
-def set_seed(seed=42):
-    torch.manual_seed(seed) # PyTorch Reproducibility
-    torch.cuda.manual_seed(seed) # Required if using GPU
-    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
-    torch.backends.cudnn.benchmark = False # Paired with above
-
-    return
-
-
 def plot_losses(path, filename, num_epochs, train_losses, val_losses):
     epochs = np.arange(1, num_epochs + 1)
 
@@ -153,17 +152,6 @@ def plot_losses(path, filename, num_epochs, train_losses, val_losses):
     # plt.show()
 
     return
-
-
-def NRMSEloss(pred, true, eps=1e-6):
-    """
-    Norm Root Mean Squared Loss
-    """
-
-    mse = torch.mean((pred - true) ** 2)
-    std = torch.std(true, unbiased = False) + eps # Unbiased=True To match default pop. std. in tf 
-
-    return torch.sqrt(mse) / std
 
 
 if __name__ == "__main__":
