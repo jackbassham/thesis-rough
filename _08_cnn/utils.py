@@ -178,7 +178,9 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
         # Report epoch's losses
         print(f'Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f} - Val Loss: {val_loss:.4f}')
 
-        return train_losses, val_losses
+    print('Training loop complete')
+
+    return train_losses, val_losses
     
 
 def plot_losses(train_losses: list[float], val_losses: list[float], 
@@ -186,6 +188,8 @@ def plot_losses(train_losses: list[float], val_losses: list[float],
     """
     
     """
+
+    # TODO accuracy?
 
     # Get range of epochs
     epochs = np.arange(1, len(train_losses) + 1)
@@ -205,3 +209,38 @@ def plot_losses(train_losses: list[float], val_losses: list[float],
 
     if path is not None:
         plt.savefig(path / 'training_losses.png')
+
+
+def evaluate(model, test_dl):
+    """
+    
+    """
+
+    # TODO 
+    predictions = []
+    # TODO stop saving targets, use true from 
+    # training inputs
+    targets = []
+
+    model.eval()
+
+    with torch.no_grad():
+        for xb, yb in test_dl:
+            # Get batch predictions from forward pass
+            pb = model(xb)
+
+            # Appdend batch's predictions to list as numpy array
+            predictions.append(pb.cpu().numpy())
+            targets.append(pb.cpu().numpy())
+
+        # Return concatentated predictions
+        return (
+            np.concatenate(predictions, axis=0),
+            np.concatenate(targets, axis=0)
+        )
+
+
+
+
+
+
