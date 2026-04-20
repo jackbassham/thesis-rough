@@ -109,7 +109,11 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Set up the project locally by following these steps.
+### System Requirements
+
+**Note** As of now, it is recommended to run this current version of the ML pipeline on an external server using a persistent session (*ie: screen*) to maintain fluid runtime. Data downloaded to disk will take at least 10 GB of space, and the data download steps may need to run overnight, depending on the region and temporal range selected. 
+
+
 <!-- This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
