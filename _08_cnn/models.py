@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 
+# TODO NOTE: nn.Conv2d supports complex types! Try complex input with CNN?
 
 class Hoffman_CNN(nn.Module):
     def __init__(self, in_channels, height, width):
