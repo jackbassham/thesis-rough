@@ -69,7 +69,7 @@ def main(cfg):
     # https://arxiv.org/abs/1711.05101
     # 
 
-    opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = 1e-2)
+    opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = 1e-4)
 
     # Define number of epochs
     num_epochs = 50 # Hoffman
