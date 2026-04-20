@@ -5,6 +5,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 from tqdm import tqdm
+from . import loss_funcs
 from . import models
 from . import utils
 
@@ -69,44 +70,17 @@ def main(cfg):
     # https://arxiv.org/abs/1711.05101
     # 
 
+    # Define the optimizer
     opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = 1e-4)
 
-    # Define number of epochs
-    num_epochs = 50 # Hoffman
+    # Define the number of training epochs
+    epochs = 50 # Hoffman
 
-    # Initialize losses
-    train_losses = []
-    val_losses = []
+    # Define the loss function
+    loss_func = loss_funcs.nrmse
 
-    # Train model
-    for epoch in range(num_epochs):
-        model.train()
-        train_loss = 0
-        for xb, yb in tqdm(train_dl, desc=f"Train Epoch {epoch+1}/{num_epochs}", leave=False):
-            # print(torch.isnan(xb).any(), torch.isinf(xb).any())
-            opt.zero_grad()
-            preds = model(xb)
-            loss = NRMSEloss(preds, yb)
-            loss.backward()
-            opt.step()
-            train_loss += loss.item()
-
-        model.eval()
-        val_loss = 0
-        for xb, yb in tqdm(val_dl, desc=f"Val   Epoch {epoch+1}/{num_epochs}", leave=False):
-            with torch.no_grad():
-                preds = model(xb)
-                loss = NRMSEloss(preds, yb)
-                val_loss += loss.item()
-
-        avg_train = train_loss / len(train_dl)
-        avg_val   = val_loss   / len(val_dl)
-
-        
-        train_losses.append(avg_train)
-        val_losses.append(avg_val)
-        
-        print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {avg_train:.4f} - Val Loss: {avg_val:.4f}")
+    # Train the model
+    train_losses, val_losses = utils.fit(epochs, model, loss_func, opt, train_dl, val_dl)
 
     # Load in model outputs destination path
     path_cnn_out = cfg.path_config.model_path('cnn_pt')
