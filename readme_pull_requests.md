@@ -36,7 +36,7 @@ nothing to commit, working tree clean
 git push origin <BRANCH_NAME>
 ```
 
-7. Navigate to the repo, and select `Compare & pull request` *(In green at the upper right corner of the repo)*
+7. Navigate to the repo on github, and select `Compare & pull request` *(In green at the upper right corner of the repo)*
 
 8. Use the `base:` pull-down to select `main` as the branch to merge into and the `compare:` pull-down to select
 `<BRANCH_NAME>` as the branch to merge changes from. Add a title and a short description of the changes.
