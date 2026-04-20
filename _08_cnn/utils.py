@@ -106,3 +106,23 @@ def initialize_weights_biases(layer):
         if layer.bias is not None:
             # Set that layer's bias to zero
             nn.init.zeros_(layer.bias)
+
+
+def loss_batch(model, loss_func, xb, yb, opt=None):
+    """
+    
+    """
+    # Compute loss for the batch
+    loss = loss_func(model(xb), yb)
+
+    # Perform backprop if an optimizer is passed in (ie: for training set)
+    if opt is not None:
+        # Reset the gradients from the last iteration
+        opt.zero_grad()
+        # Compute the gradients for each parameter
+        loss.backward()
+        # Update the weights, biases using the gradient
+        opt.step()
+        
+    # Return the loss
+    return loss.item(), len(xb)
