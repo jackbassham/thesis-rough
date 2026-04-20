@@ -8,9 +8,6 @@ from tqdm import tqdm
 from . import models
 from . import utils
 
-
-# TODO NOTE: nn.Conv2d supports complex types! Try complex input with CNN?
-
 """
 NOTE forward shapes from print statements
 layer 1: torch.Size([365, 7, 40, 261])
@@ -67,7 +64,12 @@ def main(cfg):
         print(f'param: {param}')
 
     # Initialize optimizer with weight decay (l2 regularization)
-    opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = 1e-4)
+    # NOTE try AdamW for weight decay similar to tf kernel weight regularization
+    #https://discuss.pytorch.org/t/how-to-implement-pytorch-equivalent-of-keras-kernel-weight-regulariser/99773
+    # https://arxiv.org/abs/1711.05101
+    # 
+
+    opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = 1e-2)
 
     # Define number of epochs
     num_epochs = 50 # Hoffman
