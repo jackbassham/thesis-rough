@@ -139,14 +139,41 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
     val_losses = []
 
     for epoch in range(epochs):
+
         model.train()
+        # Initialize loss and total number of losses to track training loss
+        total_loss = 0
+        total_num = 0
         # Iterate through batches and show progress bar
         for xb, yb in tqdm(train_dl, desc=f'Train Epoch {epoch+1}/{epochs}', leave=False):
-            loss, bs = loss_batch(model, loss_func, xb, yb, opt=opt)
-
+            # Compute batch's loss and get number samples in batch
+            loss, num = loss_batch(model, loss_func, xb, yb, opt=opt)
+            # Add batch's loss and number to total
+            total_loss += loss * num
+            total_num += num
+        # Compute average training loss over all batches for epoch
+        train_loss = total_loss / total_num
 
         model.eval()
+        # Initialize loss and total number of losses to track validation loss
+        total_loss = 0
+        total_num = 0
         with torch.no_grad():
             # Iterate through batches and show progress bar
             for xb, yb in tqdm(val_dl, desc=f'Val Epoch {epoch+1}/{epochs}', leave=False):
-                loss, bs = loss_batch(model, loss_func, xb, yb)
+                # Compute batch's loss and get number of samples in batch
+                loss, num = loss_batch(model, loss_func, xb, yb)
+                # Add batch's loss and number to total
+                total_loss += loss * num
+                total_num += num
+            # Compute average validation loss over all batches for epoch
+            val_loss = total_loss / total_num
+
+        # Append epoch's losses to lists
+        train_losses.append(train_loss)
+        val_losses.append(val_loss)
+
+        # Report epoch's losses
+        print(f'Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f} - Val Loss: {val_loss:.4f}')
+
+        return train_losses, val_losses
