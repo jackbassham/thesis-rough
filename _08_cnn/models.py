@@ -19,20 +19,18 @@ class Hoffman_CNN(nn.Module):
         self.conv4 = nn.Conv2d(28, 56, kernel_size=3, stride=1, padding='same')
         self.conv5 = nn.Conv2d(56, 112, kernel_size=3, stride=1, padding='same')
 
-        # Dynamically compute flattened size using dummy input
+        # Get size of features to regress in fully connected layer
         # NOTE THIS WORKS, LAZY LINEAR DOES NOT
         with torch.no_grad():
             dummy_input = torch.zeros(1, in_channels, height, width)
-            dummy_out = self.forward_features(dummy_input)
-            print(f'dummy out shape: {dummy_out.shape}')
-            print(f'dummy_out.view(1, -1).shape {dummy_out.view(1, -1).shape}')
-            flat_size = dummy_out.view(1, -1).shape[1]
-            print(f'flat size shape: {flat_size.shape}')
+            dummy_output = self.forward_features(dummy_input)
+            print(f'dummy out shape: {dummy_output.shape}')
+            print(f'dummy_out.view(1, -1).shape {dummy_output.view(1, -1).shape}')
+            in_features_size = dummy_output.view(1, -1).shape[1]
+            print(f'flat size shape: {in_features_size.shape}')
 
-
-        # Final fully connected layer
-        self.fc = nn.Linear(flat_size, 2 * height * width)
-
+        # Define final fully connected layer to regress features to output vectors
+        self.fc = nn.Linear(in_features_size, 2 * height * width)
 
     def forward_features(self, xb):
 
@@ -56,35 +54,14 @@ class Hoffman_CNN(nn.Module):
         return(F.dropout(xb, p=0.2))
 
 
-
     def forward(self, xb):
 
-        # Five convolutional layers
-        xb = F.relu(self.conv1(xb))
-        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-
-        xb = F.relu(self.conv2(xb))
-        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-
-        xb = F.relu(self.conv3(xb))
-        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-
-        xb = F.relu(self.conv4(xb))
-        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-
-        xb = F.relu(self.conv5(xb))
-        xb = F.max_pool2d(xb, kernel_size=2, stride=2)
-
-        # 20% random dropout
-        xb = F.dropout(xb, p=0.2)
+        xb = self.forward_features(xb)
 
         # Flatten features to 1D vector
         xb = torch.flatten(xb, start_dim=1)
 
-        # # Fully Connected Layer: Regress features to 1D vector of ui and vi outputs
-        # # TODO think about removing fully connected layer
-        # self.fc = nn.LazyLinear(2 * self.height * self.width)
-
+        # Regress features to 1D vector of ui and vi outputs
         xb = self.fc(xb)
 
         # Return the reshaped batch of ui and vi outputs
