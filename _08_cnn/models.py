@@ -27,7 +27,7 @@ class Hoffman_CNN(nn.Module):
             print(f'dummy out shape: {dummy_output.shape}')
             print(f'dummy_out.view(1, -1).shape {dummy_output.view(1, -1).shape}')
             in_features_size = dummy_output.view(1, -1).shape[1]
-            print(f'flat size shape: {in_features_size.shape}')
+            print(f'flat size shape: {in_features_size}')
 
         # Define final fully connected layer to regress features to output vectors
         self.fc = nn.Linear(in_features_size, 2 * height * width)
