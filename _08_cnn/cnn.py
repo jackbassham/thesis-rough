@@ -96,13 +96,10 @@ def main(cfg):
     # Make destination directory if missing
     cfg.path_config.makedir_if_missing(path_cnn_out)
 
-    # Plot losses
-    plot_losses(path_cnn_out, 'cnn_pt_lossses', num_epochs, train_losses, val_losses)
-
-    # Save model weights
+    # Save weights and biases
     torch.save(
         model.state_dict(), 
-        path_cnn_out / 'weights.pt'
+        path_cnn_out / 'parameters.pt'
         )
 
     print('Model weights saved')
