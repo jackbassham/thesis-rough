@@ -70,9 +70,6 @@ def main(cfg):
     ci_all = np.concatenate(ci_all, axis = 0)
     time_all = np.concatenate(time_all, axis = 0)
 
-    # Convert time to datetime64 object
-    time_all = np.array([np.datetime64(t) for t in time_all])
-
     # Save the data
     np.savez(
         path_raw / filename,
@@ -112,8 +109,8 @@ def load_iceconc_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
         if names_match:
             # Extract data with variable name from set
             name = next(iter(names_match))
-            ci = ds[name].values
-            time = ds['time'].values
+            ci = ds[name].values.astype(np.float32)
+            time = ds['time'].values.astype('datetime64[s]')
             return ci, time
         
         # Handle case where datset name not in set

@@ -1,5 +1,6 @@
 import io
 import time
+import numpy as np
 from requests import Session
 import xarray as xr
 
@@ -46,8 +47,8 @@ def load_lat_lon(url: str, session: Session):
 
     # Attempt to open dataset with xarray
     with open_netcdf_from_response(url, session) as ds:
-        lat = ds["latitude"].values
-        lon = ds["longitude"].values
+        lat = ds["latitude"].values.astype(np.float32)
+        lon = ds["longitude"].values.astype(np.float32)
 
     return lat, lon
 
@@ -59,8 +60,8 @@ def load_spatial_coordinates(url: str, session: Session):
     
     # Attempt to open dataset with xarray
     with open_netcdf_from_response(url, session) as ds:
-        y = ds["y"].values
-        x = ds["x"].values
+        y = ds["y"].values.astype(np.float32)
+        x = ds["x"].values.astype(np.float32)
 
     return y, x
 

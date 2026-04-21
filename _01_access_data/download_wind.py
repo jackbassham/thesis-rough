@@ -189,13 +189,13 @@ def load_daily_era5_wind(
 
             # Store lat and lon coordinate variables for the first year
             if i == 0:
-                data['lat'] = ds_daily.latitude
-                data['lon'] = ds_daily.longitude
+                data['lat'] = ds_daily.latitude.values.astype(np.float32)
+                data['lon'] = ds_daily.longitude.values.astype(np.float32)
 
             # Append data to variable lists as numpy objects
-            data['ua'].append(ds_daily.u10.values)
-            data['va'].append(ds_daily.v10.values)
-            data['time'].append(ds_daily.time.values)
+            data['ua'].append(ds_daily.u10.values.astype(np.float32))
+            data['va'].append(ds_daily.v10.values.astype(np.float32))
+            data['time'].append(ds_daily.time.values.astype('datetime64[D]'))
 
     # Delete the temporary target file
     os.remove(target)

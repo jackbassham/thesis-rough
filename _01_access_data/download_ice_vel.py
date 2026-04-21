@@ -97,10 +97,10 @@ def load_icevel_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
     # Attempt to open dataset with xarray
     with open_netcdf_from_response(url, session) as ds:
 
-        ui = ds['u'].values
-        vi = ds['v'].values
-        ri = ds['icemotion_error_estimate'].values
-        time = ds['time'].values
+        ui = ds['u'].values.astype(np.float32)
+        vi = ds['v'].values.astype(np.float32)
+        ri = ds['icemotion_error_estimate'].values.astype(np.float32)
+        time = ds['time'].values.astype('datetime64[D]')
 
     return ui, vi, ri, time
 
