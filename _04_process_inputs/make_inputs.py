@@ -101,11 +101,6 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
         'mask'
     ]
 
-    # Uncertainty lives in separate array (for now)
-    uncertainty = [
-        'ri_t0'
-    ]
-
     # Get input dimensions from first input
     nt, nlat, nlon = next(iter(inputs.values())).shape
 
