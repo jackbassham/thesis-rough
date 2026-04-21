@@ -11,8 +11,8 @@ from typing import Tuple
 
 @dataclass
 class OldGridProj:
-    lat_mesh: npt.NDArray[np.float64]
-    lon_mesh: npt.NDArray[np.float64]
+    lat_mesh: npt.NDArray[np.float32]
+    lon_mesh: npt.NDArray[np.float32]
     coordinates_are_vectors: bool = False
 
     def __post_init__(self):
@@ -91,8 +91,8 @@ class GridSpecs:
 
 @dataclass
 class NewRegGrid:
-    lat: npt.NDArray[np.float64]
-    lon: npt.NDArray[np.float64]
+    lat: npt.NDArray[np.float32]
+    lon: npt.NDArray[np.float32]
 
 
 @dataclass
@@ -134,8 +134,8 @@ def construct_regular_grid(grid_specs: GridSpecs) -> NewRegGrid:
     )
 
     return NewRegGrid(
-        lat = lat_reg, 
-        lon = lon_reg,
+        lat = lat_reg.astype(np.float32), 
+        lon = lon_reg.astype(np.float32),
         )
 
 
@@ -211,9 +211,9 @@ def compute_nearest_neighbor_indices(new_reg_grid: NewRegGrid, old_grid_proj: Ol
 
 
 def rotate_to_East_North(
-    u: npt.NDArray[np.float64], v: npt.NDArray[np.float64], 
+    u: npt.NDArray[np.float32], v: npt.NDArray[np.float32], 
     old_grid_proj: OldGridProj, hemisphere: str
-    ) -> Tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
+    ) -> Tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     """
     Rotates vector components to positive East/ North orientation.
     https://nsidc.org/data/user-resources/help-center/how-convert-horizontal-and-vertical-components-east-and-north
@@ -240,7 +240,7 @@ def rotate_to_East_North(
     return u_rot, v_rot
 
 
-def regrid_data(data: npt.NDArray[np.float64], interp_indices: InterpIndices):
+def regrid_data(data: npt.NDArray[np.float32], interp_indices: InterpIndices):
     """
     Regrids data using vectorized indexing into old data with indices jj and ii 
     that have same shape as new regular grid.
