@@ -130,10 +130,10 @@ def previous_day(variable):
 
 
 def create_data_masks(
-        ci_t0: npt.NDArray[np.floating], ui_t0: npt.NDArray[np.floating], vi_t0: npt.NDArray[np.floating],
+        ci_t0: npt.NDArray[np.float32], ui_t0: npt.NDArray[np.float32], vi_t0: npt.NDArray[np.float32],
         perc_ice_free_threshold: float=0.70,
         ice_conc_threshold: float=0.15
-) -> tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]:
+) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     """
     NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
     """
@@ -177,7 +177,7 @@ def create_data_masks(
     return mask_bad, mask_land_ocean
 
 
-def mask_inputs(inputs: dict, mask: npt.NDArray[np.floating]):
+def mask_inputs(inputs: dict, mask: npt.NDArray[np.float32]):
     """
     
     """
@@ -189,8 +189,8 @@ def mask_inputs(inputs: dict, mask: npt.NDArray[np.floating]):
 
 
 def compute_gridwise_means(
-        inputs: dict[str, npt.NDArray[np.floating]], axis: int=0
-    ) -> dict[str, npt.NDArray[np.floating]]:
+        inputs: dict[str, npt.NDArray[np.float32]], axis: int=0
+    ) -> dict[str, npt.NDArray[np.float32]]:
     """
     
     """
@@ -206,8 +206,8 @@ def compute_gridwise_means(
 
 
 def compute_global_stds(
-        inputs: dict[str, npt.NDArray[np.floating]]
-    ) -> dict[str, npt.NDArray[np.floating]]:
+        inputs: dict[str, npt.NDArray[np.float32]]
+    ) -> dict[str, npt.NDArray[np.float32]]:
     """
     
     """
@@ -224,10 +224,10 @@ def compute_global_stds(
 
 
 def z_score_normalize_inputs(
-        inputs: dict[str, npt.NDArray[np.floating]],
-        gridwise_means: dict[str, npt.NDArray[np.floating]],
-        global_stds: dict[str, npt.NDArray[np.floating]],
-    ) -> tuple[dict[str, npt.NDArray[np.floating]], dict[str, npt.NDArray[np.floating]]]:
+        inputs: dict[str, npt.NDArray[np.float32]],
+        gridwise_means: dict[str, npt.NDArray[np.float32]],
+        global_stds: dict[str, npt.NDArray[np.float32]],
+    ) -> tuple[dict[str, npt.NDArray[np.float32]], dict[str, npt.NDArray[np.float32]]]:
     """
     # NOTE: Normalization (z-score, for comparison between variables - 0 mean, 1 std)
     # 1. Compute temporal mean, gridwise
