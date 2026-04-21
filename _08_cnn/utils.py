@@ -238,9 +238,3 @@ def evaluate(model, test_dl):
             np.concatenate(predictions, axis=0),
             np.concatenate(targets, axis=0)
         )
-
-
-
-
-
-
