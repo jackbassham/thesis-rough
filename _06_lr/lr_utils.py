@@ -76,20 +76,3 @@ def build_complex_uncertainty_weights(r, epsilon=1e-4):
     w = 1 / (zr_squared + epsilon)
 
     return w
-
-
-def build_gram_and_data_matrices(targets: tuple, features: tuple, uncertainty: np.ndarray | None = None):
-
-
-
-    # Stack features into gram matrix along channel dimensions
-    # NOTE last column is constant and consists of ones, same dtype as features
-    G = np.stack(
-        [features, np.ones_like(features[0])],
-        axis=1
-    )
-    
-    # Transpose targets into data matrix
-    d = targets.T
-    
-    return (G, d)
