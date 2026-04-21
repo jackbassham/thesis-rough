@@ -119,6 +119,11 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     # Add channel dimension on uncertainty to match targets, features
     ri_t0 = inputs['ri_t0'][:, np.newaxis, :, :]
 
+    # Convert nan values in uncertainty to 1000 (flag)
+    ri_t0 = np.nan_to_num(ri_t0, nan=1000.0)
+
+    # TODO convert nan values in all inputs to 0
+
     print(y.shape)
     print(x.shape)
 
