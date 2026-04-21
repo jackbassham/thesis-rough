@@ -116,13 +116,16 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     for i, name in enumerate(features):
         x[:, i] = inputs[name]
 
+    # Convert nan values in targets, features to zero and float32()
+    # NOTE PyTorch default for model is FLoat (np.float32 equivalent) 
+    y = np.nan_to_num(y, nan=0.0).astype(np.float32)
+    x = np.nan_to_num(x, nan=0.0).astype(np.float32)
+
     # Add channel dimension on uncertainty to match targets, features
     ri_t0 = inputs['ri_t0'][:, np.newaxis, :, :]
 
-    # Convert nan values in uncertainty to 1000 (flag)
-    ri_t0 = np.nan_to_num(ri_t0, nan=1000.0)
-
-    # TODO convert nan values in all inputs to 0
+    # Convert nan values in uncertainty to 1000 (flag) and float32()
+    ri_t0 = np.nan_to_num(ri_t0, nan=1000.0).astype(np.float(32))
 
     print(y.shape)
     print(x.shape)
