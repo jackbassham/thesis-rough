@@ -78,23 +78,6 @@ def build_complex_uncertainty_weights(r, epsilon=1e-4):
     return w
 
 
-
-
-def make_complex_weights(uncertainty):
-    """
-    
-    """
-
-    # Convert squared uncertainty to complex
-    # NOTE squared uncertainty used for weighting
-    # z_r**2 = (r_u + ir_v)(r_u - ir_v)
-    #      = r_u**2 + r_v**2
-    #   if r_u = r_v = r, z_r**2 = 2r**2  
-    uncertainty = 2 * uncertainty ** 2
-
-    return uncertainty
-
-
 def build_gram_and_data_matrices(targets: tuple, features: tuple, uncertainty: np.ndarray | None = None):
 
 
