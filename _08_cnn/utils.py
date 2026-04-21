@@ -34,15 +34,10 @@ def get_datasets(config, device):
     val = np.load(path_model_inputs / 'val.npz')
     test = np.load(path_model_inputs / 'test.npz')
 
-    # FIXME debug Double type from model_inputs, (converted to np.float32 in data download)
+    # NOTE double enforcing that inputs are PyTorch Float
     x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]).float(), torch.from_numpy(train['y']).float()
     x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]).float(), torch.from_numpy(val['y']).float()
     x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]).float(), torch.from_numpy(test['y']).float()
-
-    # Convert nans to zeros
-    x_train, y_train = torch.nan_to_num(x_train), torch.nan_to_num(y_train)
-    x_val, y_val = torch.nan_to_num(x_val), torch.nan_to_num(y_val)
-    x_test, y_test = torch.nan_to_num(x_test), torch.nan_to_num(y_test)
 
     # Move tensors to device
     x_train, y_train = x_train.to(device), y_train.to(device)
