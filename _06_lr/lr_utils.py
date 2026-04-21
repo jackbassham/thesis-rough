@@ -19,48 +19,65 @@ def load_input_data_from_npz(config):
     x_test, y_test, mask_test = test['x'], test['y'], test['mask']
 
 
-def make_complex_features_targets(x, y):
+def build_complex_features(x):
     """
     
     """
-
-    # Convert nans to zeros
-    # NOTE filling nan with zero now to reflect Hoffman and CNN
-    x = np.nan_to_num(x, nan=0.0)
-    y = np.nan_to_num(y, nan=0.0)
 
     # Unpack features
     ua_t0, va_t0, ci_t1 = x[:,0], x[:,1], x[:,2]
+    
     # TODO include mask values as weights in LR
     # NOTE Going to experiment with including mask in both LR and CNN
-    mask = x[:,3]
+    # mask = x[:,3]
 
     # Make complex features
-    za_t0 = ua_t0 + va_t0*1j # Complex pesent day day wind vector
-    zci_t1 = ci_t1 + ci_t1*1j # Complex previous day ice concentration
+    za_t0 = ua_t0 + va_t0*1j 
+    zci_t1 = ci_t1 + ci_t1*1j
 
-    # Unpack targets
-    ui_t0, vi_t0 = y[:,0], y[:,1]
+    # Create list of features
+    features = [
+        za_t0, # Complex pesent day day wind vector
+        zci_t1, # Complex previous day ice concentration
+    ]
 
-    # Make complex targets
-    zi_t0 = ui_t0 + vi_t0*1j # Complex previous day ice velocity vector
+    # Stack features into feature matrix columns (number_samples, number_features)
+    X = np.stack(features, axis=1)
 
-    return za_t0, zci_t1, zi_t0
+    # Add a column of ones along feature axis to represent the constant parameter
+    X = np.concatenate(
+        [X, np.ones((X.shape[0], 1), dtype=complex)],
+        axis=1
+    )
+
+    return X
 
 
-def get_input_dimensions(input: dict[str, npt.NDArray]):
+def build_complex_targets(y):
+    """
+    
+    """
+    return y[:,0] + y[:,1]*1j # Complex previous day ice velocity vector
+
+
+def build_complex_uncertainty_weights(r, epsilon=1e-4):
     """
     
     """
 
-    # Get dimensions from first input assuming shape (time, channel, height, width)
-    in_channels, height, width = np.shape(next(iter(input.values())))[1:]
+    # Convert squared uncertainty to complex
+    # NOTE squared uncertainty used for weighting
+    # z_r**2 = (r_u + ir_v)(r_u - ir_v)
+    #      = r_u**2 + r_v**2
+    #   if r_u = r_v = r, z_r**2 = 2r**2  
+    zr_squared = 2 * r ** 2
 
-    return(
-        in_channels,
-        height,
-        width
-    )
+    # Compute model weights as inverse uncertainty squared + small correction
+    w = 1 / (zr_squared + epsilon)
+
+    return w
+
+
 
 
 def make_complex_weights(uncertainty):
