@@ -1,24 +1,49 @@
-from . import lr_utils
+import numpy as np
+from tqdm import tqdm
 
-
-class GridwiseClosedFormLR:
+class BaseGridwiseLR:
     def __init__(self, feature_fcn, target_fcn):
         self.feature_fcn = feature_fcn
         self.target_fcn = target_fcn
         # Initialize coefficients
         self.coef_ = None
 
+    def _solve(self, X, y, w=None):
+        """
+        Overide in subclasses
+        """
+        raise NotImplementedError
+    
 
+    def fit(self, x, y, r=None):
+        """
+        
+        """
 
-        def fit(self, x, y):
+        # Infer shape from inputs
+        n_samples, _, height, width = x.shape
 
-            # Initialize complex parameters
+        # Build feature matrix (n_samples, n_features+1, height, width)
+        X = self.feature_fcn(x)
 
-            # Make complex features and targets
-            za_t0, zci_t1, zi_t0 = 
+        # Build target vector
+        y = self.target_fcn(y)
 
-            for i in range(self.width):
-                for j in range(self.height):
+        # Infer number of features from feature matrix
+        in_features = X.shape[1]
+
+        # Initialize coefficients
+        self.coef_ = np.full((in_features, height, width), np.nan, dtype=complex)
+
+        # Loop through gridpoints
+        for i in range(width):
+            for j in range(height):
+
+            X_ji = X[:, :, j, i]
+            y_ji = y[:, :, j, i]
+
+            # Solve for coefficients at gridpoint
+
 
 
             
