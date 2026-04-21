@@ -25,6 +25,7 @@ def make_complex_features_targets(x, y):
     """
 
     # Convert nans to zeros
+    # NOTE filling nan with zero now to reflect Hoffman and CNN
     x = np.nan_to_num(x, nan=0.0)
     y = np.nan_to_num(y, nan=0.0)
 
