@@ -37,7 +37,7 @@ class BaseGridwiseLR:
         # Infer number of features from feature matrix
         in_features = X.shape[1]
 
-        # Initialize coefficients
+        # Initialize complex coefficients array
         self.coef_ = np.full((in_features, height, width), np.nan, dtype=complex)
 
         # Loop through gridpoints
@@ -69,10 +69,25 @@ class BaseGridwiseLR:
         # Check that model was fit and coefficients exist before predicting
         if self.coef_ is None:
             raise ValueError('Fit model to solve for coefficients before making predictions')
-        
-        
 
+        # Infer shape from inputs
+        n_samples, _, height, width = x.shape
 
+        # Initialize complex predictions array
+        preds = np.full((n_samples, height, width), np.nan, dtype=complex)
+
+        # Build feature matrix (n_samples, n_features, height, width)
+        X = self.feature_fcn(x)
+
+        # Loop through gridpoints
+        for j in range(height):
+            for i in tqdm(range(width), desc='Gridpoints', leave=False):
+
+                X_ji = X[:,:,j,i]
+                # Use coefficients to make prediction
+                preds[:,j,i] = X_ji @ self.coef[:,j,i]
+
+        return preds
 
 
 class GridwiseClosedFormWeightedLR():
