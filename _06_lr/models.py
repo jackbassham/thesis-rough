@@ -1,5 +1,6 @@
 import numpy as np
 from tqdm import tqdm
+import scipy
 
 class BaseGridwiseLR:
     def __init__(self, feature_fcn, target_fcn):
@@ -7,6 +8,7 @@ class BaseGridwiseLR:
         self.target_fcn = target_fcn
         # Initialize coefficients
         self.coef_ = None
+
 
     def _solve(self, X, y, w=None):
         """
@@ -107,10 +109,10 @@ class WeightedLR(BaseGridwiseLR):
     def _solve(self, X, y, w):
 
         # Diagonalize weights using sparse diags
-        ...
+        W = scipy.sparse.diags(w)
 
         # Solve with close form solution
-        ...
+        return np.linalg.inv(X.conj().T @ W @ X) @ X.conj().T @ W @ y
 
 
 
