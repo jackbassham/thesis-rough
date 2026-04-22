@@ -111,10 +111,26 @@ class BaseGridwiseLR:
         return Z_preds
     
 
+    def _z_to_vector(z):
+        """
+
+        """
+
+        return np.stack(
+            [z.real, z.imag],
+            axis=1
+        )
+    
+    
+    def R_preds(self):
+        return self._z_to_vector(self.Z_preds)
+
+
 class UnweightedLR(BaseGridwiseLR):
     # Overide base solve with closed form solution to LR
     def _solve(self, X, y, w=None):
         return np.linalg.inv((X.conj().T @ X)) @ X.conj.T @ y.T
+
 
 class WeightedLR(BaseGridwiseLR):
     def __init__(self, feature_fcn, target_fcn, weight_fcn):
