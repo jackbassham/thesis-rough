@@ -21,13 +21,18 @@ class BaseGridwiseLR:
         """
 
         # Infer shape from inputs
-        n_samples, _, height, width = x.shape
+        _, _, height, width = x.shape
 
-        # Build feature matrix (n_samples, n_features+1, height, width)
+        # Build feature matrix (n_samples, n_features, height, width)
         X = self.feature_fcn(x)
 
         # Build target vector
         y = self.target_fcn(y)
+
+        # Get weights if uncertainty passed to model instance
+        w = None
+        if r is not None:
+            w = self._buid_weights(r)
 
         # Infer number of features from feature matrix
         in_features = X.shape[1]
@@ -36,32 +41,45 @@ class BaseGridwiseLR:
         self.coef_ = np.full((in_features, height, width), np.nan, dtype=complex)
 
         # Loop through gridpoints
-        for i in range(width):
-            for j in range(height):
+        for j in range(height):
+            for i in tqdm(range(width), desc='Gridpoints', leave=False):
 
-            X_ji = X[:, :, j, i]
-            y_ji = y[:, :, j, i]
+                X_ji = X[:,:,j,i]
+                y_ji = y[:,:,j,i]
 
-            # Solve for coefficients at gridpoint
+            # Get weights if passed to model instance
+            w_ji = None if w is None else w[:,j,i]
 
-
-
+            try:
+                # Try to solve for coefficients
+                self.coef_[:,j,i] = self._solve(X_ji, y_ji, w_ji)
             
+            # Print any errors that occur in solving at a gridpoint
+            except Exception as e:
+                print(f'Failed at (j={j}, i={i}): {e}')
 
-    def fit(self, x, y):
+        return self
+    
+
+    def predict(self, x):
         """
         
         """
 
-
-    def test(self, x, parameters):
-        """
+        # Check that model was fit and coefficients exist before predicting
+        if self.coef_ is None:
+            raise ValueError('Fit model to solve for coefficients before making predictions')
         
-        """
+        
+
+
 
 
 class GridwiseClosedFormWeightedLR():
     def __init__(self, in_channels, height, width):
         self.parameters_ = None
 
+
+        # Solve for coefficients at gridpoint
+        self.coef_[:,j,i] = (np.linalg.inv((X_ji.conj().T @ X_ji))) @ X_ji.conj.T @ y_ji.T
         
