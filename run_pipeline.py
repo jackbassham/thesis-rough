@@ -111,7 +111,7 @@ def step_download_ice_conc(config):
 
 
 def step_download_wind(config):
-    from _01_access_data.download_wind_jra55 import main
+    from _01_access_data.download_wind import main
     main(config)
 
 
