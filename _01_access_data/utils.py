@@ -1,17 +1,29 @@
 import io
 import time
 import numpy as np
-from requests import Session
+import requests
+from typing import Optional
 import xarray as xr
 
 #TODO use tqdm for progress
 
+
 def open_netcdf_from_response(
-        url: str, session: Session, retries=3, delay=5
-        ) -> xr.Dataset:
+        url: str, 
+        retries: int =3, 
+        delay: int =5, 
+        session: Optional[requests.Session] = None,
+) -> xr.Dataset:
     """
     
     """
+
+    # If custom session not provided (default)
+    if session is None:
+        # Instantiate default session
+        session = requests.Session()
+        # Enable ~/.netrc use for authorization
+        session.trust_env = True
     
     # Attempt to access file for number of retries
     for attempt in range(retries):
