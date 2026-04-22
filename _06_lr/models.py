@@ -1,13 +1,14 @@
 import numpy as np
 from tqdm import tqdm
+from . import lr_utils
 import scipy
 
 class BaseGridwiseLR:
     def __init__(self, feature_fcn, target_fcn):
         self.feature_fcn = feature_fcn
         self.target_fcn = target_fcn
-        # Initialize coefficients
-        self.coef_ = None
+        # Initialize complex coefficients
+        self.Z_coef_ = None
 
 
     def _solve(self, X, y, w=None):
@@ -40,7 +41,7 @@ class BaseGridwiseLR:
         in_features = X.shape[1]
 
         # Initialize complex coefficients array
-        self.coef_ = np.full((in_features, height, width), np.nan, dtype=complex)
+        self.Z_coef_ = np.full((in_features, height, width), np.nan, dtype=complex)
 
         # Loop through gridpoints
         for j in range(height):
@@ -53,8 +54,8 @@ class BaseGridwiseLR:
             w_ji = None if w is None else w[:,j,i]
 
             try:
-                # Try to solve for coefficients
-                self.coef_[:,j,i] = self._solve(X_ji, y_ji, w_ji)
+                # Try to solve for complex coefficients
+                self.Z_coef_[:,j,i] = self._solve(X_ji, y_ji, w_ji)
             
             # Print any errors that occur in solving at a gridpoint
             except Exception as e:
@@ -63,20 +64,38 @@ class BaseGridwiseLR:
         return self
     
 
+    def R_coef_(self):
+        """
+        
+        """
+
+        # Initialize real coefficient array with shape inferred by complex array
+        # (n_Re * n_Im, n_samples, height, width)
+        m = np.empty((2*self.Z_coef_.shape[0], *self.Z_coef_.shape[1:]))
+
+        # Starting at the first entry, every other entry is Real
+        m[0::2] = self.Z_coef_.real
+
+        # Starting at the second entry, every other entry is Imaginary
+        m[1::2] = self.Z_coef_.imag
+
+        return m
+    
+
     def predict(self, x):
         """
         
         """
 
-        # Check that model was fit and coefficients exist before predicting
-        if self.coef_ is None:
+        # Check that model was fit and complex coefficients exist before predicting
+        if self.Z_coef_ is None:
             raise ValueError('Fit model to solve for coefficients before making predictions')
 
         # Infer shape from inputs
         n_samples, _, height, width = x.shape
 
         # Initialize complex predictions array
-        preds = np.full((n_samples, height, width), np.nan, dtype=complex)
+        Z_preds = np.full((n_samples, height, width), np.nan, dtype=complex)
 
         # Build feature matrix (n_samples, n_features, height, width)
         X = self.feature_fcn(x)
@@ -87,9 +106,10 @@ class BaseGridwiseLR:
 
                 X_ji = X[:,:,j,i]
                 # Use coefficients to make prediction
-                preds[:,j,i] = X_ji @ self.coef[:,j,i]
+                Z_preds[:,j,i] = X_ji @ self.Z_coef_[:,j,i]
 
-        return preds
+        return Z_preds
+    
 
 class UnweightedLR(BaseGridwiseLR):
     # Overide base solve with closed form solution to LR

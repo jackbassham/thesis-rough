@@ -1,6 +1,6 @@
+from . import models
 import numpy as np
-from numpy import linalg as LA
-import os
+from . import lr_utils
 
 # Define model type string for saving predictions
 MODEL_STR = 'lr_cf'
@@ -21,7 +21,17 @@ def main(cfg):
     # Get features and targets from data, excluding mask (last feature)
     x_test, y_test = test['x'][:,:-1,:,:], test['y'][:,:-1,:,:]    
 
-    # Fit model and solve for coefficients
+    # Instantiate model
+    model = models.UnweightedLR(
+        lr_utils.build_complex_features,
+        lr_utils.build_complex_targets,
+    )
+
+    # Perform fit and solve for coefficients
+    model.fit(x_train, y_train)
+
+
+
 
     # Train model
     zm, zfit_tr, ztrue_tr = lr_train(x_train, y_train)
@@ -86,197 +96,7 @@ def main(cfg):
 
     return
 
-def lr_train(x_train, y_train):
 
-    # TODO dynamic number of input channels and coefficients
-
-    # Define number of input channels for gram matrix
-    nin = 3 # complex wind (za), complex ice concentration (zci), complex constant 
-
-    # Define number of complex coefficients
-    nzm = 3 # A, B, C
-   
-    # Get dimensions for output arrays
-    nt, _, nlat, nlon = np.shape(y_train)
-
-    # Unpack target arrays
-    ui_t0 = y_train[:,0,:,:]
-    vi_t0 = y_train[:,1,:,:]
-
-    # Unpack feature arrays
-    ua_t0 = x_train[:,0,:,:]
-    va_t0 = x_train[:,1,:,:]
-    ci_t1 = x_train[:,2,:,:]
-
-    # TODO fix nin for zm_all (just a coincidence that it matches with nin)
-    # need A, B, C (za, ua, constant)
-
-    # TODO switch order of gram matrix so constant is at end?
-    # for consisitency with lr equation Ax + Bx + C
-
-    # Initialize output arrays
-    ztrue_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # true present day ice velocity vector, complex
-    zfit_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # present day fit ice velocity, complex
-    zm_all = np.full((nzm, nlat, nlon), np.nan, dtype = complex) # lr coefficients (A, B, C), complex
-    
-    # Iterate through each latitude, longitude gridpoint
-    for ilat in range(nlat):
-        for ilon in range(nlon):
-
-            # Skip over land points
-            if np.all(np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))):
-                continue
-
-            else:
-                try:
-                    # Handle missing data
-                    
-                    # Initialize mask for valid values
-                    true_mask = np.ones_like(ui_t0[:,ilat,ilon], dtype=bool) # 1 = True = Inclusion
-
-                    # Set 'True' for indices with nan values, 'False' for valid
-                    inan = np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))
-
-                    # Set NaN indices to False (Exclusion) (~ inverts 'True' where nan to 'False')
-                    true_mask = ~inan
-
-                    # Filter inputs to valid indices
-                    ui_t0_filt = ui_t0[true_mask,ilat,ilon]
-                    vi_t0_filt = vi_t0[true_mask,ilat,ilon]
-                    ua_t0_filt = ua_t0[true_mask,ilat,ilon]
-                    va_t0_filt = va_t0[true_mask,ilat,ilon]
-                    ci_t1_filt = ci_t1[true_mask,ilat,ilon]
-
-                    # Convert to complex
-                    zi_t0 = ui_t0_filt + vi_t0_filt*1j # Complex 'today' ice velocity vector       
-                    za_t0 = ua_t0_filt + va_t0_filt*1j # Complex 'today' wind vector
-                    zci_t1 = ci_t1_filt + ci_t1_filt*1j # Complex 'yesterday' ice concentration
-                    
-                    # Store true complex ice velocity vectors at valid points
-                    ztrue_all[true_mask, ilat, ilon] = zi_t0
-
-                    # Define size of valid batch at current grid point
-                    nt_ij = len(ui_t0_filt)
-
-                    # Define gram matrix
-                    G = np.ones(((nt_ij, nin)), dtype = complex) 
-
-                    G[:,0] = za_t0 # Present day wind velocity, complex
-                    G[:,1] = zci_t1 # Previous day ice concentration, complex
-                    
-                    # NOTE last column of G constant
-
-                    # Define data matrix
-                    d = zi_t0.T
-
-                    # Solve for lr coefficients
-                    zm = (LA.inv((G.conj().T @ G))) @ G.conj().T @ d
-
-                    # Save lr coefficients
-                    for izm in range(len(zm)):
-                        zm_all[izm, ilat, ilon] = zm[izm]
-
-                    # Calculate fit
-                    zfit = G @ zm
-                    
-                    # Store predicted complex ice velocity vectors at valid points
-                    zfit_all[true_mask, ilat, ilon] = zfit
-
-                except Exception as e:
-                    print(f"Error at lat={ilat}, lon={ilon}: {e}")
-
-        print(f'lat {ilat} complete')
-        
-    return zm_all, zfit_all, ztrue_all
-
-def lr_test(x_test, y_test, zm):
-
-    # TODO dynamic number of input channels and coefficients
-
-    # Define number of input channels for gram matrix
-    nin = 3 # complex wind (za), complex ice concentration (zci), complex constant 
-   
-    # Get dimensions for output arrays
-    nt, _, nlat, nlon = np.shape(y_test)
-
-    # Unpack target arrays
-    ui_t0 = y_test[:,0,:,:]
-    vi_t0 = y_test[:,1,:,:]
-
-    # Unpack feature arrays
-    ua_t0 = x_test[:,0,:,:]
-    va_t0 = x_test[:,1,:,:]
-    ci_t1 = x_test[:,2,:,:]
-      
-    # Initialize output arrays
-    ztrue_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # True complex 'today' ice velocity vectors
-    zpred_all = np.full((nt, nlat, nlon), np.nan, dtype = complex) # Predicted complex 'today' ice velocity vectors
-    
-    # Iterate through each latitude, longitude gridpoint
-    for ilat in range(nlat):
-        for ilon in range(nlon):
-
-            # Skip over land points
-            if np.all(np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))):
-                continue
-
-            else:
-                try:
-                    # Handle missing data
-                    
-                    # Initialize mask for valid values
-                    true_mask = np.ones_like(ui_t0[:,ilat,ilon], dtype=bool) # 1 = True = Inclusion
-
-                    # Set 'True' for indices with nan values, 'False' for valid
-                    inan = np.logical_or(np.isnan(ui_t0[:,ilat,ilon]), np.isnan(vi_t0[:,ilat,ilon]))
-
-                    # Set NaN indices to False (Exclusion) (~ inverts 'True' where nan to 'False')
-                    true_mask = ~inan
-
-                    # Filter inputs to valid indices
-                    ui_t0_filt = ui_t0[true_mask,ilat,ilon]
-                    vi_t0_filt = vi_t0[true_mask,ilat,ilon]
-                    ua_t0_filt = ua_t0[true_mask,ilat,ilon]
-                    va_t0_filt = va_t0[true_mask,ilat,ilon]
-                    ci_t1_filt = ci_t1[true_mask,ilat,ilon]
-
-                    # Convert to complex
-                    zi_t0 = ui_t0_filt + vi_t0_filt*1j # Complex 'today' ice velocity vector       
-                    za_t0 = ua_t0_filt + va_t0_filt*1j # Complex 'today' wind vector
-                    zci_t1 = ci_t1_filt + ci_t1_filt*1j # Complex 'yesterday' ice concentration
-                    
-                    # Store true complex ice velocity vectors at valid points
-                    ztrue_all[true_mask, ilat, ilon] = zi_t0
-
-                    # Define size of valid batch at current grid point
-                    nt_ij = len(ui_t0_filt)
-
-                    # Define gram matrix
-                    G = np.ones(((nt_ij, nin)), dtype = complex) 
-
-                    G[:,0] = za_t0 # Present day wind velocity, complex
-                    G[:,1] = zci_t1 # Previous day ice concentration, complex
-                    
-                    # NOTE last column of G constant
-
-                    # Define data matrix
-                    d = zi_t0.T
-
-                    # Get valid coefficients at grid point
-                    zm_ij = zm[:,ilat,ilon]
-
-                    # Calculate fit
-                    zpred = G @ zm_ij
-            
-                    # Store predicted complex ice velocity vectors at valid points
-                    zpred_all[true_mask, ilat, ilon] = zpred
-
-                except Exception as e:
-                    print(f"Error at lat={ilat}, lon={ilon}: {e}")
-
-        print(f'ilat {ilat} complete')
-
-    return zpred_all, ztrue_all
 
 if __name__ == "__main__":
     main()
