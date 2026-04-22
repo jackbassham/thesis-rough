@@ -35,14 +35,23 @@ def load_config():
     USER_DATA_ROOT = None
     # USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
 
-    # Create instance of data parameters specific to run
+    # Weddell Sea Test Set
     data_config = DataConfig(
         hemisphere = 'south',
-        year_range = (1992, 2020), # At least 6 years
-        latitude_bounds = (-80, -62),
-        longitude_bounds = (-180, 180),
-        grid_resolution = 25
+        year_range = (2010, 2016), # At least 6 years
+        latitude_bounds = (-79, -62), # Weddell Sea, small subset
+        longitude_bounds = (-70, -15),
+        grid_resolution = 25,
     )
+
+    # # Create instance of data parameters specific to run
+    # data_config = DataConfig(
+    #     hemisphere = 'south',
+    #     year_range = (1992, 2020), # At least 6 years
+    #     latitude_bounds = (-80, -62),
+    #     longitude_bounds = (-180, 180),
+    #     grid_resolution = 25
+    # )
 
     # FIXME use .netrc (Earthdata rec) for login credentials, or prompt user
     # Create instance of login credentials for Nasa Earth Data access
