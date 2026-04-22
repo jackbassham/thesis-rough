@@ -10,8 +10,8 @@ import xarray as xr
 
 def open_netcdf_from_response(
         url: str, 
-        retries: int =3, 
-        delay: int =5, 
+        retries: int = 3, 
+        delay: int = 5, 
         session: Optional[requests.Session] = None,
 ) -> xr.Dataset:
     """
@@ -52,26 +52,26 @@ def open_netcdf_from_response(
                 raise
 
 
-def load_lat_lon(url: str, session: Session):
+def load_lat_lon(url: str):
     """
     
     """
 
     # Attempt to open dataset with xarray
-    with open_netcdf_from_response(url, session) as ds:
+    with open_netcdf_from_response(url) as ds:
         lat = ds["latitude"].values.astype(np.float32)
         lon = ds["longitude"].values.astype(np.float32)
 
     return lat, lon
 
 
-def load_spatial_coordinates(url: str, session: Session):
+def load_spatial_coordinates(url: str):
     """
     
     """
     
     # Attempt to open dataset with xarray
-    with open_netcdf_from_response(url, session) as ds:
+    with open_netcdf_from_response(url) as ds:
         y = ds["y"].values.astype(np.float32)
         x = ds["x"].values.astype(np.float32)
 

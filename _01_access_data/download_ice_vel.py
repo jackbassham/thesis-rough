@@ -50,7 +50,7 @@ def main(cfg):
     for i, url in enumerate(url_builder.build()):
 
         # Load current url data
-        ui, vi, ri, time = load_icevel_data(url, earth_data_session)
+        ui, vi, ri, time = load_icevel_data(url)
 
         # Append to lists
         ui_all.append(ui)
@@ -60,8 +60,8 @@ def main(cfg):
 
         # Get lat lon variables and coordinates once from first url
         if i == 0:
-            lat, lon = load_lat_lon(url, earth_data_session)
-            y, x = load_spatial_coordinates(url, earth_data_session)
+            lat, lon = load_lat_lon(url)
+            y, x = load_spatial_coordinates(url)
 
         # Print step
         print(f'url index {i} loaded')
@@ -89,13 +89,13 @@ def main(cfg):
     )
 
 
-def load_icevel_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
+def load_icevel_data(url: str) -> Tuple[npt.NDArray, ...]:
     """
     
     """
 
     # Attempt to open dataset with xarray
-    with open_netcdf_from_response(url, session) as ds:
+    with open_netcdf_from_response(url) as ds:
 
         ui = ds['u'].values.astype(np.float32)
         vi = ds['v'].values.astype(np.float32)

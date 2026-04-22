@@ -6,7 +6,6 @@ from typing import Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from requests import Session
 
-from .earthdata_auth import create_earthdata_session
 from .urls import (
     IceConcURLBuilder,
     PSGridURLBuilder,
@@ -32,9 +31,6 @@ def main(cfg):
         cfg.dataset_config.ice_conc,
         'raw',
     )
-    
-    # Create Nasa Earth Data session
-    earth_data_session = create_earthdata_session()
 
     # Initialize url builder
     url_builder = IceConcURLBuilder(cfg)
@@ -46,7 +42,7 @@ def main(cfg):
     for i, url in enumerate(url_builder.build()):
 
         # Load current url data
-        ci, time = load_iceconc_data(url, earth_data_session)
+        ci, time = load_iceconc_data(url)
 
         # Append to lists
         ci_all.append(ci)
@@ -54,7 +50,7 @@ def main(cfg):
 
         # Get lat lon variables and coordinates once from first url
         if i == 0:
-            y, x = load_spatial_coordinates(url, earth_data_session)
+            y, x = load_spatial_coordinates(url)
 
         # Print step
         print(f'url index {i} loaded')
@@ -64,7 +60,7 @@ def main(cfg):
 
     # Load lat and lon variables once from the polar stereographic grid
     for url in url_builder.build():
-        lat, lon = load_lat_lon(url, earth_data_session)    
+        lat, lon = load_lat_lon(url)    
 
     # Concatenate data lists along time dimension
     ci_all = np.concatenate(ci_all, axis = 0)
@@ -82,7 +78,7 @@ def main(cfg):
     )
 
 
-def load_iceconc_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
+def load_iceconc_data(url: str) -> Tuple[npt.NDArray, ...]:
     """
     
     """
@@ -98,7 +94,7 @@ def load_iceconc_data(url: str, session: Session) -> Tuple[npt.NDArray, ...]:
     }
 
     # Attempt to open dataset with xarray
-    with open_netcdf_from_response(url, session) as ds:
+    with open_netcdf_from_response(url) as ds:
 
         # Get set of variable names in dataset
         ds_var_names = set(ds.data_vars)

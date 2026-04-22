@@ -4,7 +4,6 @@ from .config import(
     DatasetConfig, 
     VersionConfig, 
     PathConfig, 
-    LoginCredentials,
     PipelineConfig,
 )
 from .parse_args import parse_args
@@ -13,7 +12,7 @@ from .parse_args import parse_args
 def main():
 
     # Load in configuration defined in function below
-    data_config, version_config, paths, login_credentials = load_config()
+    data_config, version_config, paths = load_config()
 
 
 def load_config():
@@ -53,13 +52,6 @@ def load_config():
     #     grid_resolution = 25
     # )
 
-    # FIXME use .netrc (Earthdata rec) for login credentials, or prompt user
-    # Create instance of login credentials for Nasa Earth Data access
-    Earthdata_login_credentials = LoginCredentials(
-        username = 'jbassham',
-        password = '$EarthDataPass2026'
-    )
-
     # Create configuration instance of dataset info
     dataset_config = DatasetConfig(
         ice_vel=DatasetInfo('ice_vel', 'nsidc0016', 'v4', 'ease', '.npz'),
@@ -92,7 +84,6 @@ def load_config():
         dataset_config = dataset_config,
         version_config = version_config,
         path_config = path_config,
-        login_credentials = Earthdata_login_credentials,
     )
 
 
