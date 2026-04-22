@@ -35,6 +35,7 @@ def main(cfg):
     cfg.path_config.makedir_if_missing(path_out)
 
     # Save coefficinets
+    # TODO coefficient labels/ names in dict?
     np.savez(
         path_out / 'coeffients.npz',
         R_coef
