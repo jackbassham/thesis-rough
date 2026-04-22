@@ -90,13 +90,27 @@ class BaseGridwiseLR:
         return preds
 
 class UnweightedLR(BaseGridwiseLR):
-    # Overide base solve with closed form LR
+    # Overide base solve with closed form solution to LR
     def _solve(self, X, y, w=None):
         return np.linalg.inv((X.conj().T @ X)) @ X.conj.T @ y.T
 
-class WeightedLR():
-    def __init__(self, in_channels, height, width):
-        self.parameters_ = None
+class WeightedLR(BaseGridwiseLR):
+    def __init__(self, feature_fcn, target_fcn, weight_fcn):
+        super().__init__(feature_fcn, target_fcn)
+        self.weight_fcn = weight_fcn
+
+    def _build_weights(self, r):
+        # Build complex weights from uncertainty
+        return self.weight_fcn(r)
+    
+    # Overide base solve with closed form solution to Weighted LR
+    def _solve(self, X, y, w):
+
+        # Diagonalize weights using sparse diags
+        ...
+
+        # Solve with close form solution
+        ...
 
 
 
