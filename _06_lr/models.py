@@ -70,7 +70,7 @@ class BaseGridwiseLR:
         """
 
         # Initialize real coefficient array with shape inferred by complex array
-        # (n_Re * n_Im, n_samples, height, width)
+        # (n_Re * n_Im, height, width)
         m = np.empty((2*self.Z_coef_.shape[0], *self.Z_coef_.shape[1:]))
 
         # Starting at the first entry, every other entry is Real
@@ -95,7 +95,7 @@ class BaseGridwiseLR:
         n_samples, _, height, width = x.shape
 
         # Initialize complex predictions array
-        Z_preds = np.full((n_samples, height, width), np.nan, dtype=complex)
+        Z_preds_ = np.full((n_samples, height, width), np.nan, dtype=complex)
 
         # Build feature matrix (n_samples, n_features, height, width)
         X = self.feature_fcn(x)
@@ -106,9 +106,9 @@ class BaseGridwiseLR:
 
                 X_ji = X[:,:,j,i]
                 # Use coefficients to make prediction
-                Z_preds[:,j,i] = X_ji @ self.Z_coef_[:,j,i]
+                Z_preds_[:,j,i] = X_ji @ self.Z_coef_[:,j,i]
 
-        return Z_preds
+        return Z_preds_
     
 
     def _z_to_vector(z):
@@ -122,8 +122,8 @@ class BaseGridwiseLR:
         )
     
     
-    def R_preds(self):
-        return self._z_to_vector(self.Z_preds)
+    def R_preds_(self):
+        return self._z_to_vector(self.Z_preds_)
 
 
 class UnweightedLR(BaseGridwiseLR):
