@@ -1,5 +1,7 @@
 import requests
 
+from _00_config.load_config import load_config
+
 
 """
 NOTE: 
@@ -49,4 +51,19 @@ class EarthdataSession(requests.Session):
                 and original_parsed.hostname != self.AUTH_HOST
             ):
                 del headers['Authorization']
+
+
+def create_earthdata_session() -> requests.Session:
+    """
+    
+    """
+
+    # Load in pipeline configuration
+    pipeline_config = load_config()
+
+    # Return instantiated earth data session
+    return EarthdataSession(
+        pipeline_config.login_credentials.username, 
+        pipeline_config.login_credentials.password
+        )
 
