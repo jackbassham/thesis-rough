@@ -2,40 +2,26 @@ import numpy as np
 from numpy import linalg as LA
 import os
 
-from _00_config.path import(
-    PATH_MODEL_INPUTS,
-    PATH_LR_CF_OUT,
-)
-
 # Define model type string for saving predictions
 MODEL_STR = 'lr_cf'
 
-def main():
-    
-    # Load in training data
-    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'train.npz'))
-    x_train = data['x_train']
-    y_train = data['y_train']
+def main(cfg):
 
-    # Load in testing data
-    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'test.npz'))
-    x_test = data['x_test']
-    y_test = data['y_test']
+    # Load model inputs source path
+    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
 
-    # Get train batch dimensions
-    nt_tr, nout, nlat, nlon = np.shape(y_train)
+    # Load in training data for fit
+    train = np.load(path_model_inputs / 'train.npz')
+    # Get features and targets from data, excluding mask (last feature)
+    x_train, y_train = train['x'][:,:-1,:,:], train['y'][:,:-1,:,:]  
 
-    # Get input channel dimensions
-    _, nin, _, _, = np.shape(x_train)
 
-    # TODO make coefficient dimension dynamic
+    # Load in testing data for fit
+    test = np.load(path_model_inputs / 'test.npz')
+    # Get features and targets from data, excluding mask (last feature)
+    x_test, y_test = test['x'][:,:-1,:,:], test['y'][:,:-1,:,:]    
 
-    # Get coefficient dimension
-    nm = nin + 1 # NOTE +1 for u and v complex concentration projections 
-    nm = nm + 2 # NOTE +2 for u and v constants (mean ~ 0) (constant column G[0])
-
-    # Get test batch dimensions
-    nt_te, _, _, _ = np.shape(y_test)
+    # Fit model and solve for coefficients
 
     # Train model
     zm, zfit_tr, ztrue_tr = lr_train(x_train, y_train)
