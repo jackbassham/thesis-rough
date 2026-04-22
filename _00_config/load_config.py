@@ -32,7 +32,8 @@ def load_config():
 
     # Define root to data directory
     # If 'USER_DATA_ROOT = None', data is downloaded to repo directory
-    USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
+    USER_DATA_ROOT = None
+    # USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
 
     # Create instance of data parameters specific to run
     data_config = DataConfig(
