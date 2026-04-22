@@ -342,11 +342,6 @@ class PathConfig:
         self.data_config = data_config
         self.version_config = version_config
 
-        # Define root to Mazloff scratch data directory
-        # TODO: allow dynamic/ change for other users
-        # when working with small sample dataset
-        self.data_root = Path('/data/globus/jbassham/thesis-rough')
-
         # Define root to project directory for plots, etc
         self.project_root = Path('.')
 
