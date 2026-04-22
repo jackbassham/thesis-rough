@@ -89,12 +89,15 @@ class BaseGridwiseLR:
 
         return preds
 
+class UnweightedLR(BaseGridwiseLR):
+    # Overide base solve with closed form LR
+    def _solve(self, X, y, w=None):
+        return np.linalg.inv((X.conj().T @ X)) @ X.conj.T @ y.T
 
-class GridwiseClosedFormWeightedLR():
+class WeightedLR():
     def __init__(self, in_channels, height, width):
         self.parameters_ = None
 
 
-        # Solve for coefficients at gridpoint
-        self.coef_[:,j,i] = (np.linalg.inv((X_ji.conj().T @ X_ji))) @ X_ji.conj.T @ y_ji.T
+
         
