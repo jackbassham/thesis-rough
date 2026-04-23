@@ -67,7 +67,7 @@ def main(cfg):
     opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = 1e-4)
 
     # Define the number of training epochs
-    epochs = 1 # Hoffman
+    epochs = 50 # Hoffman
 
     # Define the loss function
     loss_func = loss_funcs.nrmse
