@@ -85,7 +85,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `jackbassham`, `thesis-rough`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`, `project_license`
+<!-- Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `jackbassham`, `thesis-rough`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`, `project_license` -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -111,7 +111,9 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
 ### System Requirements
 
-**Note** As of now, it is recommended to run this current version of the ML pipeline on an external server using a persistent session (*ie: screen*) to maintain fluid runtime. Data downloaded to disk will take at least 10 GB of space, and the data download steps may need to run overnight, depending on the region and temporal range selected. 
+**Note** If running the pipeline from a laptop, it is recommended to use the configuration for a small sample subset of data from the Weddell Sea, demonstrated [here](#example-data-config-setup). 
+Data downloaded to disk will take at least 10 GB of space, and the data download steps may take several hours (Notably the ERA5 wind data). Models will not be as skillfull with this subset, that uses two years for the training
+split. For configuring any larger subsets of data, it is recommended to run the current version of this ML pipeline on an external server using a persistent session (*ie: screen*) to maintain fluid runtime. 
 
 
 <!-- This is an example of how to list things you need to use the software and how to install them.
@@ -200,23 +202,15 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 ### For NSIDC Data Access *(Sea Ice Velocity, Sea Ice Concentration)*:
 1. [Register here](https://urs.earthdata.nasa.gov/users/new) for a free Nasa Earthdata account. 
 
-2. Enter your Earthdata username and password as strings in an instance of the LoginCredentials dataclass (see lines 49-50 in  "_00_config/load_config.py"):
-```py
-    Earthdata_login_credentials = LoginCredentials(
-        username = '<YOUR_USERNAME>',
-        password = '<YOUR_PASSWORD'
-    )
-```
-
-<!-- 2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
+2. Create a `.netrc` file in your home directory for Earthdata login information *(Mac/Linux)*:
 ```sh
 vim ~/.netrc
 ```
 Type `i` for insert and enter the following:
 ```sh
 machine urs.earthdata.nasa.gov
-        login <YOUR_LOGIN>
-        password <YOUR_PASSWORD>
+login <YOUR_LOGIN>
+password <YOUR_PASSWORD>
 ```
 Hit `esc`, type `:wq`, and `return` to write the file.
 
@@ -225,7 +219,8 @@ Hit `esc`, type `:wq`, and `return` to write the file.
 chmod 600 ~/.netrc
 ```
 
-4. Now the repo code will automatically recognnize the credentials and authenticate the requests. -->
+4. Now the repo code will automatically recognnize the credentials and authenticate the requests.
+
 
 ### For ERA5 Data Access *(Wind)*:
 1. [Register here](https://accounts.ecmwf.int/auth/realms/ecmwf/login-actions/registration?client_id=cds&tab_id=Tc-gbldHPtE) for a free Climate Data Store (ECMWF) account.
@@ -338,7 +333,7 @@ py```
 USER_DATA_ROOT = None
 ```
 
-**Example:** 
+### Example: Data Config Setup
 ```py
     data_config = DataConfig(
         hemisphere = 'south',
