@@ -226,7 +226,7 @@ def evaluate(model, test_dl):
 
             # Appdend batch's predictions to list as numpy array
             predictions.append(pb.cpu().numpy())
-            targets.append(pb.cpu().numpy())
+            targets.append(yb.cpu().numpy())
 
         # Return concatentated predictions
         return (
