@@ -112,8 +112,9 @@
 ### System Requirements
 
 **Note** If running the pipeline from a laptop, it is recommended to use the configuration for a small sample subset of data from the Weddell Sea, demonstrated [here](#example-data-config-setup). 
-Data downloaded to disk will take at least 10 GB of space, and the data download steps may take several hours (Notably the ERA5 wind data). Models will not be as skillfull with this subset, that uses two years for the training
-split. For configuring any larger subsets of data, it is recommended to run the current version of this ML pipeline on an external server using a persistent session (*ie: screen*) to maintain fluid runtime. 
+Data downloaded to disk, along with processed data and model outputs, will take at least 6 GB of space. The raw data download steps may take several hours (Notably the ERA5 wind data). 
+Models will not be as skillfull with this subset, that uses only two years for the training split. For configuring any larger subsets of data, it is recommended to run the current version of this ML pipeline on an external server using a persistent session 
+(*ie: screen*) to maintain fluid runtime. 
 
 
 <!-- This is an example of how to list things you need to use the software and how to install them.
