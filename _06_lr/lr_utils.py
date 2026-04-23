@@ -51,9 +51,9 @@ def build_complex_features(x):
 
     print(f'Constant column shape {np.ones((X.shape[0], 1), dtype=complex).shape}')
 
-    # Add a feature of ones to the feature axis to represent the constant parameter
+    # Add a feature of complex ones to the feature axis to represent the constant parameter
     X = np.concatenate(
-        [X, np.ones((X.shape[0], 1, X.shape[2], X.shape[3]), dtype=complex)],
+        [X, np.full((X.shape[0], 1, X.shape[2], X.shape[3]), 1+1*1j, dtype=complex)],
         axis=1
     )
 
