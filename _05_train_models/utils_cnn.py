@@ -51,7 +51,6 @@ def get_datasets(config, device, include_uncertainty=False):
         # Return all tensors in the split wrapped in a dataset
         return TensorDataset(*tensors)
 
-
     # Return spits wrapped in datasets
     return (
         build_dataset(train),
