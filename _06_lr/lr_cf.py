@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import linalg as LA
 import os
+from pathlib import Path
 
 # Define model type string for saving predictions
 MODEL_STR = 'lr_cf'
@@ -62,12 +63,15 @@ def main(cfg):
     true_tr[:, 0, :, :] = ztrue_tr.real # ui_t0, true
     true_tr[:, 1, :, :] = ztrue_tr.imag # vi_t0, true
 
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PATH_LR_CF_OUT, exist_ok = True)
+    # Load model output destination path
+    path_out = cfg.path_config.model_path('lr_cf')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_out)
 
     # Save coeffients, fit
     np.savez(
-        os.path.join(PATH_LR_CF_OUT, f"coef_fit_{MODEL_STR}.npz"),
+        path_out / 'coefficients.npz',
         m = m,
         fit_tr = fit_tr,
         true_tr = true_tr,
@@ -91,7 +95,7 @@ def main(cfg):
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_LR_CF_OUT, f"preds_{MODEL_STR}.npz"),
+        path_out / 'preds.npz',
         y_pred = y_pred,
         y_true = y_true,
     )
