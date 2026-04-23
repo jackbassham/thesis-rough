@@ -1,6 +1,6 @@
 import numpy as np
 from pathlib import Path
-from . import lr_utils
+from . import utils_lr
 from . import models
 
 # Define model type string for saving predictions
@@ -18,8 +18,8 @@ def main(cfg):
 
     # Instantiate model with functions to build complex features and targets
     model = models.UnweightedLR(
-        feature_fcn = lr_utils.build_complex_features,
-        target_fcn = lr_utils.build_complex_targets,
+        feature_fcn = utils_lr.build_complex_features,
+        target_fcn = utils_lr.build_complex_targets,
     )
 
     # Perform fit and solve for coefficients
