@@ -14,7 +14,7 @@ def main(cfg):
     # Load in training data for fit
     train = np.load(path_model_inputs / 'train.npz')
     # Get features and targets from data, excluding mask (last feature)
-    x_train, y_train = train['x'][:,:-1,:,:], train['y'][:,:-1,:,:]  
+    x_train, y_train = train['x'][:,:-1,:,:], train['y']
 
     # Instantiate model with functions to build complex features and targets
     model = models.UnweightedLR(
@@ -44,7 +44,7 @@ def main(cfg):
     # Load in testing data for predictions
     test = np.load(path_model_inputs / 'test.npz')
     # Get features and targets from data, excluding mask (last feature)
-    x_test, y_test = test['x'][:,:-1,:,:], test['y'][:,:-1,:,:]    
+    x_test, y_test = test['x'][:,:-1,:,:], test['y']
 
     # Make predictions from the fit model
     model.predict(x_test, y_test)
