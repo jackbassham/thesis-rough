@@ -2,25 +2,23 @@ import numpy as np
 from numpy import linalg as LA
 import os
 
-from _00_config.path import(
-    PATH_MODEL_INPUTS,
-    PATH_LR_CF_OUT,
-)
-
 # Define model type string for saving predictions
 MODEL_STR = 'lr_cf'
 
-def main():
-    
-    # Load in training data
-    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'train.npz'))
-    x_train = data['x_train']
-    y_train = data['y_train']
+def main(cfg):
+
+    # Load model inputs source path
+    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
+
+    # Load in training data for fit
+    train = np.load(path_model_inputs / 'train.npz')
+    # Get features and targets from data, excluding mask (last feature)
+    x_train, y_train = train['x'][:,:-1,:,:], train['y']
 
     # Load in testing data
-    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'test.npz'))
-    x_test = data['x_test']
-    y_test = data['y_test']
+    test = np.load(path_model_inputs / 'test.npz')
+    # Get features and targets from data, excluding mask (last feature)
+    x_test, y_test = test['x'][:,:-1,:,:], test['y']
 
     # Get train batch dimensions
     nt_tr, nout, nlat, nlon = np.shape(y_train)
@@ -292,6 +290,9 @@ def lr_test(x_test, y_test, zm):
 
     return zpred_all, ztrue_all
 
+
 if __name__ == "__main__":
-    main()
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
 
