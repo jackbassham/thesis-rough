@@ -62,5 +62,7 @@ def main(cfg):
 
 
 if __name__ == "__main__":
-    main()
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
 
