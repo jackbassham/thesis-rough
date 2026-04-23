@@ -18,8 +18,8 @@ def main(cfg):
 
     # Instantiate model with functions to build complex features and targets
     model = models.UnweightedLR(
-        feature_fn = lr_utils.build_complex_features,
-        target_fn = lr_utils.build_complex_targets,
+        feature_fcn = lr_utils.build_complex_features,
+        target_fcn = lr_utils.build_complex_targets,
     )
 
     # Perform fit and solve for coefficients
