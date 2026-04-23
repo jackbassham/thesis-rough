@@ -41,12 +41,19 @@ def build_complex_features(x):
         zci_t1, # Complex previous day ice concentration
     ]
 
+    for i, feature in enumerate(features):
+        print(f'Feature {i+1} shape: {feature.shape}')
+
     # Stack features into feature matrix columns (number_samples, number_features)
     X = np.stack(features, axis=1)
 
-    # Add a column of ones along feature axis to represent the constant parameter
+    print(f'Feature matrix shape before adding constant column: {X.shape}')
+
+    print(f'Constant column shape {np.ones((X.shape[0], 1), dtype=complex).shape}')
+
+    # Add a feature of ones to the feature axis to represent the constant parameter
     X = np.concatenate(
-        [X, np.ones((X.shape[0], 1), dtype=complex)],
+        [X, np.ones((X.shape[0], 1, X.shape[2], X.shape[3]), dtype=complex)],
         axis=1
     )
 
@@ -57,6 +64,8 @@ def build_complex_targets(y):
     """
     
     """
+    print(f'Target shape: {y.shape}')
+
     return y[:,0] + y[:,1]*1j # Complex previous day ice velocity vector
 
 
