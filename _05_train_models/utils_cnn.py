@@ -153,9 +153,13 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
         total_loss = 0
         total_num = 0
         # Iterate through batches and show progress bar
-        for xb, yb in tqdm(train_dl, desc=f'Train Epoch {epoch+1}/{epochs}', leave=False):
+        for xb, yb, *extra_batches in tqdm(
+                train_dl, 
+                desc=f'Train Epoch {epoch+1}/{epochs}', 
+                leave=False
+        ):
             # Compute batch's loss and get number samples in batch
-            loss, num = loss_batch(model, loss_func, xb, yb, opt=opt)
+            loss, num = loss_batch(model, loss_func, xb, yb, *extra_batches, opt=opt)
             # Add batch's loss and number to total
             total_loss += loss * num
             total_num += num
@@ -168,10 +172,14 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
         total_num = 0
         with torch.no_grad():
             # Iterate through batches and show progress bar
-            for xb, yb in tqdm(val_dl, desc=f'Val Epoch {epoch+1}/{epochs}', leave=False):
+            for xb, yb, *extra_batches in tqdm(
+                val_dl, 
+                desc=f'Val Epoch {epoch+1}/{epochs}', 
+                leave=False
+            ):
                 # Compute batch's loss and get number of samples in batch
-                loss, num = loss_batch(model, loss_func, xb, yb)
-                # Add batch's loss and number to total
+                loss, num = loss_batch(model, loss_func, xb, yb, *extra_batches)
+                # Add batch's loss and number of samples to total
                 total_loss += loss * num
                 total_num += num
             # Compute average validation loss over all batches for epoch
