@@ -113,12 +113,18 @@ def initialize_weights_biases(layer):
             nn.init.zeros_(layer.bias)
 
 
-def loss_batch(model, loss_func, xb, yb, opt=None):
+def loss_batch(model, loss_func, xb, yb, rb=None, opt=None):
     """
     
     """
-    # Compute loss for the batch
-    loss = loss_func(model(xb), yb)
+    
+    if rb is not None:
+        # Compute weighted loss for the batch
+        loss = loss_func(model(xb), yb, rb)
+
+    else:
+        # Compute loss for the batch
+        loss = loss_func(model(xb), yb)
 
     # Perform backprop if an optimizer is passed in (ie: for training set)
     if opt is not None:
