@@ -47,7 +47,7 @@ def main(cfg):
     x_test, y_test = test['x'][:,:-1,:,:], test['y']
 
     # Make predictions from the fit model
-    model.predict(x_test, y_test)
+    model.predict(x_test)
 
     # Get array of real test predictions from model
     R_preds = model.R_preds_()
