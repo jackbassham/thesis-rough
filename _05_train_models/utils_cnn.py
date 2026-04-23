@@ -33,35 +33,31 @@ def get_datasets(config, device, include_uncertainty=False):
     val = np.load(path_model_inputs / 'val.npz')
     test = np.load(path_model_inputs / 'test.npz')
 
-    # NOTE double enforcing that inputs are PyTorch Float
-    x_train, y_train = torch.from_numpy(train['x'][:,:-1,:,:]).float(), torch.from_numpy(train['y']).float()
-    x_val, y_val = torch.from_numpy(val['x'][:,:-1,:,:]).float(), torch.from_numpy(val['y']).float()
-    x_test, y_test = torch.from_numpy(test['x'][:,:-1,:,:]).float(), torch.from_numpy(test['y']).float()
+    def build_dataset(data_split):
+        # Make a list of tensors for the data split
+        tensors = [
+            # NOTE leaving off last feature channel (mask)
+            # NOTE double enforcing that inputs are PyTorch Float
+            torch.from_numpy(data_split['x'][:,:-1,:,:]).float().to(device),
+            torch.from_numpy(data_split['y']).float().to(device)
+        ]
 
-    # Move tensors to device
-    x_train, y_train = x_train.to(device), y_train.to(device)
-    x_val, y_val = x_val.to(device), y_val.to(device)
-    x_test, y_test = x_test.to(device), y_test.to(device)
+        if include_uncertainty:
+            # Append uncertainty to the list of tensors if it's included for weighted models
+            tensors.append(
+                torch.from_numpy(data_split['ri_t0']).float().to(device)
+            )
 
-    if include_uncertainty is not False:
-        r_train = torch.from_numpy(train['ri_t0']).float().to(device)
-        r_val = torch.from_numpy(val['ri_t0']).float().to(device)
-        r_test = torch.from_numpy(test['ri_t0']).float().to(device)
+        # Return all tensors in the split wrapped in a dataset
+        return TensorDataset(*tensors)
 
-        # Return tensors wrapped in datasets
-        return (
-            TensorDataset(x_train, y_train, r_train),
-            TensorDataset(x_val, y_val, r_val),
-            TensorDataset(x_test, y_test, r_test),
-        )
-    else:
 
-    # Return tensors wrapped in datasets
-        return (
-            TensorDataset(x_train, y_train),
-            TensorDataset(x_val, y_val),
-            TensorDataset(x_test, y_test),
-        )
+    # Return spits wrapped in datasets
+    return (
+        build_dataset(train),
+        build_dataset(val),
+        build_dataset(test),
+    )
 
 
 def get_batched_data(
