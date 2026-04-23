@@ -3,7 +3,7 @@ import torch
 def nrmse(input, target, eps=1e-4):
 
     # NOTE # Unbiased=True To match default population std. in tf 
-    return torch.sqrt(torch.mean((input - target) ** 2)) / (torch.std(input, unibased = False) + eps)
+    return torch.sqrt(torch.mean((input - target) ** 2)) / (torch.std(input, unbiased = False) + eps)
 
 
 def weighted_mse(input, target, uncertainty, eps = 1e-6):
