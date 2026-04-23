@@ -176,34 +176,6 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
     print('Training loop complete')
 
     return train_losses, val_losses
-    
-
-def plot_losses(train_losses: list[float], val_losses: list[float], 
-                model_name: str, timestamp: str | None = None, path: Path | None = None,) -> None:
-    """
-    
-    """
-
-    # TODO accuracy?
-
-    # Get range of epochs
-    epochs = np.arange(1, len(train_losses) + 1)
-
-    plt.figure()
-    plt.plot(epochs, train_losses, label = 'Train')
-    plt.plot(epochs, val_losses, label = 'Validation')
-    plt.xlabel('Epochs')
-    plt.legend()
-
-    title = f'{model_name.title} Loss'
-
-    if timestamp is not None:
-        title += timestamp
-
-    plt.title(title)
-
-    if path is not None:
-        plt.savefig(path / 'training_losses.png')
 
 
 def evaluate(model, test_dl):
@@ -233,3 +205,31 @@ def evaluate(model, test_dl):
             np.concatenate(predictions, axis=0),
             np.concatenate(targets, axis=0)
         )
+    
+
+def plot_losses(train_losses: list[float], val_losses: list[float], 
+                model_name: str, timestamp: str | None = None, path: Path | None = None,) -> None:
+    """
+    
+    """
+
+    # TODO accuracy?
+
+    # Get range of epochs
+    epochs = np.arange(1, len(train_losses) + 1)
+
+    plt.figure()
+    plt.plot(epochs, train_losses, label = 'Train')
+    plt.plot(epochs, val_losses, label = 'Validation')
+    plt.xlabel('Epochs')
+    plt.legend()
+
+    title = f'{model_name.title} Loss'
+
+    if timestamp is not None:
+        title += timestamp
+
+    plt.title(title)
+
+    if path is not None:
+        plt.savefig(path / 'training_losses.png')
