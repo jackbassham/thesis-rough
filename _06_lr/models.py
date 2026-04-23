@@ -111,7 +111,7 @@ class BaseGridwiseLR:
         return Z_preds_
     
 
-    def _z_to_vector(z):
+    def z_to_vector(self, z):
         """
 
         """
@@ -120,10 +120,6 @@ class BaseGridwiseLR:
             [z.real, z.imag],
             axis=1
         )
-    
-    
-    def R_preds_(self):
-        return self._z_to_vector(self.Z_preds_)
 
 
 class UnweightedLR(BaseGridwiseLR):

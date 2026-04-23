@@ -46,11 +46,11 @@ def main(cfg):
     # Get features and targets from data, excluding mask (last feature)
     x_test, y_test = test['x'][:,:-1,:,:], test['y']
 
-    # Make predictions from the fit model
-    model.predict(x_test)
+    # Get complex predictions on test split from the fit model
+    Z_preds = model.predict(x_test)
 
-    # Get array of real test predictions from model
-    R_preds = model.R_preds_()
+    # Convert complex predictions to real for saving and evaluation
+    R_preds = model.z_to_vector(Z_preds)
 
     # Save predictions and true values
     # NOTE using y_test for true now, move to just saving predictions
