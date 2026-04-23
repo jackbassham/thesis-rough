@@ -67,7 +67,7 @@ def main(cfg):
     opt = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = 1e-4)
 
     # Define the number of training epochs
-    epochs = 50 # Hoffman
+    epochs = 1 # Hoffman
 
     # Define the loss function
     loss_func = loss_funcs.nrmse
@@ -79,8 +79,10 @@ def main(cfg):
     utils.plot_losses(
         train_losses, val_losses,
         'CNN',
-        timestamp=cfg.version_congig.timestamp_model_output,
-        path=cfg.path_config.model_path('cnn_pt', plot_path=True)
+        timestamp=cfg.version_config.timestamp_model_output,
+        path=cfg.path_config.makedir_if_missing(
+            cfg.path_config.model_path('cnn_pt', plot_path=True)
+        )
     )
 
     # Load in model outputs destination path
