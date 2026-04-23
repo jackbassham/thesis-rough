@@ -50,16 +50,16 @@ class BaseGridwiseLR:
                 X_ji = X[:,:,j,i]
                 y_ji = y[:,j,i]
 
-            # Get weights if passed to model instance
-            w_ji = None if w is None else w[:,j,i]
+                # Get weights if passed to model instance
+                w_ji = None if w is None else w[:,j,i]
 
-            try:
-                # Try to solve for complex coefficients
-                self.Z_coef_[:,j,i] = self._solve(X_ji, y_ji, w_ji)
-            
-            # Print any errors that occur in solving at a gridpoint
-            except Exception as e:
-                print(f'Failed at (j={j}, i={i}): {e}')
+                try:
+                    # Try to solve for complex coefficients
+                    self.Z_coef_[:,j,i] = self._solve(X_ji, y_ji, w_ji)
+                
+                # Print any errors that occur in solving at a gridpoint
+                except Exception as e:
+                    print(f'Failed at (j={j}, i={i}): {e}')
 
         return self
     
