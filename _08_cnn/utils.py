@@ -224,7 +224,7 @@ def plot_losses(train_losses: list[float], val_losses: list[float],
     plt.xlabel('Epochs')
     plt.legend()
 
-    title = f'{model_name.title} Loss'
+    title = f'{model_name} Loss'
 
     if timestamp is not None:
         title += timestamp
