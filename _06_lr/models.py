@@ -129,7 +129,7 @@ class BaseGridwiseLR:
 class UnweightedLR(BaseGridwiseLR):
     # Overide base solve with closed form solution to LR
     def _solve(self, X, y, w=None):
-        return np.linalg.inv((X.conj().T @ X)) @ X.conj.T @ y.T
+        return np.linalg.inv((X.conj().T @ X)) @ X.conj().T @ y.T
 
 
 class WeightedLR(BaseGridwiseLR):
