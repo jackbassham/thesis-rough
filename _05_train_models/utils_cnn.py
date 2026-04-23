@@ -36,7 +36,7 @@ def get_datasets(config, device, include_uncertainty=False):
     def build_dataset(data_split):
         # Make a list of tensors for the data split
         tensors = [
-            # NOTE leaving off last feature channel (mask)
+            # Dropping mask channel (last channel) from features
             # NOTE double enforcing that inputs are PyTorch Float
             torch.from_numpy(data_split['x'][:,:-1,:,:]).float().to(device),
             torch.from_numpy(data_split['y']).float().to(device)
@@ -117,14 +117,16 @@ def loss_batch(model, loss_func, xb, yb, rb=None, opt=None):
     """
     
     """
+
+    input = model(xb)
     
     if rb is not None:
         # Compute weighted loss for the batch
-        loss = loss_func(model(xb), yb, rb)
+        loss = loss_func(input, yb, rb)
 
     else:
         # Compute loss for the batch
-        loss = loss_func(model(xb), yb)
+        loss = loss_func(input, yb)
 
     # Perform backprop if an optimizer is passed in (ie: for training set)
     if opt is not None:
