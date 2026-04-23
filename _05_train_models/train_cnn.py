@@ -4,7 +4,7 @@ import torch
 import torch.nn.functional as F
 from . import loss_funcs
 from . import models
-from . import utils
+from . import utils_cnn
 
 """
 NOTE forward shapes from print statements
@@ -27,26 +27,26 @@ def main(cfg):
     helpers.set_seed()
 
     # Get device
-    device = utils.check_for_accelerator()
+    device = utils_cnn.check_for_accelerator()
 
     # Load tensor datasets from numpy arrays
-    train_ds, val_ds, test_ds = utils.get_datasets(cfg, device)
+    train_ds, val_ds, test_ds = utils_cnn.get_datasets(cfg, device)
 
     # Get batched data loaders from tensor datasets
-    train_dl, val_dl, test_dl = utils.get_batched_data(train_ds, val_ds, test_ds)
+    train_dl, val_dl, test_dl = utils_cnn.get_batched_data(train_ds, val_ds, test_ds)
 
     # Get input dimensions
-    in_channels, height, width = utils.get_input_dimensions(train_dl)
+    in_channels, height, width = utils_cnn.get_input_dimensions(train_dl)
 
     # Complile model
     # NOTE using PyTorch Default 'Kaiming Uniform' weights/bias initialization
     # Tensorflow Default is Xavier (used by Hoffman)
-    # TODO If Kaiming is bad, use function in utils to apply Xavier initializtion
+    # TODO If Kaiming is bad, use function in utils_cnn to apply Xavier initializtion
     model = models.Hoffman_CNN(
         in_channels, height, width).to(device)
     
     # Recursively apply xavier initialization to each layer's weights, set biases to zero
-    model.apply(utils.initialize_weights_biases)
+    model.apply(utils_cnn.initialize_weights_biases)
 
     # Define regularization
     # weight_decay = 1e-4
@@ -72,10 +72,10 @@ def main(cfg):
     loss_func = loss_funcs.nrmse
 
     # Train the model
-    train_losses, val_losses = utils.fit(epochs, model, loss_func, opt, train_dl, val_dl)
+    train_losses, val_losses = utils_cnn.fit(epochs, model, loss_func, opt, train_dl, val_dl)
 
     # Save plot of training losses
-    utils.plot_losses(
+    utils_cnn.plot_losses(
         train_losses, val_losses,
         'CNN',
         timestamp=cfg.version_config.timestamp_model_output,
@@ -97,7 +97,7 @@ def main(cfg):
         )
 
     # Get test predictions as numpy arrays from the trained model
-    test_predictions, test_targets = utils.evaluate(model, test_dl)
+    test_predictions, test_targets = utils_cnn.evaluate(model, test_dl)
 
     # Save predictions and true values
     np.savez(
