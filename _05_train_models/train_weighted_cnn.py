@@ -65,7 +65,7 @@ def main(cfg):
     # Save plot of training losses
     utils_cnn.plot_losses(
         train_losses, val_losses,
-        'CNN',
+        'Weighted CNN',
         timestamp=cfg.version_config.timestamp_model_output,
         path=cfg.path_config.makedir_if_missing(
             cfg.path_config.model_path('cnn_pt_wtd', plot_path=True)

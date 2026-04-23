@@ -211,7 +211,11 @@ def evaluate(model, test_dl):
     model.eval()
 
     with torch.no_grad():
-        for xb, yb in test_dl:
+        for xb, yb, *extra_batches in tqdm(
+                test_dl, 
+                desc='Test Eval', 
+                leave=False
+        ):
             # Get batch predictions from forward pass
             pb = model(xb)
 
