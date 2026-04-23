@@ -85,6 +85,7 @@ def main(cfg):
     )
 
     # Load in model outputs destination path
+    # FIXME change naming convention here
     path_cnn_out = cfg.path_config.model_path('cnn_pt')
 
     # Make destination directory if missing

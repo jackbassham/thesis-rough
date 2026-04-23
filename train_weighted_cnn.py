@@ -68,12 +68,13 @@ def main(cfg):
         'CNN',
         timestamp=cfg.version_config.timestamp_model_output,
         path=cfg.path_config.makedir_if_missing(
-            cfg.path_config.model_path('cnn_pt', plot_path=True)
+            cfg.path_config.model_path('cnn_pt_wtd', plot_path=True)
         )
     )
 
     # Load in model outputs destination path
-    path_cnn_out = cfg.path_config.model_path('cnn_pt')
+    # FIXME change naming convention here
+    path_cnn_out = cfg.path_config.model_path('cnn_pt_wtd')
 
     # Make destination directory if missing
     cfg.path_config.makedir_if_missing(path_cnn_out)
