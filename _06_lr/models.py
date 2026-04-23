@@ -48,7 +48,7 @@ class BaseGridwiseLR:
             for i in tqdm(range(width), desc='Gridpoints', leave=False):
 
                 X_ji = X[:,:,j,i]
-                y_ji = y[:,:,j,i]
+                y_ji = y[:,j,i]
 
             # Get weights if passed to model instance
             w_ji = None if w is None else w[:,j,i]
