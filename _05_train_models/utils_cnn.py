@@ -20,7 +20,7 @@ def check_for_accelerator():
     return device
 
 
-def get_datasets(config, device):
+def get_datasets(config, device, include_uncertainty=False):
     """
     
     """
@@ -43,12 +43,25 @@ def get_datasets(config, device):
     x_val, y_val = x_val.to(device), y_val.to(device)
     x_test, y_test = x_test.to(device), y_test.to(device)
 
+    if include_uncertainty is not False:
+        r_train = torch.from_numpy(train['ri_t0']).float().to(device)
+        r_val = torch.from_numpy(val['ri_t0']).float().to(device)
+        r_test = torch.from_numpy(test['ri_t0']).float().to(device)
+
+        # Return tensors wrapped in datasets
+        return (
+            TensorDataset(x_train, y_train, r_train),
+            TensorDataset(x_val, y_val, r_val),
+            TensorDataset(x_test, y_test, r_test),
+        )
+    else:
+
     # Return tensors wrapped in datasets
-    return (
-        TensorDataset(x_train, y_train),
-        TensorDataset(x_val, y_val),
-        TensorDataset(x_test, y_test),
-    )
+        return (
+            TensorDataset(x_train, y_train),
+            TensorDataset(x_val, y_val),
+            TensorDataset(x_test, y_test),
+        )
 
 
 def get_batched_data(
