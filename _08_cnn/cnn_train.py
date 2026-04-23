@@ -57,10 +57,6 @@ def main(cfg):
     # Define Learning Rate
     lr = 1e-4
 
-    for name, param in model.named_parameters():
-        print(f'name: {name}')
-        print(f'param: {param}')
-
     # Initialize optimizer with weight decay (l2 regularization)
     # NOTE try AdamW for weight decay similar to tf kernel weight regularization
     #https://discuss.pytorch.org/t/how-to-implement-pytorch-equivalent-of-keras-kernel-weight-regulariser/99773
