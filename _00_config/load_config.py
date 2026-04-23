@@ -4,7 +4,6 @@ from .config import(
     DatasetConfig, 
     VersionConfig, 
     PathConfig, 
-    LoginCredentials,
     PipelineConfig,
 )
 from .parse_args import parse_args
@@ -13,7 +12,7 @@ from .parse_args import parse_args
 def main():
 
     # Load in configuration defined in function below
-    data_config, version_config, paths, login_credentials = load_config()
+    data_config, version_config, paths = load_config()
 
 
 def load_config():
@@ -32,23 +31,26 @@ def load_config():
 
     # Define root to data directory
     # If 'USER_DATA_ROOT = None', data is downloaded to repo directory
-    USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
+    USER_DATA_ROOT = None
+    # USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
 
-    # Create instance of data parameters specific to run
+    # Weddell Sea Test Set
     data_config = DataConfig(
         hemisphere = 'south',
-        year_range = (1992, 2020), # At least 6 years
-        latitude_bounds = (-80, -62),
-        longitude_bounds = (-180, 180),
-        grid_resolution = 25
+        year_range = (2010, 2016), # At least 6 years
+        latitude_bounds = (-79, -62), # Weddell Sea, small subset
+        longitude_bounds = (-70, -15),
+        grid_resolution = 25,
     )
 
-    # FIXME use .netrc (Earthdata rec) for login credentials, or prompt user
-    # Create instance of login credentials for Nasa Earth Data access
-    Earthdata_login_credentials = LoginCredentials(
-        username = 'jbassham',
-        password = '$EarthDataPass2026'
-    )
+    # # Create instance of data parameters specific to run
+    # data_config = DataConfig(
+    #     hemisphere = 'south',
+    #     year_range = (1992, 2020), # At least 6 years
+    #     latitude_bounds = (-80, -62),
+    #     longitude_bounds = (-180, 180),
+    #     grid_resolution = 25
+    # )
 
     # Create configuration instance of dataset info
     dataset_config = DatasetConfig(
@@ -82,7 +84,6 @@ def load_config():
         dataset_config = dataset_config,
         version_config = version_config,
         path_config = path_config,
-        login_credentials = Earthdata_login_credentials,
     )
 
 

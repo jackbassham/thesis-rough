@@ -1,26 +1,25 @@
 import numpy as np
 from numpy import linalg as LA
 import os
-
-from _00_config.path import(
-    PATH_MODEL_INPUTS,
-    PATH_LR_CF_OUT,
-)
+from pathlib import Path
 
 # Define model type string for saving predictions
 MODEL_STR = 'lr_cf'
 
-def main():
-    
-    # Load in training data
-    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'train.npz'))
-    x_train = data['x_train']
-    y_train = data['y_train']
+def main(cfg):
+
+    # Load model inputs source path
+    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
+
+    # Load in training data for fit
+    train = np.load(path_model_inputs / 'train.npz')
+    # Get features and targets from data, excluding mask (last feature)
+    x_train, y_train = train['x'][:,:-1,:,:], train['y']
 
     # Load in testing data
-    data = np.load(os.path.join(PATH_MODEL_INPUTS,f'test.npz'))
-    x_test = data['x_test']
-    y_test = data['y_test']
+    test = np.load(path_model_inputs / 'test.npz')
+    # Get features and targets from data, excluding mask (last feature)
+    x_test, y_test = test['x'][:,:-1,:,:], test['y']
 
     # Get train batch dimensions
     nt_tr, nout, nlat, nlon = np.shape(y_train)
@@ -64,12 +63,15 @@ def main():
     true_tr[:, 0, :, :] = ztrue_tr.real # ui_t0, true
     true_tr[:, 1, :, :] = ztrue_tr.imag # vi_t0, true
 
-    # Create the destination directory if it doesn't already exist
-    os.makedirs(PATH_LR_CF_OUT, exist_ok = True)
+    # Load model output destination path
+    path_out = cfg.path_config.model_path('lr_cf')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_out)
 
     # Save coeffients, fit
     np.savez(
-        os.path.join(PATH_LR_CF_OUT, f"coef_fit_{MODEL_STR}.npz"),
+        path_out / 'coefficients.npz',
         m = m,
         fit_tr = fit_tr,
         true_tr = true_tr,
@@ -93,7 +95,7 @@ def main():
 
     # Save predictions
     np.savez(
-        os.path.join(PATH_LR_CF_OUT, f"preds_{MODEL_STR}.npz"),
+        path_out / 'preds.npz',
         y_pred = y_pred,
         y_true = y_true,
     )
@@ -292,6 +294,9 @@ def lr_test(x_test, y_test, zm):
 
     return zpred_all, ztrue_all
 
+
 if __name__ == "__main__":
-    main()
+    from _00_config.load_config import load_config
+    cfg = load_config()
+    main(cfg)
 

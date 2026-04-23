@@ -1,10 +1,13 @@
+import helpers
+import numpy as np
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
-import numpy as np
-import matplotlib.pyplot as plt
 cuda_available = torch.cuda.is_available()
+
+from . import models
 
 
 # Define model type string for saving predictions
@@ -72,7 +75,7 @@ class CNN(nn.Module):
 def main(cfg):
 
     # Set random seed for reproducibility
-    set_seed(42)
+    helpers.set_seed()
 
     # Load model inputs source path
     path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
@@ -132,8 +135,11 @@ def main(cfg):
 
     print('n_out:', n_out)
 
-    # Complile model
-    model = CNN(n_in, n_out, ny, nx).to(device)
+    # # Complile model
+    # model = CNN(n_in, n_out, ny, nx).to(device)
+
+    # NOTE Trying to use new model
+    model = models.Hoffman_CNN(n_in, ny, nx).to(device)
 
     print('model compiled')
 
@@ -243,15 +249,6 @@ def main(cfg):
         y_pred = y_pred, y_true = y_true)
 
     print("Predictions saved")
-
-
-def set_seed(seed=42):
-    torch.manual_seed(seed) # PyTorch Reproducibility
-    torch.cuda.manual_seed(seed) # Required if using GPU
-    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
-    torch.backends.cudnn.benchmark = False # Paired with above
-
-    return
 
 
 def plot_losses(path, filename, num_epochs, train_losses, val_losses):

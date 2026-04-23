@@ -342,11 +342,6 @@ class PathConfig:
         self.data_config = data_config
         self.version_config = version_config
 
-        # Define root to Mazloff scratch data directory
-        # TODO: allow dynamic/ change for other users
-        # when working with small sample dataset
-        self.data_root = Path('/data/globus/jbassham/thesis-rough')
-
         # Define root to project directory for plots, etc
         self.project_root = Path('.')
 
@@ -398,18 +393,6 @@ class PathConfig:
         # FIXME no return necessary?
         path.mkdir(parents=True, exist_ok=True)
         return path
-        
-
-@dataclass
-class LoginCredentials:
-    """
-    Login credentials for sites where account is required for data download
-    ie: NSIDC requires Nasa Earth Data Login
-    """
-
-    username: str
-    password: str
-
 
 @dataclass
 class PipelineConfig:
@@ -420,7 +403,6 @@ class PipelineConfig:
     dataset_config: DatasetConfig
     version_config: VersionConfig
     path_config: PathConfig
-    login_credentials: LoginCredentials
 
 
 def main():
@@ -436,12 +418,6 @@ def main():
 
     # Create instance timestamp version
     versionconfig = VersionConfig()
-
-    # Create instance of login credentials
-    logincredentials = LoginCredentials(
-        username = 'jbassham', 
-        password = 'guJdib-huczi6-jimsuh'
-    )
 
 
 if __name__ == '__main__':

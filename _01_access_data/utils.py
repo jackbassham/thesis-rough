@@ -1,16 +1,29 @@
 import io
 import time
-from requests import Session
+import numpy as np
+import requests
+from typing import Optional
 import xarray as xr
 
 #TODO use tqdm for progress
 
+
 def open_netcdf_from_response(
-        url: str, session: Session, retries=3, delay=5
-        ) -> xr.Dataset:
+        url: str, 
+        retries: int = 3, 
+        delay: int = 5, 
+        session: Optional[requests.Session] = None,
+) -> xr.Dataset:
     """
     
     """
+
+    # If custom session not provided (default)
+    if session is None:
+        # Instantiate default session
+        session = requests.Session()
+        # Enable ~/.netrc use for authorization
+        session.trust_env = True
     
     # Attempt to access file for number of retries
     for attempt in range(retries):
@@ -39,28 +52,28 @@ def open_netcdf_from_response(
                 raise
 
 
-def load_lat_lon(url: str, session: Session):
+def load_lat_lon(url: str):
     """
     
     """
 
     # Attempt to open dataset with xarray
-    with open_netcdf_from_response(url, session) as ds:
-        lat = ds["latitude"].values
-        lon = ds["longitude"].values
+    with open_netcdf_from_response(url) as ds:
+        lat = ds["latitude"].values.astype(np.float32)
+        lon = ds["longitude"].values.astype(np.float32)
 
     return lat, lon
 
 
-def load_spatial_coordinates(url: str, session: Session):
+def load_spatial_coordinates(url: str):
     """
     
     """
     
     # Attempt to open dataset with xarray
-    with open_netcdf_from_response(url, session) as ds:
-        y = ds["y"].values
-        x = ds["x"].values
+    with open_netcdf_from_response(url) as ds:
+        y = ds["y"].values.astype(np.float32)
+        x = ds["x"].values.astype(np.float32)
 
     return y, x
 

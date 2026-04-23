@@ -2,6 +2,7 @@ import numpy as np
 import numpy.typing as npt
 from pathlib import Path
 import sys
+import torch
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -80,3 +81,12 @@ def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None
 
     # Save all key (varable name), value pairs (array)
     np.savez(path, **arrays)
+
+
+def set_seed(seed=0):
+    torch.manual_seed(seed) # PyTorch Reproducibility
+    torch.cuda.manual_seed(seed) # Required if using GPU
+    torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
+    torch.backends.cudnn.benchmark = False # Paired with above
+
+    return
