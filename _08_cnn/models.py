@@ -51,8 +51,10 @@ class Hoffman_CNN(nn.Module):
         xb = F.relu(self.conv5(xb))
         xb = F.max_pool2d(xb, kernel_size=2, stride=2)
 
-        # 20% random dropout
-        return(F.dropout(xb, p=0.2))
+        # 20% random dropout, only applied during training
+        xb = F.dropout(xb, p=0.2, training=self.training)  
+        
+        return xb
 
 
     def forward(self, xb):
