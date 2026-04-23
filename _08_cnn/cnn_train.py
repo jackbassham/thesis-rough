@@ -49,7 +49,6 @@ def main(cfg):
     model.apply(utils.initialize_weights_biases)
 
     # Define regularization
-    weight_decay = 1e-2 
     # weight_decay = 1e-4
     # NOTE NOT TRUE: # L2 Norm Regularization, changed from 0.01 in TensorFlow
     # NOTE TensorFLow multiplies Regularization by 0.05 0.01*0.05 -> 5e-4
