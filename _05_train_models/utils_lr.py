@@ -74,6 +74,10 @@ def build_complex_uncertainty_weights(r, epsilon=1e-4):
     
     """
 
+    # Remove channel dimension if it exists (used for CNN input)
+    if r.ndim == 4 and r.shape[1] == 1:
+        r = np.squeeze(r, axis=1)
+
     # Convert squared uncertainty to complex
     # NOTE squared uncertainty used for weighting
     # z_r**2 = (r_u + ir_v)(r_u - ir_v)
