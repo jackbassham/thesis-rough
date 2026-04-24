@@ -59,10 +59,10 @@ def run_eval(config, model_name: str) -> None:
     print(f'Shape mask_bad {np.shape(mask_bad)}')
     print('')
 
-    # If the model is persistance
-    if model_name == 'ps':
-        # Shift nan mask one day forward
-        mask_bad = mask_bad[1:,:,:]
+    # # If the model is persistance
+    # if model_name == 'ps':
+    #     # Shift nan mask one day forward
+    #     mask_bad = mask_bad[1:,:,:]
 
     # Mask invalid points in model output before evaluation
     # NOTE CNN input of 0 at invalid points and LR output of 0 for vi (imag) component
@@ -79,12 +79,12 @@ def run_eval(config, model_name: str) -> None:
     # Remove channel dimension from uncertainty
     ri_test = np.squeeze(ri_test, axis = 1)
 
-    # If the model is persistance
-    # TODO dynamic strings and error conditions
-    if model_name == 'ps':
+    # # If the model is persistance
+    # # TODO dynamic strings and error conditions
+    # if model_name == 'ps':
         
-        # Shift ri_test array forward one day
-        ri_test = ri_test[1:,:,:]
+    #     # Shift ri_test array forward one day
+    #     ri_test = ri_test[1:,:,:]
 
     # Load path to coordinates
     path_coordinates = config.path_config.data_stage_path('regrid')
