@@ -152,7 +152,7 @@ def step_lr(config):
     from _05_train_models.train_lr import main
     main(config)
 
-    from _10_evaluate.quick_eval import run_eval
+    from _06_evaluate.quick_eval import run_eval
     # Run quick eval for the cnn-pt
     run_eval(config, 'lr_cf')
 
@@ -161,7 +161,7 @@ def step_lr_wtd(config):
     from _05_train_models.train_weighted_lr import main
     main(config)
 
-    from _10_evaluate.quick_eval import run_eval
+    from _06_evaluate.quick_eval import run_eval
     # Run quick eval for the cnn-pt
     run_eval(config, 'lr_cf_wtd')
 
@@ -170,7 +170,7 @@ def step_cnn(config):
     from _05_train_models.train_cnn import main
     main(config)
 
-    from _10_evaluate.quick_eval import run_eval
+    from _06_evaluate.quick_eval import run_eval
     # Run quick eval for the cnn-pt
     run_eval(config, 'cnn_pt')
 
@@ -179,7 +179,7 @@ def step_cnn_wtd(config):
     from _05_train_models.train_weighted_cnn import main
     main(config)
 
-    from _10_evaluate.quick_eval import run_eval
+    from _06_evaluate.quick_eval import run_eval
     # Run quick eval for the cnn-pt
     run_eval(config, 'cnn_pt_wtd')
 
