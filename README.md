@@ -342,34 +342,22 @@ Versioned datasets then are stored within each stage or model under the followin
 <!-- TODO 1. Before getting started, make accounts for to access data..., make a file with account info -->
 
 ### 1. Configure Data Parameters
-Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 38-43 in  "_00_config/load_config.py"). 
 
-If you want to store the data in another directory, modify `USER_DATA_ROOT` (see line 35 in  "_00_config/load_config.py"):
-
+Parameters dictating the spatial and temporal coverage of the data used for the ML pipeline,
+as well as the path to the root data directory can be modified in the yaml file `./_00_config/user_config.yaml`.
+1. Change the active preset:
+```yaml
+active_preset: <preset>
 ```
-USER_DATA_ROOT = '/<YOUR_DIRECTORY>/thesis-rough'
-```
+A number of preset configurations exist:
+  * `weddell_sea_test` Use this small sample configuration for minimal runtime, RAM, disk space; or when using the [sample raw dataset](#option-a-download-sample-set-provided).
+  * `full_southern_ocean`, `full_arctic` Use these larger subsets for full reprodcution. *Caution: expect extensive runtime, RAM, and disk usage*
+  * `custom_config` Replace the null values to create a custom subset.
 
-Otherwise, set to `None`:
+2. *Optional* Change `user_data_root` from `null` to specify the path to an external data directory. Leaving `null` defaults data storage to the project's root directory. 
 
 
-
-```py
-USER_DATA_ROOT = None
-```
-
-### Example: Data Config Setup
-```py
-    data_config = DataConfig(
-        hemisphere = 'south',
-        year_range = (2010, 2016), # At least 6 years
-        latitude_bounds = (-79, -62), # Weddell Sea, small subset
-        longitude_bounds = (-70, -15),
-        grid_resolution = 25,
-    )
-```
-
-**Parameter Descriptions**
+<!-- **Parameter Descriptions**
 
 - `hemisphere` Defines the region of interest. Use 'south' for Southern Ocean forecasts or 'north' for Arctic Ocean forecasts.
 
@@ -379,7 +367,7 @@ USER_DATA_ROOT = None
 
 - `longitude_bounds` Tuple defining the zonal bounds (in degrees) of the dataset used. Entered as (westernmost, easternmost). Maximum supported range is (-180, 180). Use (-180, 0) for degrees West and (0, 180) for degrees East
 
-- `grid_resolution` Float or int defining the resolution (in kilometers) of the data projection onto a regular latitude longitude grid. Recommended use is 25 km, based on the raw resolution of the sea ice velocity data. 
+- `grid_resolution` Float or int defining the resolution (in kilometers) of the data projection onto a regular latitude longitude grid. Recommended use is 25 km, based on the raw resolution of the sea ice velocity data.  -->
 
 
 ### Option A: Run Full Pipeline
