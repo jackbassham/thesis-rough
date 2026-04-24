@@ -541,10 +541,7 @@ Tschudi, M., Meier, W. N., Stewart, J. S., Fowler, C. & Maslanik, J. (2019). *Po
 
 
 ### Wind
-TODO ERA5 Wind
-
-Japan Meteorological Agency/Japan. 2013, updated monthly. *JRA-55: Japanese 55-year Reanalysis, Daily 3-Hourly and 6-Hourly Data*. NSF National Center for Atmospheric Research. https://doi.org/10.5065/D6HH6H41. Accessed from Mazloff lab server 04-06-2026.
-
+Hersbach, H., Bell, B., Berrisford, P., Biavati, G., Horányi, A., Muñoz Sabater, J., Nicolas, J., Peubey, C., Radu, R., Rozum, I., Schepers, D., Simmons, A., Soci, C., Dee, D., Thépaut, J-N. (2023): ERA5 hourly data on single levels from 1940 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS), DOI: 10.24381/cds.adbb2d47 Date Accessed 04-20-2026.
 
 
 ### Sea Ice Concentration
