@@ -32,6 +32,6 @@ dependencies:
 
   # Utilities
   - tqdm # progress bars
-  - requests
-  
+  - requests # api request for data download
+  - pyyaml # parser for yaml user configuration
 

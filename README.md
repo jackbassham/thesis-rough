@@ -153,6 +153,7 @@ Models will not be as skillfull with this subset, that uses only two years for t
  * cmocean
  * matplotlib
  * numpy
+ * pyyaml
  * Requests
  * scipy
  * torch
