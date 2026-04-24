@@ -89,8 +89,9 @@ class DataConfig:
             raise ValueError('Invalid year input: Enter years as integers in format YYYY')
 
         # Handle years out of range
-        # NOTE for now, later 1992 - 2024 (sea ice conc) ok
-        if start < 1992 or end > 2020:
+        # NOTE nsidc0016 sea ice vel updated through 2024
+        # NOTE nsidc0051 sea ice conc updated through 2025
+        if start < 1992 or end > 2024:
             raise ValueError('Years out of range: Enter in range 1989 to 2024')
 
         # Handle invalid order of range

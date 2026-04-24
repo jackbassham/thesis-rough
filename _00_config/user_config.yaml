@@ -20,7 +20,7 @@ presets:
   # Full Southern Ocean reproduction
   full_southern_ocean:
     hemisphere: south
-    year_range: [1992, 2020]
+    year_range: [1989, 2020]
     latitude_bounds: [-80, -62]
     longitude_bounds: [-180, 180]
     grid_resolution: 25
@@ -28,7 +28,7 @@ presets:
   # Full Arctic reproduction
   full_arctic:
     hemisphere: north
-    year_range: [1992, 2020]
+    year_range: [1989, 2020]
     latitude_bounds: [60, 90]
     longitude_bounds: [-180, 180]
     grid_resolution: 25
@@ -36,7 +36,7 @@ presets:
   # Edit to create your own training subset
   custom_config:
     hemisphere: null # 'south' or 'north'
-    year_range: [null, null] # [min_year, max_year] at least 6 years
+    year_range: [null, null] # [min_year, max_year] at least 6 years, max [1989, 2024]
     latitude_bounds: [null, null] # [southern, northern] max: north/south [31/90]/[-90,-40]
     longitude_bounds: [null, null] # [western, eastern] max: [-180,180]
     grid_resolution: null # Int or Float > 0.
