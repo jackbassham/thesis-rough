@@ -1,12 +1,8 @@
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
-from requests import Session
-from typing import Tuple, TYPE_CHECKING
-if TYPE_CHECKING:
-    from requests import Session
+from typing import Tuple
 
-from .earthdata_auth import create_earthdata_session
 from .urls import IceVelURLBuilder
 from .utils import (
     open_netcdf_from_response,
@@ -36,9 +32,6 @@ def main(cfg):
         cfg.dataset_config.ice_vel,
         'raw',
     )
-    
-    # Create Nasa Earth Data session
-    earth_data_session = create_earthdata_session()
 
     # Initialize url builder
     url_builder = IceVelURLBuilder(cfg)

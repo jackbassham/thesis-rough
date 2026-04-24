@@ -1,10 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
-from requests import Session
-from typing import Tuple, TYPE_CHECKING
-if TYPE_CHECKING:
-    from requests import Session
+from typing import Tuple
 
 from .urls import (
     IceConcURLBuilder,
@@ -16,7 +13,6 @@ from .utils import (
     load_spatial_coordinates,
 )
 
-# TODO remove hardcoded authentication and replace with .netrc in home
 
 def main(cfg):
 
