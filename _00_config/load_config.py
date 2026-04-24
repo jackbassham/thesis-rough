@@ -12,10 +12,11 @@ from .config import(
 from .parse_args import parse_args
 
 
-def load_config():
+def load_config(user_config_path=None):
 
-    # Define path to user configuration yaml file
-    user_config_path = 'user_config.yaml'
+    if user_config_path is None:
+        # Get relative path to user configuration yaml file
+        user_config_path = Path(__file__).with_name('user_config.yaml')
 
     # Load the yaml file
     with open(user_config_path) as file:
