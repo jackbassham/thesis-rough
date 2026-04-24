@@ -204,7 +204,12 @@ in the Weddell Sea from this [google drive](https://drive.google.com/drive/folde
 thesis-rough/data/raw
 ```
 
-3. [Start the ML pipeline](#option-b-run-partial-pipeline) from the `regrid_ice_vel` step with the raw data version `--timestamp_raw 01010001_0001`:
+3. Configure data parameters to match the [example](#1-configure-data-parameters), keeping the data root directory as the repo: 
+```py
+USER_ROOT_DIRECTORY=None
+```
+
+4. [Start the ML pipeline](#option-b-run-partial-pipeline) from the `regrid_ice_vel` step with the raw data version `--timestamp_raw 01010001_0001`:
 
 ```
 python -m run_pipeline --start regrid_ice_vel --timestamp_raw 01010001_0001
@@ -339,12 +344,16 @@ Versioned datasets then are stored within each stage or model under the followin
 Before getting started, modify the desired data parameters using an instance of the DataConfig dataclass (see lines 38-43 in  "_00_config/load_config.py"). 
 
 If you want to store the data in another directory, modify `USER_DATA_ROOT` (see line 35 in  "_00_config/load_config.py"):
-py```
+
+```
 USER_DATA_ROOT = '/<YOUR_DIRECTORY>/thesis-rough'
 ```
 
 Otherwise, set to `None`:
-py```
+
+
+
+```py
 USER_DATA_ROOT = None
 ```
 
