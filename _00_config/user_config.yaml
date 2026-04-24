@@ -2,13 +2,12 @@ paths:
   # Root directory for pipeline data, leave as default 'null' to save data to working as './data'
   user_data_root: null
 
-# Set the data configuration from the options below
+# Set the data configuration preset from the options below
 active_preset: weddell_sea_test
 
 presets:
 
-  # Small subset of 7 years Weddell Sea data
-  # Raw data available on google drive:
+  # Small subset of 7 years Weddell Sea data, raw data available on google drive:
   # https://drive.google.com/drive/folders/1JDOTHjX9MqDvm9TemHdnLsqSZsL9ZQoq?usp=share_link
   weddell_sea_test:
     hemisphere: south
@@ -33,7 +32,7 @@ presets:
     longitude_bounds: [-180, 180]
     grid_resolution: 25
 
-  # Edit to create your own training subset
+  # Replace 'null' to create your own training subset
   custom_config:
     hemisphere: null # 'south' or 'north'
     year_range: [null, null] # [min_year, max_year] at least 6 years, max [1989, 2024]
