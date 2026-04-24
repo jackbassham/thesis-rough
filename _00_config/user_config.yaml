@@ -1,17 +1,21 @@
 paths:
   user_data_root: null
 
-active_preset: weddell_test
+active_preset: weddell_sea_test
 
 presets:
 
-  weddell_sea:
+  # Small subset of 7 years Weddell Sea data
+  # Raw data available on google drive:
+  # https://drive.google.com/drive/folders/1JDOTHjX9MqDvm9TemHdnLsqSZsL9ZQoq?usp=share_link
+  weddell_sea_test:
     hemisphere: south
     year_range: [2010, 2016]
     latitude_bounds: [-79, -62]
     longitude_bounds: [-70, -15]
     grid_resolution: 25
 
+  # Full Southern Ocean reproduction
   full_southern_ocean:
     hemisphere: south
     year_range: [1992, 2020]
@@ -19,6 +23,7 @@ presets:
     longitude_bounds: [-180, 180]
     grid_resolution: 25
 
+  # Full Arctic reproduction
   full_arctic:
     hemisphere: north
     year_range: [1992, 2020]
@@ -26,6 +31,7 @@ presets:
     longitude_bounds: [-180, 180]
     grid_resolution: 25
 
+  # Edit to create your own training subset
   custom_config:
     hemisphere: null # 'south' or 'north'
     year_range: [null, null] # [min_year, max_year] at least 6 years
