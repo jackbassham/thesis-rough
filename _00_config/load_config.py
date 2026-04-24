@@ -74,6 +74,7 @@ def load_config():
         data_config, 
         version_config,
         # Get user's data root from yaml file
+        # TODO handle user_data_root error
         user_data_root = user_config['paths']['user_data_root']
     )
 
