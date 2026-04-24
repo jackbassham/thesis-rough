@@ -153,7 +153,7 @@ class DataConfig:
 
     def _validate_grid_resolution(self):
         # Handle invalid grid resolution
-        if not isinstance(self.grid_resolution, (float, int)) or self.grid_resolution <= 0:
+        if not isinstance(self.grid_resolution, (float, int)) or self.grid_resolution < 0:
             raise ValueError('Invalid grid resolution, enter as positive, nonzero integer or float')
         
 
@@ -332,17 +332,18 @@ class PathConfig:
                  data_config: DataConfig, version_config: VersionConfig,
                  user_data_root: str | None = None):
 
-        # Get root to project directory
-        if user_data_root is not None:
-            self.data_root = Path(user_data_root)
-        else:
-            self.data_root = Path('./data')
+        # Get data root from user, otherwise set to default path in repo
+        self.data_root = (
+            Path(user_data_root) 
+            if user_data_root is not None 
+            else Path('./data')
+        )
 
         # Instantiate configuration objects
         self.data_config = data_config
         self.version_config = version_config
 
-        # Define root to project directory for plots, etc
+        # Set project root to reop directory for plots, etc.
         self.project_root = Path('.')
 
 
