@@ -38,7 +38,7 @@ class BaseGridwiseLR:
         # Get weights if uncertainty passed to model instance
         w = None
         if r is not None:
-            w = self._buid_weights(r)
+            w = self._build_weights(r)
 
         # Infer number of features from feature matrix
         in_features = X.shape[1]
