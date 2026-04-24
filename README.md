@@ -423,7 +423,7 @@ If either `--start` or `--stop` point arguments are omttited, the pipeline will 
 - `regrid_ice_vel`, `regrid_wind`, or `regrid_ice_conc` Project raw ice velocity, wind, or ice concentration to common grid with parameter bounds.
 - `mask_normalize` Masks invalid data points and normalizes model inputs.
 - `process_inputs` Processes model inputs into train, test, and validation splits.
-- `ps`, `lr`, `lr_wtd`, `cnn`, or `cnn_wtd` Train and evaluate persistence, linear regression, weighted linear regression, CNN, or weighted CNN models.
+- `baseline`, `lr`, `lr_wtd`, `cnn`, or `cnn_wtd` Train and evaluate persistence, linear regression, weighted linear regression, CNN, or weighted CNN models.
 
 *Note:* 
 A timestamp version, with format 'MMDDYYYY_HHMM', must be assigned to specify pre-existing source data if the pipeline is run after the raw data download steps. `timestamp_out` is the default command used to cover all steps in the pipeline. The user, however, can specify a version of step-specific data using the arguments:

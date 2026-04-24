@@ -21,7 +21,7 @@ def main():
         'make_coordinates': step_make_coordinates,
         'mask_normalize': step_mask_normalize,
         'process_inputs': step_process_inputs,
-        # 'ps': step_ps,
+        'baseline': step_baseline,
         'lr': step_lr,
         'lr_wtd': step_lr_wtd,
         'cnn': step_cnn,
@@ -144,16 +144,21 @@ def step_process_inputs(config):
     main(config)
 
 
-# def step_ps(config):
-#     from _05_ps.ps import main
-#     main(config)
+def step_baseline(config):
+    from _05_train_models.train_baseline import main
+    main(config)
+
+    from _06_evaluate.quick_eval import run_eval
+    # Run quick eval for the baseline
+    run_eval(config, 'ps')
+
 
 def step_lr(config):
     from _05_train_models.train_lr import main
     main(config)
 
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the cnn-pt
+    # Run quick eval for the linear regression
     run_eval(config, 'lr_cf')
 
 
@@ -162,7 +167,7 @@ def step_lr_wtd(config):
     main(config)
 
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the cnn-pt
+    # Run quick eval for the weighted linear regression
     run_eval(config, 'lr_cf_wtd')
 
 
@@ -171,7 +176,7 @@ def step_cnn(config):
     main(config)
 
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the cnn-pt
+    # Run quick eval for the cnn
     run_eval(config, 'cnn_pt')
 
 
@@ -180,7 +185,7 @@ def step_cnn_wtd(config):
     main(config)
 
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the cnn-pt
+    # Run quick eval for the weighted cnn
     run_eval(config, 'cnn_pt_wtd')
 
 
