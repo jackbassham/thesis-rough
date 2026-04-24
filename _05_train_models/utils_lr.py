@@ -84,4 +84,6 @@ def build_complex_uncertainty_weights(r, epsilon=1e-4):
     # Compute model weights as inverse uncertainty squared + small correction
     w = 1 / (zr_squared + epsilon)
 
+    print(f'Weights shape: {w.shape}')
+
     return w

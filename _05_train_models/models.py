@@ -146,6 +146,8 @@ class WeightedLR(BaseGridwiseLR):
         # Diagonalize weights using sparse diags
         W = scipy.sparse.diags(w)
 
+        print(f'X shape: {X.shape}, W shape: {W.shape}, y shape: {y.shape}')
+
         # Solve with close form solution
         return np.linalg.inv(X.conj().T @ W @ X) @ X.conj().T @ W @ y
     
