@@ -196,7 +196,21 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 ## Data Access
 
 ### Option A: Download Sample Set *(provided)*
-**TODO**
+1. Download a subset of raw data covering seven years of ice velocity, wind, and ice concentration
+in the Weddell Sea from this [google drive](https://drive.google.com/drive/folders/1JDOTHjX9MqDvm9TemHdnLsqSZsL9ZQoq?usp=share_link).
+
+2. Move the folder into the root of the repo, ensuring the directory structure:
+```sh
+thesis-rough/data/raw
+```
+
+3. [Start the ML pipeline](#option-b-run-partial-pipeline) from the `regrid_ice_vel` step with the raw data version `--timestamp_raw 01010001_0001`:
+
+```
+python -m run_pipeline --start regrid_ice_vel --timestamp_raw 01010001_0001
+```
+*Note* The timestamp versions for data processed in the remaining pipeline steps will reflect the current timestamp
+unless specified otherwise in the command line.
 
 ### Option B: Download Data Via Pipeline
 
