@@ -9,25 +9,7 @@ from .config import(
 from .parse_args import parse_args
 
 
-def main():
-
-    # Load in configuration defined in function below
-    data_config, version_config, paths = load_config()
-
-
 def load_config():
-    """
-    --------------------- NOTE ----------------------------
-    temporal bounds for full-region reproduction
-    year_range = (1992, 2020) (NOTE 1989-1991 JRA55 issue)
-    latitude longitude bounds for current reproduction
-    north: latitude_bounds = (60, 90)        
-    south: latitdue_bounds = (-80, -62)
-    all: longitude_bounds = (-180, 180)
-    -------------------------------------------------------
-    """
-
-    # FIXME move data root and data config to .yaml file
 
     # Define root to data directory
     # If 'USER_DATA_ROOT = None', data is downloaded to repo directory
@@ -42,15 +24,6 @@ def load_config():
         longitude_bounds = (-70, -15),
         grid_resolution = 25,
     )
-
-    # # Create instance of data parameters specific to run
-    # data_config = DataConfig(
-    #     hemisphere = 'south',
-    #     year_range = (1992, 2020), # At least 6 years
-    #     latitude_bounds = (-80, -62),
-    #     longitude_bounds = (-180, 180),
-    #     grid_resolution = 25
-    # )
 
     # Create configuration instance of dataset info
     dataset_config = DatasetConfig(
@@ -69,7 +42,10 @@ def load_config():
         timestamp_out = args.timestamp_out,
         timestamp_raw = args.timestamp_raw,
         timestamp_regrid = args.timestamp_regrid,
-        timestamp_coordinates = args.timestamp_coordinates,
+        timestamp_coordinates = (
+            args.timestamp_coordinates
+            or args.timestamp_regrid
+        ),
         timestamp_mask_norm = args.timestamp_mask_norm,
         timestamp_model_inputs = args.timestamp_model_inputs,
         timestamp_model_output = args.timestamp_model_output,
