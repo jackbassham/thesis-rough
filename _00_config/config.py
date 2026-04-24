@@ -4,6 +4,8 @@ import numpy as np
 from pathlib import Path
 from typing import Tuple, Optional
 
+from . import path_anchors
+
 # TODO consider YAML
 
 @dataclass
@@ -299,20 +301,21 @@ class PathConfig:
     def __init__(self, 
                  data_config: DataConfig, version_config: VersionConfig,
                  user_data_root: str | None = None):
+        
+        # Set project root to anchored repo root
+        self.project_root = path_anchors.REPO_ROOT
+
 
         # Get data root from user, otherwise set to default path in repo
         self.data_root = (
             Path(user_data_root) 
             if user_data_root is not None 
-            else Path('./data')
+            else self.project_root / 'data'
         )
 
         # Instantiate configuration objects
         self.data_config = data_config
         self.version_config = version_config
-
-        # Set project root to reop directory for plots, etc.
-        self.project_root = Path('.')
 
 
     def data_stage_path(self, data_stage: str) -> Path:
