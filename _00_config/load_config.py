@@ -1,3 +1,6 @@
+from pathlib import Path
+import yaml
+
 from .config import(
     DataConfig,
     DatasetInfo,
@@ -11,21 +14,36 @@ from .parse_args import parse_args
 
 def load_config():
 
-    # Define root to data directory
-    # If 'USER_DATA_ROOT = None', data is downloaded to repo directory
-    USER_DATA_ROOT = None
-    # USER_DATA_ROOT = '/data/globus/jbassham/thesis-rough'
+    # Define path to user configuration yaml file
+    user_config_path = 'user_config.yaml'
 
-    # Weddell Sea Test Set
+    # Load the yaml file
+    with open(user_config_path) as file:
+        user_config = yaml.safe_load(file)
+
+    # Set the active configuration preset from the yaml file
+    preset = user_config['active_preset']
+
+    # Try to get the active preset from presets available in the yaml file
+    try:
+        p = user_config['presets'][preset]
+    # Handle case where active preset is not available in presets
+    except KeyError:
+        raise ValueError(
+            f'Unknown active preset "{preset}".'
+            f'Use avaiable presets: {list(user_config["presets"])}'
+        )
+
+    # Set data configuration instance from yaml file
     data_config = DataConfig(
-        hemisphere = 'south',
-        year_range = (2010, 2016), # At least 6 years
-        latitude_bounds = (-79, -62), # Weddell Sea, small subset
-        longitude_bounds = (-70, -15),
-        grid_resolution = 25,
+        hemisphere = p['hemisphere'],
+        year_range = tuple(p['year_range']),
+        latitude_bounds = tuple(p['latitude_bounds']),
+        longitude_bounds = tuple(p['longitude_bounds']),
+        grid_resolution = p('grid_resolution'),
     )
 
-    # Create configuration instance of dataset info
+    # Set dataset configuration instance to current name, dataset id, version, grid, and file extension
     dataset_config = DatasetConfig(
         ice_vel=DatasetInfo('ice_vel', 'nsidc0016', 'v4', 'ease', '.npz'),
         wind=DatasetInfo('wind', 'era5', 'v1', 'reg', '.npz'),
@@ -52,7 +70,12 @@ def load_config():
     )
 
     # Create instance of paths
-    path_config = PathConfig(data_config, version_config, user_data_root = USER_DATA_ROOT)
+    path_config = PathConfig(
+        data_config, 
+        version_config,
+        # Get user's data root from yaml file
+        user_data_root = user_config['paths']['user_data_root']
+    )
 
     # Return entire pipeline configuration object
     return PipelineConfig(
@@ -61,7 +84,3 @@ def load_config():
         version_config = version_config,
         path_config = path_config,
     )
-
-
-if __name__ == '__main__':
-    main()
