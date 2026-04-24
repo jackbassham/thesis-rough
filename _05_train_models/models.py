@@ -6,6 +6,25 @@ from tqdm import tqdm
 import scipy
 
 
+class Persistence_Baseline:
+    def __init__(self):
+        pass
+
+    def predict(y):
+        """
+        
+        """
+
+        # Initialize array of nans for predictions 
+        preds = np.full_like(y, np.nan)
+
+        # Fill predictions array with one day persistance shift
+        # NOTE first timestep remains nan to preserve shape, use mask to ignore in eval
+        preds[1:] = y[:-1]
+
+        return preds
+    
+    
 class BaseGridwiseLR:
     def __init__(self, feature_fcn, target_fcn):
         self.feature_fcn = feature_fcn
