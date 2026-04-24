@@ -41,7 +41,7 @@ def load_config(user_config_path=None):
         year_range = tuple(p['year_range']),
         latitude_bounds = tuple(p['latitude_bounds']),
         longitude_bounds = tuple(p['longitude_bounds']),
-        grid_resolution = p('grid_resolution'),
+        grid_resolution = p['grid_resolution'],
     )
 
     # Set dataset configuration instance to current name, dataset id, version, grid, and file extension
