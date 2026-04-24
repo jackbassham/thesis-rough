@@ -9,39 +9,6 @@ from typing import Tuple, Optional
 @dataclass
 class DataConfig:
     """
-    Configuration for global data data parameters
-
-    Parameters used for replication:
-
-        Enter parameters based on the following for replication of Northern Hemisphere 
-        and Southern Hemisphere model runs.
-
-        Hemisphere String identifier:
-        String identifier
-        'south' Southern Hemisphere
-        'north' Northern Hemisphere
-
-        Temporal Bounds:
-        year_range = (1992, 2020)
-        # NOTE: Original Hoffman, et. al range is 1989-2020, 1989-1991 corrupted JRA55 data files on Mazloff Server
-        # TODO: Script to JRA55 or ERA data from source
-
-        Spatial Bounds for Reproduction: 
-        Southern Hemisphere; Southern Ocean
-        latitude_limits = (-80, -62), limited to -90degS to -37degS
-        (max latitude bounds based on datasets (-90, -40))
-        longitude_limts = (-180, 180), limited to -180degW to 180degE
-        
-        Northern Hemisphere; Arctic ('nh')
-        latitude_limits = (60, 90), limited to 29.7N to 90N
-        (max latitude bounds based on datasets (31, 90))
-        longitude_limts = (-180, 180), limited to -180degW to 180degE
-
-        Grid Resolution:
-        25
-        Resolution, in km, used for new regrid data. Based on original EASE grid
-        resolution of NSIDC Polar Pathfinder Sea Ice Motion Vectors, version 4. 
-        Converted to degrees during regrid. 
 
     """
 
@@ -257,7 +224,7 @@ class VersionConfig:
         """
         Post parameter initialization error handling using validation methods. 
         Sets timestamps to current 'timestamp_out', unless user specifies manually.
-        Raise value error if user does not enter in format MMDDYY_HHMM.
+        Raise value error if user does not enter in format MMDDYYYY_HHMM.
         """ 
 
         # If user does not enter manually, assign current timestamp
