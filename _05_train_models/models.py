@@ -6,11 +6,11 @@ from tqdm import tqdm
 import scipy
 
 
-class Persistence_Baseline:
+class PersistenceBaseline:
     def __init__(self):
         pass
 
-    def predict(y):
+    def predict(self, y):
         """
         
         """
