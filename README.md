@@ -205,9 +205,9 @@ in the Weddell Sea from this [google drive](https://drive.google.com/drive/folde
 thesis-rough/data/raw
 ```
 
-3. Configure data parameters to match the [example](#1-configure-data-parameters), keeping the data root directory as the repo: 
-```py
-USER_ROOT_DIRECTORY=None
+3. Configure data parameters to match the [example](#1-configure-data-parameters), keeping the default data root directory: 
+```yaml
+user_data_root: null
 ```
 
 4. [Start the ML pipeline](#option-b-run-partial-pipeline) from the `regrid_ice_vel` step with the raw data version `--timestamp_raw 01010001_0001`:
