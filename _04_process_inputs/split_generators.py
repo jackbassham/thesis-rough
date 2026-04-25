@@ -11,14 +11,11 @@ def chronological_indices(
     
     """
 
-    # Get array of n_time years from the time array
-    years = np.unique(time.astype('datetime64[Y]'))
+    # Get array of years from the time array
+    unique_years = np.unique(time.astype('datetime64[Y]'))
 
     # Check that years will work for split
-    validate_split_years(years, n_val, n_test)
-
-    # Create array of unique years in split
-    unique_years = np.unique(years)
+    validate_split_years(unique_years, n_val, n_test)
 
     # Initialize empty list for split indices for downstream code (there will only be one member here)
     split_indices = []
@@ -33,9 +30,9 @@ def chronological_indices(
     # Fill list with split indices dict
     split_indices = [
         {
-            'test': np.where(np.isin(years, test_years))[0],
-            'val': np.where(np.isin(years, val_years))[0],
-            'train': np.where(np.isin(years, train_years))[0]  
+            'test': np.where(np.isin(unique_years, test_years))[0],
+            'val': np.where(np.isin(unique_years, val_years))[0],
+            'train': np.where(np.isin(unique_years, train_years))[0]  
         }     
     ]
 
@@ -53,19 +50,41 @@ def k_randomized_year_indices(
     """
 
     # Get array of n_time years from the time array
-    years = np.unique(time.astype('datetime64[Y]'))
+    unique_years = np.unique(time.astype('datetime64[Y]'))
 
     # Initialize empty list for ensemble member split indices
-    splits = []
+    split_indices = []
 
     # Check that years will work for split
-    validate_split_years(years, n_val, n_test)
+    validate_split_years(unique_years, n_val, n_test)
 
     # Initialize random number generator with seed
     rng = np.random.default_rng(seed)
 
     for member in range(n_members):
-        ...
+        
+        # Randomly permutate the array of years
+        shuffled_years = rng.permutation(unique_years)
+
+        # The last 'n_test' years make test split
+        test_years = shuffled_years[-n_test:]
+        # The next 'n_val' years make the validation split
+        val_years = unique_years[-(n_test + n_val):-n_test]
+        # The remaining years in range make the training split
+        train_years = unique_years[:-(n_test + n_val)]
+
+        # Append member's split indices to the list
+        split_indices.append({
+            'test': np.where(np.isin(unique_years, test_years))[0],
+            'val': np.where(np.isin(unique_years, val_years))[0],
+            'train': np.where(np.isin(unique_years, train_years))[0]  
+        })   
+
+    return split_indices
+
+    
+
+
 
 
 # TODO k_fold_sliding_indices
