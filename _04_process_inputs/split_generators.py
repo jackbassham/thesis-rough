@@ -15,7 +15,8 @@ import warnings
 
 def chronological_indices(
         time: npt.NDArray[np.datetime64],
-        n_val: int = 2, n_test: int = 2) -> dict[str, npt.NDArray[np.floating]]:
+        n_val: int = 2, n_test: int = 2
+        ) -> list[dict[str, npt.NDArray[np.floating]]]:
     """
     
     """
@@ -29,6 +30,9 @@ def chronological_indices(
     # Create array of unique years in split
     unique_years = np.unique(years)
 
+    # Initialize empty list for split indices for downstream code (there will only be one member here)
+    split_indices = []
+
     # The last 'n_test' years make test split
     test_years = unique_years[-n_test:]
     # The next 'n_val' years make the validation split
@@ -36,12 +40,32 @@ def chronological_indices(
     # The remaining years in range make the training split
     train_years = unique_years[:-(n_test + n_val)]
 
-    # Return split indices as a dict
-    return {
-        'test': np.where(np.isin(years, test_years))[0],
-        'val': np.where(np.isin(years, val_years))[0],
-        'train': np.where(np.isin(years, train_years))[0]
-    }
+    # Fill list with split indices dict
+    split_indices = [
+        {
+            'test': np.where(np.isin(years, test_years))[0],
+            'val': np.where(np.isin(years, val_years))[0],
+            'train': np.where(np.isin(years, train_years))[0]  
+        }     
+    ]
+
+    return split_indices
+
+
+def k_random_year_indices(
+        time: npt.NDArray[np.datetime64],
+        n_members: int = 10,
+        n_val: int = 2, n_test: int = 2
+        ) -> list[dict[str, npt.NDArray[np.floating]]]:
+    """
+    
+    """
+
+    # Get array of n_time years from the time array
+    years = time.astype('datetime64[Y]')
+
+    # Check that years will work for split
+    validate_split_years(years, n_val, n_test)
 
 
 def randomized_indices():

@@ -84,9 +84,16 @@ def save_arrays(path: Path, arrays: dict[str, npt.NDArray[np.floating]]) -> None
 
 
 def set_seed(seed=0):
+    """
+    
+    """
+    # PyTorch
     torch.manual_seed(seed) # PyTorch Reproducibility
     torch.cuda.manual_seed(seed) # Required if using GPU
     torch.backends.cudnn.deterministic = True  # Reproducibility if using GPU
     torch.backends.cudnn.benchmark = False # Paired with above
+
+    # Numpy
+    np.random.seed(seed)
 
     return
