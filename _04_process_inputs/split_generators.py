@@ -1,16 +1,6 @@
 from dataclasses import dataclass
 import numpy as np
 import numpy.typing as npt
-import warnings
-
-
-# @dataclass
-# class SplitIndices:
-
-#     # Construct parameters
-#     test: npt.NDArray
-#     val: npt.NDArray
-#     train: npt.NDArray
 
 
 def chronological_indices(
@@ -22,7 +12,7 @@ def chronological_indices(
     """
 
     # Get array of n_time years from the time array
-    years = time.astype('datetime64[Y]')
+    years = np.unique(time.astype('datetime64[Y]'))
 
     # Check that years will work for split
     validate_split_years(years, n_val, n_test)
@@ -52,43 +42,38 @@ def chronological_indices(
     return split_indices
 
 
-def k_random_year_indices(
+def k_randomized_year_indices(
         time: npt.NDArray[np.datetime64],
         n_members: int = 10,
-        n_val: int = 2, n_test: int = 2
+        n_val: int = 2, n_test: int = 2,
+        seed: int = 0
         ) -> list[dict[str, npt.NDArray[np.floating]]]:
     """
     
     """
 
     # Get array of n_time years from the time array
-    years = time.astype('datetime64[Y]')
+    years = np.unique(time.astype('datetime64[Y]'))
+
+    # Initialize empty list for ensemble member split indices
+    splits = []
 
     # Check that years will work for split
     validate_split_years(years, n_val, n_test)
 
+    # Initialize random number generator with seed
+    rng = np.random.default_rng(seed)
 
-def randomized_indices():
-    """
-    
-    """
-
-    # TODO generate seed in config
-
-    ...
+    for member in range(n_members):
+        ...
 
 
-def ensemble():
-    """
-    
-    """
-
-    ...
+# TODO k_fold_sliding_indices
 
 
 def validate_split_years(
-        years: npt.NDArray[np.datetime64], 
-        n_val: int, n_test: int) -> None:
+    years: npt.NDArray[np.datetime64], 
+    n_val: int, n_test: int) -> None:
     """
     
     """
