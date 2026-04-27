@@ -87,6 +87,12 @@ def set_seed(seed=0):
     """
     
     """
+    # FIXME: 
+    # Same seed means same weights intialization for each ensemble member
+    # Could change to: 
+    # helpers.set_seed(cfg.split_config.seed + cfg.runtime.member)
+    # For reproducible but distinct seed for each member
+
     # PyTorch
     torch.manual_seed(seed) # PyTorch Reproducibility
     torch.cuda.manual_seed(seed) # Required if using GPU
