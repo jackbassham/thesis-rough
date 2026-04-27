@@ -392,6 +392,7 @@ class PipelineConfig:
     """
     data_config: DataConfig
     dataset_config: DatasetConfig
+    split_config: SplitConfig
     version_config: VersionConfig
     path_config: PathConfig
 

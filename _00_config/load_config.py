@@ -8,6 +8,7 @@ from .config import(
     VersionConfig, 
     PathConfig, 
     PipelineConfig,
+    SplitConfig,
 )
 from .parse_args import parse_args
 
@@ -51,6 +52,9 @@ def load_config(user_config_path=None):
         ice_conc=DatasetInfo('ice_conc', 'nsidc0051', 'v2', 'ps', '.npz')
     )
 
+    # Instantiate split configuration object from YAML entries or fall back to defaults
+    split_config = SplitConfig(**user_config.get('split', {}))
+
     # Instantiate argument parser
     args = parse_args()
 
@@ -70,7 +74,7 @@ def load_config(user_config_path=None):
         timestamp_model_output = args.timestamp_model_output,
     )
 
-    # Create instance of paths
+    # Instantiate path configuration object to set paths for data, model output, and plots
     path_config = PathConfig(
         data_config, 
         version_config,
