@@ -178,7 +178,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 3. Install the requirements from the `environment.yml` file (included in the repo) in a new environment. The environment is named `thesisrough` by default:
 
     ```sh
-    conda env create -f environmnet.yml
+    conda env create -f environment.yml
     ```
 
 4. Activate the environment before running code:
