@@ -87,6 +87,7 @@ def load_config(user_config_path=None):
     return PipelineConfig(
         data_config = data_config,
         dataset_config = dataset_config,
+        split_config = split_config,
         version_config = version_config,
         path_config = path_config,
     )
