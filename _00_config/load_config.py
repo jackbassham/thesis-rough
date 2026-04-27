@@ -8,6 +8,7 @@ from .config import(
     VersionConfig, 
     PathConfig, 
     PipelineConfig,
+    RuntimeConfig,
     SplitConfig,
 )
 from .parse_args import parse_args

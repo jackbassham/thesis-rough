@@ -211,6 +211,13 @@ class SplitConfig:
 
 
 @dataclass
+class RuntimeConfig:
+
+    # Define ensemble member for current run time, default to first member
+    member: int = 0
+
+
+@dataclass
 class VersionConfig:
     """
     Configuration for timestamped data version control.
@@ -316,9 +323,11 @@ class PathConfig:
         'cnn_pt_wtd',
     ]
 
-    # Pass in instance of data configuratino and version configuration
+    # Pass in instances of data and version configurations
     def __init__(self, 
-                 data_config: DataConfig, version_config: VersionConfig,
+                 data_config: DataConfig, 
+                 version_config: VersionConfig,
+                 runtime_config: RuntimeConfig,
                  user_data_root: str | None = None):
         
         # Set project root to anchored repo root
@@ -335,6 +344,7 @@ class PathConfig:
         # Instantiate configuration objects
         self.data_config = data_config
         self.version_config = version_config
+        self.runtime_config = runtime_config
 
 
     def data_stage_path(self, data_stage: str) -> Path:
@@ -363,16 +373,33 @@ class PathConfig:
         if model_name not in self.MODEL_NAMES:
             raise ValueError(f'Uknown model name entry in path config: {model_name}')
 
-        # Get timestamp for model output
+        # Get timestamp and hempisphere strings
         timestamp = self.version_config.timestamp_model_output
+        hemisphere = self.data_config.hemisphere
+
+        # Get number of the current ensemble member runtime, updated for each member runtime
+        member = f'member_{self.runtime_config.member:02d}'
 
         # Return path for the quick evaluation plots
         if plot_path:
-            return Path(self.project_root / 'plots' / 'quick-eval' / model_name / self.data_config.hemisphere / timestamp)
+            return Path(self.project_root 
+                        / 'plots' 
+                        / 'quick-eval' 
+                        / model_name 
+                        / hemisphere
+                        / timestamp
+                        / member
+                    )
         
         # Return path for the model outputs
         else:
-            return Path(self.data_root / 'model-output' / model_name / self.data_config.hemisphere / timestamp) 
+            return Path(self.data_root 
+                        / 'model-output' 
+                        / model_name 
+                        / hemisphere 
+                        / timestamp
+                        / member
+                    ) 
 
 
     def makedir_if_missing(self, path: Path) -> Path:
