@@ -1,4 +1,6 @@
+import numpy as np
 import numpy.typing as npt
+
 
 
 def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
