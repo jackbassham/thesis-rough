@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 import numpy as np
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Literal
 
 from . import path_anchors
 
@@ -189,7 +189,26 @@ class DatasetConfig:
         
         # Return full filename with extension
         return base + ds.ext
-        
+
+@dataclass
+class SplitConfig:
+    """
+    Configuration for train/validation/test split generation.
+    """
+
+    # Define number of ensemble members, default to 1
+    n_members: int = 1
+
+    # Define split method, default to chronological
+    split_method: Literal[
+        'chronological',
+        'k_random_years'
+    ] = 'chronological'
+
+    # Default test/val splits to to years, the remaining years train
+    n_val_years: int = 2
+    n_test_years: int = 2
+
 
 @dataclass
 class VersionConfig:
