@@ -200,7 +200,7 @@ class SplitConfig:
     n_members: int = 1
 
     # Define split method, default to chronological
-    split_method: Literal[
+    method: Literal[
         'chronological',
         'k_random_years'
     ] = 'chronological'
