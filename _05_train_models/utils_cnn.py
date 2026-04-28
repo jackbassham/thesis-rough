@@ -20,43 +20,23 @@ def check_for_accelerator():
     return device
 
 
-def get_datasets(config, device, include_uncertainty=False):
-    """
-    
-    """
+def build_dataset(data_split, device, include_uncertainty=False):
+    # Make a list of tensors for the data split
+    tensors = [
+        # Dropping mask channel (last channel) from features
+        # NOTE double enforcing that inputs are PyTorch Float
+        torch.from_numpy(data_split['x'][:,:-1,:,:]).float().to(device),
+        torch.from_numpy(data_split['y']).float().to(device)
+    ]
 
-    # Load model inputs source path
-    path_model_inputs = config.path_config.data_stage_path('model_inputs')
+    if include_uncertainty:
+        # Append uncertainty to the list of tensors if it's included for weighted models
+        tensors.append(
+            torch.from_numpy(data_split['ri_t0']).float().to(device)
+        )
 
-    # Load in input data
-    train = np.load(path_model_inputs / 'train.npz')
-    val = np.load(path_model_inputs / 'val.npz')
-    test = np.load(path_model_inputs / 'test.npz')
-
-    def build_dataset(data_split):
-        # Make a list of tensors for the data split
-        tensors = [
-            # Dropping mask channel (last channel) from features
-            # NOTE double enforcing that inputs are PyTorch Float
-            torch.from_numpy(data_split['x'][:,:-1,:,:]).float().to(device),
-            torch.from_numpy(data_split['y']).float().to(device)
-        ]
-
-        if include_uncertainty:
-            # Append uncertainty to the list of tensors if it's included for weighted models
-            tensors.append(
-                torch.from_numpy(data_split['ri_t0']).float().to(device)
-            )
-
-        # Return all tensors in the split wrapped in a dataset
-        return TensorDataset(*tensors)
-
-    # Return spits wrapped in datasets
-    return (
-        build_dataset(train),
-        build_dataset(val),
-        build_dataset(test),
-    )
+    # Return all tensors in the split wrapped in a dataset
+    return TensorDataset(*tensors)
 
 
 def get_batched_data(
