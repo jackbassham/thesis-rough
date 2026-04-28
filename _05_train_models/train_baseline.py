@@ -1,15 +1,16 @@
 import numpy as np
-from . import models
+from . import(
+    ensemble,
+    models
+)
 
 def main(cfg):
 
-    # Load model inputs source path
-    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
+    # Load in current member's split targets, features
+    splits = ensemble.load_member_splits(cfg)
 
-    # Load in testing data for predictions
-    test = np.load(path_model_inputs / 'test.npz')
-    # Get targets from data, excluding mask (last feature)
-    y_test = test['y']
+    # Load test split for current member
+    y_test = splits['test']['y']
 
     # Instantiate one day persistence baseline model
     model = models.PersistenceBaseline()
@@ -33,6 +34,7 @@ def main(cfg):
 
 if __name__ == "__main__":
     from _00_config.load_config import load_config
+    from .ensemble import run_ensemble
     cfg = load_config()
-    main(cfg)
+    run_ensemble(cfg, main)
 
