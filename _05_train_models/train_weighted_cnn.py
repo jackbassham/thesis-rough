@@ -2,9 +2,12 @@ import helpers
 import numpy as np
 import torch
 import torch.nn.functional as F
-from . import loss_funcs
-from . import models
-from . import utils_cnn
+from . import (
+    ensemble,
+    loss_funcs,
+    models,
+    utils_cnn
+)
 
 
 MODEL_STR = 'weighted_cnn'
@@ -17,8 +20,13 @@ def main(cfg):
     # Get device
     device = utils_cnn.check_for_accelerator()
 
-    # Load tensor datasets from numpy arrays
-    train_ds, val_ds, test_ds = utils_cnn.get_datasets(cfg, device, include_uncertainty=True)
+    # Load in current member's split targets, features
+    splits = ensemble.load_member_splits(cfg)
+
+    # Build datasets from member's splits
+    train_ds = utils_cnn.build_dataset(splits['train'], device, include_uncertainty=True)
+    val_ds = utils_cnn.build_dataset(splits['val'], device, include_uncertainty=True)
+    test_ds = utils_cnn.build_dataset(splits['test'], device, include_uncertainty=True)
 
     # Get batched data loaders from tensor datasets
     train_dl, val_dl, test_dl = utils_cnn.get_batched_data(train_ds, val_ds, test_ds)

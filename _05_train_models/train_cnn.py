@@ -35,7 +35,7 @@ def main(cfg):
     # Load in current member's split targets, features
     splits = ensemble.load_member_splits(cfg)
 
-    # Build datasets from member's splits
+    # Build tensor datasets from member's splits
     train_ds = utils_cnn.build_dataset(splits['train'], device)
     val_ds = utils_cnn.build_dataset(splits['val'], device)
     test_ds = utils_cnn.build_dataset(splits['test'], device)
