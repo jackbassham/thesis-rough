@@ -66,6 +66,7 @@ def main(cfg):
 
 if __name__ == "__main__":
     from _00_config.load_config import load_config
+    from .ensemble import run_ensemble
     cfg = load_config()
-    main(cfg)
+    run_ensemble(cfg, main)
 

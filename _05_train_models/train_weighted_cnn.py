@@ -23,7 +23,7 @@ def main(cfg):
     # Load in current member's split targets, features
     splits = ensemble.load_member_splits(cfg)
 
-    # Build datasets from member's splits
+    # Build tensor datasets from member's splits
     train_ds = utils_cnn.build_dataset(splits['train'], device, include_uncertainty=True)
     val_ds = utils_cnn.build_dataset(splits['val'], device, include_uncertainty=True)
     test_ds = utils_cnn.build_dataset(splits['test'], device, include_uncertainty=True)
@@ -108,5 +108,6 @@ def main(cfg):
 
 if __name__ == "__main__":
     from _00_config.load_config import load_config
+    from .ensemble import run_ensemble
     cfg = load_config()
-    main(cfg)
+    run_ensemble(cfg, main)
