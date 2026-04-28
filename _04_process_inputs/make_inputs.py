@@ -54,7 +54,13 @@ def main(cfg):
     # Fill target, feature, and separate unertainty arrays from inputs
     targets_features = utils.make_target_feature_arrays(inputs)
 
-    # Save targets and features
+    # Load model inputs destination path
+    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
+
+    # Make destination directory if missing
+    cfg.path_config.makedir_if_missing(path_model_inputs)
+
+    # Save unsplit target and feature arrays
     helpers.save_arrays(
         path_model_inputs / 'targets_features.npz',
         targets_features
@@ -68,20 +74,6 @@ def main(cfg):
 
     # Get split indices from time array
     indices = split_generators.chronological_indices(time_t0)
-
-    # Split arrays based on indices
-    splits = utils.split_arrays(arrays, indices)
-
-    # Load model inputs deestination path
-    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
-
-    # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_model_inputs)
-
-    # Save splits
-    helpers.save_arrays(path_model_inputs / 'train.npz', splits['train'])
-    helpers.save_arrays(path_model_inputs / 'val.npz', splits['val'])
-    helpers.save_arrays(path_model_inputs / 'test.npz', splits['test'])
 
     # Save split indices
     helpers.save_arrays(path_model_inputs / 'split_indices.npz', indices)
