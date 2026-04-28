@@ -49,18 +49,10 @@ def run_eval(config, model_name: str) -> None:
     utrue = np.where(mask_bad==0, np.nan, utrue)
     vtrue = np.where(mask_bad==0, np.nan, vtrue)
 
-    # Load in uncertainty
-    ri_test = np.load(path_inputs / 'test.npz')['ri_t0']
+    # Get uncertainty from test split and remove channel dimension
+    ri_test = np.squeeze(splits['test']['ri_t0'], axis=1)
 
-    # Remove channel dimension from uncertainty
-    ri_test = np.squeeze(ri_test, axis = 1)
 
-    # # If the model is persistance
-    # # TODO dynamic strings and error conditions
-    # if model_name == 'ps':
-        
-    #     # Shift ri_test array forward one day
-    #     ri_test = ri_test[1:,:,:]
 
     # Load path to coordinates
     path_coordinates = config.path_config.data_stage_path('regrid')
