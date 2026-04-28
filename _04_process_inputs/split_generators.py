@@ -36,7 +36,7 @@ def chronological_indices(
     return split_indices
 
 
-def k_randomized_year_indices(
+def k_shuffled_year_indices(
         time: npt.NDArray[np.datetime64],
         n_members: int = 10,
         n_val_years: int = 2, n_test_years: int = 2,

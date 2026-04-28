@@ -74,7 +74,8 @@ def main(cfg):
 
     # Get split indices from time array
     indices = split_generators.k_shuffled_year_indices(
-        time_t0, n_members=cfg.split_config.n_members)
+        time_t0, n_members=cfg.split_config.n_members
+        )
 
     # Save split indices
     helpers.save_arrays(path_model_inputs / 'split_indices.npz', indices)
