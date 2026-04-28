@@ -18,7 +18,7 @@ def run_ensemble(config, train_fcn):
         train_fcn(config)
 
 
-def get_member_splits(config):
+def load_member_splits(config):
     """
     
     """
