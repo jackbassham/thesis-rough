@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 from _00_config.parse_args import parse_args
+from _05_train_models.ensemble import load_member_splits
+from . import metric_fcns
 
 # TODO silence mean of empty slice warning
 
@@ -34,44 +36,18 @@ def run_eval(config, model_name: str) -> None:
     utrue = data['y_true'][:,0,:,:]
     vtrue = data['y_true'][:,1,:,:]
 
-    print(f'Shape utrue {np.shape(utrue)}')
-    print('')
+    # Load current ensemble splits
+    splits = load_member_splits()
 
-    # Load path to split indices
-    path_inputs = config.path_config.data_stage_path('model_inputs')
-
-    # Get filename for test train split
-    fnam = f'split_indices.npz'
-
-    # Load split indices file
-    split_indices = np.load(path_inputs / 'split_indices.npz')
-
-    # TODO can get mask for test split from inputs
-
-    # Load path to time variable nan mask (bad points)
-    mask_path = config.path_config.data_stage_path('mask_norm')
-
-    # NOTE masking out bad points, not just land/ ocean for plotting
-
-    # Load time variable nan mask file and slice to test split time indices
-    mask_bad = np.load(mask_path / 'masks.npz')['mask_bad'][split_indices['test']]
-
-    print(f'Shape mask_bad {np.shape(mask_bad)}')
-    print('')
-
-    # # If the model is persistance
-    # if model_name == 'ps':
-    #     # Shift nan mask one day forward
-    #     mask_bad = mask_bad[1:,:,:]
+    # Get mask for test split from last feature channel
+    mask_bad = splits['test']['x'][:,-1,:,:]
 
     # Mask invalid points in model output before evaluation
-    # NOTE CNN input of 0 at invalid points and LR output of 0 for vi (imag) component
+    upred = np.where(mask_bad==0, np.nan, upred)
+    vpred = np.where(mask_bad==0, np.nan, vpred)
 
-    upred = np.where(mask_bad, np.nan, upred)
-    vpred = np.where(mask_bad, np.nan, vpred)
-
-    utrue = np.where(mask_bad, np.nan, utrue)
-    vtrue = np.where(mask_bad, np.nan, vtrue)
+    utrue = np.where(mask_bad==0, np.nan, utrue)
+    vtrue = np.where(mask_bad==0, np.nan, vtrue)
 
     # Load in uncertainty
     ri_test = np.load(path_inputs / 'test.npz')['ri_t0']
