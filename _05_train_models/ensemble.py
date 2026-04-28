@@ -27,7 +27,7 @@ def load_member_splits(config):
     path = config.path_config.data_stage_path('model_inputs')
 
     # Load target feature input arrays
-    input_arrays = np.load(path / 'all_targets_features.npz')
+    input_arrays = np.load(path / 'targets_features.npz')
     
     # Load array of split indices for all members
     indices = np.load(path / 'split_indices.npz')
