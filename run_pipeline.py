@@ -146,47 +146,62 @@ def step_process_inputs(config):
 
 def step_baseline(config):
     from _05_train_models.train_baseline import main
-    main(config)
-
+    from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the baseline
-    run_eval(config, 'ps')
+
+    def wrapped(config):
+        main(config)
+        run_eval(config, 'ps')
+
+    run_ensemble(config, wrapped)
 
 
 def step_lr(config):
     from _05_train_models.train_lr import main
-    main(config)
-
+    from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the linear regression
-    run_eval(config, 'lr_cf')
+
+    def wrapped(config):
+        main(config)
+        run_eval(config, 'lr_cf')
+
+    run_ensemble(config, wrapped)
 
 
 def step_lr_wtd(config):
     from _05_train_models.train_weighted_lr import main
-    main(config)
-
+    from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the weighted linear regression
-    run_eval(config, 'lr_cf_wtd')
+
+    def wrapped(config):
+        main(config)
+        run_eval(config, 'lr_cf_wtd')
+
+    run_ensemble(config, wrapped)
 
 
 def step_cnn(config):
     from _05_train_models.train_cnn import main
-    main(config)
-
+    from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the cnn
-    run_eval(config, 'cnn_pt')
+
+    def wrapped(config):
+        main(config)
+        run_eval(config, 'cnn_pt')
+
+    run_ensemble(config, wrapped)
 
 
 def step_cnn_wtd(config):
     from _05_train_models.train_weighted_cnn import main
-    main(config)
-
+    from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
-    # Run quick eval for the weighted cnn
-    run_eval(config, 'cnn_pt_wtd')
+
+    def wrapped(config):
+        main(config)
+        run_eval(config, 'cnn_pt_wtd')
+
+    run_ensemble(config, wrapped)
 
 
 if __name__ == '__main__':
