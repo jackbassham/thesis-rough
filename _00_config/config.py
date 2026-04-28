@@ -200,11 +200,11 @@ class SplitConfig:
     # Define number of ensemble members, default to 1
     n_members: int = 1
 
-    # Define split method, default to chronological
-    method: Literal[
-        'chronological',
-        'k_random_years'
-    ] = 'chronological'
+    # # Define split method, default to chronological
+    # method: Literal[
+    #     'chronological',
+    #     'k_random_years'
+    # ] = 'chronological'
 
     # Default test/val splits to to years, the remaining years train
     n_val_years: int = 2

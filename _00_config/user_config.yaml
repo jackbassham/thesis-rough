@@ -6,9 +6,6 @@ split:
   # Define the number of ensemble members to use
   n_members: 10
 
-  # Define the split method
-  split_method: k_randomized_year
-
 # Set the data configuration preset from the options below
 active_preset: weddell_sea_test
 
