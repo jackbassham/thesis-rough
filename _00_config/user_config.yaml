@@ -4,7 +4,7 @@ paths:
 
 split:
   # Define the number of ensemble members to use
-  n_members: 10
+  n_members: 2
 
 # Set the data configuration preset from the options below
 active_preset: weddell_sea_test
