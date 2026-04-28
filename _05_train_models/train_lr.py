@@ -1,20 +1,22 @@
 import numpy as np
 from pathlib import Path
-from . import utils_lr
-from . import models
+from . import (
+    ensemble,
+    models,
+    utils_lr
+) 
 
 # Define model type string for saving predictions
 MODEL_STR = 'lr_cf'
 
 def main(cfg):
 
-    # Load model inputs source path
-    path_model_inputs = cfg.path_config.data_stage_path('model_inputs')
+    # Load in current member's split targets, features
+    splits = ensemble.load_member_splits(cfg)
 
-    # Load in training data for fit
-    train = np.load(path_model_inputs / 'train.npz')
-    # Get features and targets from data, excluding mask (last feature)
-    x_train, y_train = train['x'][:,:-1,:,:], train['y']
+    # Get features and targets from training splits, excluding mask (last feature)
+    x_train = splits['train']['x'][:,:-1,:,:]
+    y_train = splits['train']['y']
 
     # Instantiate model with functions to build complex features and targets
     model = models.UnweightedLR(
@@ -41,10 +43,9 @@ def main(cfg):
         R_coef
     )
 
-    # Load in testing data for predictions
-    test = np.load(path_model_inputs / 'test.npz')
-    # Get features and targets from data, excluding mask (last feature)
-    x_test, y_test = test['x'][:,:-1,:,:], test['y']
+    # Get features and targets from training splits, excluding mask (last feature)
+    x_test = splits['test']['x'][:,:-1,:,:]
+    y_test = splits['test']['y']
 
     # Get complex predictions on test split from the fit model
     Z_preds = model.predict(x_test)
