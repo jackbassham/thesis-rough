@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 from _00_config.parse_args import parse_args
+from _02_regrid.core_regrid import(
+    GridSpecs,
+    construct_regular_grid,
+)
 from _05_train_models.ensemble import load_member_splits
 from . import metric_fcns
 
@@ -52,20 +56,24 @@ def run_eval(config, model_name: str) -> None:
     # Get uncertainty from test split and remove channel dimension
     ri_test = np.squeeze(splits['test']['ri_t0'], axis=1)
 
+    # Instantiate grid specifications object from config bounds
+    grid_specs = GridSpecs(
+        lat_bounds = cfg.data_config.latitude_bounds,
+        lon_bounds = cfg.data_config.longitude_bounds,
+        resolution_km = cfg.data_config.grid_resolution,
+    )
 
+    # Construct regular grid to infer data's latitude and longitude for plots
+    reg_grid = construct_regular_grid(grid_specs)
 
-    # Load path to coordinates
-    path_coordinates = config.path_config.data_stage_path('regrid')
-
-    # Load in lat and lon
-    data = np.load(path_coordinates / 'coordinates.npz')
-    lon = data['lon']
-    lat = data['lat']
+    # Get lat/lon variables (FIXME for now)
+    lat = reg_grid.lat
+    lon = reg_grid.lon
     
     # Calculate and plot skill
     plot_metric(
-        skill(upred, utrue),
-        skill(vpred, vtrue),
+        metric_fcns.skill(upred, utrue),
+        metric_fcns.skill(vpred, vtrue),
         lon,
         lat,
         "Skill",
@@ -76,8 +84,8 @@ def run_eval(config, model_name: str) -> None:
 
     # Calculate and plot weighted skill
     plot_metric(
-        weighted_skill(upred, utrue, ri_test),
-        weighted_skill(vpred, vtrue, ri_test),
+        metric_fcns.weighted_skill(upred, utrue, ri_test),
+        metric_fcns.weighted_skill(vpred, vtrue, ri_test),
         lon,
         lat,
         "Wtd Skill",
@@ -89,8 +97,8 @@ def run_eval(config, model_name: str) -> None:
 
     # Calculate and plot correlation
     plot_metric(
-        correlation(upred, utrue),
-        correlation(vpred, vtrue),
+        metric_fcns.correlation(upred, utrue),
+        metric_fcns.correlation(vpred, vtrue),
         lon,
         lat,
         "Corr",
@@ -102,8 +110,8 @@ def run_eval(config, model_name: str) -> None:
 
     # Calculate and plot correlation
     plot_metric(
-        weighted_correlation(upred, utrue, ri_test),
-        weighted_correlation(vpred, vtrue, ri_test),
+        metric_fcns.weighted_correlation(upred, utrue, ri_test),
+        metric_fcns.weighted_correlation(vpred, vtrue, ri_test),
         lon,
         lat,
         "Wtd Corr",
