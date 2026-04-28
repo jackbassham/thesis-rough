@@ -8,7 +8,7 @@ from .config import(
     VersionConfig, 
     PathConfig, 
     PipelineConfig,
-    RuntimeConfig,
+    Runtime,
     SplitConfig,
 )
 from .parse_args import parse_args
@@ -56,6 +56,9 @@ def load_config(user_config_path=None):
     # Instantiate split configuration object from YAML entries or fall back to defaults
     split_config = SplitConfig(**user_config.get('split', {}))
 
+    # Instantiate runtime object, inintialized at first member (default) and updated through ensemble loop
+    runtime = Runtime()
+
     # Instantiate argument parser
     args = parse_args()
 
@@ -79,6 +82,7 @@ def load_config(user_config_path=None):
     path_config = PathConfig(
         data_config, 
         version_config,
+        runtime,
         # Get user's data root from yaml file
         # TODO handle user_data_root error
         user_data_root = user_config['paths']['user_data_root']
@@ -89,6 +93,7 @@ def load_config(user_config_path=None):
         data_config = data_config,
         dataset_config = dataset_config,
         split_config = split_config,
+        runtime = runtime,
         version_config = version_config,
         path_config = path_config,
     )
