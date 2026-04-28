@@ -41,7 +41,7 @@ def run_eval(config, model_name: str) -> None:
     vtrue = data['y_true'][:,1,:,:]
 
     # Load current ensemble splits
-    splits = load_member_splits(cfg)
+    splits = load_member_splits(config)
 
     # Get mask for test split from last feature channel
     mask_bad = splits['test']['x'][:,-1,:,:]
