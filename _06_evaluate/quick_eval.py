@@ -58,9 +58,9 @@ def run_eval(config, model_name: str) -> None:
 
     # Instantiate grid specifications object from config bounds
     grid_specs = GridSpecs(
-        lat_bounds = cfg.data_config.latitude_bounds,
-        lon_bounds = cfg.data_config.longitude_bounds,
-        resolution_km = cfg.data_config.grid_resolution,
+        lat_bounds = config.data_config.latitude_bounds,
+        lon_bounds = config.data_config.longitude_bounds,
+        resolution_km = config.data_config.grid_resolution,
     )
 
     # Construct regular grid to infer data's latitude and longitude for plots
