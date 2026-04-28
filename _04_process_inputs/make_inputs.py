@@ -52,7 +52,13 @@ def main(cfg):
     inputs['mask'] = mask_bad
 
     # Fill target, feature, and separate unertainty arrays from inputs
-    arrays = utils.make_target_feature_arrays(inputs)
+    targets_features = utils.make_target_feature_arrays(inputs)
+
+    # Save targets and features
+    helpers.save_arrays(
+        path_model_inputs / 'targets_features.npz',
+        targets_features
+        )
 
     # Load regrid data source path for coordinates
     path_coordinates = cfg.path_config.data_stage_path('regrid')
