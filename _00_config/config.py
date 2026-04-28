@@ -380,7 +380,7 @@ class PathConfig:
 
         # Define base path structure
         base = Path(
-            model_name
+            Path(model_name)
             / hemisphere
             / timestamp
         )
