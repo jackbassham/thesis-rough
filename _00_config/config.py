@@ -363,7 +363,7 @@ class PathConfig:
         return Path(self.data_root / data_stage / self.data_config.hemisphere / timestamp)
     
 
-    def model_path(self, model_name: str, plot_path: bool = False) -> Path:
+    def model_path(self, model_name: str, member: int, plot_path: bool = False) -> Path:
         """
         Instance method for creating path to specific model outputs
         If plot_path is set to True, creates path to quick eval plots in project directory
@@ -377,8 +377,8 @@ class PathConfig:
         timestamp = self.version_config.timestamp_model_output
         hemisphere = self.data_config.hemisphere
 
-        # Get number of the current ensemble member runtime, updated for each member runtime
-        member = f'member_{self.runtime_config.member:02d}'
+        # Create str for current ensemble member, updated for each member runtime
+        member_str = f'member_{member:02d}'
 
         # Return path for the quick evaluation plots
         if plot_path:
@@ -388,7 +388,7 @@ class PathConfig:
                         / model_name 
                         / hemisphere
                         / timestamp
-                        / member
+                        / member_str
                     )
         
         # Return path for the model outputs
@@ -398,7 +398,7 @@ class PathConfig:
                         / model_name 
                         / hemisphere 
                         / timestamp
-                        / member
+                        / member_str
                     ) 
 
 
