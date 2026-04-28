@@ -65,17 +65,19 @@ def skill(pred, true, epsilon = 1e-4):
     return skill
 
 
-def weighted_skill(pred, true, r, epsilon = 1e-4):
+def weighted_skill(pred, true, r, epsilon=1e-4):
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
     w = 1 / (r + epsilon)
 
-    mse = np.nanmean(( w * (true - pred))**2, axis = 0) # mean square error
+    mse = np.nanmean(w * (true - pred) ** 2, axis=0) # mean square error
     # NOTE above is not equivalent to np.nanvar(true-pred), which excludes bias term
 
-    truebar = np.nanmean(true, axis = 0) # mean true
+    # Weighted mean of true
+    truebar = np.nansum(w * true, axis=0) / np.nansum(w, axis=0)
 
-    vartrue = np.nanmean(( w * (true - truebar))**2, axis = 0) # variance in true
+    # Weighted variance of true
+    vartrue = np.nanmean( w * (true - truebar) ** 2, axis=0) / np.nansum(w, axis=0)
     # NOTE above is equivalent to np.nanvar()
 
     weighted_skill = 1 - mse / (vartrue + epsilon)
