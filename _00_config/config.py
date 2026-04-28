@@ -190,6 +190,7 @@ class DatasetConfig:
         # Return full filename with extension
         return base + ds.ext
 
+
 @dataclass
 class SplitConfig:
     """
@@ -211,7 +212,7 @@ class SplitConfig:
 
 
 @dataclass
-class RuntimeConfig:
+class Runtime:
 
     # Define ensemble member for current run time, default to first member
     member: int = 0
@@ -327,7 +328,7 @@ class PathConfig:
     def __init__(self, 
                  data_config: DataConfig, 
                  version_config: VersionConfig,
-                 runtime_config: RuntimeConfig,
+                 runtime: Runtime,
                  user_data_root: str | None = None):
         
         # Set project root to anchored repo root
@@ -344,7 +345,7 @@ class PathConfig:
         # Instantiate configuration objects
         self.data_config = data_config
         self.version_config = version_config
-        self.runtime_config = runtime_config
+        self.runtime = runtime
 
 
     def data_stage_path(self, data_stage: str) -> Path:
@@ -363,7 +364,7 @@ class PathConfig:
         return Path(self.data_root / data_stage / self.data_config.hemisphere / timestamp)
     
 
-    def model_path(self, model_name: str, member: int, plot_path: bool = False) -> Path:
+    def model_path(self, model_name: str, plot_path: bool=False, ensemble: bool=False) -> Path:
         """
         Instance method for creating path to specific model outputs
         If plot_path is set to True, creates path to quick eval plots in project directory
@@ -373,34 +374,51 @@ class PathConfig:
         if model_name not in self.MODEL_NAMES:
             raise ValueError(f'Uknown model name entry in path config: {model_name}')
 
-        # Get timestamp and hempisphere strings
+        # Get timestamp and hemisphere strings
         timestamp = self.version_config.timestamp_model_output
         hemisphere = self.data_config.hemisphere
 
+        # Define base path structure
+        base = Path(
+            model_name
+            / hemisphere
+            / timestamp
+        )
+
         # Create str for current ensemble member, updated for each member runtime
-        member_str = f'member_{member:02d}'
+        member_str = f'member_{self.runtime.member:02d}'
 
-        # Return path for the quick evaluation plots
-        if plot_path:
-            return Path(self.project_root 
-                        / 'plots' 
-                        / 'quick-eval' 
-                        / model_name 
-                        / hemisphere
-                        / timestamp
-                        / member_str
-                    )
+        if plot_path: 
+            # Define base path for plots
+            base_plots = Path(
+                self.project_root
+                / 'plots'
+                / 'quick-eval'
+                / base
+            )
+
+            if ensemble:
+                # Return path for plot of metrics over all ensemble members
+                return Path(
+                    base_plots
+                    / 'ensemble'
+                )
+            
+            else:
+                # Return path for current ensemble member plot
+                return Path(
+                    base_plots
+                    / member_str
+                )
+            
+        else: 
+            # Return path for the current ensemble member's model outputs
+            return Path(
+                self.data_root
+                / base
+                / member_str
+            )
         
-        # Return path for the model outputs
-        else:
-            return Path(self.data_root 
-                        / 'model-output' 
-                        / model_name 
-                        / hemisphere 
-                        / timestamp
-                        / member_str
-                    ) 
-
 
     def makedir_if_missing(self, path: Path) -> Path:
         """
@@ -412,6 +430,7 @@ class PathConfig:
         path.mkdir(parents=True, exist_ok=True)
         return path
 
+
 @dataclass
 class PipelineConfig:
     """
@@ -420,25 +439,7 @@ class PipelineConfig:
     data_config: DataConfig
     dataset_config: DatasetConfig
     split_config: SplitConfig
+    runtime: Runtime
     version_config: VersionConfig
     path_config: PathConfig
-
-
-def main():
-
-    # Create instance of data parameters
-    dataconfig = DataConfig(
-        hemisphere = 'south',
-        year_range = (1992, 2020),
-        latitude_bounds = (-80, -62),
-        longitude_bounds = (-180, 180),
-        grid_resolution = 25
-    )
-
-    # Create instance timestamp version
-    versionconfig = VersionConfig()
-
-
-if __name__ == '__main__':
-    main()
 
