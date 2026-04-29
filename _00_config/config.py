@@ -416,6 +416,7 @@ class PathConfig:
             return Path(
                 self.data_root
                 / base
+                / 'model-output'
                 / member_str
             )
         
