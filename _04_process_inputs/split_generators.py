@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.typing as npt
+from pathlib import Path
 
 
 def chronological_indices(
@@ -61,9 +62,10 @@ def k_shuffled_year_indices(
     validate_split_years(unique_years, n_val_years, n_test_years)
 
     # Initialize empty lists for ensemble member split indices
-    test_indices = []
-    val_indices = []
-    train_indices = []
+    test_indices, val_indices, train_indices = [], [], []
+
+    # Initialize empty lists for ensemble member split years metadata
+    test_years_meta, val_years_meta, train_years_meta = [], [], []
 
     # Initialize random number generator with seed
     rng = np.random.default_rng(seed)
@@ -79,6 +81,11 @@ def k_shuffled_year_indices(
         val_years = shuffled_years[-(n_test_years + n_val_years):-n_test_years]
         # The remaining years in range make the training split
         train_years = shuffled_years[:-(n_test_years + n_val_years)]
+
+        # Append test, train, and val years used to metadata lists
+        test_years_meta.append(test_years)
+        val_years_meta.append(val_years)
+        train_years_meta.append(train_years)
 
         print('')
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -97,17 +104,55 @@ def k_shuffled_year_indices(
         for idx_array in test_indices:
             print(f'test shape idx: {np.shape(idx_array)}')
 
-    # Return dict of splits with each split containing list of member indices arrays
+    # Create dict of splits with each split containing list of member indices arrays
     split_indices = {
         'test': test_indices,
         'val': val_indices,
         'train': train_indices  
     }
 
-    return split_indices
+    # Create dict of metadata for each split
+    split_years_meta = {
+        'test': test_years_meta,
+        'val': val_years_meta,
+        'train': train_years_meta,
+    }
+
+    return split_indices, split_years_meta
 
 
-# TODO k_fold_sliding_indices
+def save_member_split_indices(
+        path: Path,
+        split_indices: dict[str, list[npt.NDArray]],
+        split_years_meta: dict[str, list[npt.NDArray]] | None = None,
+    ) -> None:
+
+    """
+    
+    """
+
+    # Loop through each split's list of ensemble member indices arrays
+    for split_name, member_arrays in split_indices.items():
+
+        # Create a dict of indices arrays with keys reflecting each ensemble member
+        indices = {
+            f'{m:02d}': array for m, array in enumerate(member_arrays[split_name])
+        }
+
+        # Save the dict of member arrays for that split
+        np.savez(path / f'indices_{split_name}.npz', **indices)
+
+    if split_years_meta is not None:
+        # Loop through each split's list of member split years arrays
+        for split_name, split_years in split_indices.items():
+
+            # Create dict of split years as meta data
+            meta = {
+                f'{m:02d}': array for m, array in enumerate(split_years[split_name])
+            }
+
+            # Save the dict of split years meta data
+            np.savez(path / f'split_years_meta_{split_name}', **meta)
 
 
 def validate_split_years(
