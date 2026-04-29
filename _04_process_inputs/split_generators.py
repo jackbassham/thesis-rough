@@ -76,6 +76,15 @@ def k_shuffled_year_indices(
         # The remaining years in range make the training split
         train_years = shuffled_years[:-(n_test_years + n_val_years)]
 
+        print('')
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print(f'test_years: {test_years}')
+        print(f'val_years: {val_years}')
+        print(f'train_years: {train_years}')
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+
+        print('')
+
         # Append member's indices to the each split list
         test_indices.append(np.where(np.isin(years, test_years))[0])
         val_indices.append(np.where(np.isin(years, val_years))[0])
