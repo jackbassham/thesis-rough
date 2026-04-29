@@ -1,8 +1,10 @@
 import helpers
 import numpy as np
 from pathlib import Path
-from . import split_generators
-from . import utils
+from . import (
+    split_generators,
+    utils,
+)
 
 # TODO make a split generator to split years based on data config
 # to a ruffled split with 2 test, 2 val, and the rest train
@@ -73,13 +75,17 @@ def main(cfg):
     time_t0 = np.load(path_coordinates / 'coordinates.npz')['time_t0']
 
     # Get split indices from time array
-    indices = split_generators.k_shuffled_year_indices(
+    split_indices, split_years_meta = split_generators.k_shuffled_year_indices(
         time_t0, n_members=cfg.split_config.n_members
         )
 
-    # Save split indices
-    helpers.save_arrays(path_model_inputs / 'split_indices.npz', indices)
-
+    # Save split indices and split years meta data
+    split_generators.save_member_split_indices(
+        path_model_inputs,
+        split_indices,
+        split_years_meta
+    )
+    
 
 if __name__ == "__main__":
     from _00_config.load_config import load_config
