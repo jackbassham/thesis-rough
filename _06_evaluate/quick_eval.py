@@ -190,12 +190,12 @@ def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, config
     # Add colorbar
     plt.colorbar(pcm_1, ax = axs[1], orientation = 'vertical')
 
-    # TODO get timestamp version from path
-    # NOTE this could be metadata in the model outputs
+    # Get ensemble member number
+    m = config.runtime.member
 
     # Add title to plot (version specific part of the path)
     fig.suptitle(
-        f'{model_name}: {config.version_config.timestamp_model_output}', 
+        f'{metric} k={m:02d} {model_name}: {config.version_config.timestamp_model_output}', 
         fontweight = 'bold')
 
     # Format with tight layout
