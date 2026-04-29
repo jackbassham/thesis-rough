@@ -8,7 +8,7 @@ def chronological_indices(
         time: npt.NDArray[np.datetime64],
         n_members: int = 1,
         n_val_years: int = 2, n_test_years: int = 2
-        ) -> list[dict[str, list[npt.NDArray]]]:
+    ) -> list[dict[str, list[npt.NDArray]]]:
     """
     
     """
@@ -67,7 +67,7 @@ def k_shuffled_year_indices(
         n_members: int = 10,
         n_val_years: int = 2, n_test_years: int = 2,
         seed: int = 0
-        ) -> Tuple[list[dict[str, npt.NDArray[np.floating]]]]:
+    ) -> Tuple[list[dict[str, npt.NDArray[np.floating]]]]:
     """
     
     """
@@ -143,6 +143,23 @@ def k_shuffled_year_indices(
     }
 
     return split_indices, split_years_meta
+
+
+def k_fold_hoffman_indices(
+        time: npt.NDArray[np.datetime64],
+        n_members: int = 10,
+        n_val_years: int = 2, n_test_years: int = 2,
+        seed: int = 0
+    )-> Tuple[list[dict[str, npt.NDArray[np.floating]]]]:
+    """
+    
+    """
+    # TODO
+    ...
+
+
+
+
 
 
 def save_member_split_indices(
