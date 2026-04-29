@@ -30,10 +30,16 @@ def load_member_splits(config):
     input_arrays = np.load(path / 'targets_features.npz')
     
     # Load array of split indices for all members
-    indices = np.load(path / 'split_indices.npz')
+    train_indices = np.load(path / 'indices_train.npz')
+    val_indices = np.load(path / 'indices_val.npz')
+    test_indices = np.load(path / 'indices_test.npz')
 
     # Get current ensemble member
-    m = config.runtime.member
+    member = config.runtime.member
+
+    # Get key from ensemble member in format ##
+    m_key = f'{member:02d}'
+
 
     # Initialize train, val, and test split dicts
     member_splits = {
@@ -44,8 +50,8 @@ def load_member_splits(config):
 
     # Split all arrays for all inputs included in targets and feautures (ie: 'x', 'y', 'ri_t0')
     for input_name, array in input_arrays.items():
-        member_splits['train'][input_name] = array[indices['train'][m]]
-        member_splits['val'][input_name] = array[indices['val'][m]]
-        member_splits['test'][input_name] = array[indices['test'][m]]
+        member_splits['train'][input_name] = array[train_indices[m_key]]
+        member_splits['val'][input_name] = array[val_indices[m_key]]
+        member_splits['test'][input_name] = array[test_indices[m_key]]
 
     return member_splits
