@@ -415,8 +415,8 @@ class PathConfig:
             # Return path for the current ensemble member's model outputs
             return Path(
                 self.data_root
-                / base
                 / 'model-output'
+                / base
                 / member_str
             )
         
