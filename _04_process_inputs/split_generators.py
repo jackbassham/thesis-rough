@@ -168,7 +168,7 @@ def save_member_split_indices(
 
     if split_years_meta is not None:
         # Loop through each split's list of member split years arrays
-        for split_name, split_years in split_indices.items():
+        for split_name, split_years in split_years_meta.items():
 
             # Create dict of split years as meta data
             meta = {
