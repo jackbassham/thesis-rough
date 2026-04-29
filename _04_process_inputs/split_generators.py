@@ -4,6 +4,7 @@ import numpy.typing as npt
 
 def chronological_indices(
         time: npt.NDArray[np.datetime64],
+        n_members: int = 1,
         n_val_years: int = 2, n_test_years: int = 2
         ) -> list[dict[str, npt.NDArray[np.floating]]]:
     """
