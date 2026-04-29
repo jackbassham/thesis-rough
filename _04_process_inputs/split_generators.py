@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.typing as npt
+from typing import Tuple
 from pathlib import Path
 
 
@@ -7,7 +8,7 @@ def chronological_indices(
         time: npt.NDArray[np.datetime64],
         n_members: int = 1,
         n_val_years: int = 2, n_test_years: int = 2
-        ) -> list[dict[str, npt.NDArray[np.floating]]]:
+        ) -> list[dict[str, list[npt.NDArray]]]:
     """
     
     """
@@ -21,6 +22,12 @@ def chronological_indices(
     # Check that years will work for split
     validate_split_years(unique_years, n_val_years, n_test_years)
 
+    # Initialize empty lists for ensemble member split indices
+    test_indices, val_indices, train_indices = [], [], []
+
+    # Initialize empty lists for ensemble member split years metadata
+    test_years_meta, val_years_meta, train_years_meta = [], [], []
+
     # The last 'n_test' years make test split
     test_years = unique_years[-n_test_years:]
     # The next 'n_val' years make the validation split
@@ -28,14 +35,31 @@ def chronological_indices(
     # The remaining years in range make the training split
     train_years = unique_years[:-(n_test_years+ n_val_years)]
 
-    # Create dict of split indices arrays, adding extra dimension to represent the member axis
-    split_indices = {
-            'test': np.expand_dims(np.where(np.isin(years, test_years))[0], axis=0),
-            'val': np.expand_dims(np.where(np.isin(years, val_years))[0], axis=0),
-            'train': np.expand_dims(np.where(np.isin(years, train_years))[0], axis=0)  
-        }     
+    # Append test, train, and val years used to metadata lists
+    test_years_meta.append(test_years)
+    val_years_meta.append(val_years)
+    train_years_meta.append(train_years)
 
-    return split_indices
+    # Get split indices for single member
+    test_indices.append(np.where(np.isin(years, test_years))[0])
+    val_indices.append(np.where(np.isin(years, val_years))[0])
+    train_indices.append(np.where(np.isin(years, train_years))[0])
+
+    # Create dict of split indices arrays for member
+    split_indices = {
+            'test': test_indices,
+            'val': val_indices,
+            'train': train_indices,
+        }     
+    
+    # Create dict of metadata for each split
+    split_years_meta = {
+        'test': test_years_meta,
+        'val': val_years_meta,
+        'train': train_years_meta,
+    }
+
+    return split_indices, split_years_meta
 
 
 def k_shuffled_year_indices(
@@ -43,7 +67,7 @@ def k_shuffled_year_indices(
         n_members: int = 10,
         n_val_years: int = 2, n_test_years: int = 2,
         seed: int = 0
-        ) -> list[dict[str, npt.NDArray[np.floating]]]:
+        ) -> Tuple[list[dict[str, npt.NDArray[np.floating]]]]:
     """
     
     """
