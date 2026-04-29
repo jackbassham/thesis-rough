@@ -53,6 +53,10 @@ def k_shuffled_year_indices(
     # Get array of unique years for the splits
     unique_years = np.unique(years)
 
+    for unique_year in unique_years:
+        print('uique_year: ', unique_year)
+        print(np.shape(np.where(np.isin(years, unique_year))[0]))
+
     # Check that years will work for split
     validate_split_years(unique_years, n_val_years, n_test_years)
 
@@ -90,11 +94,14 @@ def k_shuffled_year_indices(
         val_indices.append(np.where(np.isin(years, val_years))[0])
         train_indices.append(np.where(np.isin(years, train_years))[0])  
 
-    # Return dict of split arrays with each member joined along the first axis
+        for idx_array in test_indices:
+            print(f'test shape idx: {np.shape(idx_array)}')
+
+    # Return dict of splits with each split containing list of member indices arrays
     split_indices = {
-        'test': np.stack(test_indices, axis=0),
-        'val': np.stack(val_indices, axis=0),
-        'train': np.stack(train_indices, axis=0)  
+        'test': test_indices,
+        'val': val_indices,
+        'train': train_indices  
     }
 
     return split_indices
