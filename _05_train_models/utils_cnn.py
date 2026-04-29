@@ -211,7 +211,7 @@ def evaluate(model, test_dl):
     
 
 def plot_losses(train_losses: list[float], val_losses: list[float], 
-                model_name: str, timestamp: str | None = None, path: Path | None = None,) -> None:
+                model_name: str, timestamp: str | None = None, member: str | None = None, path: Path | None = None,) -> None:
     """
     
     """
@@ -229,8 +229,11 @@ def plot_losses(train_losses: list[float], val_losses: list[float],
 
     title = f'{model_name} Loss'
 
+    if member is not None:
+        title += f' k={member}'
+
     if timestamp is not None:
-        title += timestamp
+        title += f' {timestamp}'
 
     plt.title(title)
 
