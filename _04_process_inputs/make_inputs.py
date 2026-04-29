@@ -73,7 +73,7 @@ def main(cfg):
     time_t0 = np.load(path_coordinates / 'coordinates.npz')['time_t0']
 
     # Get split indices from time array
-    indices = split_generators.chronological_indices(
+    indices = split_generators.k_shuffled_year_indices(
         time_t0, n_members=cfg.split_config.n_members
         )
 
