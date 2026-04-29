@@ -136,7 +136,7 @@ def save_member_split_indices(
 
         # Create a dict of indices arrays with keys reflecting each ensemble member
         indices = {
-            f'{m:02d}': array for m, array in enumerate(member_arrays[split_name])
+            f'{m:02d}': array for m, array in enumerate(member_arrays)
         }
 
         # Save the dict of member arrays for that split
@@ -148,7 +148,7 @@ def save_member_split_indices(
 
             # Create dict of split years as meta data
             meta = {
-                f'{m:02d}': array for m, array in enumerate(split_years[split_name])
+                f'{m:02d}': array for m, array in enumerate(split_years)
             }
 
             # Save the dict of split years meta data
