@@ -19,15 +19,16 @@ def main(cfg):
     # Define path to ibcso data
     path = 'analysis/IBCSO_v2_bed.nc'
 
-    data = load_ibcso_data(path)
+    # Load in dataset in chunks
+    ds = load_ibcso_data(path)
 
     print('~~~~~~~~~~~~~~~~DATA LOADED~~~~~~~~~~~~~~~~')
 
-    lat, lon = generate_lat_lon(data['y'], data['x'])
+    lat, lon = generate_lat_lon(ds)
 
     print('~~~~~~~~~~~~~~~~LAT LON GENERATED~~~~~~~~~~~~~~~~')
 
-    scalar_field = {'z': data['z']}
+    scalar_field = {'z': ds['z'].values}
 
     # Instantiate old grid projection object
     old_grid_proj = OldGridProj(
@@ -60,27 +61,27 @@ def main(cfg):
 
 
 def load_ibcso_data(path):
-
-    # Load IBCSO data using xarray
-    with xr.open_dataset(path) as ds:
-
-        return {
-            'y': ds['y'],
-            'x': ds['x'],
-            'z': ds['z']
-        }
+    ds = xr.open_dataset(path, chunks={'x': 1000, 'y': 1000})
+    return ds
 
 
-def generate_lat_lon(y, x):
+def generate_lat_lon(ds):
 
-    # Instantiate the transofomer for Polar Sterographic (ESPG:9354) to regular lat/lon (EPSG:4326)
     transformer = Transformer.from_crs('EPSG:9354', 'EPSG:4326', always_xy=True)
 
-    # Get coordinate grids
-    X, Y = np.meshgrid(x, y)
+    def transform_func(x, y):
+        return transformer.transform(x, y)
 
-    # Generate lat/lon from the y/x coordinate grids via the transformer
-    lat, lon = transformer.transform(X, Y)
+    lon, lat = xr.apply_ufunc(
+        transform_func,
+        ds['x'],
+        ds['y'],
+        input_core_dims=[['x'], ['y']],
+        output_core_dims=[['x'], ['y']],
+        vectorize=True,
+        dask='parallelized',
+        output_dtypes=[float, float]
+    )
 
     return lat, lon
 
