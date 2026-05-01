@@ -74,7 +74,7 @@ def load_ibcso_data(path):
 def generate_lat_lon(y, x):
 
     # Instantiate the transofomer for Polar Sterographic (ESPG:9354) to regular lat/lon (EPSG:4326)
-    transformer = Transformer.from_crs('EPSG:4326', 'EPSG:9354', always_xy=True)
+    transformer = Transformer.from_crs('EPSG:9354', 'EPSG:4326', always_xy=True)
 
     # Get coordinate grids
     X, Y = np.meshgrid(x, y)
