@@ -14,12 +14,18 @@ from _00_config.load_config import load_config
 
 def main(cfg):
 
+    print('~~~~~~~~~~~~~~~~REGRID IBCSO~~~~~~~~~~~~~~~~')
+
     # Define path to ibcso data
     path = 'analysis/IBCSO_v2_bed.nc'
 
     data = load_ibcso_data(path)
 
+    print('~~~~~~~~~~~~~~~~DATA LOADED~~~~~~~~~~~~~~~~')
+
     lat, lon = generate_lat_lon(data['y'], data['x'])
+
+    print('~~~~~~~~~~~~~~~~LAT LON GENERATED~~~~~~~~~~~~~~~~')
 
     scalar_field = {'z': data['z']}
 
@@ -43,13 +49,14 @@ def main(cfg):
         scalar_fields = scalar_field, 
     )
 
+    print('~~~~~~~~~~~~~~~~DATA REGRID~~~~~~~~~~~~~~~~')
+
     # Plot the regrid data
     plt.pcolormesh(scalars_regrid['z'])
     plt.colorbar()
     plt.savefig('regrid_ibcso.png')
 
-
-
+    print('~~~~~~~~~~~~~~~~FINISHED~~~~~~~~~~~~~~~~')
 
 
 def load_ibcso_data(path):
