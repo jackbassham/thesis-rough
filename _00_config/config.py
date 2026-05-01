@@ -60,7 +60,7 @@ class DataConfig:
         # Handle years out of range
         # NOTE nsidc0016 sea ice vel updated through 2024
         # NOTE nsidc0051 sea ice conc updated through 2025
-        if start < 1992 or end > 2024:
+        if start < 1989 or end > 2024:
             raise ValueError('Years out of range: Enter in range 1989 to 2024')
 
         # Handle invalid order of range
