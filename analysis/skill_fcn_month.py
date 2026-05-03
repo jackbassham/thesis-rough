@@ -34,7 +34,7 @@ def plot_cartopy_map(
         hemisphere: str,
         titles: list[str] | None = None,
         suptitle=None,
-        data_channel_dim: int | None = None,
+        data_channel_axis: int | None = None,
         n_cols=2,
         n_rows=1,
         cmap=cmo.cm.balance_r,
@@ -70,9 +70,9 @@ def plot_cartopy_map(
     data_extent = [lon_min, lon_max, lat_min, lat_max]
 
     # If data channel dimension is specified for multiple data in array
-    if data_channel_dim is not None:
+    if data_channel_axis is not None:
         # Infer the number of plots from that dimension
-        n_plots = data.shape[0]
+        n_plots = data.shape[data_channel_axis]
 
     # Otherwise number of plots is one
     else:
