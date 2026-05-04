@@ -7,7 +7,7 @@ from pathlib import Path
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[0]
+MODEL_STR = MODEL_STRS[4]
 HEMISPHERE = 'south'
 TIMESTAMP = '05012026_1459'
 
@@ -29,7 +29,7 @@ def main():
     metric_strs = ['skill', 'wtd_skill', 'corr', 'wtd_corr']
 
     plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
-    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP
+    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'ensemble_mean'
 
     # Load lat lon coordinates
     data = np.load(ROOT / 'regrid' / HEMISPHERE / TIMESTAMP_REGRID / 'coordinates.npz')
@@ -69,7 +69,7 @@ def main():
             ['zonal', 'merdional'], 
             f'Ensemble SEM {metric_str}: {MODEL_STR} {TIMESTAMP}',
             plot_path / f'{metric_str}_sem.png',
-            vmin = -0.2, vmax = 0.2
+            vmin = -0.05, vmax = 0.05
         )
 
         print(f'{MODEL_STR}: {metric_str} mean and mse plotted')
