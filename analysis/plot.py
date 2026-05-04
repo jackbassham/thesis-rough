@@ -23,11 +23,11 @@ def plot_cartopy_map(
     lon_max = 180
 
     # Set latitude bounds and projection based on hemisphere
-    if hemisphere.lower.strip() == 'south':
+    if hemisphere.lower().strip() == 'south':
         lat_min = -90
         lat_max = -65
         projection = ccrs.SouthPolarStereo()
-    elif hemisphere.lower.strip() == 'north':
+    elif hemisphere.lower().strip() == 'north':
         lat_min = 65
         lat_max = 90
         projection = ccrs.NorthPolarStereo()
