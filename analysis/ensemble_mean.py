@@ -7,7 +7,7 @@ from pathlib import Path
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[4]
+MODEL_STR = MODEL_STRS[0]
 HEMISPHERE = 'south'
 TIMESTAMP = '05012026_1459'
 
@@ -30,6 +30,9 @@ def main():
 
     plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
     plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'ensemble_mean'
+    
+    # Make plot path if it doesn't yet exist
+    plot_path.mkdir(parents=True, exist_ok=True)
 
     # Load lat lon coordinates
     data = np.load(ROOT / 'regrid' / HEMISPHERE / TIMESTAMP_REGRID / 'coordinates.npz')
