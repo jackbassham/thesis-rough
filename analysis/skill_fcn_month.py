@@ -15,13 +15,62 @@ from _05_train_models.ensemble import load_member_splits
 import _06_evaluate.metric_fcns as metric_fcns
 
 
-def main(cfg):
+MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
-    # Instantiate argument parser
-    args = parse_args()
+ROOT = Path('/data/globus/jbassham/thesis-rough')
+MODEL_STR = MODEL_STRS[4]
+HEMISPHERE = 'south'
+TIMESTAMP = '05012026_1459'
 
-    # Run the evaluation for the particular model
-    run_eval(cfg, model_name = args.model_name)
+TIMESTAMP_REGRID = TIMESTAMP
+
+N_MEMBERS = 10
+
+BASE_PATH = Path(
+    ROOT
+    / 'model-output'
+    / MODEL_STR
+    / HEMISPHERE
+    / TIMESTAMP
+)
+
+
+def main():
+
+    # Define list of metric strings
+    metric_strs = ['skill', 'wtd_skill', 'corr', 'wtd_corr']
+
+    plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
+    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP
+
+    # Load lat lon coordinates
+    data = np.load(ROOT / 'regrid' / HEMISPHERE / TIMESTAMP_REGRID / 'coordinates.npz')
+
+    lat = data['lat']
+    lon = data['lon']
+
+
+def load_member_preds():
+    
+
+    # Initialize lists for metrics
+    u_metrics = []
+    v_metrics = []
+
+    for m in range(N_MEMBERS):
+
+        path_member = BASE_PATH / f'member_{m:02d}'
+
+        metric_data = np.load(path_member / f'metric_{metric_str}.npz')
+
+        u_metrics.append(metric_data['u'])
+        v_metrics.append(metric_data['v'])
+
+    # Stack members in list into array along member axis
+    u_metrics_arr = np.stack(u_metrics, axis = 0)
+    v_metrics_arr = np.stack(v_metrics, axis = 0)
+
+    return u_metrics_arr, v_metrics_arr
 
 
 def metric_fcn_month(pred, true, time, metric_fcn, r=None):
