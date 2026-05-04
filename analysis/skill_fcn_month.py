@@ -34,7 +34,7 @@ BASE_PATH = Path(
 def main():
 
     # Define list of metric strings
-    metric_strs = ['skill', 'wtd_skill', 'corr', 'wtd_corr']
+    metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
 
     plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
     plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'monthly'
@@ -49,8 +49,17 @@ def main():
 
     time = data['time_t0']
 
+    # Create path to model inputs
+    path_model_inputs = ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
+
     # Load test split indices for month bins
-    test_indices = np.load(ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS / 'indices_test.npz')
+    test_indices = np.load(path_model_inputs / 'indices_test.npz')
+
+    # Load mask from features matrix
+    mask_bad = np.load(path_model_inputs / 'targets_features.npz')['x'][:,-1,:,:]
+
+    # Load array of uncertainties and remove channel dimension
+    ri_t0 = np.load(path_model_inputs / 'targets_features.npz')['ri_t0'][:,0,:,:]
 
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
@@ -72,11 +81,22 @@ def main():
 
         for m in range(N_MEMBERS):
 
+            if 'weighted' in metric_str:
+                r = ri_t0[test_indices[f'{m:02d}']] # (time, height, width)
+            else:
+                r = None
+
+            mask = mask_bad[test_indices[f'{m:02d}']] # (time, height, width)
+
+            preds = np.where(mask, np.nan, preds_list[m]) # (time, channel, height, width)
+            trues = np.where(mask, np.nan, trues_list[m]) # (time, channel, height, width)
+
             monthly_metric = metric_fcn_month(
-                preds_list[m],
-                trues_list[m],
+                preds,
+                trues,
                 time[test_indices[f'{m:02d}']],
                 metric_fcn,
+                r=r,
             )  # (month, channel, height, width)
 
             print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
@@ -94,8 +114,7 @@ def main():
         print(f'Monthly metrics saved for all members for {metric_str}')
 
         monthly_mean = np.nanmean(monthly_all_members, axis=0)
-        monthly_std  = np.nanstd(monthly_all_members, axis=0)
-        monthly_sem  = monthly_std / np.sqrt(N_MEMBERS)
+        monthly_sem  = np.nanstd(monthly_all_members, axis=0) / np.sqrt(N_MEMBERS)
 
         print(f'Monthly mean and SEM computed for {metric_str}')
 
