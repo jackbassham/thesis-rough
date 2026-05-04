@@ -53,7 +53,7 @@ def main():
     test_indices = np.load(ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS / 'indices_test.npz')
 
     # Load preds and trues for each member 
-    preds_arr, trues_arr = load_member_preds # (member, time, channel, height, width)
+    preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
 
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
@@ -68,8 +68,8 @@ def main():
         for m in range(N_MEMBERS):
 
             monthly_metric = metric_fcn_month(
-                preds_arr[m],
-                trues_arr[m],
+                preds_list[m],
+                trues_list[m],
                 time[test_indices[f'm:02d']],
                 metric_fcn,
             )  # (month, channel, height, width)
@@ -148,12 +148,8 @@ def load_member_preds():
         preds.append(preds_data['y_pred']) # (time, channel, height, width)
         trues.append(preds_data['y_true'])
 
-
-    # Stack members in list into array along member axis
-    preds_arr = np.stack(preds, axis = 0) # (member, time, channel, height, width)
-    trues_arr = np.stack(trues, axis = 0)
-
-    return preds_arr, trues_arr
+    # Return lists of preds and trues for each member
+    return preds, trues
 
 
 def metric_fcn_month(pred, true, time, metric_fcn, r=None):
