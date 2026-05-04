@@ -93,12 +93,19 @@ def main():
             preds = np.where(mask[:, None, :, :], np.nan, preds_list[m]) # (time, channel, height, width)
             trues = np.where(mask[:, None, :, :], np.nan, trues_list[m]) # (time, channel, height, width)
 
+            if 'skill' in metric_str:
+                global_true_bar = np.nanmean(trues, axis=0) # (channel, height, width)
+                global_var_true = np.nanmean((trues - global_true_bar)**2, axis=0) # (channel, height, width)
+            else:
+                global_var_true = None
+
             monthly_metric = metric_fcn_month(
                 preds,
                 trues,
                 time[test_indices[f'{m:02d}']],
                 metric_fcn,
                 r=r,
+                global_var_true=global_var_true,
             )  # (month, channel, height, width)
 
             print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
@@ -206,7 +213,7 @@ def load_member_preds():
     return preds, trues
 
 
-def metric_fcn_month(pred, true, time, metric_fcn, r=None):
+def metric_fcn_month(pred, true, time, metric_fcn, r=None, global_var_true=None):
     """
     
     """
