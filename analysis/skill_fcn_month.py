@@ -124,7 +124,7 @@ def main():
         global_per_member = np.nanmean(monthly_all_members, axis=(-1, -2))  # (member, month, channel)
 
         # Compute the global mean and SEM of the field across members for each month
-        global_monthly_mean = np.nanmean(global_per_member, axis=0)
+        global_monthly_median = np.nanmedian(global_per_member, axis=0)
         global_monthly_sem  = np.nanstd(global_per_member, axis=0) / np.sqrt(N_MEMBERS)
 
         print(f'Global Monthly mean and SEM computed for {metric_str}')
