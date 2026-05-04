@@ -181,7 +181,7 @@ def main():
             metric_str=metric_str,
             model_str=MODEL_STR,
             save_path=plot_path / f"{metric_str}_global_monthly.png",
-)
+            )
 
         # ---- Optional: save arrays ----
         np.savez(
