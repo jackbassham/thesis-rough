@@ -18,6 +18,8 @@ TIMESTAMP = '05012026_1459'
 
 TIMESTAMP_REGRID = TIMESTAMP
 
+TIMESTAMP_MODEL_INPUTS = TIMESTAMP
+
 N_MEMBERS = 10
 
 BASE_PATH = Path(
@@ -44,7 +46,11 @@ def main():
 
     lat = data['lat']
     lon = data['lon']
-    time = data['time']
+
+    time = data['time_t0']
+
+    # Load test split indices for month bins
+    test_indices = np.load(ROOT / 'model-inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS / 'test_indices.npz')
 
     # Load preds and trues for each member 
     preds_arr, trues_arr = load_member_preds # (member, time, channel, height, width)
@@ -64,7 +70,7 @@ def main():
             monthly_metric = metric_fcn_month(
                 preds_arr[m],
                 trues_arr[m],
-                time,
+                time[test_indices[f'm:02d']],
                 metric_fcn,
             )  # (month, channel, height, width)
 
