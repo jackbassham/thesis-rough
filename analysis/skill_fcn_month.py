@@ -240,6 +240,10 @@ def metric_fcn_month(pred, true, time, metric_fcn, r=None, global_var_true=None)
             # Add current month's uncertainties array to kword arguments
             metric_kwargs['r'] = r[month_indices]
 
+        if global_var_true is not None:
+            # Add current month's global_var_true array to kword arguments
+            metric_kwargs['global_var_true'] = global_var_true
+
         # Compute metric for the current month and include uncertainty kwarg if weighted metric
         # (height, width)
         month_metric = metric_fcn(
