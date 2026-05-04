@@ -50,7 +50,7 @@ def main():
     time = data['time_t0']
 
     # Load test split indices for month bins
-    test_indices = np.load(ROOT / 'model-inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS / 'indices_test.npz')
+    test_indices = np.load(ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS / 'indices_test.npz')
 
     # Load preds and trues for each member 
     preds_arr, trues_arr = load_member_preds # (member, time, channel, height, width)
