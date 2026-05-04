@@ -69,62 +69,67 @@ def run_eval(config, model_name: str) -> None:
     # Get lat/lon variables (FIXME for now)
     lat = reg_grid.lat
     lon = reg_grid.lon
+
+    compute_and_plot_metric(
+        upred, utrue, 
+        vpred, vtrue,
+        metric_fcns.skill,
+        'skill',
+        model_name,
+        lon, lat,
+        path_model,
+        config,
+    )
+
+    print('Skill Plotted')
+    print('')
     
-    # Calculate and plot skill
-    plot_metric(
-        metric_fcns.skill(upred, utrue),
-        metric_fcns.skill(vpred, vtrue),
-        lon,
-        lat,
-        "Skill",
-        path_model, model_name, config,
+    compute_and_plot_metric(
+        upred, utrue, 
+        vpred, vtrue,
+        metric_fcns.weighted_skill,
+        'wtd_skill',
+        model_name,
+        lon, lat,
+        path_model,
+        config,
+        r = ri_test
     )
 
-    print("Skill Plotted")
+    print('Weighted Skill Plotted')
+    print('')
 
-    # Calculate and plot weighted skill
-    plot_metric(
-        metric_fcns.weighted_skill(upred, utrue, ri_test),
-        metric_fcns.weighted_skill(vpred, vtrue, ri_test),
-        lon,
-        lat,
-        "Wtd Skill",
-        path_model, model_name, config,
+    compute_and_plot_metric(
+        upred, utrue, 
+        vpred, vtrue,
+        metric_fcns.correlation,
+        'corr',
+        model_name,
+        lon, lat,
+        path_model,
+        config,
     )
 
-    print("Weighted Skill Plotted")
-    print("")
+    print('Correlation Plotted')
+    print('')
 
-    # Calculate and plot correlation
-    plot_metric(
-        metric_fcns.correlation(upred, utrue),
-        metric_fcns.correlation(vpred, vtrue),
-        lon,
-        lat,
-        "Corr",
-        path_model, model_name, config,
+    compute_and_plot_metric(
+        upred, utrue, 
+        vpred, vtrue,
+        metric_fcns.weighted_correlation,
+        'wtd_corr',
+        model_name,
+        lon, lat,
+        path_model,
+        config,
+        r = ri_test
     )
 
-    print("Correlation Plotted")
-    print("")
-
-    # Calculate and plot correlation
-    plot_metric(
-        metric_fcns.weighted_correlation(upred, utrue, ri_test),
-        metric_fcns.weighted_correlation(vpred, vtrue, ri_test),
-        lon,
-        lat,
-        "Wtd Corr",
-        path_model, model_name, config,
-    )
-
-    print("Weighted Correlation Plotted")
-    print("")
-
-    print("All Metrics Plotted")
+    print('Weighted Correlation Plotted')
+    print('')
 
 
-def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, config):
+def plot_metric(u_data, v_data, lon, lat, metric, model_name, config):
 
     # Set longitude bounds for plot (full zonal coverage)
     lon_min = -180
@@ -218,6 +223,63 @@ def plot_metric(u_data, v_data, lon, lat, metric, path_model, model_name, config
     plt.savefig(path_plot / fnam, bbox_inches = 'tight')
 
     return
+
+
+def compute_and_plot_metric(
+        u_pred, u_true, 
+        v_pred, v_true,
+        metric_fcn,
+        metric_str,
+        model_name,
+        lon, lat,
+        path_model,
+        config,
+        r = None,
+):
+    """
+
+    """
+
+    # Initialize dict for extra uncertainty keyword argument for weighted metrics
+    metric_kwargs = {}
+
+
+    if r is not None:
+        # Add current month's uncertainties array to kword arguments
+        metric_kwargs['r'] = r
+        
+        # Compute metric for the current month with weighting 
+        u_metric = metric_fcn(u_pred, u_true, **metric_kwargs)
+        v_metric = metric_fcn(v_pred, v_true, **metric_kwargs)
+
+    else:
+        # Compute the metric for the current month without weighting
+        u_metric = metric_fcn(u_pred, u_true)
+        v_metric = metric_fcn(v_pred, v_true)
+
+    # Save the zonal and meridional metric
+    np.savez(
+        path_model / f'metric_{metric_str}.npz',
+        u = u_metric,
+        v = v_metric
+    )
+
+    # Plot the zonal and meridional metrics and save
+    plot_metric(
+        u_metric,
+        v_metric,
+        lon,
+        lat,
+        metric_str,
+        model_name, 
+        config
+    )
+
+
+
+
+    
+
 
 
 if __name__ == "__main__":
