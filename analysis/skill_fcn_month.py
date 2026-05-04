@@ -168,7 +168,7 @@ def main():
 
             # -------- Global MEAN/SEM plots --------
             plot_global_monthly_ensemble(
-            global_mean=global_monthly_mean,
+            global_mean=global_monthly_median,
             global_sem=global_monthly_sem,
             month_labels=month_labels,
             metric_str=metric_str,
