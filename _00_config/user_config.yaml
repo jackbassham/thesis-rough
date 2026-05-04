@@ -1,6 +1,6 @@
 paths:
   # Root directory for pipeline data, leave as default 'null' to save data to working as './data'
-  user_data_root: null
+  user_data_root: '/data/globus/jbassham/thesis-rough'
 
 split:
   # Define the number of ensemble members to use
