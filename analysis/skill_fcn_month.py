@@ -12,7 +12,7 @@ from analysis.plot import plot_cartopy_map
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[2]
+MODEL_STR = MODEL_STRS[0]
 HEMISPHERE = 'south'
 TIMESTAMP = '05012026_1459'
 
@@ -131,7 +131,7 @@ def main():
         global_per_member = np.nanmean(monthly_all_members, axis=(-1, -2))  # (member, month, channel)
 
         # Compute the global mean and SEM of the field across members for each month
-        global_monthly_median = np.nanmedian(global_per_member, axis=0)
+        global_monthly_mean = np.nanmean(global_per_member, axis=0)
         global_monthly_sem  = np.nanstd(global_per_member, axis=0) / np.sqrt(N_MEMBERS)
 
         print(f'Global Monthly mean and SEM computed for {metric_str}')
@@ -175,7 +175,7 @@ def main():
 
             # -------- Global MEAN/SEM plots --------
             plot_global_monthly_ensemble(
-            global_mean=global_monthly_median,
+            global_mean=global_monthly_mean,
             global_sem=global_monthly_sem,
             month_labels=month_labels,
             metric_str=metric_str,
