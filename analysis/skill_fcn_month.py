@@ -12,7 +12,7 @@ from analysis.plot import plot_cartopy_map
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[0]
+MODEL_STR = MODEL_STRS[2]
 HEMISPHERE = 'south'
 TIMESTAMP = '05012026_1459'
 
