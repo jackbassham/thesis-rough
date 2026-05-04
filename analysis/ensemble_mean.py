@@ -7,7 +7,7 @@ from pathlib import Path
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[4]
+MODEL_STR = MODEL_STRS[0]
 HEMISPHERE = 'south'
 TIMESTAMP = '05012026_1459'
 
@@ -69,6 +69,7 @@ def main():
             ['zonal', 'merdional'], 
             f'Ensemble SEM {metric_str}: {MODEL_STR} {TIMESTAMP}',
             plot_path / f'{metric_str}_sem.png',
+            vmin = -0.2, vmax = 0.2
         )
 
         print(f'{MODEL_STR}: {metric_str} mean and mse plotted')
@@ -100,7 +101,7 @@ def load_member_metrics(metric_str):
     return u_metrics_arr, v_metrics_arr
 
 
-def plot_metric(u_data, v_data, lon, lat, hemisphere, titles, suptitle, plot_path):
+def plot_metric(u_data, v_data, lon, lat, hemisphere, titles, suptitle, plot_path, vmin=-1, vmax=1):
 
     # Set longitude bounds for plot (full zonal coverage)
     lon_min = -180
@@ -126,10 +127,6 @@ def plot_metric(u_data, v_data, lon, lat, hemisphere, titles, suptitle, plot_pat
 
     # Set color map
     cmap = cmo.cm.balance_r  # red blue colormap from cmocean
-
-    # Saturate colormap to -1 and 1 limits
-    vmin = -1
-    vmax = 1
     
     # Initialize subplots
     fig, axs = plt.subplots(
