@@ -299,7 +299,7 @@ def plot_global_monthly_ensemble(
     ax.set_xlabel("Month")
     ax.set_ylabel(ylabel if ylabel is not None else metric_str.upper())
 
-    ax.set_title(f"{title_prefix} {metric_str.upper()} ({model_str})")
+    ax.set_title(f"{title_prefix} {metric_str.upper()}: ({model_str} {TIMESTAMP})", fontweight="bold")
 
     ax.legend()
     ax.grid(True, alpha=0.3)
