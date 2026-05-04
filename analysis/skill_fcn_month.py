@@ -58,8 +58,10 @@ def main():
     # Load mask from features matrix
     mask_bad = np.load(path_model_inputs / 'targets_features.npz')['x'][:,-1,:,:]
 
-    # Load array of uncertainties and remove channel dimension
-    ri_t0 = np.load(path_model_inputs / 'targets_features.npz')['ri_t0'][:,0,:,:]
+    # Load array of uncertainties
+    # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v
+    # and uncertainty array is passed for preds and trues with channel dimension
+    ri_t0 = np.load(path_model_inputs / 'targets_features.npz')['ri_t0']
 
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
@@ -88,8 +90,8 @@ def main():
 
             mask = mask_bad[test_indices[f'{m:02d}']] # (time, height, width)
 
-            preds = np.where(mask, np.nan, preds_list[m]) # (time, channel, height, width)
-            trues = np.where(mask, np.nan, trues_list[m]) # (time, channel, height, width)
+            preds = np.where(mask[:, None, :, :], np.nan, preds_list[m]) # (time, channel, height, width)
+            trues = np.where(mask[:, None, :, :], np.nan, trues_list[m]) # (time, channel, height, width)
 
             monthly_metric = metric_fcn_month(
                 preds,
