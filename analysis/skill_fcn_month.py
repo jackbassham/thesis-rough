@@ -55,11 +55,16 @@ def main():
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
 
+    print('Finished loading preds and trues for all members)')
+    print('')
+
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
     # Compute monthly metrics for each ensemble member
     for metric_str in metric_strs:
+
+        print(f'~~~~~~~~~~~{metric_str.upper()}~~~~~~~~~~~~~~')
 
         metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
 
@@ -70,9 +75,11 @@ def main():
             monthly_metric = metric_fcn_month(
                 preds_list[m],
                 trues_list[m],
-                time[test_indices[f'm:02d']],
+                time[test_indices[f'{m:02d}']],
                 metric_fcn,
             )  # (month, channel, height, width)
+
+            print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
 
             monthly_all_members.append(monthly_metric)
 
@@ -84,10 +91,13 @@ def main():
             monthly_all_members=monthly_all_members,
         )
 
+        print(f'Monthly metrics saved for all members for {metric_str}')
+
         monthly_mean = np.nanmean(monthly_all_members, axis=0)
         monthly_std  = np.nanstd(monthly_all_members, axis=0)
         monthly_sem  = monthly_std / np.sqrt(N_MEMBERS)
 
+        print(f'Monthly mean and SEM computed for {metric_str}')
 
         for ch, ch_name in enumerate(['u', 'v']):
 
@@ -131,6 +141,9 @@ def main():
             mean=monthly_mean,
             sem=monthly_sem,
         )
+
+        print(f'Finished plotting monthly mean and SEM for {metric_str}')
+        print('')
 
 
 def load_member_preds():
