@@ -120,6 +120,16 @@ def main():
 
         print(f'Monthly mean and SEM computed for {metric_str}')
 
+        # Get glbal mean and SEM of the field for each month for each member
+        global_per_member = np.nanmean(monthly_all_members, axis=(-1, -2))  # (member, month, channel)
+
+        # Compute the global mean and SEM of the field across members for each month
+        global_monthly_mean = np.nanmean(global_per_member, axis=0)
+        global_monthly_sem  = np.nanstd(global_per_member, axis=0) / np.sqrt(N_MEMBERS)
+
+        print(f'Global Monthly mean and SEM computed for {metric_str}')
+
+
         for ch, ch_name in enumerate(['u', 'v']):
 
             # -------- Mean plots --------
@@ -155,6 +165,16 @@ def main():
                 vmax=np.nanmax(monthly_sem[:, ch]),
                 save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
             )
+
+            # -------- Global MEAN/SEM plots --------
+            plot_global_monthly_ensemble(
+            global_mean=global_monthly_mean,
+            global_sem=global_monthly_sem,
+            month_labels=month_labels,
+            metric_str=metric_str,
+            model_str=MODEL_STR,
+            save_path=plot_path / f"{metric_str}_global_monthly.png",
+)
 
         # ---- Optional: save arrays ----
         np.savez(
@@ -226,6 +246,68 @@ def metric_fcn_month(pred, true, time, metric_fcn, r=None):
 
     # Return stacked array of montly metrics along first (month) axis
     return(np.stack(monthly_metrics, axis=0)) # (month, height, width)
+
+
+def plot_global_monthly_ensemble(
+    global_mean,
+    global_sem,
+    month_labels,
+    metric_str,
+    model_str,
+    save_path,
+    ylabel=None,
+    title_prefix="Global monthly",
+    channels=("u", "v"),
+    colors=("tab:blue", "tab:orange"),
+    figsize=(10, 5),
+):
+    """
+    Plot global monthly ensemble means with SEM error bars.
+
+    Parameters
+    ----------
+    global_mean : array, shape (month, channel)
+    global_sem   : array, shape (month, channel)
+    month_labels : list[str], length 12
+    metric_str   : str
+    model_str    : str
+    save_path    : Path
+    ylabel       : str or None
+    channels     : tuple[str]
+    colors       : tuple[str]
+    """
+
+    months = np.arange(1, global_mean.shape[0] + 1)
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    for ch, (label, color) in enumerate(zip(channels, colors)):
+        ax.errorbar(
+            months,
+            global_mean[:, ch],
+            yerr=global_sem[:, ch],
+            label=label,
+            color=color,
+            marker="o",
+            capsize=3,
+            linewidth=2,
+        )
+
+    ax.set_xticks(months)
+    ax.set_xticklabels(month_labels, rotation=45)
+
+    ax.set_xlabel("Month")
+    ax.set_ylabel(ylabel if ylabel is not None else metric_str.upper())
+
+    ax.set_title(f"{title_prefix} {metric_str.upper()} ({model_str})")
+
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=200)
+    plt.close()
+
 
 
 if __name__ == '__main__':
