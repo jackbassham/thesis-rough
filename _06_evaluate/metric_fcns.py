@@ -63,7 +63,7 @@ def skill(pred, true, global_var_true=None, epsilon = 1e-4):
         vartrue = np.nanmean((true - truebar)**2, axis = 0) # variance in true
         # NOTE above is equivalent to np.nanvar()
 
-    print(f'Using VarTrue = {np.nanmean(vartrue)}')
+    print(f'Using VarTrue (NOTE print is mean over grid) {np.nanmean(vartrue)}')
 
     skill = 1 - mse / (vartrue + epsilon)
 
