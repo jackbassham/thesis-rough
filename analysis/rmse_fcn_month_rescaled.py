@@ -55,7 +55,7 @@ def main():
     path_stats = ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MASK_NORM
 
     # Standard deviation of speed for rescaling
-    Ui_t0_std = np.load(path_stats / 'global_stds.npz')['Ui_t0_std']
+    Ui_t0 = np.load(path_stats / 'global_stds.npz')['Ui_t0']
 
     # Gridwise means for rescaling
     gridwise_means = np.load(path_stats / 'gridwise_means.npz')['gridwise_means']    
@@ -75,7 +75,7 @@ def main():
     ri_t0 = np.load(path_model_inputs / 'targets_features.npz')['ri_t0']
 
     #~~~~~~~RESCALE UNCERTAINTY~~~~~~~ 
-    ri_t0 = ri_t0 * Ui_t0_std
+    ri_t0 = ri_t0 * Ui_t0
 
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
@@ -84,14 +84,14 @@ def main():
     for m in range(N_MEMBERS):
             
             # u predictions
-            preds_list[m][:, 0] = (preds_list[m][:, 0] * Ui_t0_std) + gridwise_means['ui_t0'] # (time, height, width)
+            preds_list[m][:, 0] = (preds_list[m][:, 0] * Ui_t0) + gridwise_means['ui_t0'] # (time, height, width)
             # v predictions
-            preds_list[m][:, 1] = (preds_list[m][:, 1] * Ui_t0_std) + gridwise_means['vi_t0'] # (time, height, width)
+            preds_list[m][:, 1] = (preds_list[m][:, 1] * Ui_t0) + gridwise_means['vi_t0'] # (time, height, width)
 
             # u trues
-            trues_list[m][:, 0] = (trues_list[m][:, 0] * Ui_t0_std) + gridwise_means['ui_t0'] # (time, height, width)
+            trues_list[m][:, 0] = (trues_list[m][:, 0] * Ui_t0) + gridwise_means['ui_t0'] # (time, height, width)
             # v trues
-            trues_list[m][:, 1] = (trues_list[m][:, 1] * Ui_t0_std) + gridwise_means['vi_t0'] # (time, height, width)  
+            trues_list[m][:, 1] = (trues_list[m][:, 1] * Ui_t0) + gridwise_means['vi_t0'] # (time, height, width)  
 
     print('Finished loading preds and trues for all members)')
     print('')
@@ -115,7 +115,7 @@ def main():
             if 'weighted' in metric_str:
                 r = ri_t0[test_indices[f'{m:02d}']] # (time, height, width)
                 # Rescale r by global std of speed
-                r = r * Ui_t0_std 
+                r = r * Ui_t0 
                 # Mask r as well
                 r = np.where(mask[:, None, :, :], np.nan, r) # (time, channel, height, width)
 
