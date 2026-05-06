@@ -75,10 +75,13 @@ def main():
     # and uncertainty array is passed for preds and trues with channel dimension
     ri_t0 = np.load(path_model_inputs / 'targets_features.npz')['ri_t0']
 
+    #~~~~~~~RESCALE UNCERTAINTY~~~~~~~ 
+    ri_t0 = ri_t0 * Ui_t0_std
+
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
 
-    #~~~~~~~RESCALE PREDICTIONS~~~~~~~
+    #~~~~~~~RESCALE PREDICTIONS & TRUES~~~~~~~
     for m in range(N_MEMBERS):
             
             # u predictions
@@ -86,7 +89,6 @@ def main():
             # v predictions
             preds_list[m][:, 1] = (preds_list[m][:, 1] * Ui_t0_std) + gridwise_means['vi_t0'] # (time, height, width)
 
-            #~~~~~~~RESCALE TRUES~~~~~~~
             # u trues
             trues_list[m][:, 0] = (trues_list[m][:, 0] * Ui_t0_std) + gridwise_means['ui_t0'] # (time, height, width)
             # v trues
