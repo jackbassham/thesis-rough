@@ -7,6 +7,8 @@ def nrmse(input, target, eps=1e-4):
 
 
 def weighted_mse(input, target, uncertainty, eps = 1e-6):
+    # NOTE must think about w = 1 / (uncertainty**2 + eps) to match weighted linear regression 
+    # Weighted mse is used for the closed form solution!
 
     # Compute weights
     w = 1 / (uncertainty + eps)
