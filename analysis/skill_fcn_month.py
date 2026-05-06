@@ -153,6 +153,8 @@ def main():
                 n_cols=4,
                 n_rows=3,
                 cmap=cmo.cm.amp,
+                vmin=None,
+                vmax=None,
                 save_path=plot_path / f'{metric_str}_mean_{ch_name}.png',
             )
 
@@ -169,6 +171,7 @@ def main():
                 n_rows=3,
                 cmap=cmo.cm.amp,   # better for uncertainty
                 vmin=0,
+                vmax=None, 
                 vmax=np.nanmax(monthly_sem[:, ch]),
                 save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
             )
