@@ -108,6 +108,8 @@ def weighted_mse(pred, true, r, eps=1e-4):
     """
 
     """
+    # NOTE must think about w = 1 / (uncertainty**2 + eps) to match weighted linear regression 
+    # Weighted mse is used for the closed form solution!
 
     # Compute weights
     w = 1 / (r + eps)
@@ -121,8 +123,10 @@ def weighted_mse(pred, true, r, eps=1e-4):
 
 def weighted_rmse(pred, true, r, eps=1e-4):
     """
-
+    # NOTE rmse puts units back 
     """
+    # NOTE must think about w = 1 / (uncertainty**2 + eps) to match weighted linear regression 
+    # Weighted mse is used for the closed form solution!
 
     # Compute weights
     w = 1 / (r + eps)
