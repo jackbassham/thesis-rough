@@ -13,8 +13,8 @@ MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
 MODEL_STR = MODEL_STRS[0]
-HEMISPHERE = 'north'
-TIMESTAMP = '05012026_1003'
+HEMISPHERE = 'south'
+TIMESTAMP = '05012026_1459'
 
 TIMESTAMP_REGRID = TIMESTAMP
 TIMESTAMP_MASK_NORM = TIMESTAMP
