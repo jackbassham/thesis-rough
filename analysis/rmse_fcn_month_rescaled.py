@@ -4,6 +4,7 @@ import cmocean as cmo
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
+import sys
 
 import _06_evaluate.metric_fcns
 from analysis.plot import plot_cartopy_map
@@ -12,7 +13,17 @@ from analysis.plot import plot_cartopy_map
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[0]
+
+try:    
+    model_idx = int(sys.argv[1]) 
+except (IndexError, ValueError):
+    model_idx = None
+
+if model_idx is not None:
+    MODEL_STR = MODEL_STRS[model_idx]
+else:
+    MODEL_STR = MODEL_STRS[4]
+
 HEMISPHERE = 'south'
 TIMESTAMP = '05012026_1459'
 
