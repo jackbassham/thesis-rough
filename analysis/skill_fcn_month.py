@@ -152,9 +152,7 @@ def main():
                 data_channel_axis=0,
                 n_cols=4,
                 n_rows=3,
-                cmap=cmo.cm.balance_r,
-                vmin=-1,
-                vmax=1,
+                cmap=cmo.cm.amp,
                 save_path=plot_path / f'{metric_str}_mean_{ch_name}.png',
             )
 
