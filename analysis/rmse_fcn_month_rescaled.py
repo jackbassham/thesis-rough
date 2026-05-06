@@ -168,6 +168,15 @@ def main():
 
         print(f'Global Monthly mean and SEM computed for {metric_str}')
 
+        if 'misfit' in metric_str:
+            cmap = cmo.m.curl_r
+            vmin = -10
+            vmax = 10
+
+        else:
+            cmap = cmo.cm.amp
+            vmin = None
+            vmax = None
 
         for ch, ch_name in enumerate(['u', 'v']):
 
@@ -182,10 +191,10 @@ def main():
                 data_channel_axis=0,
                 n_cols=4,
                 n_rows=3,
-                cmap=cmo.cm.curl, 
+                cmap=cmap, 
                 cbar_label='cm_s',
-                vmin=None,
-                vmax=None,
+                vmin=vmin,
+                vmax=vmax,
                 save_path=plot_path / f'{metric_str}_mean_{ch_name}.png',
             )
 
