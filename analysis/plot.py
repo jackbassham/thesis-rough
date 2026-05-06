@@ -13,6 +13,7 @@ def plot_cartopy_map(
         n_cols=2,
         n_rows=1,
         cmap=cmo.cm.balance_r,
+        cbar_label=None,
         vmin=-1,
         vmax=1,
         save_path=None,
@@ -84,7 +85,7 @@ def plot_cartopy_map(
         axs[j].axis("off")
 
     # Shared colorbar
-    fig.colorbar(pcm, ax=axs[:n_plots], orientation="vertical", shrink=0.8)
+    fig.colorbar(pcm, ax=axs[:n_plots], orientation="vertical", shrink=0.8, label=cbar_label)
 
     if suptitle:
         fig.suptitle(suptitle, fontweight="bold")
