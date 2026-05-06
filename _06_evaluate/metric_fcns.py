@@ -89,3 +89,66 @@ def weighted_skill(pred, true, r, global_var_true=None, epsilon = 1e-4):
     weighted_skill = 1 - mse / (vartrue + epsilon)
 
     return weighted_skill
+
+
+def rmse(pred, true):
+
+    """
+    Root Mean Square Error
+    """
+
+    mse = np.nanmean((true - pred)**2, axis = 0) # mean square error
+
+    rmse = np.sqrt(mse)
+
+    return rmse
+
+
+def weighted_mse(pred, true, r, eps=1e-4):
+    """
+
+    """
+
+    # Compute weights
+    w = 1 / (r + eps)
+    
+    # Compute weighted square error
+    wse = w * (pred - true)**2
+
+    # Return weighted mean square error
+    return np.nansum(wse) / (np.nansum(w) + eps)
+
+
+def weighted_rmse(pred, true, r, eps=1e-4):
+    """
+
+    """
+
+    # Compute weights
+    w = 1 / (r + eps)
+    
+    # Compute weighted square error
+    wse = w * (pred - true)**2
+
+    wmse = np.nansum(wse) / (np.nansum(w) + eps)
+
+    return np.sqrt(wmse)
+
+
+
+def nrmse(pred, true, epsilon = 1e-4):
+
+    """
+    Normalized Root Mean Square Error
+    """
+
+    mse = np.nanmean((true - pred)**2, axis = 0) # mean square error
+
+    truebar = np.nanmean(true, axis = 0) # mean true
+
+    vartrue = np.nanmean((true - truebar)**2, axis = 0) # variance in true
+
+    nrmse = np.sqrt(mse) / (np.sqrt(vartrue) + epsilon)
+
+    return nrmse
+
