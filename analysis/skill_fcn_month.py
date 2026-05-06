@@ -85,12 +85,15 @@ def main():
 
         for m in range(N_MEMBERS):
 
+            mask = mask_bad[test_indices[f'{m:02d}']] # (time, height, width)
+
             if 'weighted' in metric_str:
                 r = ri_t0[test_indices[f'{m:02d}']] # (time, height, width)
+                # Mask r as well
+                r = np.where(mask[:, None, :, :], np.nan, r) # (time, channel, height, width)
+
             else:
                 r = None
-
-            mask = mask_bad[test_indices[f'{m:02d}']] # (time, height, width)
 
             preds = np.where(mask[:, None, :, :], np.nan, preds_list[m]) # (time, channel, height, width)
             trues = np.where(mask[:, None, :, :], np.nan, trues_list[m]) # (time, channel, height, width)
