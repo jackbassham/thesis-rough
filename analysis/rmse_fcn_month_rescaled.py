@@ -182,9 +182,10 @@ def main():
                 data_channel_axis=0,
                 n_cols=4,
                 n_rows=3,
-                cmap=cmo.cm.balance_r, 
-                vmin=-1,
-                vmax=1,
+                cmap=cmo.cm.curl, 
+                cbar_label='cm_s',
+                vmin=None,
+                vmax=None,
                 save_path=plot_path / f'{metric_str}_mean_{ch_name}.png',
             )
 
@@ -199,7 +200,8 @@ def main():
                 data_channel_axis=0,
                 n_cols=4,
                 n_rows=3,
-                cmap=cmo.cm.amp,   # better for uncertainty
+                cmap=cmo.cm.amp, 
+                cbar_label='cm_s',  # better for uncertainty
                 vmin=0,
                 vmax=np.nanmax(monthly_sem[:, ch]),
                 save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
