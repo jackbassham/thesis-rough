@@ -78,6 +78,20 @@ def main():
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
 
+    #~~~~~~~RESCALE PREDICTIONS~~~~~~~
+    for m in range(N_MEMBERS):
+            
+            # u predictions
+            preds_list[m][:, 0] = (preds_list[m][:, 0] * Ui_t0_std) + gridwise_means['ui_t0'] # (time, height, width)
+            # v predictions
+            preds_list[m][:, 1] = (preds_list[m][:, 1] * Ui_t0_std) + gridwise_means['vi_t0'] # (time, height, width)
+
+            #~~~~~~~RESCALE TRUES~~~~~~~
+            # u trues
+            trues_list[m][:, 0] = (trues_list[m][:, 0] * Ui_t0_std) + gridwise_means['ui_t0'] # (time, height, width)
+            # v trues
+            trues_list[m][:, 1] = (trues_list[m][:, 1] * Ui_t0_std) + gridwise_means['vi_t0'] # (time, height, width)  
+
     print('Finished loading preds and trues for all members)')
     print('')
 
