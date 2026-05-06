@@ -169,7 +169,7 @@ def main():
         print(f'Global Monthly mean and SEM computed for {metric_str}')
 
         if 'misfit' in metric_str:
-            cmap = cmo.m.curl_r
+            cmap = cmo.cm.curl_r
             vmin = -10
             vmax = 10
 
