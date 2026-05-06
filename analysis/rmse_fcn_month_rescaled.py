@@ -58,7 +58,7 @@ def main():
     Ui_t0 = np.load(path_stats / 'global_stds.npz')['Ui_t0']
 
     # Gridwise means for rescaling
-    gridwise_means = np.load(path_stats / 'gridwise_means.npz')['gridwise_means']    
+    gridwise_means = np.load(path_stats / 'gridwise_means.npz')
 
     # Create path to model inputs
     path_model_inputs = ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
