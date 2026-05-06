@@ -134,7 +134,7 @@ def weighted_rmse(pred, true, r, eps=1e-4):
     # Compute weighted square error
     wse = w * (pred - true)**2
 
-    wmse = np.nansum(wse) / (np.nansum(w) + eps)
+    wmse = np.nansum(wse, axis = 0) / (np.nansum(w, axis = 0) + eps)
 
     return np.sqrt(wmse)
 
