@@ -13,8 +13,8 @@ MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
 MODEL_STR = MODEL_STRS[0]
-HEMISPHERE = 'south'
-TIMESTAMP = '05012026_1459'
+HEMISPHERE = 'north'
+TIMESTAMP = '05012026_1003'
 
 TIMESTAMP_REGRID = TIMESTAMP
 
@@ -34,8 +34,8 @@ BASE_PATH = Path(
 def main():
 
     # Define list of metric strings
-    # metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
-    metric_strs = ['rmse', 'weighted_rmse']
+    metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
+    # metric_strs = ['rmse', 'weighted_rmse']
 
 
     plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
