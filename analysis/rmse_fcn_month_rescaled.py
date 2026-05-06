@@ -35,12 +35,11 @@ BASE_PATH = Path(
 def main():
 
     # Define list of metric strings
-    # metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
     metric_strs = ['rmse', 'weighted_rmse', 'mae', 'mean_misfit']
 
 
     plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
-    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'monthly'
+    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'monthly_rescaled'
     # Make plot path if it doesn't yet exist
     plot_path.mkdir(parents=True, exist_ok=True)
 
