@@ -156,3 +156,24 @@ def nrmse(pred, true, epsilon = 1e-4):
 
     return nrmse
 
+
+def mae(pred, true):
+
+    """
+    Mean Absolute Error
+    """
+
+    mae = np.nanmean(np.abs(true - pred), axis = 0)
+
+    return mae
+
+
+def mean_misfit(pred, true):
+
+    """
+    Mean Misfit
+    """
+
+    misfit = np.nanmean(true - pred, axis = 0)
+
+    return misfit
