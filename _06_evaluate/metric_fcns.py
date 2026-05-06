@@ -129,7 +129,7 @@ def weighted_rmse(pred, true, r, eps=1e-4):
     # Weighted mse is used for the closed form solution!
 
     # Compute weights
-    w = 1 / (r + eps)
+    w = 1 / (r**2 + eps)
     
     # Compute weighted square error
     wse = w * (pred - true)**2
