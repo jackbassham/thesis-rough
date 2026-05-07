@@ -7,27 +7,59 @@ def nanstd(x, eps=1e-8):
     return torch.sqrt(torch.nanmean((x - torch.nanmean(x))**2) + eps)
 
 
-def nrmse(input, target, eps=1e-4):
+def nanstd(x):
+    """
+    Equivalent to torch.std(x, unbiased=False), ignoring NaNs.
+    """
+    mean = torch.nanmean(x)
+    var = torch.nanmean((x - mean) ** 2)
+    return torch.sqrt(var)
 
-    # NOTE # Unbiased=True To match default population std. in tf 
-    return torch.sqrt(torch.mean((input - target) ** 2)) / (torch.std(target, unbiased = False) + eps)
 
+def masked_nrmse(input, target, mask, eps=1e-6):
 
-def masked_nrmse(input, target, mask, eps=1e-4):
+    # Make sure mask broadcasts over target channels
+    mask = mask.bool()
 
-    # Compute square error 
+    # Use tensor-valued NaNs
+    nan_input = torch.full_like(input, torch.nan)
+    nan_target = torch.full_like(target, torch.nan)
+
+    # Compute squared error
     se = (input - target) ** 2
 
-    # Set invalid points in square error to nan so they don't contribute to loss
-    se = torch.where(mask, torch.nan, se)
+    # Mask invalid locations
+    se_masked = torch.where(mask, nan_input, se)
+    target_masked = torch.where(mask, nan_target, target)
 
-    # Set invalid points in target to nan so they don't contribute to loss
-    target_masked = torch.where(mask, torch.nan, target)
-
-    rmse = torch.sqrt(torch.nanmean(se))
+    rmse = torch.sqrt(torch.nanmean(se_masked))
     norm = nanstd(target_masked)
 
     return rmse / (norm + eps)
+
+
+
+# def nrmse(input, target, eps=1e-4):
+
+#     # NOTE # Unbiased=True To match default population std. in tf 
+#     return torch.sqrt(torch.mean((input - target) ** 2)) / (torch.std(target, unbiased = False) + eps)
+
+
+# def masked_nrmse(input, target, mask, eps=1e-6):
+
+#     # Compute square error 
+#     se = (input - target) ** 2
+
+#     # Set invalid points in square error to nan so they don't contribute to loss
+#     se = torch.where(mask, torch.nan, se)
+
+#     # Set invalid points in target to nan so they don't contribute to loss
+#     target_masked = torch.where(mask, torch.nan, target)
+
+#     rmse = torch.sqrt(torch.nanmean(se))
+#     norm = nanstd(target_masked)
+
+#     return rmse / (norm + eps)
 
 
 def weighted_mse(input, target, uncertainty, eps = 1e-6):
