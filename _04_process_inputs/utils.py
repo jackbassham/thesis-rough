@@ -20,6 +20,7 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
         'ua_t0',
         'va_t0',
         'ci_t1',
+        'mask',
     ]
 
     # Get input dimensions from first input
