@@ -89,7 +89,7 @@ in skill (~ -0.02) overall. Nothing super noteworthy.
 REVERTING TO masking wind.
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Moving Forward: git branch 'ensemble':
+SKIP Moving Forward: git branch 'ensemble':
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Improvements before actually implementing an ensemble:
@@ -125,4 +125,21 @@ block of 2 val years, and the rest train years
 * aka 'Blocked Monte Carlo' ensemble approach
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Up to 04242026_1227 (north and south)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Successful run of 1989-2020 single member chronological split 
+(2019-2020 test, 2017-2018 val, 1989-2016 train)
+for full north and south spatial domains
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Up to 05012026_1459 (south) and 05012026_1003 (north)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Successful run of 10 member ensemble with shuffled years
+for test-train-val split
+
+Debugging monthly eval metrics
 
