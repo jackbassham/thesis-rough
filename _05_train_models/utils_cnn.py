@@ -20,7 +20,7 @@ def check_for_accelerator():
     return device
 
 
-def build_dataset(data_split, device, include_uncertainty=False):
+def build_dataset(data_split, device, include_uncertainty=False, include_mask=False):
     # Make a list of tensors for the data split
     tensors = [
         # Dropping mask channel (last channel) from features
@@ -34,6 +34,13 @@ def build_dataset(data_split, device, include_uncertainty=False):
         tensors.append(
             torch.from_numpy(data_split['ri_t0']).float().to(device)
         )
+
+    if include_mask:
+        # Append mask to the list of tensors if it's included for masked loss
+        tensors.append(
+            torch.from_numpy(data_split['mask']).bool.to(device)
+        )
+
 
     # Return all tensors in the split wrapped in a dataset
     return TensorDataset(*tensors)
