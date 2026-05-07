@@ -1,5 +1,12 @@
 import torch
 
+def nanstd(x, eps=1e-8):
+    """
+    Equivalent to torch.std(x,unbiased=False) using torch.nanmean to avoid nans
+    """
+    return torch.sqrt(torch.nanmean((x - torch.nanmean)**2) + eps)
+
+
 def nrmse(input, target, eps=1e-4):
 
     # NOTE # Unbiased=True To match default population std. in tf 
@@ -18,7 +25,7 @@ def masked_nrmse(input, target, mask, eps=1e-4):
     target_masked = torch.where(mask, torch.nan, target)
 
     rmse = torch.sqrt(torch.nanmean(se))
-    norm = torch.nanstd(target_masked, unbiased=False)
+    norm = nanstd(target_masked)
 
     return rmse / (norm + eps)
 
@@ -50,7 +57,7 @@ def weighted_nrmse(input, target, uncertainty, eps = 1e-6):
     mse = torch.sum(wse) / (torch.sum(w) + eps)
 
     # Return the normalized root mean square error
-    return torch.sqrt(mse) / (torch.std(target, unbiased = False) + eps)
+    return torch.sqrt(mse) / nanstd(target) + eps
 
 
 def masked_weighted_nrmse(input, target, uncertainty, mask, eps = 1e-6):
