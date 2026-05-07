@@ -179,6 +179,13 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
         # Report epoch's losses
         print(f'Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f} - Val Loss: {val_loss:.4f}')
 
+                # Test u and v preds
+        all_val_preds = torch.cat(all_val_preds, dim=0)
+
+        avg_u_pred = all_val_preds[:,0,:,:].mean().item()
+        avg_v_pred = all_val_preds[:,1,:,:].mean().item()
+        print(f"Epoch {epoch+1}/{epochs} - u Pred (Val) Avg: {avg_u_pred:.4f} - v Pred (Val) Avg: {avg_v_pred:.4f}")
+
     print('Training loop complete')
 
     return train_losses, val_losses
