@@ -104,7 +104,7 @@ def loss_batch(model, loss_func, xb, yb, *extra_batches, opt=None):
     """
     
     """
-
+    # Get model prediction on current batch features
     input = model(xb)
 
     # Compute weighted loss for the batch, including extra batches (ie: rb) 
@@ -121,8 +121,7 @@ def loss_batch(model, loss_func, xb, yb, *extra_batches, opt=None):
         opt.step()
         
     # Return the loss and size of batch
-    # NOTE DEBUGGING RETURN INPUT
-    return loss.item(), len(xb), input
+    return loss.item(), len(xb)
 
 
 def fit(epochs, model, loss_func, opt, train_dl, val_dl):
@@ -168,16 +167,19 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
                 desc=f'Val Epoch {epoch+1}/{epochs}', 
                 leave=False
             ):
+                # NOTE DEBUGGING Get prediction
+                pb = model(xb)
+
+                # NOTE DEBUGGING STORE PREDICTION
+                all_val_preds.append(pb)
+
                 # Compute batch's loss and get number of samples in batch
-                loss, num, pb = loss_batch(model, loss_func, xb, yb, *extra_batches)
+                loss, num = loss_batch(model, loss_func, xb, yb, *extra_batches)
                 # Add batch's loss and number of samples to total
                 total_loss += loss * num
                 total_num += num
             # Compute average validation loss over all batches for epoch
             val_loss = total_loss / total_num
-
-            # NOTE DEBUGGING APPEND BATCH PREDICTION TO ALL PREDS
-            all_val_preds.append(pb)
 
         # Append epoch's losses to lists
         train_losses.append(train_loss)
