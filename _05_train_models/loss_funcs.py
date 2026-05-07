@@ -11,7 +11,7 @@ def weighted_mse(input, target, uncertainty, eps = 1e-6):
     # Weighted mse is used for the closed form solution!
 
     # Compute weights
-    w = 1 / (uncertainty + eps)
+    w = 1 / (uncertainty**2 + eps)
     
     # Compute weighted square error
     wse = w * (input - target)**2
