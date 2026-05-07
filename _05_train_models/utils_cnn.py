@@ -155,7 +155,7 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
 
         model.eval()
         # NOTE DEBUGGING
-        all_vall_preds = []
+        all_val_preds = []
 
         # Initialize loss and total number of losses to track validation loss
         total_loss = 0
