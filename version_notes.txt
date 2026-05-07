@@ -144,7 +144,7 @@ for test-train-val split
 Debugging monthly eval metrics
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+05062026_1743
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Experimenting with weighted CNN**
 Iterations of the same version
@@ -156,3 +156,6 @@ AND using uncertainty weights w=1/r**2+eps instead
 of w=1/r+eps in different versions for consistency with 
 w=1/r**2 for wlr
 
+Result: Very slight reduction in skill and correlation (-0.01)
+Perhaps revisit, moving to experimenting with mask
+2. TODO
