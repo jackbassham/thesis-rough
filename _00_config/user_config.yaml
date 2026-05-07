@@ -4,10 +4,10 @@ paths:
 
 split:
   # Define the number of ensemble members to use
-  n_members: 10
+  n_members: 1
 
 # Set the data configuration preset from the options below
-active_preset: full_arctic
+active_preset: full_southern_ocean
 
 presets:
 
