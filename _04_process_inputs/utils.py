@@ -20,7 +20,6 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
         'ua_t0',
         'va_t0',
         'ci_t1',
-        'mask'
     ]
 
     # Get input dimensions from first input
@@ -49,13 +48,18 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     # Convert nan values in uncertainty to 1000 (flag) and float32()
     ri_t0 = np.nan_to_num(ri_t0, nan=1000.0).astype(np.float32)
 
+    # Add channel dimension on mask to match targets, features
+    # NOTE mask is boolean T/F NOT float 1/0
+    mask = inputs['mask'][:, np.newaxis, :, :]
+
     print(y.shape)
     print(x.shape)
 
     return {
         'y': y,
         'x': x,
-        'ri_t0': ri_t0
+        'ri_t0': ri_t0,
+        'mask': mask
     }
 
 

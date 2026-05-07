@@ -47,9 +47,6 @@ def main(cfg):
     # Load in mask
     mask_bad = np.load(path_mask_norm / 'masks.npz')['mask_bad']
 
-    # Convert boolean values to 0, 1 floats
-    mask_bad = mask_bad.astype(np.float32)
-
     # Add mask to inputs
     inputs['mask'] = mask_bad
 
