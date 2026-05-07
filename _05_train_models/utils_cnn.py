@@ -121,7 +121,8 @@ def loss_batch(model, loss_func, xb, yb, *extra_batches, opt=None):
         opt.step()
         
     # Return the loss and size of batch
-    return loss.item(), len(xb)
+    # NOTE DEBUGGING RETURN INPUT
+    return loss.item(), len(xb), input
 
 
 def fit(epochs, model, loss_func, opt, train_dl, val_dl):
@@ -154,6 +155,9 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
         train_loss = total_loss / total_num
 
         model.eval()
+        # NOTE DEBUGGING
+        all_vall_preds = []
+
         # Initialize loss and total number of losses to track validation loss
         total_loss = 0
         total_num = 0
@@ -165,12 +169,15 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
                 leave=False
             ):
                 # Compute batch's loss and get number of samples in batch
-                loss, num = loss_batch(model, loss_func, xb, yb, *extra_batches)
+                loss, num, pb = loss_batch(model, loss_func, xb, yb, *extra_batches)
                 # Add batch's loss and number of samples to total
                 total_loss += loss * num
                 total_num += num
             # Compute average validation loss over all batches for epoch
             val_loss = total_loss / total_num
+
+            # NOTE DEBUGGING APPEND BATCH PREDICTION TO ALL PREDS
+            all_val_preds.append(pb)
 
         # Append epoch's losses to lists
         train_losses.append(train_loss)
@@ -179,7 +186,7 @@ def fit(epochs, model, loss_func, opt, train_dl, val_dl):
         # Report epoch's losses
         print(f'Epoch {epoch+1}/{epochs} - Train Loss: {train_loss:.4f} - Val Loss: {val_loss:.4f}')
 
-                # Test u and v preds
+        # NOTE DEBUGGINE: Test u and v preds
         all_val_preds = torch.cat(all_val_preds, dim=0)
 
         avg_u_pred = all_val_preds[:,0,:,:].mean().item()
