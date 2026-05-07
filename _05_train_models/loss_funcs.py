@@ -4,7 +4,7 @@ def nanstd(x, eps=1e-8):
     """
     Equivalent to torch.std(x,unbiased=False) using torch.nanmean to avoid nans
     """
-    return torch.sqrt(torch.nanmean((x - torch.nanmean)**2) + eps)
+    return torch.sqrt(torch.nanmean((x - torch.nanmean(x))**2) + eps)
 
 
 def nrmse(input, target, eps=1e-4):
