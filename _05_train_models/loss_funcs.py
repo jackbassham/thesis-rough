@@ -21,6 +21,17 @@ def masked_nrmse(input, target, mask, eps=1e-6):
     # Make sure mask broadcasts over target channels
     mask = mask.bool()
 
+    # Check mask
+    print("mask shape:", mask.shape)
+    print("target shape:", target.shape)
+
+    print("masked fraction:", mask.float().mean())
+
+    print(
+        "valid count:",
+        (~mask.expand_as(target)).sum()
+    )
+
     # Use tensor-valued NaNs
     nan_input = torch.full_like(input, torch.nan)
     nan_target = torch.full_like(target, torch.nan)
@@ -32,8 +43,17 @@ def masked_nrmse(input, target, mask, eps=1e-6):
     se_masked = torch.where(mask, nan_input, se)
     target_masked = torch.where(mask, nan_target, target)
 
+    # Check cound finite targets
+    print(
+        "number finite targets_masked:",
+        torch.isfinite(target_masked).sum()
+    )
+
     rmse = torch.sqrt(torch.nanmean(se_masked))
     norm = nanstd(target_masked)
+
+    print("rmse:", rmse)
+    print("norm:", norm)
 
     return rmse / (norm + eps)
 
