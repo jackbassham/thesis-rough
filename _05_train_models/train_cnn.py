@@ -36,9 +36,9 @@ def main(cfg):
     splits = ensemble.load_member_splits(cfg)
 
     # Build tensor datasets from member's splits
-    train_ds = utils_cnn.build_dataset(splits['train'], device)
-    val_ds = utils_cnn.build_dataset(splits['val'], device)
-    test_ds = utils_cnn.build_dataset(splits['test'], device)
+    train_ds = utils_cnn.build_dataset(splits['train'], device, include_mask=True)
+    val_ds = utils_cnn.build_dataset(splits['val'], device, include_mask=True)
+    test_ds = utils_cnn.build_dataset(splits['test'], device, include_mask=True)
 
     # Get batched data loaders from tensor datasets
     train_dl, val_dl, test_dl = utils_cnn.get_batched_data(train_ds, val_ds, test_ds)
@@ -77,7 +77,7 @@ def main(cfg):
     epochs = 50 # Hoffman
 
     # Define the loss function
-    loss_func = loss_funcs.nrmse
+    loss_func = loss_funcs.masked_nrmse
 
     # Train the model
     train_losses, val_losses = utils_cnn.fit(epochs, model, loss_func, opt, train_dl, val_dl)
