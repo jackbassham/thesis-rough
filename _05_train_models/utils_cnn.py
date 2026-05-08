@@ -25,7 +25,7 @@ def build_dataset(data_split, device, include_uncertainty=False, include_mask=Fa
     tensors = [
         # Dropping mask channel (last channel) from features
         # NOTE double enforcing that inputs are PyTorch Float
-        torch.from_numpy(data_split['x'][:,:-1,:,:]).float().to(device),
+        torch.from_numpy(data_split['x']).float().to(device),
         torch.from_numpy(data_split['y']).float().to(device)
     ]
 
