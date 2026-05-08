@@ -25,11 +25,11 @@ else:
     MODEL_STR = MODEL_STRS[0]
 
 HEMISPHERE = 'south'
-TIMESTAMP = '05062026_1852'
+TIMESTAMP = '05082026_1602'
 
-TIMESTAMP_REGRID = TIMESTAMP
-TIMESTAMP_MASK_NORM = TIMESTAMP
-TIMESTAMP_MODEL_INPUTS = TIMESTAMP
+TIMESTAMP_REGRID = '05062026_1852'
+TIMESTAMP_MASK_NORM = '05062026_1852'
+TIMESTAMP_MODEL_INPUTS = '05062026_1852'
 
 
 N_MEMBERS = 1
@@ -166,7 +166,11 @@ def main():
         print(f'Monthly metrics saved for all members for {metric_str}')
 
         monthly_mean = np.nanmean(monthly_all_members, axis=0)
-        monthly_sem  = np.nanstd(monthly_all_members, axis=0) / np.sqrt(N_MEMBERS)
+        
+        if N_MEMBERS >= 1:
+            monthly_sem  = np.nanstd(monthly_all_members, axis=0) / np.sqrt(N_MEMBERS)
+        else:
+            monthly_sem = None
 
         print(f'Monthly mean and SEM computed for {metric_str}')
 
@@ -209,23 +213,24 @@ def main():
                 save_path=plot_path / f'{metric_str}_mean_{ch_name}.png',
             )
 
-            # -------- SEM plots --------
-            plot_cartopy_map(
-                data=monthly_sem[:, ch],
-                lon=lon,
-                lat=lat,
-                hemisphere=HEMISPHERE,
-                titles=month_labels,
-                suptitle=f'{metric_str.upper()} SEM ({ch_name}): {MODEL_STR} {TIMESTAMP}',
-                data_channel_axis=0,
-                n_cols=4,
-                n_rows=3,
-                cmap=cmo.cm.amp, 
-                cbar_label='cm_s',  # better for uncertainty
-                vmin=0,
-                vmax=np.nanmax(monthly_sem[:, ch]),
-                save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
-            )
+            if monthly_sem is not None:
+                # -------- SEM plots --------
+                plot_cartopy_map(
+                    data=monthly_sem[:, ch],
+                    lon=lon,
+                    lat=lat,
+                    hemisphere=HEMISPHERE,
+                    titles=month_labels,
+                    suptitle=f'{metric_str.upper()} SEM ({ch_name}): {MODEL_STR} {TIMESTAMP}',
+                    data_channel_axis=0,
+                    n_cols=4,
+                    n_rows=3,
+                    cmap=cmo.cm.amp, 
+                    cbar_label='cm_s',  # better for uncertainty
+                    vmin=0,
+                    vmax=np.nanmax(monthly_sem[:, ch]),
+                    save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
+                )
 
             # -------- Global MEAN/SEM plots --------
             plot_global_monthly_ensemble(
