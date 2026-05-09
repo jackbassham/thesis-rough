@@ -169,7 +169,7 @@ def main():
 
         monthly_mean = np.nanmean(monthly_all_members, axis=0)
         
-        if N_MEMBERS >= 1:
+        if N_MEMBERS > 1:
             monthly_sem  = np.nanstd(monthly_all_members, axis=0) / np.sqrt(N_MEMBERS)
         else:
             monthly_sem = None
