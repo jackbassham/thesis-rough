@@ -110,31 +110,38 @@ def weighted_nrmse(input, target, uncertainty, eps = 1e-6):
     mse = torch.sum(wse) / (torch.sum(w) + eps)
 
     # Return the normalized root mean square error
-    return torch.sqrt(mse) / nanstd(target) + eps
+    return torch.sqrt(mse) / (nanstd(target) + eps)
 
 
-def masked_weighted_nrmse(input, target, uncertainty, mask, eps = 1e-6):
+def masked_weighted_nrmse(input, target, mask, uncertainty, eps = 1e-6):
     # NOTE must think about w = 1 / (uncertainty**2 + eps) to match weighted linear regression 
     # Weighted mse is used for the closed form solution!
 
+    # Make sure mask broadcasts over target channels
+    mask = mask.bool()
+
     # Compute weights
     w = 1 / (uncertainty**2 + eps)
+
+    # Use tensor-valued NaNs
+    nan_input = torch.full_like(input, torch.nan)
+    nan_target = torch.full_like(target, torch.nan)
+    nan_w = torch.full_like(w, torch.nan)
     
     # Compute weighted square error
     wse = w * (input - target)**2
 
-    # Set invalid points to nan
-    wse = torch.where(mask, torch.nan, wse)
-    w = torch.where(mask, torch.nan, wse)
+    # Mask invalid locations
+    wse_masked = torch.where(mask, nan_input, wse)
+    target_masked = torch.where(mask, nan_target, target)
+    w_masked = torch.where(mask, nan_w, w)
 
     # Compute weighted mean square error
-    mse = torch.nansum(wse) / (torch.nansum(w) + eps)
-
-    # Set invalid points in target to nan
-    target_masked = torch.where(mask, torch.nan, target)
+    wmse = torch.nansum(wse_masked) / (torch.nansum(w_masked) + eps)
 
     # Return the normalized root mean square error
-    return torch.sqrt(mse) / (torch.nanstd(target_masked, unbiased = False) + eps)
+    return torch.sqrt(wmse) / (nanstd(target_masked) + eps)
+
 
 # TODO 
 # def weighted_nrmse():
