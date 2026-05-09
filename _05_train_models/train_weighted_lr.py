@@ -46,7 +46,7 @@ def main(cfg):
     )
 
     # Get features and targets, excluding mask (last feature)
-    x_test = splits['test']['x'][:,:-1,:,:]
+    x_test = splits['test']['x']
     y_test = splits['test']['y']
 
     # Get complex predictions on test split from the fit model
