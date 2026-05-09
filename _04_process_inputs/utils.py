@@ -34,9 +34,16 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
     for i, name in enumerate(targets):
         y[:, i] = inputs[name]
 
+    # Get inverted mask so array is 1 for valid points, 0 for invalid
+    valid = ~inputs['mask']
+
     # Fill feature array
     for i, name in enumerate(features):
-        x[:, i] = inputs[name]
+        if name == 'mask':
+            # Fill the mask channel with the valid (inverted mask) array
+            x[:, i] = valid
+        else:
+            x[:, i] = inputs[name]
 
     # Convert nan values in targets, features to zero and float32()
     # NOTE PyTorch default for model is FLoat (np.float32 equivalent) 
