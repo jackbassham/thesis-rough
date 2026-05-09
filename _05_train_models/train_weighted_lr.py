@@ -15,7 +15,7 @@ def main(cfg):
     splits = ensemble.load_member_splits(cfg)
 
     # Get features, targets, and uncertainty from training splits, excluding mask (last feature)
-    x_train = splits['train']['x'][:,:-1,:,:]
+    x_train = splits['train']['x']
     y_train = splits['train']['y']
     r_train = splits['train']['ri_t0']
 

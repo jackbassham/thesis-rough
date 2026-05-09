@@ -15,7 +15,7 @@ def main(cfg):
     splits = ensemble.load_member_splits(cfg)
 
     # Get features and targets from training splits, excluding mask (last feature)
-    x_train = splits['train']['x'][:,:-1,:,:]
+    x_train = splits['train']['x']
     y_train = splits['train']['y']
 
     # Instantiate model with functions to build complex features and targets
