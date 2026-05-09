@@ -65,7 +65,7 @@ def main(cfg):
     epochs = 50 # Hoffman
 
     # Define the loss function
-    loss_func = loss_funcs.weighted_nrmse
+    loss_func = loss_funcs.masked_weighted_nrmse
 
     # Train the model
     train_losses, val_losses = utils_cnn.fit(epochs, model, loss_func, opt, train_dl, val_dl)
