@@ -8,7 +8,7 @@ def build_complex_features(x):
     """
 
     # Unpack features
-    ua_t0, va_t0, ci_t1 = x[:,0], x[:,1], x[:,2]
+    ua_t0, va_t0, ci_t1, mask = x[:,0], x[:,1], x[:,2], x[:,3]
     
     # TODO include mask values as weights in LR
     # NOTE Going to experiment with including mask in both LR and CNN
@@ -18,10 +18,13 @@ def build_complex_features(x):
     za_t0 = ua_t0 + va_t0*1j 
     zci_t1 = ci_t1 + ci_t1*1j
 
+    z_mask = mask + mask*1j
+
     # Create list of features
     features = [
         za_t0, # Complex pesent day day wind vector
         zci_t1, # Complex previous day ice concentration
+        z_mask,
     ]
 
     for i, feature in enumerate(features):
