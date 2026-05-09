@@ -44,7 +44,7 @@ def run_eval(config, model_name: str) -> None:
     splits = load_member_splits(config)
 
     # Get mask for test split from last feature channel
-    mask_bad = splits['test']['x'][:,-1,:,:]
+    mask_bad = np.squeeze(splits['test']['mask'], axis=1)
 
     # Mask invalid points in model output before evaluation
     upred = np.where(mask_bad, np.nan, upred)
