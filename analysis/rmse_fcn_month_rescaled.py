@@ -78,7 +78,9 @@ def main():
     test_indices = np.load(path_model_inputs / 'indices_test.npz')
 
     # Load mask from features matrix
-    mask_bad = np.load(path_model_inputs / 'targets_features.npz')['x'][:,-1,:,:]
+    mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
+    # Squeeze out channel dimension
+    mask_bad = np.squeeze(mask_bad, axis=1)
 
     # Load array of uncertainties
     # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v

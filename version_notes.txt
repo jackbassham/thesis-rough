@@ -143,9 +143,9 @@ for test-train-val split
 
 Debugging monthly eval metrics
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-05062026_1743
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+05062026_1743 WEIGHTED CNN (south)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Experimenting with weighted CNN**
 Iterations of the same version
 1. Testing updated weighted cnn with wnrmse 
@@ -159,3 +159,43 @@ w=1/r**2 for wlr
 Result: Very slight reduction in skill and correlation (-0.01)
 Perhaps revisit, moving to experimenting with mask
 2. TODO
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+05062026_1852 MASKED LOSS, UNWEIGHTED CNN (south)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    **Experimenting with masking the CNN loss**
+    Because nans are converted to 0 before training
+    Mask is assigned based on the following during model training:
+        1. nan ui_t0, vi_t0, ci_t0
+        2. time and space points where ci_t0 < 0.15
+        3. entire space points where ci < 0.15 for >= 70% of time
+        4. nsidc raw concentration flags (
+            251, # pole hole
+            252, # unused data
+            253, # coastline
+            254, # land
+        )
+
+    Result: successful run with slightly improved skill!
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+05082026_1602 MASK AS INPUT FEATURE, UNWEIGHTED CNN (south)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    **Experimenting with same mask as above as float32 input feature for the CNN**
+
+    Result: Successful run with slightly improved skill from masked loss (+0.01) and tight loss curve!
+
+    FIXME: mask used here was a mask for invalid points, so the input feature
+    used 1.0 (True) and 0.0 (False). Moving on to try inverted ('valid' array) as input
+    feature instead.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+05082026_1702 'VALID' (INVERTED MASK) AS INPUT FEATURE (INPUTS: 05082026_1655)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+
+
