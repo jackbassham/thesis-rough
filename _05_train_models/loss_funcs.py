@@ -113,12 +113,16 @@ def weighted_nrmse(input, target, uncertainty, eps = 1e-6):
     return torch.sqrt(mse) / (nanstd(target) + eps)
 
 
-def masked_weighted_nrmse(input, target, mask, uncertainty, eps = 1e-6):
+def masked_weighted_nrmse(input, target, uncertainty, mask, eps = 1e-6):
     # NOTE must think about w = 1 / (uncertainty**2 + eps) to match weighted linear regression 
     # Weighted mse is used for the closed form solution!
 
     # Make sure mask broadcasts over target channels
     mask = mask.bool()
+
+    # print("mask shape:", mask.shape)
+    # print("mask true fraction:", mask.float().mean())
+    # print("valid count:", (~mask).sum())
 
 
     if mask.ndim == input.ndim - 1:
@@ -154,9 +158,9 @@ def masked_weighted_nrmse(input, target, mask, uncertainty, eps = 1e-6):
     norm = nanstd(target_masked)
     wrmse = torch.sqrt(wmse) / (norm + eps)
 
-    print("wmse:", wmse)
-    print("norm:", norm)
-    print("rmse:", wrmse)
+    # print("wmse:", wmse)
+    # print("norm:", norm)
+    # print("rmse:", wrmse)
 
     # Return the normalized, weighted root mean square error
     return wrmse
