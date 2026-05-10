@@ -24,9 +24,9 @@ def main(cfg):
     splits = ensemble.load_member_splits(cfg)
 
     # Build tensor datasets from member's splits
-    train_ds = utils_cnn.build_dataset(splits['train'], device, include_uncertainty=True)
-    val_ds = utils_cnn.build_dataset(splits['val'], device, include_uncertainty=True)
-    test_ds = utils_cnn.build_dataset(splits['test'], device, include_uncertainty=True)
+    train_ds = utils_cnn.build_dataset(splits['train'], device, include_uncertainty=True, include_mask=True)
+    val_ds = utils_cnn.build_dataset(splits['val'], device, include_uncertainty=True, include_mask=True)
+    test_ds = utils_cnn.build_dataset(splits['test'], device, include_uncertainty=True, include_mask=True)
 
     # Get batched data loaders from tensor datasets
     train_dl, val_dl, test_dl = utils_cnn.get_batched_data(train_ds, val_ds, test_ds)
