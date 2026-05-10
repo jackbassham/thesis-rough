@@ -120,8 +120,19 @@ def masked_weighted_nrmse(input, target, mask, uncertainty, eps = 1e-6):
     # Make sure mask broadcasts over target channels
     mask = mask.bool()
 
+
+    if mask.ndim == input.ndim - 1:
+        mask = mask[:, None, :, :]
+
+    if uncertainty.ndim == input.ndim - 1:
+        uncertainty = uncertainty[:, None, :, :]
+
     # Compute weights
     w = 1 / (uncertainty**2 + eps)
+
+    # Match input/target shape
+    mask = mask.expand_as(input)
+    w = w.expand_as(input)
 
     # Use tensor-valued NaNs
     nan_input = torch.full_like(input, torch.nan)
@@ -129,6 +140,8 @@ def masked_weighted_nrmse(input, target, mask, uncertainty, eps = 1e-6):
     nan_w = torch.full_like(w, torch.nan)
     
     # Compute weighted square error
+    se = (input - target)**2
+    wse = w * se
     wse = w * (input - target)**2
 
     # Mask invalid locations
@@ -138,9 +151,15 @@ def masked_weighted_nrmse(input, target, mask, uncertainty, eps = 1e-6):
 
     # Compute weighted mean square error
     wmse = torch.nansum(wse_masked) / (torch.nansum(w_masked) + eps)
+    norm = nanstd(target_masked)
+    wrmse = torch.sqrt(wmse) / (norm + eps)
 
-    # Return the normalized root mean square error
-    return torch.sqrt(wmse) / (nanstd(target_masked) + eps)
+    print("wmse:", wmse)
+    print("norm:", norm)
+    print("rmse:", wrmse)
+
+    # Return the normalized, weighted root mean square error
+    return wrmse
 
 
 # TODO 
