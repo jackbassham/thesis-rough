@@ -164,11 +164,16 @@ def mask_monthly(
     # Get unique year-month (YYYY-MM) labels from timestamp
     year_months = time.astype('datetime64[M]')
 
+    print(f'year_months: {year_months[:3]}')
+
     # Initialize array for full bad mask
     mask_bad = np.zeros_like(ci_t0, dtype=bool)
 
     # Loop over unique year-months
-    for y_m in np.unique(year_months):
+    for i, y_m in enumerate(np.unique(year_months)):
+
+        if i <= 2:
+            print(f'Processing month: {y_m}')
 
         # Select indices for days in the current year month
         idx_year_month = year_months == y_m
@@ -182,6 +187,8 @@ def mask_monthly(
 
         # Store current year month in full bad mask array
         mask_bad[idx_year_month] = mask_bad_y_m
+
+    print('mask_bad shape:', mask_bad.shape)
 
     # Return the full mask
     return mask_bad
