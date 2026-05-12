@@ -45,7 +45,7 @@ def weighted_correlation(pred, true, r, epsilon = 1e-4):
     return correlation
 
 
-def skill(pred, true, global_var_true=None, epsilon = 1e-4):
+def skill(pred, true, epsilon = 1e-4):
     # NOTE excluding epsilon = 1e-4 from denominator for now
 
     mse = np.nanmean((true - pred)**2, axis = 0) # mean square error
@@ -55,13 +55,10 @@ def skill(pred, true, global_var_true=None, epsilon = 1e-4):
     # = bias^2 + Var(y-x)
     # Can prove the above
 
-    if global_var_true is not None:
-        vartrue = global_var_true
-    else:
-        truebar = np.nanmean(true, axis = 0) # mean true
+    truebar = np.nanmean(true, axis = 0) # mean true
 
-        vartrue = np.nanmean((true - truebar)**2, axis = 0) # variance in true
-        # NOTE above is equivalent to np.nanvar()
+    vartrue = np.nanmean((true - truebar)**2, axis = 0) # variance in true
+    # NOTE above is equivalent to np.nanvar()
 
     print(f'Using VarTrue (NOTE print is mean over grid) {np.nanmean(vartrue)}')
 
@@ -70,7 +67,7 @@ def skill(pred, true, global_var_true=None, epsilon = 1e-4):
     return skill
 
 
-def weighted_skill(pred, true, r, global_var_true=None, epsilon = 1e-4):
+def weighted_skill(pred, true, r, epsilon = 1e-4):
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
     w = 1 / (r + epsilon)
@@ -78,9 +75,6 @@ def weighted_skill(pred, true, r, global_var_true=None, epsilon = 1e-4):
     mse = np.nanmean( w * (true - pred) ** 2, axis = 0) # mean square error
     # NOTE above is not equivalent to np.nanvar(true-pred), which excludes bias term
 
-    if global_var_true is not None:
-        vartrue = w * global_var_true 
-    else:
         truebar = np.nanmean(true, axis = 0) # mean true
 
         vartrue = np.nanmean( w * (true - truebar) ** 2, axis = 0) # variance in true
