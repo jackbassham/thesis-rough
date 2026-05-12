@@ -297,8 +297,8 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="std (normalized)",
         vmin=0,
-        vmax=np.nanmax(monthly_norm_ui_var),
-        levels=np.linspace(0,np.nanmax(monthly_norm_ui_var),num=10),
+        vmax=1,
+        levels=np.linspace(0,1,num=10),
         save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_ui.png"),
     )
 
@@ -315,8 +315,8 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="std (normalized)",
         vmin=0,
-        vmax=np.nanmax(monthly_norm_vi_var),
-        levels=np.linspace(0,np.nanmax(monthly_norm_vi_var),num=10),
+        vmax=1,
+        levels=np.linspace(0,1,num=10),
         save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_vi.png"),
     )
 
@@ -334,7 +334,7 @@ def main():
         cbar_label="std (normalized)",
         vmin=np.nanmin(monthly_norm_ri_mean),
         vmax=np.nanmax(monthly_norm_ri_mean),
-        levels=np.linspace(np.namin(monthly_norm_ri_mean),np.nanmax(monthly_norm_ri_mean),num=10),
+        levels=np.linspace(np.nanmin(monthly_norm_ri_mean),np.nanmax(monthly_norm_ri_mean),num=10),
         save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_mean_ri.png"),
     )
 
