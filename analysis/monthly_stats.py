@@ -280,8 +280,8 @@ def main():
     monthly_norm_ui_var = monthly_stats(data['ui_t0'], time_t0, var)
     monthly_norm_vi_var= monthly_stats(data['vi_t0'], time_t0, var)
     monthly_norm_ri_mean = monthly_stats(data['ri_t0'], time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
-    monthly_norm_ci_mean = monthly_stats(data['ci_t0'], time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
-    monthly_norm_ci_var = monthly_stats(data['ci_t0'], time_t0, var)
+    monthly_norm_ci_mean = monthly_stats(data['ci_t1'], time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
+    monthly_norm_ci_var = monthly_stats(data['ci_t1'], time_t0, var)
 
 
     plot_contour_cartopy_map(
@@ -332,13 +332,14 @@ def main():
         n_rows=3,
         cmap=cmo.cm.thermal,
         cbar_label="std (normalized)",
-        vmin=0,
+        vmin=np.nanmin(monthly_norm_ri_mean),
         vmax=np.nanmax(monthly_norm_ri_mean),
-        levels=np.linspace(0,np.nanmax(monthly_norm_ri_mean),num=10),
+        levels=np.linspace(np.namin(monthly_norm_ri_mean),np.nanmax(monthly_norm_ri_mean),num=10),
         save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_mean_ri.png"),
     )
 
-    plot_contour_cartopy_map(
+    # NOTE contour looks like nan during summer?
+    plot_cartopy_map(
         data=monthly_norm_ci_mean,
         lon=lon,
         lat=lat,
@@ -350,9 +351,9 @@ def main():
         n_rows=3,
         cmap=cmo.cm.ice,
         cbar_label="std (normalized)",
-        vmin=0,
+        vmin=np.nanmin(monthly_norm_ci_mean),
         vmax=np.nanmax(monthly_norm_ci_mean),
-        levels=np.linspace(0, np.nanmax(monthly_norm_ci_mean), num=10),
+        levels=np.linspace(np.nanmin(monthly_norm_ci_mean), np.nanmax(monthly_norm_ci_mean), num=10),
         save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_mean_ci.png"),
     )
 
