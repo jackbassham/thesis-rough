@@ -57,26 +57,26 @@ def main():
 
     print('monthly mask created and saved')
 
-    # Month labels for titles
-    month_labels = [calendar.month_abbr[i+1] for i in range(12)]
+    # # Month labels for titles
+    # month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
-    plot_cartopy_map(
-        data=np.nanmean(monthly_mask_bad, axis=0),   # (month, lat, lon)
-        lon=lon,
-        lat=lat,
-        hemisphere=HEMISPHERE,
-        titles=month_labels,
-        suptitle=f'Monthly Mask',
-        data_channel_axis=0,
-        n_cols=4,
-        n_rows=3,
-        cmap=cmo.cm.balance_r, 
-        vmin=-1,
-        vmax=1,
-        save_path= ANALYSIS_PATH / 'monthly_mask_2.png',
-    )
+    # plot_cartopy_map(
+    #     data=np.nanmean(monthly_mask_bad, axis=0),   # (month, lat, lon)
+    #     lon=lon,
+    #     lat=lat,
+    #     hemisphere=HEMISPHERE,
+    #     titles=month_labels,
+    #     suptitle=f'Monthly Mask',
+    #     data_channel_axis=0,
+    #     n_cols=4,
+    #     n_rows=3,
+    #     cmap=cmo.cm.balance_r, 
+    #     vmin=-1,
+    #     vmax=1,
+    #     save_path= ANALYSIS_PATH / 'monthly_mask_3.png',
+    # )
 
-    print('monthly mask plot saved')
+    # print('monthly mask plot saved')
 
 
 
