@@ -46,13 +46,13 @@ def main():
     ui_t0, vi_t0 = present_day(ui), present_day(vi)
     ci_t0 = present_day(ci)
 
-    monthly_mask = mask_monthly(
+    monthly_mask_bad = mask_monthly(
         ci_t0, ui_t0, vi_t0, time_t0
     )
 
     np.savez(
         ANALYSIS_PATH / 'monthly_mask',
-        monthly_mask = monthly_mask
+        monthly_mask_bad = monthly_mask_bad
         )
 
     print('monthly mask created and saved')
@@ -61,7 +61,7 @@ def main():
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
     plot_cartopy_map(
-        data=monthly_mask,   # (month, lat, lon)
+        data=np.nanmean(monthly_mask_bad, axis=0),   # (month, lat, lon)
         lon=lon,
         lat=lat,
         hemisphere=HEMISPHERE,

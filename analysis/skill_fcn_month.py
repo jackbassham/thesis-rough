@@ -4,6 +4,7 @@ import cmocean as cmo
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
+import sys
 
 import _06_evaluate.metric_fcns
 from analysis.plot import plot_cartopy_map
@@ -12,14 +13,24 @@ from analysis.plot import plot_cartopy_map
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[0]
+
+try:    
+    model_idx = int(sys.argv[1]) 
+except (IndexError, ValueError):
+    model_idx = None
+
+if model_idx is not None:
+    MODEL_STR = MODEL_STRS[model_idx]
+else:
+    MODEL_STR = MODEL_STRS[0]
+    
 HEMISPHERE = 'south'
-TIMESTAMP = '05082026_1702'
+TIMESTAMP = '05082026_1807'
 
 TIMESTAMP_REGRID = '05062026_1852'
-TIMESTAMP_MODEL_INPUTS = '05082026_1655'
+TIMESTAMP_MODEL_INPUTS = '05082026_1807'
 
-N_MEMBERS = 1
+N_MEMBERS = 10
 
 BASE_PATH = Path(
     ROOT
@@ -28,6 +39,8 @@ BASE_PATH = Path(
     / HEMISPHERE
     / TIMESTAMP
 )
+
+ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
 
 def main():
@@ -61,6 +74,8 @@ def main():
     # Squeeze out channel dimension
     mask_bad = np.squeeze(mask_bad, axis=1)
 
+    # Load in monthly mask
+    monthly_mask = np.load(ANALYSIS_PATH / 'monthly_mask.npz')['monthly_mask']
 
     # Load array of uncertainties
     # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v
@@ -111,6 +126,7 @@ def main():
                 trues,
                 time[test_indices[f'{m:02d}']],
                 metric_fcn,
+                monthly_mask,
                 r=r,
                 # global_var_true=global_var_true,
             )  # (month, channel, height, width)
@@ -228,7 +244,7 @@ def load_member_preds():
     return preds, trues
 
 
-def metric_fcn_month(pred, true, time, metric_fcn, r=None, global_var_true=None):
+def metric_fcn_month(pred, true, time, metric_fcn, monthly_mask, r=None, global_var_true=None):
     """
     
     """
@@ -258,6 +274,10 @@ def metric_fcn_month(pred, true, time, metric_fcn, r=None, global_var_true=None)
         if global_var_true is not None:
             # Add current month's global_var_true array to kword arguments
             metric_kwargs['global_var_true'] = global_var_true
+
+        # Mask data based on monthly mask
+        pred[month_indices] = np.where(monthly_mask[i], np.nan, pred[month_indices])
+        true[month_indices] = np.where(monthly_mask[i], np.nan, true[month_indices])
 
         # Compute metric for the current month and include uncertainty kwarg if weighted metric
         # (height, width)

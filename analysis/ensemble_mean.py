@@ -7,11 +7,11 @@ from pathlib import Path
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
-MODEL_STR = MODEL_STRS[0]
-HEMISPHERE = 'north'
-TIMESTAMP = '05012026_1003'
+MODEL_STR = MODEL_STRS[1]
+HEMISPHERE = 'south'
+TIMESTAMP = '05082026_1807'  
 
-TIMESTAMP_REGRID = TIMESTAMP
+TIMESTAMP_REGRID = '05062026_1852'
 
 N_MEMBERS = 10
 

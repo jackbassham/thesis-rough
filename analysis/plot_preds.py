@@ -25,14 +25,14 @@ else:
     MODEL_STR = MODEL_STRS[0]
 
 HEMISPHERE = 'south'
-TIMESTAMP = '05082026_1807'
+TIMESTAMP = '05082026_1702'
 
 TIMESTAMP_REGRID = '05062026_1852'
 TIMESTAMP_MASK_NORM = '05062026_1852'
-TIMESTAMP_MODEL_INPUTS = '05082026_1807'
+TIMESTAMP_MODEL_INPUTS = '05082026_1655'
 
 
-N_MEMBERS = 10
+N_MEMBERS = 1
 
 BASE_PATH = Path(
     ROOT
@@ -45,12 +45,9 @@ BASE_PATH = Path(
 
 def main():
 
-    # Define list of metric strings
-    metric_strs = ['rmse', 'weighted_rmse', 'mae', 'mean_misfit']
-
 
     plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
-    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'monthly_rescaled'
+    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'preds_time_series'
     # Make plot path if it doesn't yet exist
     plot_path.mkdir(parents=True, exist_ok=True)
 
@@ -187,8 +184,8 @@ def main():
 
         if 'misfit' in metric_str:
             cmap = cmo.cm.curl_r
-            vmin = -5
-            vmax = 5
+            vmin = -10
+            vmax = 10
 
         else:
             cmap = cmo.cm.amp
