@@ -155,3 +155,7 @@ def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs):
 
     # Return stacked array of montly metrics along first (month) axis
     return(np.stack(monthly_metrics, axis=0)) # (month, height, width)
+
+
+if __name__ == '__main__':
+    main()
