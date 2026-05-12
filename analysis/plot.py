@@ -109,6 +109,7 @@ def plot_contour_cartopy_map(
         cbar_label=None,
         vmin=-1,
         vmax=1,
+        n_levels=10,
         save_path=None,
 ):
     
@@ -154,7 +155,7 @@ def plot_contour_cartopy_map(
     # Flatten axs array for iteration
     axs = np.atleast_1d(axs).flatten()
 
-    levels = np.linspace(vmin, vmax, 10)
+    levels = np.linspace(vmin, vmax, n_levels)
 
     for i in range(n_plots):
         ax = axs[i]
@@ -169,7 +170,6 @@ def plot_contour_cartopy_map(
             levels=levels,
             transform=data_crs,
             cmap=cmap,
-            extend='both',
         )
 
         if titles is not None:
