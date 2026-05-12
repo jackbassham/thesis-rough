@@ -7,7 +7,7 @@ import numpy.typing as npt
 from pathlib import Path
 
 
-from analysis.plot import plot_cartopy_map
+from analysis.plot import plot_cartopy_map, plot_contour_cartopy_map
 import helpers
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
@@ -96,12 +96,12 @@ def main():
         cbar_label="Masked count",
         vmin=0,
         vmax=np.nanmax(monthly_counts),
-        save_path=Path("monthly_masked_counts.png"),
+        save_path=Path(ANALYSIS_PATH / "monthly_masked_counts.png"),
     )
 
     monthly_percent = monthly_masked_percent_map(monthly_mask_bad, time_t0)
 
-    plot_cartopy_map(
+    plot_contour_cartopy_map(
         data=monthly_percent,
         lon=lon,
         lat=lat,
@@ -114,7 +114,7 @@ def main():
         cbar_label="Masked days (%)",
         vmin=0,
         vmax=100,
-        save_path=Path("monthly_masked_percent.png"),
+        save_path=Path(ANALYSIS_PATH / "monthly_masked_percent.png"),
     )
 
 
