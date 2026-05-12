@@ -171,7 +171,6 @@ def plot_contour_cartopy_map(
             levels=levels,
             transform=data_crs,
             cmap=cmap,
-            extend='neither',
             corner_mask=False
         )
 
