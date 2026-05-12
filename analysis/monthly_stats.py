@@ -50,6 +50,7 @@ def main():
     monthly_ui_var = monthly_stats(ui_t0, time_t0, np.nanvar, {'axis': 0})
     monthly_vi_var = monthly_stats(ui_t0, time_t0, np.nanvar, {'axis': 0})
     monthly_ci_mean = monthly_stats(ci_t0, time_t0, np.nanmean, {'axis': 0})
+    monthly_ci_var = monthly_stats(ci_t0, time_t0, np.nanvar, {'axis': 0})
 
     print('~~~~~~~~~~~Stats computed~~~~~~~~~~~')
 
@@ -108,6 +109,24 @@ def main():
         vmax=1,
         levels=np.arange(0.0, 1.1, 0.1),
         save_path=Path(ANALYSIS_PATH / "monthly_mean_ci.png"),
+    )
+
+    plot_contour_cartopy_map(
+        data=monthly_ci_var,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Var(ice concentration): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.ice,
+        cbar_label='concentration (Frac)',
+        vmin=0,
+        vmax=1,
+        levels=np.arange(0.0, 1.1, 0.1),
+        save_path=Path(ANALYSIS_PATH / "monthly_var_ci.png"),
     )
 
     print('~~~~~~~~~~~Plots Saved~~~~~~~~~~~')
