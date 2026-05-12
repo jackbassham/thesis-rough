@@ -121,11 +121,11 @@ def main():
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
-        cmap=cmo.cm.ice,
+        cmap=cmo.cm.thermal,
         cbar_label='concentration (Frac)',
         vmin=0,
-        vmax=1,
-        levels=np.arange(0.0, 1.1, 0.1),
+        vmax=np.nanmax(monthly_ci_var),
+        levels=np.arange(0, np.nanmax(monthly_ci_var), 0.1),
         save_path=Path(ANALYSIS_PATH / "monthly_var_ci.png"),
     )
 
