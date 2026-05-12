@@ -49,8 +49,8 @@ def main():
     # Compute stats
     monthly_ui_var = monthly_stats(ui_t0, time_t0, var)
     monthly_vi_var = monthly_stats(ui_t0, time_t0, var)
-    monthly_ri_mean = monthly_stats(ri_t0, time_t0, np.nanmean, {'axis': 0})
-    monthly_ci_mean = monthly_stats(ci_t0, time_t0, np.nanmean, {'axis': 0})
+    monthly_ri_mean = monthly_stats(ri_t0, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
+    monthly_ci_mean = monthly_stats(ci_t0, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
     monthly_ci_var = monthly_stats(ci_t0, time_t0, var)
 
     print('~~~~~~~~~~~Stats computed~~~~~~~~~~~')
@@ -159,8 +159,8 @@ def main():
     # Compute stats
     monthly_ui_var_masked = monthly_stats(ui_masked, time_t0, var)
     monthly_vi_var_masked = monthly_stats(vi_masked, time_t0, var)
-    monthly_ri_mean_masked = monthly_stats(ri_masked, time_t0, np.nanmean, {'axis': 0})
-    monthly_ci_mean_masked = monthly_stats(ci_masked, time_t0, np.nanmean, {'axis': 0})
+    monthly_ri_mean_masked = monthly_stats(ri_masked, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
+    monthly_ci_mean_masked = monthly_stats(ci_masked, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
     monthly_ci_var_masked = monthly_stats(ci_masked, time_t0, var)
 
     # for m in range(12):
@@ -282,7 +282,7 @@ def previous_day(variable):
     return variable[:-1,:,:]
 
 
-def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs):
+def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs=None):
     """
     
     """
@@ -302,8 +302,12 @@ def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs):
         # Get current month's time indices
         month_indices = months == (i + 1)
 
+
         # Compute stat for that month, including any keyword arguments
-        stat = stat_fcn(data[month_indices], **stat_fcn_kwargs)
+        if stat_fcn_kwargs is not None:
+            stat = stat_fcn(data[month_indices], **stat_fcn_kwargs)
+        else:
+            stat = stat_fcn(data[month_indices])
 
         # Append to the list of monthly metrics
         monthly_stats.append(stat)
