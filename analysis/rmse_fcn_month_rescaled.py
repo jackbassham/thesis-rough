@@ -46,7 +46,8 @@ BASE_PATH = Path(
 def main():
 
     # Define list of metric strings
-    metric_strs = ['skill', 'rmse', 'weighted_rmse', 'mae', 'mean_misfit']
+    metric_strs = ['skill']
+    # metric_strs = ['rmse', 'weighted_rmse', 'mae', 'mean_misfit']
 
 
     plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
