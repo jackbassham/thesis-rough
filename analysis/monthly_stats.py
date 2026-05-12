@@ -108,7 +108,7 @@ def main():
         cbar_label="cm/s",
         vmin=0,
         vmax=np.nanmax(monthly_ri_mean),
-        levels=np.linspace(0,monthly_ri_mean,10),
+        levels=np.linspace(0,np.nanmax(monthly_ri_mean),10),
         save_path=Path(ANALYSIS_PATH / "monthly_var_vi.png"),
     )
 
@@ -213,7 +213,7 @@ def main():
         cbar_label="cm/s",
         vmin=0,
         vmax=np.nanmax(monthly_ri_mean),
-        levels=np.linspace(0,monthly_ri_mean,10),
+        levels=np.linspace(0,np.nanmax(monthly_ri_mean),10),
         save_path=Path(ANALYSIS_PATH / "masked_monthly_var_vi.png"),
     )
 
