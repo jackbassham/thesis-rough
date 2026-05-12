@@ -69,13 +69,13 @@ def main():
     # Load test split indices for month bins
     test_indices = np.load(path_model_inputs / 'indices_test.npz')
 
-    # Load mask from features matrix
-    mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
-    # Squeeze out channel dimension
-    mask_bad = np.squeeze(mask_bad, axis=1)
+    # # Load mask from features matrix
+    # mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
+    # # Squeeze out channel dimension
+    # mask_bad = np.squeeze(mask_bad, axis=1)
 
     # Load in monthly mask
-    monthly_mask = np.load(ANALYSIS_PATH / 'monthly_mask.npz')['monthly_mask']
+    mask_bad = np.load(ANALYSIS_PATH / 'monthly_mask.npz')['monthly_mask_bad']
 
     # Load array of uncertainties
     # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v
@@ -126,7 +126,7 @@ def main():
                 trues,
                 time[test_indices[f'{m:02d}']],
                 metric_fcn,
-                monthly_mask,
+                mask_bad,
                 r=r,
                 # global_var_true=global_var_true,
             )  # (month, channel, height, width)
@@ -274,10 +274,6 @@ def metric_fcn_month(pred, true, time, metric_fcn, monthly_mask, r=None, global_
         if global_var_true is not None:
             # Add current month's global_var_true array to kword arguments
             metric_kwargs['global_var_true'] = global_var_true
-
-        # Mask data based on monthly mask
-        pred[month_indices] = np.where(monthly_mask[i], np.nan, pred[month_indices])
-        true[month_indices] = np.where(monthly_mask[i], np.nan, true[month_indices])
 
         # Compute metric for the current month and include uncertainty kwarg if weighted metric
         # (height, width)
