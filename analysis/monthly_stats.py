@@ -69,7 +69,7 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=np.nanmax(monthly_ui_var),
+        vmax=150,
         save_path=Path(ANALYSIS_PATH / "monthly_var_ui.png"),
     )
 
@@ -86,7 +86,7 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=np.nanmax(monthly_ui_var),
+        vmax=150,
         save_path=Path(ANALYSIS_PATH / "monthly_var_vi.png"),
     )
 
@@ -103,7 +103,7 @@ def main():
         cmap=cmo.cm.ice,
         cbar_label='concentration (Frac)',
         vmin=0,
-        vmax=np.nanmax(monthly_ui_var),
+        vmax=np.nanmax(monthly_ci_mean),
         save_path=Path(ANALYSIS_PATH / "monthly_mean_ci.png"),
     )
 
@@ -143,7 +143,6 @@ def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs):
 
         # Get current month's time indices
         month_indices = months == (i + 1)
-
 
         # Compute stat for that month, including any keyword arguments
         stat = stat_fcn(data[month_indices], **stat_fcn_kwargs)
