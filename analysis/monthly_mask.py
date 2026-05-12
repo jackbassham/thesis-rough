@@ -73,7 +73,7 @@ def main():
         cmap=cmo.cm.balance_r, 
         vmin=-1,
         vmax=1,
-        save_path= ANALYSIS_PATH / 'monthly_mask.png',
+        save_path= ANALYSIS_PATH / 'monthly_mask_2.png',
     )
 
     print('monthly mask plot saved')
@@ -97,10 +97,10 @@ def previous_day(variable):
 
 
 def create_data_masks(
-        ci_t0, ui_t0, vi_t0,
-        perc_ice_free_threshold=0.70,
-        ice_conc_threshold=0.15
-) -> tuple:
+        ci_t0: npt.NDArray[np.float32], ui_t0: npt.NDArray[np.float32], vi_t0: npt.NDArray[np.float32],
+        perc_ice_free_threshold: float=0.70,
+        ice_conc_threshold: float=0.15
+) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     """
     NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
     """
@@ -130,16 +130,18 @@ def create_data_masks(
     n_ice_free = np.sum(ci_t0 <= ice_conc_threshold, axis = 0)
 
     # Create mask of nan values at bad data points
-    mask_land_ocean = np.all(
+    mask_bad = (
         np.isnan(ci_t0)
         | np.isnan(ui_t0)
         | np.isnan(vi_t0)
         | (ci_t0 <= ice_conc_threshold)
-        | (n_ice_free > (perc_ice_free_threshold * n_days)),
-        axis=0
+        | (n_ice_free > (perc_ice_free_threshold * n_days))
     )
 
-    return mask_land_ocean
+    # Define land/ open ocean mask, assuming these points always nan
+    mask_land_ocean = np.all(np.isnan(ci_t0), axis = 0)
+
+    return mask_bad, mask_land_ocean
 
 
 def mask_monthly(
@@ -149,32 +151,40 @@ def mask_monthly(
     
     """
 
+    # FIXME? Threshold is currently masks where > 70% days ice free over 
+    # entire domain (ie: all the febs for feb 1989-2020)
+    # Mask each unique month individually - and consider just using it
+    # for the training input
+    # The n_ice_free days threshold is really the only one where it needs
+    # to iterate through unique months
+
     # Define number of month bins
     n_months = 12
 
-    # Get month numbers from time array
-    months = (time.astype('datetime64[M]').astype(int) % 12) + 1
+    # Get unique year-month (YYYY-MM) labels from timestamp
+    year_months = time.astype('datetime64[M]')
 
-    # Initialize list for monthly mask
-    monthly_mask_land_ocean = []
+    # Initialize array for full bad mask
+    mask_bad = np.zeros_like(ci_t0, dtype=bool)
 
-    # Loop through months
-    for i in range(n_months):
+    # Loop over unique year-months
+    for y_m in np.unique(year_months):
 
-        # Get current month's time indices
-        month_indices = months == (i + 1)
+        # Select indices for days in the current year month
+        idx_year_month = year_months == y_m
 
-        mask_land_ocean = create_data_masks(
-            ci_t0=ci_t0[month_indices],
-            ui_t0=ui_t0[month_indices],
-            vi_t0=vi_t0[month_indices],
+        # Compute the mask for the year-month
+        mask_bad_y_m, _ = create_data_masks(
+            ci_t0=ci_t0[idx_year_month],
+            ui_t0=ui_t0[idx_year_month],
+            vi_t0=vi_t0[idx_year_month]
         )
 
-        # Append to the list of monthly metrics
-        monthly_mask_land_ocean.append(mask_land_ocean)
+        # Store current year month in full bad mask array
+        mask_bad[idx_year_month] = mask_bad_y_m
 
-    # Return stacked array of montly metrics along first (month) axis
-    return(np.stack(monthly_mask_land_ocean, axis=0)) # (month, height, width)
+    # Return the full mask
+    return mask_bad
 
 
 if __name__ == '__main__':
