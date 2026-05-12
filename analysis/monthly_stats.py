@@ -47,11 +47,11 @@ def main():
     ci_t0 = present_day(ci)
 
     # Compute stats
-    monthly_ui_var = monthly_stats(ui_t0, time_t0, np.nanvar, {'axis': 0})
-    monthly_vi_var = monthly_stats(ui_t0, time_t0, np.nanvar, {'axis': 0})
+    monthly_ui_var = monthly_stats(ui_t0, time_t0, var)
+    monthly_vi_var = monthly_stats(ui_t0, time_t0, var)
     monthly_ri_mean = monthly_stats(ri_t0, time_t0, np.nanmean, {'axis': 0})
     monthly_ci_mean = monthly_stats(ci_t0, time_t0, np.nanmean, {'axis': 0})
-    monthly_ci_var = monthly_stats(ci_t0, time_t0, np.nanvar, {'axis': 0})
+    monthly_ci_var = monthly_stats(ci_t0, time_t0, var)
 
     print('~~~~~~~~~~~Stats computed~~~~~~~~~~~')
 
@@ -157,11 +157,11 @@ def main():
     ri_masked = np.where(mask_bad, np.nan, ri_t0)
 
     # Compute stats
-    monthly_ui_var_masked = monthly_stats(ui_masked, time_t0, np.nanvar, {'axis': 0})
-    monthly_vi_var_masked = monthly_stats(vi_masked, time_t0, np.nanvar, {'axis': 0})
+    monthly_ui_var_masked = monthly_stats(ui_masked, time_t0, var)
+    monthly_vi_var_masked = monthly_stats(vi_masked, time_t0, var)
     monthly_ri_mean_masked = monthly_stats(ri_masked, time_t0, np.nanmean, {'axis': 0})
     monthly_ci_mean_masked = monthly_stats(ci_masked, time_t0, np.nanmean, {'axis': 0})
-    monthly_ci_var_masked = monthly_stats(ci_masked, time_t0, np.nanvar, {'axis': 0})
+    monthly_ci_var_masked = monthly_stats(ci_masked, time_t0, var)
 
     for m in range(12):
         arr = monthly_ci_mean_masked[m]
@@ -263,6 +263,9 @@ def main():
     )
 
 
+def var(x):
+    xbar = np.nanmean(x, axis = 0) # mean
+    return(np.nanmean((x - xbar)**2, axis = 0)) # variance 
 
 
 def present_day(variable):
