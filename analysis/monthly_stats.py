@@ -40,7 +40,7 @@ def main():
     lat = coord_data['lat']
     lon = coord_data['lon']
 
-    print('data loaded')
+    print('~~~~~~~~~~~Data loaded~~~~~~~~~~~')
 
     # Shift variables to create present day input parameters
     ui_t0, vi_t0 = present_day(ui), present_day(vi)
@@ -50,6 +50,8 @@ def main():
     monthly_ui_var = monthly_stats(ui_t0, time_t0, np.nanvar, {'axis': 0})
     monthly_vi_var = monthly_stats(ui_t0, time_t0, np.nanvar, {'axis': 0})
     monthly_ci_mean = monthly_stats(ci_t0, time_t0, np.nanmean, {'axis': 0})
+
+    print('~~~~~~~~~~~Stats computed~~~~~~~~~~~')
 
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
@@ -104,6 +106,8 @@ def main():
         vmax=np.nanmax(monthly_ui_var),
         save_path=Path(ANALYSIS_PATH / "monthly_mean_ci.png"),
     )
+
+    print('~~~~~~~~~~~Plots Saved~~~~~~~~~~~')
 
 
 def present_day(variable):
