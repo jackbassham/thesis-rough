@@ -83,16 +83,17 @@ def main():
 
     monthly_counts = monthly_masked_count_map(monthly_mask_bad, time_t0)
 
-    plot_cartopy_map(
+    plot_contour_cartopy_map(
         data=monthly_counts,
         lon=lon,
         lat=lat,
-        hemisphere="south",
+        hemisphere=HEMISPHERE,
         titles=month_labels,
+        suptitle='Number of days masked (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
-        cmap="viridis",
+        cmap=cmo.cm.thermal,
         cbar_label="Masked count",
         vmin=0,
         vmax=np.nanmax(monthly_counts),
@@ -105,12 +106,13 @@ def main():
         data=monthly_percent,
         lon=lon,
         lat=lat,
-        hemisphere="south",
+        hemisphere=HEMISPHERE,
         titles=month_labels,
+        suptitle='Percent of days masked (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
-        cmap="viridis",
+        cmap=cmo.cm.thermal,
         cbar_label="Masked days (%)",
         vmin=0,
         vmax=100,
