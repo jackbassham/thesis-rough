@@ -14,6 +14,7 @@ ROOT = Path('/data/globus/jbassham/thesis-rough')
 
 HEMISPHERE = 'south'
 TIMESTAMP_REGRID = '05062026_1852'
+TIMESTAMP_MASK_NORM = TIMESTAMP_REGRID
 
 
 N_MEMBERS = 10
@@ -24,6 +25,14 @@ BASE_PATH = Path(
     / HEMISPHERE
     / TIMESTAMP_REGRID
 )
+
+BASE_NORMALIZED_PATH = Path(
+    ROOT
+    / 'mask_norm'
+    / HEMISPHERE
+    / TIMESTAMP_MASK_NORM
+)
+
 
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
@@ -48,7 +57,7 @@ def main():
 
     # Compute stats
     monthly_ui_var = monthly_stats(ui_t0, time_t0, var)
-    monthly_vi_var = monthly_stats(ui_t0, time_t0, var)
+    monthly_vi_var = monthly_stats(vi_t0, time_t0, var)
     monthly_ri_mean = monthly_stats(ri_t0, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
     monthly_ci_mean = monthly_stats(ci_t0, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
     monthly_ci_var = monthly_stats(ci_t0, time_t0, var)
@@ -64,16 +73,16 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Var(ui): (1989-2020)',
+        suptitle='Var(ui, raw): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=1,
-        levels=np.linspace(0,1,num=10),
-        save_path=Path(ANALYSIS_PATH / "monthly_var_ui.png"),
+        vmax=150,
+        levels=np.linspace(0,150,num=10),
+        save_path=Path(ANALYSIS_PATH / "monthly_raw_var_ui.png"),
     )
 
     plot_contour_cartopy_map(
@@ -82,16 +91,16 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Var(vi): (1989-2020)',
+        suptitle='Var(vi, raw): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=1,
-        levels=np.linspace(0,1,num=10),
-        save_path=Path(ANALYSIS_PATH / "monthly_var_vi.png"),
+        vmax=150,
+        levels=np.linspace(0,150,num=10),
+        save_path=Path(ANALYSIS_PATH / "monthly_raw_var_vi.png"),
     )
 
     plot_contour_cartopy_map(
@@ -100,7 +109,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Mean(ri): (1989-2020)',
+        suptitle='Mean(ri, raw): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -109,7 +118,7 @@ def main():
         vmin=0,
         vmax=100,
         levels=np.linspace(0,100,num=10),
-        save_path=Path(ANALYSIS_PATH / "monthly_mean_ri.png"),
+        save_path=Path(ANALYSIS_PATH / "monthly_raw_mean_ri.png"),
     )
 
     plot_contour_cartopy_map(
@@ -118,7 +127,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Mean(ice concentration): (1989-2020)',
+        suptitle='Mean(ci, raw): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -127,7 +136,7 @@ def main():
         vmin=0,
         vmax=1,
         levels=np.arange(0.0, 1.1, 0.1),
-        save_path=Path(ANALYSIS_PATH / "monthly_mean_ci.png"),
+        save_path=Path(ANALYSIS_PATH / "monthly_raw_mean_ci.png"),
     )
 
     plot_cartopy_map(
@@ -136,7 +145,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Var(ice concentration): (1989-2020)',
+        suptitle='Var(ci, raw): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -144,7 +153,7 @@ def main():
         cbar_label='concentration (Frac)',
         vmin=0,
         vmax=np.nanmax(monthly_ci_var),
-        save_path=Path(ANALYSIS_PATH / "monthly_var_ci.png"),
+        save_path=Path(ANALYSIS_PATH / "monthly_raw_var_ci.png"),
     )
 
     print('~~~~~~~~~~~Plots Saved~~~~~~~~~~~')
@@ -179,15 +188,15 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Var(ui_masked): (1989-2020)',
+        suptitle='Var(ui, post mask): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=1,
-        levels=np.linspace(0,1,num=10),
+        vmax=150,
+        levels=np.linspace(0,150,num=10),
         save_path=Path(ANALYSIS_PATH / "masked_monthly_var_ui.png"),
     )
 
@@ -197,15 +206,15 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Var(vi_masked): (1989-2020)',
+        suptitle='Var(vi, post mask): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=1,
-        levels=np.linspace(0,1,num=10),
+        vmax=150,
+        levels=np.linspace(0,150,num=10),
         save_path=Path(ANALYSIS_PATH / "masked_monthly_var_vi.png"),
     )
 
@@ -215,7 +224,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Mean(ri_masked): (1989-2020)',
+        suptitle='Mean(ri, post mask): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -233,7 +242,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Mean(ice concentration_masked): (1989-2020)',
+        suptitle='Mean(ci, post mask): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -251,7 +260,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Var(ice concentration_masked): (1989-2020)',
+        suptitle='Var(ci, post mask): (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -260,6 +269,108 @@ def main():
         vmin=0,
         vmax=np.nanmax(monthly_ci_var),
         save_path=Path(ANALYSIS_PATH / "masked_monthly_var_ci.png"),
+    )
+
+    data = np.load(BASE_NORMALIZED_PATH / 'masked_normalized.npz')
+
+    ui_t0, vi_t0, ri_t0 = data['ui_t0'], data['vi_t0'], data['ri_t0']
+    ci_t1 = data['ci_t1']
+
+    # Compute stats
+    monthly_norm_ui_var = monthly_stats(data['ui_t0'], time_t0, var)
+    monthly_norm_vi_var= monthly_stats(data['vi_t0'], time_t0, var)
+    monthly_norm_ri_mean = monthly_stats(data['ri_t0'], time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
+    monthly_norm_ci_mean = monthly_stats(data['ci_t0'], time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
+    monthly_norm_ci_var = monthly_stats(data['ci_t0'], time_t0, var)
+
+
+    plot_contour_cartopy_map(
+        data=monthly_norm_ui_var,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Var(ui, post mask+norm): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label="std (normalized)",
+        vmin=0,
+        vmax=np.nanmax(monthly_norm_ui_var),
+        levels=np.linspace(0,np.nanmax(monthly_norm_ui_var),num=10),
+        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_ui.png"),
+    )
+
+    plot_contour_cartopy_map(
+        data=monthly_norm_vi_var,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Var(vi, post mask+norm): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label="std (normalized)",
+        vmin=0,
+        vmax=np.nanmax(monthly_norm_vi_var),
+        levels=np.linspace(0,np.nanmax(monthly_norm_vi_var),num=10),
+        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_vi.png"),
+    )
+
+    plot_contour_cartopy_map(
+        data=monthly_norm_ri_mean,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Mean(ri, post mask+norm): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label="std (normalized)",
+        vmin=0,
+        vmax=np.nanmax(monthly_norm_ri_mean),
+        levels=np.linspace(0,np.nanmax(monthly_norm_ri_mean),num=10),
+        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_mean_ri.png"),
+    )
+
+    plot_contour_cartopy_map(
+        data=monthly_norm_ci_mean,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Mean(ci, post mask+norm): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.ice,
+        cbar_label="std (normalized)",
+        vmin=0,
+        vmax=np.nanmax(monthly_norm_ci_mean),
+        levels=np.linspace(0, np.nanmax(monthly_norm_ci_mean), num=10),
+        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_mean_ci.png"),
+    )
+
+    plot_cartopy_map(
+        data=monthly_norm_ci_var,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Var(ci, post mask+norm): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label="std (normalized)",
+        vmin=0,
+        vmax=np.nanmax(monthly_ci_var),
+        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_ci.png"),
     )
 
 
