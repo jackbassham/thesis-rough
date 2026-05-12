@@ -70,6 +70,7 @@ def main():
         cbar_label="cm/s",
         vmin=0,
         vmax=150,
+        levels=np.linspace(0,150,10),
         save_path=Path(ANALYSIS_PATH / "monthly_var_ui.png"),
     )
 
@@ -87,6 +88,7 @@ def main():
         cbar_label="cm/s",
         vmin=0,
         vmax=150,
+        levels=np.linspace(0,150,10),
         save_path=Path(ANALYSIS_PATH / "monthly_var_vi.png"),
     )
 
@@ -103,7 +105,8 @@ def main():
         cmap=cmo.cm.ice,
         cbar_label='concentration (Frac)',
         vmin=0,
-        vmax=np.nanmax(monthly_ci_mean),
+        vmax=1,
+        levels=np.arange(0.0, 1.1, 0.1),
         save_path=Path(ANALYSIS_PATH / "monthly_mean_ci.png"),
     )
 
