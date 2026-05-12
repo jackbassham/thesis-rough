@@ -71,8 +71,8 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=150,
-        levels=np.linspace(0,150,10),
+        vmax=1,
+        levels=np.linspace(0,1,num=10),
         save_path=Path(ANALYSIS_PATH / "monthly_var_ui.png"),
     )
 
@@ -89,8 +89,8 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=150,
-        levels=np.linspace(0,150,10),
+        vmax=1,
+        levels=np.linspace(0,1,num=10),
         save_path=Path(ANALYSIS_PATH / "monthly_var_vi.png"),
     )
 
@@ -107,9 +107,9 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=np.nanmax(monthly_ri_mean),
-        levels=np.linspace(0,np.nanmax(monthly_ri_mean),10),
-        save_path=Path(ANALYSIS_PATH / "monthly_var_vi.png"),
+        vmax=100,
+        levels=np.linspace(0,100,num=10),
+        save_path=Path(ANALYSIS_PATH / "monthly_mean_ri.png"),
     )
 
     plot_contour_cartopy_map(
@@ -163,6 +163,16 @@ def main():
     monthly_ci_mean_masked = monthly_stats(ci_masked, time_t0, np.nanmean, {'axis': 0})
     monthly_ci_var_masked = monthly_stats(ci_masked, time_t0, np.nanvar, {'axis': 0})
 
+    for m in range(12):
+        arr = monthly_ci_mean_masked[m]
+        print(
+            month_labels[m],
+            "nan frac:", np.isnan(arr).mean(),
+            "min:", np.nanmin(arr),
+            "max:", np.nanmax(arr),
+            "mean:", np.nanmean(arr),
+        )
+
     plot_contour_cartopy_map(
         data=monthly_ui_var_masked,
         lon=lon,
@@ -176,8 +186,8 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=150,
-        levels=np.linspace(0,150,10),
+        vmax=1,
+        levels=np.linspace(0,1,num=10),
         save_path=Path(ANALYSIS_PATH / "masked_monthly_var_ui.png"),
     )
 
@@ -194,8 +204,8 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=150,
-        levels=np.linspace(0,150,10),
+        vmax=1,
+        levels=np.linspace(0,1,num=10),
         save_path=Path(ANALYSIS_PATH / "masked_monthly_var_vi.png"),
     )
 
@@ -212,9 +222,9 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label="cm/s",
         vmin=0,
-        vmax=np.nanmax(monthly_ri_mean),
-        levels=np.linspace(0,np.nanmax(monthly_ri_mean),10),
-        save_path=Path(ANALYSIS_PATH / "masked_monthly_var_vi.png"),
+        vmax=100,
+        levels=np.linspace(0,100,num=10),
+        save_path=Path(ANALYSIS_PATH / "masked_monthly_mean_ri.png"),
     )
 
     plot_contour_cartopy_map(
