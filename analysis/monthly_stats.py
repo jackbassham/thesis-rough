@@ -277,11 +277,11 @@ def main():
     ci_t1 = data['ci_t1']
 
     # Compute stats
-    monthly_norm_ui_var = monthly_stats(data['ui_t0'], time_t0, var)
-    monthly_norm_vi_var= monthly_stats(data['vi_t0'], time_t0, var)
-    monthly_norm_ri_mean = monthly_stats(data['ri_t0'], time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
-    monthly_norm_ci_mean = monthly_stats(data['ci_t1'], time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
-    monthly_norm_ci_var = monthly_stats(data['ci_t1'], time_t0, var)
+    monthly_norm_ui_var = monthly_stats(ui_t0, time_t0, var)
+    monthly_norm_vi_var= monthly_stats(vi_t0, time_t0, var)
+    monthly_norm_ri_mean = monthly_stats(ri_t0, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
+    monthly_norm_ci_mean = monthly_stats(ci_t1, time_t0, np.nanmean, stat_fcn_kwargs={'axis': 0})
+    monthly_norm_ci_var = monthly_stats(ci_t1, time_t0, var)
 
 
     plot_contour_cartopy_map(
@@ -339,7 +339,7 @@ def main():
     )
 
     # NOTE contour looks like nan during summer?
-    plot_cartopy_map(
+    plot_contour_cartopy_map(
         data=monthly_norm_ci_mean,
         lon=lon,
         lat=lat,
