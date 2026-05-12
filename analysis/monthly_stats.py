@@ -68,7 +68,41 @@ def main():
         cbar_label="cm/s",
         vmin=0,
         vmax=np.nanmax(monthly_ui_var),
-        save_path=Path(ANALYSIS_PATH / "monthly_masked_counts.png"),
+        save_path=Path(ANALYSIS_PATH / "monthly_var_ui.png"),
+    )
+
+    plot_contour_cartopy_map(
+        data=monthly_vi_var,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Var(vi): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label="cm/s",
+        vmin=0,
+        vmax=np.nanmax(monthly_ui_var),
+        save_path=Path(ANALYSIS_PATH / "monthly_var_vi.png"),
+    )
+
+    plot_contour_cartopy_map(
+        data=monthly_ci_mean,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Mean(ice concentration): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.ice,
+        cbar_label='concentration (Frac)',
+        vmin=0,
+        vmax=np.nanmax(monthly_ui_var),
+        save_path=Path(ANALYSIS_PATH / "monthly_mean_ci.png"),
     )
 
 
