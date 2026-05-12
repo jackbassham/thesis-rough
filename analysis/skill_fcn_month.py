@@ -126,7 +126,6 @@ def main():
                 trues,
                 time[test_indices[f'{m:02d}']],
                 metric_fcn,
-                mask_bad,
                 r=r,
                 # global_var_true=global_var_true,
             )  # (month, channel, height, width)
@@ -244,7 +243,7 @@ def load_member_preds():
     return preds, trues
 
 
-def metric_fcn_month(pred, true, time, metric_fcn, monthly_mask, r=None, global_var_true=None):
+def metric_fcn_month(pred, true, time, metric_fcn, r=None, global_var_true=None):
     """
     
     """
