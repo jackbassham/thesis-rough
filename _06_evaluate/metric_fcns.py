@@ -75,10 +75,10 @@ def weighted_skill(pred, true, r, epsilon = 1e-4):
     mse = np.nanmean( w * (true - pred) ** 2, axis = 0) # mean square error
     # NOTE above is not equivalent to np.nanvar(true-pred), which excludes bias term
 
-        truebar = np.nanmean(true, axis = 0) # mean true
+    truebar = np.nanmean(true, axis = 0) # mean true
 
-        vartrue = np.nanmean( w * (true - truebar) ** 2, axis = 0) # variance in true
-        # NOTE above is equivalent to np.nanvar()
+    vartrue = np.nanmean( w * (true - truebar) ** 2, axis = 0) # variance in true
+    # NOTE above is equivalent to np.nanvar()
 
     weighted_skill = 1 - mse / (vartrue + epsilon)
 
