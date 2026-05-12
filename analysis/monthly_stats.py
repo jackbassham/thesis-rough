@@ -136,7 +136,7 @@ def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs):
     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
 
     # Initialize list for monthly metrics
-    monthly_metrics = []
+    monthly_stats = []
 
     # Loop through months
     for i in range(n_months):
@@ -144,8 +144,6 @@ def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs):
         # Get current month's time indices
         month_indices = months == (i + 1)
 
-        # Initialize dict for extra uncertainty keyword argument for weighted metrics
-        metric_kwargs = {}
 
         # Compute stat for that month, including any keyword arguments
         stat = stat_fcn(data[month_indices], **stat_fcn_kwargs)
@@ -154,7 +152,7 @@ def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs):
         monthly_stats.append(stat)
 
     # Return stacked array of montly metrics along first (month) axis
-    return(np.stack(monthly_metrics, axis=0)) # (month, height, width)
+    return(np.stack(monthly_stats, axis=0)) # (month, height, width)
 
 
 if __name__ == '__main__':
