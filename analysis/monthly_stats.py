@@ -163,15 +163,15 @@ def main():
     monthly_ci_mean_masked = monthly_stats(ci_masked, time_t0, np.nanmean, {'axis': 0})
     monthly_ci_var_masked = monthly_stats(ci_masked, time_t0, var)
 
-    for m in range(12):
-        arr = monthly_ci_mean_masked[m]
-        print(
-            month_labels[m],
-            "nan frac:", np.isnan(arr).mean(),
-            "min:", np.nanmin(arr),
-            "max:", np.nanmax(arr),
-            "mean:", np.nanmean(arr),
-        )
+    # for m in range(12):
+    #     arr = monthly_ci_mean_masked[m]
+    #     print(
+    #         month_labels[m],
+    #         "nan frac:", np.isnan(arr).mean(),
+    #         "min:", np.nanmin(arr),
+    #         "max:", np.nanmax(arr),
+    #         "mean:", np.nanmean(arr),
+    #     )
 
     plot_contour_cartopy_map(
         data=monthly_ui_var_masked,
