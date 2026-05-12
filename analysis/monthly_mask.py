@@ -78,15 +78,44 @@ def main():
 
     # print('monthly mask plot saved')
 
+    # Month labels for titles
+    month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
-import numpy as np
-from pathlib import Path
+    monthly_counts = monthly_masked_count_map(monthly_mask_bad, time_t0)
 
+    plot_cartopy_map(
+        data=monthly_counts,
+        lon=lon,
+        lat=lat,
+        hemisphere="south",
+        titles=month_labels,
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap="viridis",
+        cbar_label="Masked count",
+        vmin=0,
+        vmax=np.nanmax(monthly_counts),
+        save_path=Path("monthly_masked_counts.png"),
+    )
 
-MONTH_NAMES = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-]
+    monthly_percent = monthly_masked_percent_map(monthly_mask_bad, time_t0)
+
+    plot_cartopy_map(
+        data=monthly_percent,
+        lon=lon,
+        lat=lat,
+        hemisphere="south",
+        titles=month_labels,
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap="viridis",
+        cbar_label="Masked days (%)",
+        vmin=0,
+        vmax=100,
+        save_path=Path("monthly_masked_percent.png"),
+    )
 
 
 def monthly_masked_count_map(mask, time):

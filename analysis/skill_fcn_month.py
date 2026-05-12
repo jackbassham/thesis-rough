@@ -46,7 +46,8 @@ ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 def main():
 
     # Define list of metric strings
-    metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
+    metric_strs = ['skill']
+    # metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
     # metric_strs = ['rmse', 'weighted_rmse']
 
 
