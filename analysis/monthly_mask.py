@@ -79,7 +79,55 @@ def main():
     # print('monthly mask plot saved')
 
 
+import numpy as np
+from pathlib import Path
 
+
+MONTH_NAMES = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+]
+
+
+def monthly_masked_count_map(mask, time):
+    """
+    Count masked/bad points at each grid cell for each calendar month.
+    """
+
+    mask = mask.astype(bool)
+
+    months = time.astype("datetime64[M]").astype(int) % 12 + 1
+
+    monthly_counts = np.zeros((12, *mask.shape[1:]), dtype=np.int32)
+
+    for month in range(1, 13):
+        month_idx = months == month
+        monthly_counts[month - 1] = np.sum(mask[month_idx], axis=0)
+
+    return monthly_counts
+
+
+def monthly_masked_percent_map(mask, time):
+    """
+    Percent of days masked/bad at each grid cell for each calendar month.
+    """
+
+    mask = mask.astype(bool)
+
+    months = time.astype("datetime64[M]").astype(int) % 12 + 1
+
+    monthly_percent = np.full((12, *mask.shape[1:]), np.nan, dtype=np.float32)
+
+    for month in range(1, 13):
+        month_idx = months == month
+        n_days = np.sum(month_idx)
+
+        if n_days > 0:
+            monthly_percent[month - 1] = (
+                np.sum(mask[month_idx], axis=0) / n_days
+            ) * 100
+
+    return monthly_percent
 
 
 def present_day(variable):
