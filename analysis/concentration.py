@@ -30,7 +30,8 @@ BASE_PATH = Path(
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
 SAVE_PATH = ANALYSIS_PATH / 'concentration' / HEMISPHERE
-SAVE_PATH.mkdir(parents=True, exis_ok=True)
+SAVE_PATH.mkdir(parents=True, exist_ok=True)
+
 
 def main():
 
