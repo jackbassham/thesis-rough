@@ -36,6 +36,8 @@ BASE_NORMALIZED_PATH = Path(
 
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
+SAVE_PATH = ANALYSIS_PATH / 'monthly_stats'
+
 def main():
 
     # Load in data variables
@@ -100,7 +102,7 @@ def main():
         vmin=0,
         vmax=150,
         levels=np.linspace(0,150,num=10),
-        save_path=Path(ANALYSIS_PATH / "monthly_raw_var_vi.png"),
+        save_path=Path(SAVE_PATH / "monthly_raw_var_vi.png"),
     )
 
     plot_contour_cartopy_map(
@@ -118,7 +120,7 @@ def main():
         vmin=0,
         vmax=100,
         levels=np.linspace(0,100,num=10),
-        save_path=Path(ANALYSIS_PATH / "monthly_raw_mean_ri.png"),
+        save_path=Path(SAVE_PATH / "monthly_raw_mean_ri.png"),
     )
 
     plot_contour_cartopy_map(
@@ -136,7 +138,7 @@ def main():
         vmin=0,
         vmax=1,
         levels=np.arange(0.0, 1.1, 0.1),
-        save_path=Path(ANALYSIS_PATH / "monthly_raw_mean_ci.png"),
+        save_path=Path(SAVE_PATH / "monthly_raw_mean_ci.png"),
     )
 
     plot_cartopy_map(
@@ -153,13 +155,13 @@ def main():
         cbar_label='concentration (Frac)',
         vmin=0,
         vmax=np.nanmax(monthly_ci_var),
-        save_path=Path(ANALYSIS_PATH / "monthly_raw_var_ci.png"),
+        save_path=Path(SAVE_PATH / "monthly_raw_var_ci.png"),
     )
 
     print('~~~~~~~~~~~Plots Saved~~~~~~~~~~~')
 
     # Load in monthly mask
-    mask_bad = np.load(ANALYSIS_PATH / 'monthly_mask.npz')['monthly_mask_bad']
+    mask_bad = np.load(ANALYSIS_PATH/ 'masks' / 'monthly_mask.npz')['monthly_mask_bad']
     ui_masked = np.where(mask_bad, np.nan, ui_t0)
     vi_masked = np.where(mask_bad, np.nan, vi_t0)
     ci_masked = np.where(mask_bad, np.nan, ci_t0)
@@ -197,7 +199,7 @@ def main():
         vmin=0,
         vmax=150,
         levels=np.linspace(0,150,num=10),
-        save_path=Path(ANALYSIS_PATH / "masked_monthly_var_ui.png"),
+        save_path=Path(SAVE_PATH / "masked_monthly_var_ui.png"),
     )
 
     plot_contour_cartopy_map(
@@ -215,7 +217,7 @@ def main():
         vmin=0,
         vmax=150,
         levels=np.linspace(0,150,num=10),
-        save_path=Path(ANALYSIS_PATH / "masked_monthly_var_vi.png"),
+        save_path=Path(SAVE_PATH / "masked_monthly_var_vi.png"),
     )
 
     plot_contour_cartopy_map(
@@ -233,7 +235,7 @@ def main():
         vmin=0,
         vmax=100,
         levels=np.linspace(0,100,num=10),
-        save_path=Path(ANALYSIS_PATH / "masked_monthly_mean_ri.png"),
+        save_path=Path(SAVE_PATH / "masked_monthly_mean_ri.png"),
     )
 
     plot_contour_cartopy_map(
@@ -251,7 +253,7 @@ def main():
         vmin=0,
         vmax=1,
         levels=np.arange(0.0, 1.1, 0.1),
-        save_path=Path(ANALYSIS_PATH / "masked_monthly_mean_ci.png"),
+        save_path=Path(SAVE_PATH / "masked_monthly_mean_ci.png"),
     )
 
     plot_cartopy_map(
@@ -268,7 +270,7 @@ def main():
         cbar_label='concentration (Frac)',
         vmin=0,
         vmax=np.nanmax(monthly_ci_var),
-        save_path=Path(ANALYSIS_PATH / "masked_monthly_var_ci.png"),
+        save_path=Path(SAVE_PATH / "masked_monthly_var_ci.png"),
     )
 
     data = np.load(BASE_NORMALIZED_PATH / 'masked_normalized.npz')
@@ -299,7 +301,7 @@ def main():
         vmin=0,
         vmax=1,
         levels=np.linspace(0,1,num=10),
-        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_ui.png"),
+        save_path=Path(SAVE_PATH / "maskednorm_monthly_var_ui.png"),
     )
 
     plot_contour_cartopy_map(
@@ -317,7 +319,7 @@ def main():
         vmin=0,
         vmax=1,
         levels=np.linspace(0,1,num=10),
-        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_vi.png"),
+        save_path=Path(SAVE_PATH / "maskednorm_monthly_var_vi.png"),
     )
 
     plot_contour_cartopy_map(
@@ -335,7 +337,7 @@ def main():
         vmin=np.nanmin(monthly_norm_ri_mean),
         vmax=np.nanmax(monthly_norm_ri_mean),
         levels=np.linspace(np.nanmin(monthly_norm_ri_mean),np.nanmax(monthly_norm_ri_mean),num=10),
-        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_mean_ri.png"),
+        save_path=Path(SAVE_PATH / "maskednorm_monthly_mean_ri.png"),
     )
 
     # NOTE contour looks like nan during summer?
@@ -354,7 +356,7 @@ def main():
         vmin=np.nanmin(monthly_norm_ci_mean),
         vmax=np.nanmax(monthly_norm_ci_mean),
         levels=np.linspace(np.nanmin(monthly_norm_ci_mean), np.nanmax(monthly_norm_ci_mean), num=10),
-        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_mean_ci.png"),
+        save_path=Path(SAVE_PATH / "maskednorm_monthly_mean_ci.png"),
     )
 
     plot_cartopy_map(
@@ -371,7 +373,7 @@ def main():
         cbar_label="std (normalized)",
         vmin=0,
         vmax=np.nanmax(monthly_ci_var),
-        save_path=Path(ANALYSIS_PATH / "maskednorm_monthly_var_ci.png"),
+        save_path=Path(SAVE_PATH / "maskednorm_monthly_var_ci.png"),
     )
 
 

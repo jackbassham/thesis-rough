@@ -27,6 +27,8 @@ BASE_PATH = Path(
 
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
+SAVE_PATH = ANALYSIS_PATH / 'masks'
+
 def main():
 
     # Load in data variables
@@ -51,7 +53,7 @@ def main():
     )
 
     np.savez(
-        ANALYSIS_PATH / 'monthly_mask',
+        SAVE_PATH / 'monthly_mask',
         monthly_mask_bad = monthly_mask_bad
         )
 
@@ -73,7 +75,7 @@ def main():
     #     cmap=cmo.cm.balance_r, 
     #     vmin=-1,
     #     vmax=1,
-    #     save_path= ANALYSIS_PATH / 'monthly_mask_3.png',
+    #     save_path= SAVE_PATH / 'monthly_mask_3.png',
     # )
 
     # print('monthly mask plot saved')
@@ -97,7 +99,7 @@ def main():
         cbar_label="Masked count",
         vmin=0,
         vmax=np.nanmax(monthly_counts),
-        save_path=Path(ANALYSIS_PATH / "monthly_masked_counts.png"),
+        save_path=Path(SAVE_PATH / "monthly_masked_counts.png"),
     )
 
     monthly_percent = monthly_masked_percent_map(monthly_mask_bad, time_t0)
@@ -116,7 +118,7 @@ def main():
         cbar_label="Masked days (%)",
         vmin=0,
         vmax=100,
-        save_path=Path(ANALYSIS_PATH / "monthly_masked_percent.png"),
+        save_path=Path(SAVE_PATH / "monthly_masked_percent.png"),
     )
 
 
