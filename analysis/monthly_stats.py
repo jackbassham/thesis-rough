@@ -37,6 +37,7 @@ BASE_NORMALIZED_PATH = Path(
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
 SAVE_PATH = ANALYSIS_PATH / 'monthly_stats'
+SAVE_PATH.mkdir(patents=True, exis_ok=True)
 
 def main():
 
