@@ -63,59 +63,59 @@ def main():
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
-    # Compute monthly percent days ice free
-    monthly_perc_days_ice_free = monthly_stat(
-        ci_t0,
-        time_t0,
-        perc_days_ice_free,
-        month_labels = month_labels
-    )
+    # # Compute monthly percent days ice free
+    # monthly_perc_days_ice_free = monthly_stat(
+    #     ci_t0,
+    #     time_t0,
+    #     perc_days_ice_free,
+    #     month_labels = month_labels
+    # )
 
-    # Compute monthly ice concntration mean
-    monthly_mean = monthly_stat(
-        ci_t0,
-        time_t0,
-        np.nanmean,
-        stat_fcn_kwargs={'axis': 0}
-    )
+    # # Compute monthly ice concntration mean
+    # monthly_mean = monthly_stat(
+    #     ci_t0,
+    #     time_t0,
+    #     np.nanmean,
+    #     stat_fcn_kwargs={'axis': 0}
+    # )
 
     print('~~~~~~~~~~~Stats computed~~~~~~~~~~~')
 
-    plot_discrete_cartopy_map(
-        data=monthly_perc_days_ice_free,
-        lon=lon,
-        lat=lat,
-        hemisphere=HEMISPHERE,
-        titles=month_labels,
-        suptitle='Percent Days Ice Free, (ci<=0.15): (1989-2020)',
-        data_channel_axis=0,
-        n_cols=4,
-        n_rows=3,
-        cmap=cmo.cm.thermal,
-        cbar_label='%',
-        vmin=0,
-        vmax=100,
-        steps=10,
-        save_path=Path(SAVE_PATH / "monthly_perc_days_ice_free.png"),
-    )
+    # plot_discrete_cartopy_map(
+    #     data=monthly_perc_days_ice_free,
+    #     lon=lon,
+    #     lat=lat,
+    #     hemisphere=HEMISPHERE,
+    #     titles=month_labels,
+    #     suptitle='Percent Days Ice Free, (ci<=0.15): (1989-2020)',
+    #     data_channel_axis=0,
+    #     n_cols=4,
+    #     n_rows=3,
+    #     cmap=cmo.cm.thermal,
+    #     cbar_label='%',
+    #     vmin=0,
+    #     vmax=100,
+    #     steps=10,
+    #     save_path=Path(SAVE_PATH / "monthly_perc_days_ice_free.png"),
+    # )
 
-    plot_discrete_cartopy_map(
-        data=monthly_mean,
-        lon=lon,
-        lat=lat,
-        hemisphere=HEMISPHERE,
-        titles=month_labels,
-        suptitle='Monthly Mean, ci (Pre-Mask): (1989-2020)',
-        data_channel_axis=0,
-        n_cols=4,
-        n_rows=3,
-        cmap=cmo.cm.ice,
-        cbar_label='frac',
-        vmin=0.0,
-        vmax=1.0,
-        steps=0.1,
-        save_path=Path(SAVE_PATH / "ci_monthly_mean_pre_mask.png"),
-    )
+    # plot_discrete_cartopy_map(
+    #     data=monthly_mean,
+    #     lon=lon,
+    #     lat=lat,
+    #     hemisphere=HEMISPHERE,
+    #     titles=month_labels,
+    #     suptitle='Monthly Mean, ci (Pre-Mask): (1989-2020)',
+    #     data_channel_axis=0,
+    #     n_cols=4,
+    #     n_rows=3,
+    #     cmap=cmo.cm.ice,
+    #     cbar_label='frac',
+    #     vmin=0.0,
+    #     vmax=1.0,
+    #     steps=0.1,
+    #     save_path=Path(SAVE_PATH / "ci_monthly_mean_pre_mask.png"),
+    # )
 
     print('~~~~~~~~~~~Pre-mask plots saved~~~~~~~~~~~')
 
@@ -144,7 +144,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Monthly ci Mask ((ci < 0.15) < 65%) (inverted)',
+        suptitle='Monthly ci Mask ((ci < 0.15) < 60%) (inverted)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -153,7 +153,7 @@ def main():
         vmin=0,
         vmax=1,
         steps=0.5,
-        save_path=Path(SAVE_PATH / "ci_monthly_mask_2.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mask_3.png"),
     )
 
     plot_discrete_cartopy_map(
@@ -171,7 +171,7 @@ def main():
         vmin=0.0,
         vmax=1.0,
         steps=0.1,
-        save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask_2.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask_3.png"),
     )
 
     print('~~~~~~~~~~~Post-mask plots saved~~~~~~~~~~~')
@@ -216,7 +216,7 @@ def perc_days_ice_free(ci, threshold=0.15):
     return perc_days_ice_free
 
 
-def monthly_mask(ci, time, perc_thresh=65, ci_thresh=0.15):
+def monthly_mask(ci, time, perc_thresh=60, ci_thresh=0.15):
 
     # Get month numbers from time array
     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
