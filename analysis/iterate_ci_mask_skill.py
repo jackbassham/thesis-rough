@@ -35,9 +35,8 @@ MODEL_OUTPUT_PATH = Path(
 MODEL_INPUT_PATH = Path(
     DATA_ROOT
     / 'model_inputs'
-    / MODEL_STR
     / HEMISPHERE
-    / TIMESTAMP_MODEL_OUTPUTS
+    / TIMESTAMP_MODEL_INPUTS
 )
 
 REGRID_PATH = Path(
@@ -81,7 +80,7 @@ def main():
     print('~~~~~~~~~~~Data loaded~~~~~~~~~~~')
 
     perc_thresh_range = np.arange(20, 70 + 5, 5)
-    ci_thresh_range = np.arange(15, 40 + 5, 5)
+    ci_thresh_range = np.arange(0.15, 0.40 + 0.5, 0.5)
 
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
@@ -102,7 +101,7 @@ def main():
 
             # Compute the monthly skill for the threshold combo
             monthly_all_members = compute_monthly_skill(
-                test_indics=test_indices,
+                test_indices=test_indices,
                 mask_bad=mask_bad,
                 preds_list=preds_list,
                 trues_list=trues_list,
@@ -135,7 +134,8 @@ def main():
                 ci_thresh=ci_thresh,
             )
 
-        print(f'~~~~~~perc_thresh: {perc_thresh}, ci_thresh: {ci_thresh} complete~~~~~~')
+            print(f'~~~~~~perc_thresh: {perc_thresh}, ci_thresh: {ci_thresh} complete~~~~~~')
+            print(' ')
 
 
 def create_monthly_ci_masks(
@@ -239,7 +239,7 @@ def compute_monthly_skill(test_indices, mask_bad, preds_list, trues_list, time_t
 
         monthly_all_members.append(monthly_metric)
 
-        return(np.stack(monthly_all_members, axis=0)) # (member, month, channel, height, width)
+    return(np.stack(monthly_all_members, axis=0)) # (member, month, channel, height, width)
     
 
 def plot_global_monthly_ensemble(
@@ -449,14 +449,14 @@ def plot(monthly_mean, monthly_sem, global_monthly_mean, global_monthly_sem, lat
             lat=lat,
             hemisphere=HEMISPHERE,
             titles=month_labels,
-            suptitle=f'SKILL MEAN, perc_thresh: {perc_thresh}, ci_thresh: {ci_thresh}({ch_name}): {MODEL_STR}',
+            suptitle=f'SKILL MEAN, ci_thresh: {ci_thresh}, perc_thresh: {perc_thresh}, {ci_thresh}({ch_name}): {MODEL_STR}',
             data_channel_axis=0,
             n_cols=4,
             n_rows=3,
             cmap=cmo.cm.balance_r, 
             vmin=-1,
             vmax=1,
-            save_path=SAVE_PLOT_PATH / f'mean_{ch_name}_{perc_thresh}_{ci_thresh}.png',
+            save_path=SAVE_PLOT_PATH / f'mean_{ch_name}_{ci_thresh}_{perc_thresh}.png',
         )
 
         # -------- SEM plots --------
@@ -466,14 +466,14 @@ def plot(monthly_mean, monthly_sem, global_monthly_mean, global_monthly_sem, lat
             lat=lat,
             hemisphere=HEMISPHERE,
             titles=month_labels,
-            suptitle=f'SKILL SEM, perc_thresh: {perc_thresh}, ci_thresh: {ci_thresh} ({ch_name}): {MODEL_STR}',
+            suptitle=f'SKILL SEM, ci_thresh: {ci_thresh}, perc_thresh: {perc_thresh}, ({ch_name}): {MODEL_STR}',
             data_channel_axis=0,
             n_cols=4,
             n_rows=3,
             cmap=cmo.cm.amp,   # better for uncertainty
             vmin=0,
             vmax=np.nanmax(monthly_sem[:, ch]),
-            save_path=SAVE_PLOT_PATH / f'sem_{ch_name}_{perc_thresh}_{ci_thresh}.png',
+            save_path=SAVE_PLOT_PATH / f'sem_{ch_name}_{ci_thresh}_{perc_thresh}.png',
         )
 
         # -------- Global MEAN/SEM plots --------
@@ -483,6 +483,10 @@ def plot(monthly_mean, monthly_sem, global_monthly_mean, global_monthly_sem, lat
             month_labels=month_labels,
             metric_str='SKILL',
             model_str=MODEL_STR,
-            save_path=SAVE_PLOT_PATH / f"global_monthly_{perc_thresh}_{ci_thresh}.png",
-            title_prefix=f'Global Monthly: perc_thresh: {perc_thresh}, ci_thresh: {ci_thresh}'
+            save_path=SAVE_PLOT_PATH / f"global_monthly_{ci_thresh}_{perc_thresh}.png",
+            title_prefix=f'Global Monthly: ci_thresh: {ci_thresh}, perc_thresh: {perc_thresh}'
             )
+        
+
+if __name__ == '__main__':
+    main()
