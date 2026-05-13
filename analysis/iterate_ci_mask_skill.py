@@ -80,14 +80,14 @@ def main():
     print('~~~~~~~~~~~Data loaded~~~~~~~~~~~')
 
     perc_thresh_range = np.arange(20, 70 + 5, 5)
-    ci_thresh_range = np.arange(0.15, 0.40 + 0.5, 0.5)
+    ci_thresh_range = np.arange(0.15, 0.40 + 0.05, 0.05)
 
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
     # Loop over thresholds
-    for perc_thresh in perc_thresh_range:
-        for ci_thresh in ci_thresh_range:
+    for ci_thresh in ci_thresh_range:
+        for perc_thresh in perc_thresh_range:
 
             # Compute mask for the theshold combo
             mask_bad = create_monthly_ci_masks(
