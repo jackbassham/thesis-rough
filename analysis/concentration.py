@@ -70,8 +70,8 @@ def main():
         cmap=cmo.cm.thermal,
         cbar_label='%',
         vmin=0,
-        vmax=1,
-        levels=np.arange(0.0, 1.1, 0.1),
+        vmax=100,
+        levels=np.arange(0, 110, 10),
         save_path=Path(SAVE_PATH / "monthly_perc_days_ice_free_0.15.png"),
     )
 
