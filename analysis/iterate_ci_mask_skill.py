@@ -124,7 +124,6 @@ def main():
             # Plot
             plot(
                 monthly_mean=monthly_mean,
-                monthly_sem=monthly_sem,
                 global_monthly_mean=global_monthly_mean,
                 global_monthly_sem=global_monthly_sem,
                 lat=lat,
@@ -134,7 +133,7 @@ def main():
                 ci_thresh=ci_thresh,
             )
 
-            print(f'~~~~~~perc_thresh: {perc_thresh}, ci_thresh: {ci_thresh} complete~~~~~~')
+            print(f'~~~~~~perc_thresh: {perc_thresh}, ci_thresh: {ci_thresh:.2f} complete~~~~~~')
             print(' ')
 
 
@@ -438,7 +437,7 @@ def mask_ci(ci_t0, ui_t0, vi_t0, full_monthly_mask, ci_thresh=0.20):
     return mask_bad
 
 
-def plot(monthly_mean, monthly_sem, global_monthly_mean, global_monthly_sem, lat, lon, month_labels, perc_thresh, ci_thresh):
+def plot(monthly_mean, global_monthly_mean, global_monthly_sem, lat, lon, month_labels, perc_thresh, ci_thresh):
 
     for ch, ch_name in enumerate(['u', 'v']):
 
@@ -449,31 +448,14 @@ def plot(monthly_mean, monthly_sem, global_monthly_mean, global_monthly_sem, lat
             lat=lat,
             hemisphere=HEMISPHERE,
             titles=month_labels,
-            suptitle=f'SKILL MEAN, ci_thresh: {ci_thresh}, perc_thresh: {perc_thresh}, {ci_thresh}({ch_name}): {MODEL_STR}',
+            suptitle=f'SKILL MEAN, ci_thresh: {ci_thresh:.2f}, perc_thresh: {perc_thresh}, {ci_thresh:.2f}({ch_name}): {MODEL_STR}',
             data_channel_axis=0,
             n_cols=4,
             n_rows=3,
             cmap=cmo.cm.balance_r, 
             vmin=-1,
             vmax=1,
-            save_path=SAVE_PLOT_PATH / f'mean_{ch_name}_{ci_thresh}_{perc_thresh}.png',
-        )
-
-        # -------- SEM plots --------
-        plot_cartopy_map(
-            data=monthly_sem[:, ch],
-            lon=lon,
-            lat=lat,
-            hemisphere=HEMISPHERE,
-            titles=month_labels,
-            suptitle=f'SKILL SEM, ci_thresh: {ci_thresh}, perc_thresh: {perc_thresh}, ({ch_name}): {MODEL_STR}',
-            data_channel_axis=0,
-            n_cols=4,
-            n_rows=3,
-            cmap=cmo.cm.amp,   # better for uncertainty
-            vmin=0,
-            vmax=np.nanmax(monthly_sem[:, ch]),
-            save_path=SAVE_PLOT_PATH / f'sem_{ch_name}_{ci_thresh}_{perc_thresh}.png',
+            save_path=SAVE_PLOT_PATH / f'mean_{ch_name}_{ci_thresh:.2f}_{perc_thresh}.png',
         )
 
         # -------- Global MEAN/SEM plots --------
@@ -483,8 +465,8 @@ def plot(monthly_mean, monthly_sem, global_monthly_mean, global_monthly_sem, lat
             month_labels=month_labels,
             metric_str='SKILL',
             model_str=MODEL_STR,
-            save_path=SAVE_PLOT_PATH / f"global_monthly_{ci_thresh}_{perc_thresh}.png",
-            title_prefix=f'Global Monthly: ci_thresh: {ci_thresh}, perc_thresh: {perc_thresh}'
+            save_path=SAVE_PLOT_PATH / f"global_monthly_{ci_thresh:.2f}_{perc_thresh}.png",
+            title_prefix=f'Global Monthly: ci_thresh: {ci_thresh:.2f}, perc_thresh: {perc_thresh}'
             )
         
 
