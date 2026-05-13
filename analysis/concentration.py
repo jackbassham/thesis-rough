@@ -30,6 +30,7 @@ BASE_PATH = Path(
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
 SAVE_PATH = ANALYSIS_PATH / 'concentration' / HEMISPHERE
+SAVE_PATH.mkdir(patents=True, exis_ok=True)
 
 def main():
 
@@ -71,7 +72,7 @@ def main():
         vmin=0,
         vmax=1,
         levels=np.arange(0.0, 1.1, 0.1),
-        save_path=Path(SAVE_PATH / "monthly_perc_days_ice_free.png"),
+        save_path=Path(SAVE_PATH / "monthly_perc_days_ice_free_0.15.png"),
     )
 
 
@@ -130,3 +131,7 @@ def monthly_stat(data, time, stat_fcn, stat_fcn_kwargs=None):
 
     # Return stacked array of montly metrics along first (month) axis
     return(np.stack(monthly_stats, axis=0)) # (month, height, width)
+
+
+if __name__ == '__main__':
+    main()
