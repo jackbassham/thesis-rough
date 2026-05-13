@@ -76,7 +76,7 @@ def main():
     # mask_bad = np.squeeze(mask_bad, axis=1)
 
     # Load in monthly mask
-    mask_bad = np.load(ANALYSIS_PATH / 'monthly_mask.npz')['monthly_mask_bad']
+    mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mask.npz')['mask_bad']
 
     # Load array of uncertainties
     # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v
