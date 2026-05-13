@@ -48,8 +48,8 @@ def main():
     ui, vi, _ = helpers.load_ice_vel(BASE_PATH, 'ice_vel_regrid_nsidc0016_v4.npz')
     ui_t0, vi_t0 = present_day(ui), present_day(vi)
 
-    # # Mask using steps taken in mask_normalize
-    # ci_t0, ci_nan_mask = mask_ci(ci_t0)
+    # Mask using steps taken in mask_normalize
+    ci_t0, _ = pre_mask_raw_ci(ci_t0)
 
     # Load in coordinates
     coord_data = np.load(BASE_PATH / 'coordinates.npz')
@@ -144,16 +144,16 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Monthly ci Mask (inverted)',
+        suptitle='Monthly ci Mask ((ci < 0.15) < 65%) (inverted)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
         cmap=cmo.cm.thermal,
-        cbar_label='%',
+        cbar_label='bool ()',
         vmin=0,
         vmax=1,
         steps=0.5,
-        save_path=Path(SAVE_PATH / "ci_monthly_mask.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mask_2.png"),
     )
 
     plot_discrete_cartopy_map(
@@ -171,7 +171,7 @@ def main():
         vmin=0.0,
         vmax=1.0,
         steps=0.1,
-        save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask_2.png"),
     )
 
     print('~~~~~~~~~~~Post-mask plots saved~~~~~~~~~~~')
@@ -216,7 +216,7 @@ def perc_days_ice_free(ci, threshold=0.15):
     return perc_days_ice_free
 
 
-def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
+def monthly_mask(ci, time, perc_thresh=65, ci_thresh=0.15):
 
     # Get month numbers from time array
     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
@@ -247,6 +247,34 @@ def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
     monthly_masks = np.stack(monthly_masks, axis=0)
 
     return full_monthly_mask, monthly_masks
+
+def pre_mask_raw_ci(ci_t0):
+    """
+    Steps taken to mask raw nsidc concentration in mask_normalize step
+    """
+
+    # Get NSIDC pre-normalization raw ice conentration
+    ci_t0_raw = np.round(ci_t0 * 250)
+
+    # List NSIDC flag values
+    nsidc_flags = [
+        251, # pole hole
+        252, # unused data
+        253, # coastline
+        254, # land
+    ]
+
+    # Mask concentration based on NSIDC flag values
+    ci_t0_masked = np.where(
+        np.isin(ci_t0_raw, nsidc_flags),
+        np.nan,
+        ci_t0
+    )
+
+    # Get final mask of nans
+    ci_nan_mask = np.isnan(ci_t0)
+
+    return ci_t0_masked, ci_nan_mask
 
 
 def mask_ci(ci_t0, ui_t0, vi_t0, full_monthly_mask, ci_thresh=0.15):
