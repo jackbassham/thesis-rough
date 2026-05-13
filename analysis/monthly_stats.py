@@ -84,7 +84,7 @@ def main():
         vmin=0,
         vmax=150,
         levels=np.linspace(0,150,num=10),
-        save_path=Path(ANALYSIS_PATH / "monthly_raw_var_ui.png"),
+        save_path=Path(SAVE_PATH / "monthly_raw_var_ui.png"),
     )
 
     plot_contour_cartopy_map(
