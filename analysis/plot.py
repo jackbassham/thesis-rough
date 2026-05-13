@@ -110,6 +110,7 @@ def plot_contour_cartopy_map(
         vmin=-1,
         vmax=1,
         levels=None,
+        lines=False,
         save_path=None,
 ):
     
@@ -164,15 +165,30 @@ def plot_contour_cartopy_map(
         ax.set_extent(data_extent, crs=data_crs)
         ax.coastlines()
 
+        masked_data = np.ma.masked_invalid(data[i])
+
         ctf = ax.contourf(
             lon,
             lat,
-            data[i],
+            masked_data,
             levels=levels,
             transform=data_crs,
             cmap=cmap,
             corner_mask=False
         )
+
+        # Add thin contour lines between filled contours
+        if lines:
+            ax.contour(
+                lon,
+                lat,
+                masked_data,
+                levels=levels,
+                transform=data_crs,
+                colors='k',      # or e.g. 'white'
+                linewidths=0.3,
+                alpha=0.5
+            )
 
         if titles is not None:
             ax.set_title(titles[i])
