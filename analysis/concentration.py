@@ -125,6 +125,12 @@ def main():
     # Use monthly mask and additional criteria to mask create total mask of bad points
     mask_bad = mask_ci(ci_t0, ui_t0, vi_t0, full_monthly_mask)
 
+    # Save the mask
+    np.savez(
+        SAVE_MASK_PATH / 'ci_mask.npz',
+        mask_bad = mask_bad
+    )
+
     # Mask bad points to nan
     ci_t0_masked = np.where(mask_bad, np.nan, ci_t0)
 
