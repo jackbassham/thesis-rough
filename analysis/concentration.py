@@ -222,7 +222,7 @@ def perc_days_ice_free(ci, threshold=0.15):
     return perc_days_ice_free
 
 
-def monthly_mask(ci, time, perc_thresh=60, ci_thresh=0.15):
+def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
 
     # Get month numbers from time array
     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
