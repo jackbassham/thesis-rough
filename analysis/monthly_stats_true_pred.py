@@ -73,7 +73,7 @@ def main():
 
         monthly_u_var = monthly_stats(
             data=trues_list[m][:,0,:,:],
-            time=time_t0,
+            time=time_t0[test_indices[f'{m:02d}']],
             stat_fcn=np.nanvar,
             stat_fcn_kwargs={'axis': 0}
         )
@@ -83,7 +83,7 @@ def main():
 
         monthly_v_var = monthly_stats(
             data=trues_list[m][:,1,:,:],
-            time=time_t0,
+            time=time_t0[test_indices[f'{m:02d}']],
             stat_fcn=np.nanvar,
             stat_fcn_kwargs={'axis': 0}
         )
