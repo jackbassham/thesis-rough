@@ -153,7 +153,7 @@ def main():
         vmin=0,
         vmax=1,
         steps=0.5,
-        save_path=Path(SAVE_PATH / "monthly_ci_mask.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mask.png"),
     )
 
     plot_discrete_cartopy_map(
@@ -171,7 +171,7 @@ def main():
         vmin=0.0,
         vmax=1.0,
         steps=0.1,
-        save_path=Path(SAVE_PATH / "ci_monthly_mean_pre_mask.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask.png"),
     )
 
     print('~~~~~~~~~~~Post-mask plots saved~~~~~~~~~~~')
