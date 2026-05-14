@@ -107,8 +107,8 @@ def plot_discrete_cartopy_map(
         n_cols=2,
         n_rows=1,
         cmap=cmo.cm.balance_r,
-        cbar_label=None,
         boundaries=np.arange(-1, 1+0.1, 0.1),
+        cbar_label=None,
         save_path=None,
 ):
     
