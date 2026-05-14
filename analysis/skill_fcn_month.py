@@ -51,8 +51,9 @@ def main():
     # metric_strs = ['rmse', 'weighted_rmse']
 
 
-    plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
-    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'monthly'
+    # plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
+    plot_path_base = ANALYSIS_PATH
+    plot_path = Path(plot_path_base / 'skill' / MODEL_STR / HEMISPHERE / TIMESTAMP / 'monthly')
     # Make plot path if it doesn't yet exist
     plot_path.mkdir(parents=True, exist_ok=True)
 
@@ -76,7 +77,7 @@ def main():
     # mask_bad = np.squeeze(mask_bad, axis=1)
 
     # Load in monthly mask
-    mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mask.npz')['mask_bad']
+    mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mean_mask' / 'ci_mean_mask.npz')['mask_bad']
 
     # Load array of uncertainties
     # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v
@@ -200,7 +201,7 @@ def main():
                     n_rows=3,
                     cmap=cmo.cm.amp,   # better for uncertainty
                     vmin=0,
-                    vmax=np.nanmax(monthly_sem[:, ch]),
+                    vmax=1,
                     save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
                 )
 

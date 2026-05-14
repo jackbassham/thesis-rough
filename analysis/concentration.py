@@ -195,15 +195,13 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Monthly ci Mask ((ci < 0.15) < 60%) (inverted)',
+        suptitle='Monthly ci Mask ((monthly_mean_ci < 0.40)) (inverted)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
         cmap=cmo.cm.thermal,
         cbar_label='bool ()',
-        vmin=0,
-        vmax=1,
-        steps=0.5,
+        boundaries=np.arange(0,1+0.5,0.5),
         save_path=Path(SAVE_PATH / "ci_monthly_mask.png"),
     )
 
@@ -219,9 +217,7 @@ def main():
         n_rows=3,
         cmap=cmo.cm.ice,
         cbar_label='frac',
-        vmin=0.0,
-        vmax=1.0,
-        steps=0.1,
+        boundaries=np.arange(0.0, 1.0 + 0.1, 0.1),
         save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask.png"),
     )
 
