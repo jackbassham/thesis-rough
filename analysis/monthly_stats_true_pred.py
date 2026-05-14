@@ -71,6 +71,11 @@ def main():
 
     for m in range(N_MEMBERS):
 
+        # Get a python list split years as strings from test indices
+        year_strs = np.unique(
+            time_t0[test_indices[f'{m:02d}']].astype('datetime64[Y]')
+        ).astype(str).tolist()
+
         monthly_u_var = monthly_stats(
             data=trues_list[m][:,0,:,:],
             time=time_t0[test_indices[f'{m:02d}']],
@@ -99,7 +104,7 @@ def main():
             lat=lat,
             hemisphere=HEMISPHERE,
             titles=month_labels,
-            suptitle=f'Var(u_true_norm); Member {m:02d}',
+            suptitle=f'Var(u_true_norm); Member {m:02d} ({", ".join(year_strs)})',
             data_channel_axis=0,
             n_cols=4,
             n_rows=3,
@@ -115,7 +120,7 @@ def main():
             lat=lat,
             hemisphere=HEMISPHERE,
             titles=month_labels,
-            suptitle=f'Var(v_true_norm); Member {m:02d}',
+            suptitle=f'Var(v_true_norm); Member {m:02d} ({", ".join(year_strs)})',
             data_channel_axis=0,
             n_cols=4,
             n_rows=3,
