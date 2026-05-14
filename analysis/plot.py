@@ -108,9 +108,7 @@ def plot_discrete_cartopy_map(
         n_rows=1,
         cmap=cmo.cm.balance_r,
         cbar_label=None,
-        vmin=-1,
-        vmax=1,
-        steps=10,
+        boundaries=np.arange(-1, 1+0.1, 0.1),
         save_path=None,
 ):
     
@@ -162,7 +160,7 @@ def plot_discrete_cartopy_map(
         ax.set_extent(data_extent, crs=data_crs)
         ax.coastlines()
 
-        norm = mcolors.BoundaryNorm(np.arange(vmin, vmax+steps, steps), cmap.N)
+        norm = mcolors.BoundaryNorm(boundaries, cmap.N)
 
         pcm = ax.pcolormesh(
             lon,
