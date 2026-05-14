@@ -29,10 +29,10 @@ BASE_PATH = Path(
 
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
-SAVE_PATH = ANALYSIS_PATH / 'concentration' / HEMISPHERE
+SAVE_PATH = ANALYSIS_PATH / 'concentration' / HEMISPHERE / 'ci_mean_mask'
 SAVE_PATH.mkdir(parents=True, exist_ok=True)
 
-SAVE_MASK_PATH = ANALYSIS_PATH / 'masks' / HEMISPHERE
+SAVE_MASK_PATH = ANALYSIS_PATH / 'masks' / HEMISPHERE / 'ci_mean_mask'
 SAVE_MASK_PATH.mkdir(parents=True, exist_ok=True)
 
 
@@ -63,70 +63,68 @@ def main():
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
-    # Compute monthly percent days ice free
-    monthly_perc_days_ice_free = monthly_stat(
-        ci_t0,
-        time_t0,
-        perc_days_ice_free,
-        month_labels = month_labels
-    )
-
-    # Copute monthly percent days with ice
-    monthly_perc_days_ice = monthly_stat(
-        ci_t0,
-        time_t0,
-        perc_days_ice,
-        month_labels = month_labels
-    )
-
-    plot_discrete_cartopy_map(
-        data=monthly_perc_days_ice,
-        lon=lon,
-        lat=lat,
-        hemisphere=HEMISPHERE,
-        titles=month_labels,
-        suptitle='Total Percent Days (100%), (ci<=0.15 & ci>0.15): (1989-2020)',
-        data_channel_axis=0,
-        n_cols=4,
-        n_rows=3,
-        cmap=cmo.cm.thermal,
-        cbar_label='%',
-        boundaries=np.linspace(0,100,num=10),
-        save_path=Path(SAVE_PATH / "monthly_perc_days_ice.png"),
-    )
-
-    print(f'ice free shape: {monthly_perc_days_ice_free.shape}')
-    print(f'ice shape: {monthly_perc_days_ice.shape}')
-
-    # Add monthly percent days with/without ice to verify mask
-    monthly_total_percent = monthly_perc_days_ice_free+monthly_perc_days_ice
-
-    plot_cartopy_map(
-        data=monthly_total_percent,
-        lon=lon,
-        lat=lat,
-        hemisphere=HEMISPHERE,
-        titles=month_labels,
-        suptitle='Total Percent Days (100%), (ci<=0.15 & ci>0.15): (1989-2020)',
-        data_channel_axis=0,
-        n_cols=4,
-        n_rows=3,
-        cmap=cmo.cm.thermal,
-        cbar_label='%',
-        vmin=0,
-        vmax=100,
-        save_path=Path(SAVE_PATH / "monthly_perc_total_days.png"),
-    )
-
-
-
-    # # Compute monthly ice concntration mean
-    # monthly_mean = monthly_stat(
+    # # Compute monthly percent days ice free
+    # monthly_perc_days_ice_free = monthly_stat(
     #     ci_t0,
     #     time_t0,
-    #     np.nanmean,
-    #     stat_fcn_kwargs={'axis': 0}
+    #     perc_days_ice_free,
+    #     month_labels = month_labels
     # )
+
+    # # Copute monthly percent days with ice
+    # monthly_perc_days_ice = monthly_stat(
+    #     ci_t0,
+    #     time_t0,
+    #     perc_days_ice,
+    #     month_labels = month_labels
+    # )
+
+    # plot_discrete_cartopy_map(
+    #     data=monthly_perc_days_ice,
+    #     lon=lon,
+    #     lat=lat,
+    #     hemisphere=HEMISPHERE,
+    #     titles=month_labels,
+    #     suptitle='Total Percent Days (100%), (ci<=0.15 & ci>0.15): (1989-2020)',
+    #     data_channel_axis=0,
+    #     n_cols=4,
+    #     n_rows=3,
+    #     cmap=cmo.cm.thermal,
+    #     cbar_label='%',
+    #     boundaries=np.linspace(0,100,num=10),
+    #     save_path=Path(SAVE_PATH / "monthly_perc_days_ice.png"),
+    # )
+
+    # print(f'ice free shape: {monthly_perc_days_ice_free.shape}')
+    # print(f'ice shape: {monthly_perc_days_ice.shape}')
+
+    # # Add monthly percent days with/without ice to verify mask
+    # monthly_total_percent = monthly_perc_days_ice_free+monthly_perc_days_ice
+
+    # plot_cartopy_map(
+    #     data=monthly_total_percent,
+    #     lon=lon,
+    #     lat=lat,
+    #     hemisphere=HEMISPHERE,
+    #     titles=month_labels,
+    #     suptitle='Total Percent Days (100%), (ci<=0.15 & ci>0.15): (1989-2020)',
+    #     data_channel_axis=0,
+    #     n_cols=4,
+    #     n_rows=3,
+    #     cmap=cmo.cm.thermal,
+    #     cbar_label='%',
+    #     vmin=0,
+    #     vmax=100,
+    #     save_path=Path(SAVE_PATH / "monthly_perc_total_days.png"),
+    # )
+
+    # Compute monthly ice concntration mean
+    monthly_mean = monthly_stat(
+        ci_t0,
+        time_t0,
+        np.nanmean,
+        stat_fcn_kwargs={'axis': 0}
+    )
 
     print('~~~~~~~~~~~Stats computed~~~~~~~~~~~')
 
@@ -148,23 +146,21 @@ def main():
     #     save_path=Path(SAVE_PATH / "monthly_perc_days_ice_free.png"),
     # )
 
-    # plot_discrete_cartopy_map(
-    #     data=monthly_mean,
-    #     lon=lon,
-    #     lat=lat,
-    #     hemisphere=HEMISPHERE,
-    #     titles=month_labels,
-    #     suptitle='Monthly Mean, ci (Pre-Mask): (1989-2020)',
-    #     data_channel_axis=0,
-    #     n_cols=4,
-    #     n_rows=3,
-    #     cmap=cmo.cm.ice,
-    #     cbar_label='frac',
-    #     vmin=0.0,
-    #     vmax=1.0,
-    #     steps=0.1,
-    #     save_path=Path(SAVE_PATH / "ci_monthly_mean_pre_mask.png"),
-    # )
+    plot_discrete_cartopy_map(
+        data=monthly_mean,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Monthly Mean, ci (Pre-Mask): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label='frac',
+        boundaries=np.arange(0.0, 1.0 + 0.1, 0.1),
+        save_path=Path(SAVE_PATH / "ci_monthly_mean_pre_mask_thermal.png"),
+    )
 
     print('~~~~~~~~~~~Pre-mask plots saved~~~~~~~~~~~')
 
@@ -176,7 +172,7 @@ def main():
 
     # Save the mask
     np.savez(
-        SAVE_MASK_PATH / 'ci_mask.npz',
+        SAVE_MASK_PATH / 'ci_mean_mask.npz',
         mask_bad = mask_bad
     )
 
@@ -208,7 +204,7 @@ def main():
         vmin=0,
         vmax=1,
         steps=0.5,
-        save_path=Path(SAVE_PATH / "ci_monthly_mask_3.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mask.png"),
     )
 
     plot_discrete_cartopy_map(
@@ -226,7 +222,7 @@ def main():
         vmin=0.0,
         vmax=1.0,
         steps=0.1,
-        save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask_3.png"),
+        save_path=Path(SAVE_PATH / "ci_monthly_mean_post_mask.png"),
     )
 
     print('~~~~~~~~~~~Post-mask plots saved~~~~~~~~~~~')
@@ -270,6 +266,7 @@ def perc_days_ice_free(ci, threshold=0.15):
             
     return perc_days_ice_free
 
+
 def perc_days_ice(ci, threshold=0.15):
 
     # Determine valid, non-nan ice conentration grid points
@@ -295,7 +292,7 @@ def perc_days_ice(ci, threshold=0.15):
     return perc_days_ice
 
 
-def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
+def monthly_mask(ci, time, ci_thresh=0.40):
 
     # Get month numbers from time array
     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
@@ -313,7 +310,7 @@ def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
 
         # Create 2D boolean mask for month where percent ice free days is greater/equal to threshold 
         mask_month = (
-            perc_days_ice_free(ci[month_indices], threshold=ci_thresh) >= perc_thresh 
+            (np.nanmean(ci[month_indices], axis=0)) <= ci_thresh 
         )
 
         # Broadcast 2D boolean mask to all time steps for month 
@@ -326,6 +323,40 @@ def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
     monthly_masks = np.stack(monthly_masks, axis=0)
 
     return full_monthly_mask, monthly_masks
+
+
+# def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
+
+#     # Get month numbers from time array
+#     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
+
+#     # Initialize boolean array for full mask
+#     full_monthly_mask = np.zeros_like(ci, dtype=bool)
+
+#     # Initialize lists to plot boolean mask
+#     monthly_masks = []
+
+#     # Loop through months (all years pooled by month)
+#     for month in range(1, 13):
+#         # Get current month's time indices (all years)
+#         month_indices = months == month
+
+#         # Create 2D boolean mask for month where percent ice free days is greater/equal to threshold 
+#         mask_month = (
+#             perc_days_ice_free(ci[month_indices], threshold=ci_thresh) >= perc_thresh 
+#         )
+
+#         # Broadcast 2D boolean mask to all time steps for month 
+#         full_monthly_mask[month_indices, :, :] = mask_month
+
+#         # Append 2D boolean mask to list for plotting
+#         monthly_masks.append(mask_month)
+
+#     # Stack list of masks into array
+#     monthly_masks = np.stack(monthly_masks, axis=0)
+
+#     return full_monthly_mask, monthly_masks
+
 
 def pre_mask_raw_ci(ci_t0):
     """
