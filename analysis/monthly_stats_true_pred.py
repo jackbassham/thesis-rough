@@ -104,7 +104,7 @@ def main():
             n_cols=4,
             n_rows=3,
             cmap=cmo.cm.thermal,
-            boundaries=np.linspace(u_var_min,u_var_max,num=10),
+            boundaries=np.linspace(0,1,num=10),
             cbar_label='variance',
             save_path=Path(SAVE_PLOT_PATH / f'var_u_true_norm_member{m:02d}.png'),
         )
@@ -120,7 +120,7 @@ def main():
             n_cols=4,
             n_rows=3,
             cmap=cmo.cm.thermal,
-            boundaries=np.linspace(v_var_min,v_var_max,num=10),
+            boundaries=np.linspace(0,1,num=10),
             cbar_label='variance',
             save_path=Path(SAVE_PLOT_PATH / f'var_v_true_norm_member{m:02d}.png'),
         )
