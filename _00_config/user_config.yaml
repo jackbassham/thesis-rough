@@ -7,7 +7,7 @@ split:
   n_members: 10
 
 # Set the data configuration preset from the options below
-active_preset: full_southern_ocean
+active_preset: full_arctic
 
 presets:
 

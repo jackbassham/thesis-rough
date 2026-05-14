@@ -63,13 +63,62 @@ def main():
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
-    # # Compute monthly percent days ice free
-    # monthly_perc_days_ice_free = monthly_stat(
-    #     ci_t0,
-    #     time_t0,
-    #     perc_days_ice_free,
-    #     month_labels = month_labels
-    # )
+    # Compute monthly percent days ice free
+    monthly_perc_days_ice_free = monthly_stat(
+        ci_t0,
+        time_t0,
+        perc_days_ice_free,
+        month_labels = month_labels
+    )
+
+    # Copute monthly percent days with ice
+    monthly_perc_days_ice = monthly_stat(
+        ci_t0,
+        time_t0,
+        perc_days_ice,
+        month_labels = month_labels
+    )
+
+    plot_discrete_cartopy_map(
+        data=monthly_perc_days_ice,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Total Percent Days (100%), (ci<=0.15 & ci>0.15): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label='%',
+        boundaries=np.linspace(0,100,num=10),
+        save_path=Path(SAVE_PATH / "monthly_perc_days_ice.png"),
+    )
+
+    print(f'ice free shape: {monthly_perc_days_ice_free.shape}')
+    print(f'ice shape: {monthly_perc_days_ice.shape}')
+
+    # Add monthly percent days with/without ice to verify mask
+    monthly_total_percent = monthly_perc_days_ice_free+monthly_perc_days_ice
+
+    plot_cartopy_map(
+        data=monthly_total_percent,
+        lon=lon,
+        lat=lat,
+        hemisphere=HEMISPHERE,
+        titles=month_labels,
+        suptitle='Total Percent Days (100%), (ci<=0.15 & ci>0.15): (1989-2020)',
+        data_channel_axis=0,
+        n_cols=4,
+        n_rows=3,
+        cmap=cmo.cm.thermal,
+        cbar_label='%',
+        vmin=0,
+        vmax=100,
+        save_path=Path(SAVE_PATH / "monthly_perc_total_days.png"),
+    )
+
+
 
     # # Compute monthly ice concntration mean
     # monthly_mean = monthly_stat(
@@ -220,6 +269,30 @@ def perc_days_ice_free(ci, threshold=0.15):
     )
             
     return perc_days_ice_free
+
+def perc_days_ice(ci, threshold=0.15):
+
+    # Determine valid, non-nan ice conentration grid points
+    valid = ~np.isnan(ci)
+    
+    # Sum total number of valid days at each gridpoint
+    n_total = np.sum(valid, axis=0)
+
+    # Sum number of valid ice free days at each gridpoint
+    n_ice_free = np.sum((ci > threshold) & valid, axis=0)
+
+    # Initialize array of nans for percent ice free
+    perc_days_ice = np.full_like(n_total, np.nan, dtype=np.float32)
+
+    # Divide where valid points exist, otherwise leave nan
+    np.divide(
+        n_ice_free * 100,
+        n_total,
+        out=perc_days_ice,
+        where=n_total != 0
+    )
+            
+    return perc_days_ice
 
 
 def monthly_mask(ci, time, perc_thresh=70, ci_thresh=0.15):
