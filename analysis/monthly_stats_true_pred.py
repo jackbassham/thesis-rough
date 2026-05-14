@@ -78,8 +78,8 @@ def main():
             stat_fcn_kwargs={'axis': 0}
         )
 
-        u_var_max = np.nanvar(monthly_u_var)
-        u_var_min = np.nanvar(monthly_u_var)
+        u_var_max = np.nanmax(monthly_u_var)
+        u_var_min = np.nanmin(monthly_u_var)
 
         monthly_v_var = monthly_stats(
             data=trues_list[m][:,1,:,:],
@@ -88,8 +88,8 @@ def main():
             stat_fcn_kwargs={'axis': 0}
         )
 
-        v_var_max = np.nanvar(monthly_v_var)
-        v_var_min = np.nanvar(monthly_v_var)
+        v_var_max = np.nanmax(monthly_v_var)
+        v_var_min = np.nanmin(monthly_v_var)
 
         plot_discrete_cartopy_map(
             data=monthly_u_var,
