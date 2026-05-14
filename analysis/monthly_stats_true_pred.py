@@ -88,6 +88,8 @@ def main():
             stat_fcn_kwargs={'axis': 0}
         )
 
+        print(f'~~~~~~~~~~~~~~Member: {m:02d} Stats Computed~~~~~~~~~~~~~~')
+
         v_var_max = np.nanmax(monthly_v_var)
         v_var_min = np.nanmin(monthly_v_var)
 
@@ -123,6 +125,7 @@ def main():
             save_path=Path(SAVE_PLOT_PATH / f'var_v_true_norm_member{m:02d}.png'),
         )
 
+        print(f'~~~~~~~~~~~~~~Member: {m:02d} Plots Saved~~~~~~~~~~~~~~')
         
 def monthly_stats(data, time, stat_fcn, stat_fcn_kwargs=None):
     """
