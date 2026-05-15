@@ -45,7 +45,7 @@ def weighted_correlation(pred, true, r, epsilon = 1e-4):
     return correlation
 
 
-def skill(pred, true, epsilon = 1e-4):
+def skill(pred, true, epsilon = 1):
     # NOTE excluding epsilon = 1e-4 from denominator for now
 
     mse = np.nanmean((true - pred)**2, axis = 0) # mean square error
@@ -62,7 +62,7 @@ def skill(pred, true, epsilon = 1e-4):
 
     # print(f'Using VarTrue (NOTE print is mean over grid) {np.nanmean(vartrue)}')
 
-    skill = 1 - mse / (vartrue + epsilon)
+    skill = 1 - mse / (vartrue + (epsilon)**2)
 
     return skill
 
