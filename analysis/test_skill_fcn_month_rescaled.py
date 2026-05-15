@@ -8,6 +8,7 @@ import sys
 
 import _06_evaluate.metric_fcns
 from analysis.plot import plot_cartopy_map
+from analysis.monthly_stats import monthly_stats
 
 
 MODEL_STRS = ['cnn_pt', 'cnn_pt_wtd', 'lr_cf', 'lr_cf_wtd', 'ps']
@@ -24,12 +25,12 @@ if model_idx is not None:
 else:
     MODEL_STR = MODEL_STRS[0]
 
-HEMISPHERE = 'south'
+HEMISPHERE = 'north'
 TIMESTAMP = '05082026_1807'
 
-TIMESTAMP_REGRID = '05062026_1852'
-TIMESTAMP_MASK_NORM = '05062026_1852'
-TIMESTAMP_MODEL_INPUTS = '05082026_1807'
+TIMESTAMP_REGRID = TIMESTAMP
+TIMESTAMP_MASK_NORM = TIMESTAMP
+TIMESTAMP_MODEL_INPUTS = TIMESTAMP
 
 
 N_MEMBERS = 10
@@ -52,8 +53,7 @@ def main():
     # metric_strs = ['rmse', 'weighted_rmse', 'mae', 'mean_misfit']
 
 
-    plot_path_base = Path('/home/jbassham/jack/thesis-rough/plots/quick-eval/')
-    plot_path = plot_path_base / MODEL_STR / HEMISPHERE / TIMESTAMP / 'monthly_rescaled'
+    plot_path = ANALYSIS_PATH / 'test_skill_monthly_rescaled' / HEMISPHERE
     # Make plot path if it doesn't yet exist
     plot_path.mkdir(parents=True, exist_ok=True)
 
@@ -80,21 +80,13 @@ def main():
     # Load test split indices for month bins
     test_indices = np.load(path_model_inputs / 'indices_test.npz')
 
-    # # Load mask from features matrix
-    # mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
-    # # Squeeze out channel dimension
-    # mask_bad = np.squeeze(mask_bad, axis=1)
+    # Load mask from features matrix
+    mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
+    # Squeeze out channel dimension
+    mask_bad = np.squeeze(mask_bad, axis=1)
 
-    # Load in monthly mask
-    mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mean_mask' / 'ci_mean_mask.npz')['mask_bad']
-
-    # Load array of uncertainties
-    # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v
-    # and uncertainty array is passed for preds and trues with channel dimension
-    ri_t0 = np.load(path_model_inputs / 'targets_features.npz')['ri_t0']
-
-    #~~~~~~~RESCALE UNCERTAINTY~~~~~~~ 
-    ri_t0 = ri_t0 * Ui_t0
+    # # Load in monthly mask
+    # mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mean_mask' / 'ci_mean_mask.npz')['mask_bad']
 
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
@@ -126,20 +118,12 @@ def main():
         metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
 
         monthly_all_members = []
+        monthly_var_ratio_all_members = []
 
         for m in range(N_MEMBERS):
 
             mask = mask_bad[test_indices[f'{m:02d}']] # (time, height, width)
 
-            if 'weighted' in metric_str:
-                r = ri_t0[test_indices[f'{m:02d}']] # (time, height, width)
-                # Rescale r by global std of speed
-                r = r * Ui_t0 
-                # Mask r as well
-                r = np.where(mask[:, None, :, :], np.nan, r) # (time, channel, height, width)
-
-            else:
-                r = None
 
             preds = np.where(mask[:, None, :, :], np.nan, preds_list[m]) # (time, channel, height, width)
             trues = np.where(mask[:, None, :, :], np.nan, trues_list[m]) # (time, channel, height, width)
@@ -155,15 +139,23 @@ def main():
                 trues,
                 time[test_indices[f'{m:02d}']],
                 metric_fcn,
-                r=r,
                 # global_var_true=global_var_true,
             )  # (month, channel, height, width)
+
+            var_ratio = monthly_stats(
+                trues,
+                time[test_indices[f'{m:02d}']],
+                var_ratio_stat,
+                stat_fcn_kwargs={'correction': 1.0}
+            )
 
             print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
 
             monthly_all_members.append(monthly_metric)
+            monthly_var_ratio_all_members.append(var_ratio)
 
         monthly_all_members = np.stack(monthly_all_members, axis=0) # (member, month, channel, height, width)
+        monthly_var_ratio_all_members = np.stack(monthly_var_ratio_all_members, axis=0)
 
         # Save monthly metrics for all members
         np.savez(
@@ -179,6 +171,8 @@ def main():
             monthly_sem  = np.nanstd(monthly_all_members, axis=0) / np.sqrt(N_MEMBERS)
         else:
             monthly_sem = None
+
+        monthly_mean_var_ratio = np.nanmean(monthly_var_ratio_all_members, axis=0)
 
         print(f'Monthly mean and SEM computed for {metric_str}')
 
@@ -245,6 +239,24 @@ def main():
                     save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
                 )
 
+            # -------- Ratio plots --------
+            plot_cartopy_map(
+                data=monthly_mean_var_ratio[:, ch],   # (month, lat, lon)
+                lon=lon,
+                lat=lat,
+                hemisphere=HEMISPHERE,
+                titles=month_labels,
+                suptitle=f'Var/(Var+1)',
+                data_channel_axis=0,
+                n_cols=4,
+                n_rows=3,
+                cmap=cmap, 
+                cbar_label='cm_s',
+                vmin=0,
+                vmax=1,
+                save_path=plot_path / f'var_ratio_{ch_name}.png',
+            )
+
             # -------- Global MEAN/SEM plots --------
             plot_global_monthly_ensemble(
             global_mean=global_monthly_mean,
@@ -264,6 +276,12 @@ def main():
 
         print(f'Finished plotting monthly mean and SEM for {metric_str}')
         print('')
+
+
+def var_ratio_stat(x, correction=1.0):
+    # x shape: (time, channel, height, width)
+    var_true = np.nanvar(x, axis=0)  # (channel, height, width)
+    return var_true / (var_true + correction**2)
 
 
 def load_member_preds():
@@ -307,10 +325,6 @@ def metric_fcn_month(pred, true, time, metric_fcn, r=None, global_var_true=None)
 
         # Initialize dict for extra uncertainty keyword argument for weighted metrics
         metric_kwargs = {}
-
-        if r is not None:
-            # Add current month's uncertainties array to kword arguments
-            metric_kwargs['r'] = r[month_indices]
 
         if global_var_true is not None:
             # Add current month's global_var_true array to kword arguments

@@ -27,9 +27,8 @@ else:
 HEMISPHERE = 'south'
 TIMESTAMP = '05082026_1807'
 
-TIMESTAMP_REGRID = '05062026_1852'
-TIMESTAMP_MODEL_INPUTS = '05082026_1807'
-
+TIMESTAMP_REGRID = TIMESTAMP
+TIMESTAMP_MODEL_INPUTS = TIMESTAMP
 N_MEMBERS = 10
 
 BASE_PATH = Path(
@@ -46,8 +45,8 @@ ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 def main():
 
     # Define list of metric strings
-    metric_strs = ['skill']
-    # metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
+    # metric_strs = ['skill']
+    metric_strs = ['skill', 'weighted_skill', 'correlation', 'weighted_correlation']
     # metric_strs = ['rmse', 'weighted_rmse']
 
 
@@ -71,13 +70,13 @@ def main():
     # Load test split indices for month bins
     test_indices = np.load(path_model_inputs / 'indices_test.npz')
 
-    # # Load mask from features matrix
-    # mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
-    # # Squeeze out channel dimension
-    # mask_bad = np.squeeze(mask_bad, axis=1)
+    # Load mask from features matrix
+    mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
+    # Squeeze out channel dimension
+    mask_bad = np.squeeze(mask_bad, axis=1)
 
-    # Load in monthly mask
-    mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mean_mask' / 'ci_mean_mask.npz')['mask_bad']
+    # # Load in monthly mask
+    # mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mean_mask' / 'ci_mean_mask.npz')['mask_bad']
 
     # Load array of uncertainties
     # NOTE NOTE removing channel dimension here since uncertainty is same for both u and v
@@ -116,12 +115,6 @@ def main():
 
             preds = np.where(mask[:, None, :, :], np.nan, preds_list[m]) # (time, channel, height, width)
             trues = np.where(mask[:, None, :, :], np.nan, trues_list[m]) # (time, channel, height, width)
-
-            # if 'skill' in metric_str:
-            #     global_true_bar = np.nanmean(trues, axis=0) # (channel, height, width)
-            #     global_var_true = np.nanmean((trues - global_true_bar)**2, axis=0) # (channel, height, width)
-            # else:
-            #     global_var_true = None
 
             monthly_metric = metric_fcn_month(
                 preds,

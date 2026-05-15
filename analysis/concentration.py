@@ -195,7 +195,7 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Monthly ci Mask ((monthly_mean_ci < 0.40)) (inverted)',
+        suptitle='Monthly ci Mask ((monthly_mean_ci </= 0.50)) (inverted)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
@@ -288,7 +288,7 @@ def perc_days_ice(ci, threshold=0.15):
     return perc_days_ice
 
 
-def monthly_mask(ci, time, ci_thresh=0.40):
+def monthly_mask(ci, time, ci_thresh=0.50):
 
     # Get month numbers from time array
     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
