@@ -23,14 +23,14 @@ except (IndexError, ValueError):
 if model_idx is not None:
     MODEL_STR = MODEL_STRS[model_idx]
 else:
-    MODEL_STR = MODEL_STRS[0]
+    MODEL_STR = MODEL_STRS[3]
 
-HEMISPHERE = 'north'
+HEMISPHERE = 'south'
 TIMESTAMP = '05082026_1807'
 
-TIMESTAMP_REGRID = TIMESTAMP
-TIMESTAMP_MASK_NORM = TIMESTAMP
-TIMESTAMP_MODEL_INPUTS = TIMESTAMP
+TIMESTAMP_REGRID = '05062026_1852'
+TIMESTAMP_MASK_NORM = '05062026_1852'
+TIMESTAMP_MODEL_INPUTS = '05082026_1807'
 
 
 N_MEMBERS = 10
@@ -53,7 +53,7 @@ def main():
     # metric_strs = ['rmse', 'weighted_rmse', 'mae', 'mean_misfit']
 
 
-    plot_path = ANALYSIS_PATH / 'test_skill_monthly_rescaled' / HEMISPHERE
+    plot_path = ANALYSIS_PATH / 'test_skill_monthly_rescaled' / HEMISPHERE / MODEL_STR
     # Make plot path if it doesn't yet exist
     plot_path.mkdir(parents=True, exist_ok=True)
 
@@ -80,13 +80,13 @@ def main():
     # Load test split indices for month bins
     test_indices = np.load(path_model_inputs / 'indices_test.npz')
 
-    # Load mask from features matrix
-    mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
-    # Squeeze out channel dimension
-    mask_bad = np.squeeze(mask_bad, axis=1)
+    # # Load mask from features matrix
+    # mask_bad = np.load(path_model_inputs / 'targets_features.npz')['mask']
+    # # Squeeze out channel dimension
+    # mask_bad = np.squeeze(mask_bad, axis=1)
 
-    # # Load in monthly mask
-    # mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mean_mask' / 'ci_mean_mask.npz')['mask_bad']
+    # Load in monthly mask
+    mask_bad = np.load(ANALYSIS_PATH / 'masks' / HEMISPHERE/ 'ci_mean_mask' / 'ci_mean_mask.npz')['mask_bad']
 
     # Load preds and trues for each member 
     preds_list, trues_list = load_member_preds() # (member, time, channel, height, width)
@@ -118,7 +118,7 @@ def main():
         metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
 
         monthly_all_members = []
-        monthly_var_ratio_all_members = []
+        # monthly_var_ratio_all_members = []
 
         for m in range(N_MEMBERS):
 
@@ -142,20 +142,20 @@ def main():
                 # global_var_true=global_var_true,
             )  # (month, channel, height, width)
 
-            var_ratio = monthly_stats(
-                trues,
-                time[test_indices[f'{m:02d}']],
-                var_ratio_stat,
-                stat_fcn_kwargs={'correction': 1.0}
-            )
+            # var_ratio = monthly_stats(
+            #     trues,
+            #     time[test_indices[f'{m:02d}']],
+            #     var_ratio_stat,
+            #     stat_fcn_kwargs={'correction': 1.0}
+            # )
 
             print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
 
             monthly_all_members.append(monthly_metric)
-            monthly_var_ratio_all_members.append(var_ratio)
+            # monthly_var_ratio_all_members.append(var_ratio)
 
         monthly_all_members = np.stack(monthly_all_members, axis=0) # (member, month, channel, height, width)
-        monthly_var_ratio_all_members = np.stack(monthly_var_ratio_all_members, axis=0)
+        # monthly_var_ratio_all_members = np.stack(monthly_var_ratio_all_members, axis=0)
 
         # Save monthly metrics for all members
         np.savez(
@@ -172,7 +172,7 @@ def main():
         else:
             monthly_sem = None
 
-        monthly_mean_var_ratio = np.nanmean(monthly_var_ratio_all_members, axis=0)
+        # monthly_mean_var_ratio = np.nanmean(monthly_var_ratio_all_members, axis=0)
 
         print(f'Monthly mean and SEM computed for {metric_str}')
 
@@ -235,27 +235,27 @@ def main():
                     cmap=cmo.cm.amp, 
                     cbar_label='cm_s',  # better for uncertainty
                     vmin=0,
-                    vmax=np.nanmax(monthly_sem[:, ch]),
+                    vmax=0.5,
                     save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
                 )
 
-            # -------- Ratio plots --------
-            plot_cartopy_map(
-                data=monthly_mean_var_ratio[:, ch],   # (month, lat, lon)
-                lon=lon,
-                lat=lat,
-                hemisphere=HEMISPHERE,
-                titles=month_labels,
-                suptitle=f'Var/(Var+1)',
-                data_channel_axis=0,
-                n_cols=4,
-                n_rows=3,
-                cmap=cmap, 
-                cbar_label='cm_s',
-                vmin=0,
-                vmax=1,
-                save_path=plot_path / f'var_ratio_{ch_name}.png',
-            )
+            # # -------- Ratio plots --------
+            # plot_cartopy_map(
+            #     data=monthly_mean_var_ratio[:, ch],   # (month, lat, lon)
+            #     lon=lon,
+            #     lat=lat,
+            #     hemisphere=HEMISPHERE,
+            #     titles=month_labels,
+            #     suptitle=f'Var/(Var+1)',
+            #     data_channel_axis=0,
+            #     n_cols=4,
+            #     n_rows=3,
+            #     cmap=cmap, 
+            #     cbar_label='cm_s',
+            #     vmin=0,
+            #     vmax=1,
+            #     save_path=plot_path / f'var_ratio_{ch_name}.png',
+            # )
 
             # -------- Global MEAN/SEM plots --------
             plot_global_monthly_ensemble(
