@@ -141,7 +141,6 @@ class DatasetInfo:
     ext: str
 
 
-
 @dataclass
 class DatasetConfig:
     """
@@ -200,15 +199,35 @@ class SplitConfig:
     # Define number of ensemble members, default to 1
     n_members: int = 1
 
+    # Define split function name from split_generators.py, default to chronological
+    split_generator: str = 'chronological_indices'
+
+    # Define test/val split years, remaining years are train, defaylt to 2/2
+    n_val_years: int = 2
+    n_test_years: int = 2
+
+    def __post_init__(self):
+        """
+        Post parameter initialization error handling using validation methods
+        """ 
+        self._validate_split_generator()
+
+    def _validate_split_generator(self):
+
+        import split_generators
+
+        # Check that spit_generators module contains split function name specified
+        if not hasattr(split_generators, self.split_generator):
+            raise ValueError(
+                f'Unknown split generator: {self.split_generator}'
+                'Check user_config.yaml includes generator from _04_process_inputs/split_generators'
+            )
+
     # # Define split method, default to chronological
     # method: Literal[
     #     'chronological',
     #     'k_random_years'
     # ] = 'chronological'
-
-    # Default test/val splits to to years, the remaining years train
-    n_val_years: int = 2
-    n_test_years: int = 2
 
 
 @dataclass

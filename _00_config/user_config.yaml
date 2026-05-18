@@ -2,10 +2,6 @@ paths:
   # Root directory for pipeline data, leave as default 'null' to save data to working as './data'
   user_data_root: '/data/globus/jbassham/thesis-rough'
 
-split:
-  # Define the number of ensemble members to use
-  n_members: 10
-
 # Set the data configuration preset from the options below
 active_preset: full_arctic
 
@@ -19,6 +15,9 @@ presets:
     latitude_bounds: [-79, -62]
     longitude_bounds: [-70, -15]
     grid_resolution: 25
+    ensemble_split:
+      n_members: 1
+      split_generator: chronological_indices
 
   # Full Southern Ocean reproduction
   full_southern_ocean:
@@ -27,6 +26,9 @@ presets:
     latitude_bounds: [-80, -62]
     longitude_bounds: [-180, 180]
     grid_resolution: 25
+    ensemble_split:
+      n_members: 10
+      split_generator: k_shuffled_year_indices
 
   # Full Arctic reproduction
   full_arctic:
@@ -35,6 +37,9 @@ presets:
     latitude_bounds: [60, 90]
     longitude_bounds: [-180, 180]
     grid_resolution: 25
+    ensemble_split:
+      n_members: 10
+      split_generator: k_shuffled_year_indices
 
   # Replace 'null' to create your own training subset
   custom_config:
@@ -42,5 +47,8 @@ presets:
     year_range: [null, null] # [min_year, max_year] at least 6 years, max [1989, 2024]
     latitude_bounds: [null, null] # [southern, northern] max: north/south [31/90]/[-90,-40]
     longitude_bounds: [null, null] # [western, eastern] max: [-180,180]
-    grid_resolution: null # Int or Float > 0.
+    grid_resolution: null # Int or Float > 0
+    ensemble_split: 
+      n_members: null # Int > 0
+      split_generator: null # function from _04_process_inputs/split_generators.py
 

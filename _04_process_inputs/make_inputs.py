@@ -71,9 +71,16 @@ def main(cfg):
     # Load in present-day time variable from coordinates
     time_t0 = np.load(path_coordinates / 'coordinates.npz')['time_t0']
 
+    # Get split generator from configuration
+    split_generator = getattr(
+        split_generators,
+        cfg.split_config.split_generator
+    )
+
     # Get split indices from time array
-    split_indices, split_years_meta = split_generators.k_shuffled_year_indices(
-        time_t0, n_members=cfg.split_config.n_members
+    split_indices, split_years_meta = split_generator(
+        time_t0, 
+        n_members=cfg.split_config.n_members
         )
 
     # Save split indices and split years meta data
