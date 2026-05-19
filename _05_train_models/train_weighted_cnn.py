@@ -6,7 +6,8 @@ from . import (
     ensemble,
     loss_funcs,
     models,
-    utils_cnn
+    utils_cnn,
+    utils
 )
 
 
@@ -83,25 +84,29 @@ def main(cfg):
 
     # Load in model outputs destination path
     # FIXME change naming convention here
-    path_cnn_out = cfg.path_config.model_path('cnn_pt_wtd')
+    path_out = cfg.path_config.model_path('cnn_pt_wtd')
 
     # Make destination directory if missing
-    cfg.path_config.makedir_if_missing(path_cnn_out)
+    cfg.path_config.makedir_if_missing(path_out)
 
     # Save weights and biases
     torch.save(
         model.state_dict(), 
-        path_cnn_out / 'parameters.pt'
+        path_out / 'parameters.pt'
         )
 
     # Get test predictions as numpy arrays from the trained model
     test_predictions, test_targets = utils_cnn.evaluate(model, test_dl)
 
+    # Rescale predictions
+    y_pred_rescaled = utils.rescale_predictions(cfg, test_predictions)
+    y_true_rescaled = utils.rescale_predictions(cfg, test_targets)
+
     # Save predictions and true values
     np.savez(
-        path_cnn_out / 'preds.npz', 
-        y_pred = test_predictions, 
-        y_true = test_targets
+        path_out / 'preds.npz', 
+        y_pred = y_pred_rescaled, 
+        y_true = y_true_rescaled
         )
 
     print("Predictions saved")

@@ -3,7 +3,8 @@ from pathlib import Path
 from . import (
     ensemble,
     models,
-    utils_lr
+    utils_lr,
+    utils
 ) 
 
 # Define model type string for saving predictions
@@ -55,12 +56,16 @@ def main(cfg):
     # Convert complex predictions to real for saving and evaluation
     R_preds = model.z_to_vector(Z_preds)
 
+    # Rescale predictions
+    y_pred_rescaled = utils.rescale_predictions(cfg, R_preds)
+    y_true_rescaled = utils.rescale_predictions(cfg, y_test)
+
     # Save predictions and true values
     # NOTE using y_test for true now, move to just saving predictions
     np.savez(
         path_out / 'preds.npz',
-        y_pred = R_preds,
-        y_true = y_test
+        y_pred = y_pred_rescaled,
+        y_true = y_true_rescaled
     )
 
 
