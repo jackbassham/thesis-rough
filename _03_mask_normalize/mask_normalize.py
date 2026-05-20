@@ -53,9 +53,15 @@ def main(cfg):
     ci_t1 = previous_day(ci)
 
     # Create masks for bad points and land/ open ocean
-    mask_bad, mask_land_ocean = create_data_masks(
+    mask_bad = create_data_masks(
         ci_t0, ui_t0, vi_t0
     )
+
+    # Load in present-day time variable from coordinates
+    time_t0 = np.load(path_regrid / 'coordinates.npz')['time_t0']
+
+    # Get fixed monthly mask for evaluation regions based on monthly climatological mean ice concentration threshold
+    mask_monthly = monthly_mask(ci_t0, time_t0, ci_mean_thresh = 0.4)
 
     plt.pcolormesh(mask_bad[0])
     plt.title('mask_bad')
@@ -65,7 +71,7 @@ def main(cfg):
     np.savez(
         path_mask_norm / 'masks.npz', 
         mask_bad = mask_bad, 
-        mask_land_ocean = mask_land_ocean,
+        mask_monthly = mask_monthly,
              )
 
     # Create dict of input parameters
