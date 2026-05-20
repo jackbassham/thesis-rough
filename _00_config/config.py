@@ -214,7 +214,7 @@ class SplitConfig:
 
     def _validate_split_generator(self):
 
-        import split_generators
+        from _04_process_inputs import split_generators
 
         # Check that spit_generators module contains split function name specified
         if not hasattr(split_generators, self.split_generator):
