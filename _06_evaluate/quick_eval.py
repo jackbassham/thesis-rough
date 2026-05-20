@@ -44,7 +44,7 @@ def run_eval(config, model_name: str) -> None:
     splits = load_member_splits(config)
 
     # Get current ensemble member
-    member = cfg.runtime.member
+    member = config.runtime.member
 
     # Get key from ensemble member in format ##
     m_key = f'{member:02d}'
