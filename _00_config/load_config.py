@@ -55,7 +55,7 @@ def load_config(user_config_path=None):
 
     # Instantiate split configuration object from YAML entries or fall back to defaults
     split_config = SplitConfig(
-        **p.get(user_config.get('ensemble_split', {}))
+        **p.get('ensemble_split', {})
     )
 
     # Instantiate runtime object, inintialized at first member (default) and updated through ensemble loop
