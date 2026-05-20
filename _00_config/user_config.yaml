@@ -27,8 +27,8 @@ presets:
     longitude_bounds: [-180, 180]
     grid_resolution: 25
     ensemble_split:
-      n_members: 10
-      split_generator: k_shuffled_year_indices
+      n_members: 1
+      split_generator: chronological_indices
 
   # Full Arctic reproduction
   full_arctic:
