@@ -61,7 +61,7 @@ def main(cfg):
     time_t0 = np.load(path_regrid / 'coordinates.npz')['time_t0']
 
     # Get fixed monthly mask for evaluation regions based on monthly climatological mean ice concentration threshold
-    mask_monthly = monthly_mask(ci_t0, time_t0, ci_mean_thresh = 0.4)
+    mask_fixed_monthly = create_monthly_mask(ci_t0, time_t0)
 
     plt.pcolormesh(mask_bad[0])
     plt.title('mask_bad')
@@ -71,7 +71,7 @@ def main(cfg):
     np.savez(
         path_mask_norm / 'masks.npz', 
         mask_bad = mask_bad, 
-        mask_monthly = mask_monthly,
+        mask_fixed_monthly = mask_fixed_monthly,
              )
 
     # Create dict of input parameters
@@ -86,7 +86,7 @@ def main(cfg):
     plt.savefig('3debug_plot.png')
 
     # Mask bad points to nan (in place, no copy made)
-    mask_inputs(inputs, mask_bad)
+    mask_all_inputs(inputs, mask_bad)
 
     plt.pcolormesh(inputs['ui_t0'][0])
     plt.title('masked inputs')
@@ -135,9 +135,35 @@ def previous_day(variable):
     return variable[:-1,:,:]
 
 
+def perc_days_ice_free(ci, ci_thresh=0.15):
+
+    # Determine valid, non-nan ice conentration grid points
+    valid = ~np.isnan(ci)
+    
+    # Sum total number of valid days at each gridpoint
+    n_total = np.sum(valid, axis=0)
+
+    # Sum number of valid ice free days at each gridpoint
+    n_ice_free = np.sum((ci <= ci_thresh) & valid, axis=0)
+
+    # Initialize array of nans for percent ice free
+    perc_days_ice_free = np.full_like(n_total, np.nan, dtype=np.float32)
+
+    # Divide where valid points exist, otherwise leave nan
+    np.divide(
+        n_ice_free * 100,
+        n_total,
+        out=perc_days_ice_free,
+        where=n_total != 0
+    )
+            
+    return perc_days_ice_free
+
+
 def create_data_masks(
         ci_t0: npt.NDArray[np.float32], ui_t0: npt.NDArray[np.float32], vi_t0: npt.NDArray[np.float32],
-        ice_conc_threshold: float=0.15,
+        ci_thresh: float=0.15,
+        perc_thresh: float=0.70,
 ) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     """
     NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
@@ -166,19 +192,20 @@ def create_data_masks(
         np.isnan(ci_t0)
         | np.isnan(ui_t0)
         | np.isnan(vi_t0)
-        | (ci_t0 <= ice_conc_threshold)
+        | (ci_t0 <= ci_thresh)
+        | perc_days_ice_free(ci_t0, threshold=ci_thresh) >= perc_thresh
     )
 
     return mask_bad
 
 
-def monthly_mask(ci, time, ci_mean_thresh=0.50):
+def create_monthly_mask(ci, time, ci_bar_thresh=0.40):
 
     # Get month numbers from time array
     months = (time.astype('datetime64[M]').astype(int) % 12) + 1
 
     # Initialize boolean array for full mask
-    full_monthly_mask = np.zeros_like(ci, dtype=bool)
+    full_mask_monthly = np.zeros_like(ci, dtype=bool)
 
     # Loop through months (all years pooled by month)
     for month in range(1, 13):
@@ -187,16 +214,16 @@ def monthly_mask(ci, time, ci_mean_thresh=0.50):
 
         # Create 2D boolean mask for month where percent ice free days is greater/equal to threshold 
         mask_month = (
-            (np.nanmean(ci[month_indices], axis=0)) <= ci_mean_thresh 
+            (np.nanmean(ci[month_indices], axis=0)) <= ci_bar_thresh 
         )
 
         # Broadcast 2D boolean mask to all time steps for month 
-        full_monthly_mask[month_indices, :, :] = mask_month
+        full_mask_monthly[month_indices, :, :] = mask_month
 
-    return full_monthly_mask
+    return full_mask_monthly
 
 
-def mask_inputs(inputs: dict, mask: npt.NDArray[np.float32]):
+def mask_all_inputs(inputs: dict, mask: npt.NDArray[np.float32]):
     """
     
     """
