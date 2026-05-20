@@ -44,7 +44,7 @@ def run_eval(config, model_name: str) -> None:
     splits = load_member_splits(config)
 
     # Load masked normalized data source path for eval mask
-    path_mask_norm = cfg.path_config.data_stage_path('mask_norm')
+    path_mask_norm = config.path_config.data_stage_path('mask_norm')
 
     # Get monthly mask for evaluation
     mask_monthly = np.load(path_mask_norm / 'masks.npz')['mask_monthly']
