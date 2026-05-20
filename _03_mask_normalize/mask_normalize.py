@@ -131,7 +131,6 @@ def previous_day(variable):
 
 def create_data_masks(
         ci_t0: npt.NDArray[np.float32], ui_t0: npt.NDArray[np.float32], vi_t0: npt.NDArray[np.float32],
-        perc_ice_free_threshold: float=0.70,
         ice_conc_threshold: float=0.15
 ) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     """
@@ -156,25 +155,39 @@ def create_data_masks(
         ci_t0
     )
 
-    # Get the number of days from ice concentration
-    n_days = ci_t0.shape[0]
-
-    # Count number of days ice free at each gridpoint
-    n_ice_free = np.sum(ci_t0 <= ice_conc_threshold, axis = 0)
-
     # Create mask of nan values at bad data points
     mask_bad = (
         np.isnan(ci_t0)
         | np.isnan(ui_t0)
         | np.isnan(vi_t0)
         | (ci_t0 <= ice_conc_threshold)
-        | (n_ice_free > (perc_ice_free_threshold * n_days))
     )
 
-    # Define land/ open ocean mask, assuming these points always nan
-    mask_land_ocean = np.all(np.isnan(ci_t0), axis = 0)
+    return mask_bad
 
-    return mask_bad, mask_land_ocean
+
+def monthly_mask(ci, time, ci_mean_thresh=0.50):
+
+    # Get month numbers from time array
+    months = (time.astype('datetime64[M]').astype(int) % 12) + 1
+
+    # Initialize boolean array for full mask
+    full_monthly_mask = np.zeros_like(ci, dtype=bool)
+
+    # Loop through months (all years pooled by month)
+    for month in range(1, 13):
+        # Get current month's time indices (all years)
+        month_indices = months == month
+
+        # Create 2D boolean mask for month where percent ice free days is greater/equal to threshold 
+        mask_month = (
+            (np.nanmean(ci[month_indices], axis=0)) <= ci_mean_thresh 
+        )
+
+        # Broadcast 2D boolean mask to all time steps for month 
+        full_monthly_mask[month_indices, :, :] = mask_month
+
+    return full_monthly_mask
 
 
 def mask_inputs(inputs: dict, mask: npt.NDArray[np.float32]):
