@@ -43,14 +43,29 @@ def run_eval(config, model_name: str) -> None:
     # Load current ensemble splits
     splits = load_member_splits(config)
 
+    # Get current ensemble member
+    member = cfg.runtime.member
+
+    # Get key from ensemble member in format ##
+    m_key = f'{member:02d}'
+
+    # Load input path for split indices
+    path_inputs = config.path_config.data_stage_path('model_inputs')
+
+    # Get split indices
+    test_indices = np.load(path_inputs / 'indices_test.npz')
+
     # Load masked normalized data source path for eval mask
     path_mask_norm = config.path_config.data_stage_path('mask_norm')
 
     # Get monthly mask for evaluation
     mask_monthly = np.load(path_mask_norm / 'masks.npz')['mask_monthly']
 
+    # Split mask to current split indices
+    mask_monthly = mask_monthly[test_indices[m_key]]
+
     # # Get mask for test split from last feature channel
-    # mask_bad = np.squeeze(splits['test']['mask'], axis=1)
+    # mask_bad = np.squeeze(splits['test']['mask_bad'], axis=1)
 
     # Mask invalid points in model output before evaluation
     upred = np.where(mask_monthly, np.nan, upred)
