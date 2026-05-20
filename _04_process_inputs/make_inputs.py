@@ -44,11 +44,14 @@ def main(cfg):
     # Load in masked/ normalized input parameters as dict
     inputs = dict(np.load(path_mask_norm / 'masked_normalized.npz'))
 
-    # Load in mask
-    mask_bad = np.load(path_mask_norm / 'masks.npz')['mask_bad']
+    # Load in masks
+    masks = np.load(path_mask_norm / 'masks.npz')
 
-    # Add mask to inputs
-    inputs['mask'] = mask_bad
+    # Add mask of bad points to inputs
+    inputs['mask_bad'] = masks['mask_bad']
+
+    # Add fixed monthly mask for eval regions to inputs
+    inputs['mask_fixed_monthly'] = masks['mask_fixed_monthly']
 
     # Fill target, feature, and separate unertainty arrays from inputs
     targets_features = utils.make_target_feature_arrays(inputs)
