@@ -137,7 +137,7 @@ def previous_day(variable):
 
 def create_data_masks(
         ci_t0: npt.NDArray[np.float32], ui_t0: npt.NDArray[np.float32], vi_t0: npt.NDArray[np.float32],
-        ice_conc_threshold: float=0.15
+        ice_conc_threshold: float=0.15,
 ) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
     """
     NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset

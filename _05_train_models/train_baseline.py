@@ -1,7 +1,8 @@
 import numpy as np
 from . import(
     ensemble,
-    models
+    models,
+    utils
 )
 
 def main(cfg):
@@ -18,6 +19,10 @@ def main(cfg):
     # Get predictions on test splilt
     y_pred = model.predict(y_test)
 
+    # Rescale predictions
+    y_pred_rescaled = utils.rescale_predictions(cfg, y_pred)
+    y_true_rescaled = utils.rescale_predictions(cfg, y_test)
+
     # Load model output destination path
     path_out = cfg.path_config.model_path('ps')
 
@@ -27,8 +32,8 @@ def main(cfg):
     # Save predictions
     np.savez(
         path_out / 'preds.npz',
-        y_pred = y_pred,
-        y_true = y_test,
+        y_pred = y_pred_rescaled,
+        y_true = y_true_rescaled,
     )
 
 
