@@ -14,9 +14,9 @@ def rescale_predictions(config, y):
     gridwise_means = np.load(path_stats / 'gridwise_means.npz')
 
     # Check that y is shaped (time, channel, height, width)
-    if np.ndims(y) != 4:
+    if np.ndim(y) != 4:
         raise ValueError(
-            f'Invalid number of input dimensions for rescaling: {np.ndims(y)} dims'
+            f'Invalid number of input dimensions for rescaling: {np.ndim(y)} dims'
             f'Rescaling input "y" needs shape (time, channel, height, width)'
         )
     
