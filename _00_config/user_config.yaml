@@ -3,7 +3,7 @@ paths:
   user_data_root: '/data/globus/jbassham/thesis-rough'
 
 # Set the data configuration preset from the options below
-active_preset: full_arctic
+active_preset: full_southern_ocean
 
 presets:
 
