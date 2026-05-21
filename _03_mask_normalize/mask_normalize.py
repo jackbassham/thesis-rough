@@ -193,7 +193,7 @@ def create_data_masks(
         | np.isnan(ui_t0)
         | np.isnan(vi_t0)
         | (ci_t0 <= ci_thresh)
-        | perc_days_ice_free(ci_t0) >= perc_thresh
+        | (perc_days_ice_free(ci_t0) >= perc_thresh)
     )
 
     return mask_bad
