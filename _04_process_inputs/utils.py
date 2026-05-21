@@ -35,11 +35,11 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
         y[:, i] = inputs[name]
 
     # Get inverted mask so array is 1 for valid points, 0 for invalid
-    valid = ~inputs['mask']
+    valid = ~inputs['mask_bad']
 
     # Fill feature array
     for i, name in enumerate(features):
-        if name == 'mask':
+        if name == 'mask_bad':
             # Fill the mask channel with the valid (inverted mask) array
             x[:, i] = valid
         else:
@@ -58,7 +58,9 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
 
     # Add channel dimension on mask to match targets, features
     # NOTE mask is boolean T/F NOT float 1/0
-    mask = inputs['mask'][:, np.newaxis, :, :]
+    mask_bad = inputs['mask_bad'][:, np.newaxis, :, :]
+    mask_fixed_monthly = inputs['mask_fixed_monthly'][:, np.newaxis, :, :]
+
 
     print(y.shape)
     print(x.shape)
@@ -67,7 +69,8 @@ def make_target_feature_arrays(inputs: dict[str, npt.NDArray]
         'y': y,
         'x': x,
         'ri_t0': ri_t0,
-        'mask': mask
+        'mask_bad': mask_bad,
+        'mask_fixed_monthly': mask_fixed_monthly
     }
 
 
