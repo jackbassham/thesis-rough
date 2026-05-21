@@ -163,8 +163,8 @@ def perc_days_ice_free(ci, ci_thresh=0.15):
 def create_data_masks(
         ci_t0: npt.NDArray[np.float32], ui_t0: npt.NDArray[np.float32], vi_t0: npt.NDArray[np.float32],
         ci_thresh: float=0.15,
-        perc_thresh: float=0.70,
-) -> tuple[npt.NDArray[np.float32], npt.NDArray[np.float32]]:
+        perc_thresh: float=70.0,
+) -> tuple[npt.NDArray[np.bool]]:
     """
     NOTE NSIDC considers up to 0.15 ice concentration 'ice free' for ice motion dataset
     """
@@ -193,7 +193,7 @@ def create_data_masks(
         | np.isnan(ui_t0)
         | np.isnan(vi_t0)
         | (ci_t0 <= ci_thresh)
-        | (perc_days_ice_free(ci_t0) >= perc_thresh)
+        | (perc_days_ice_free(ci_t0, ci_thresh=ci_thresh) >= perc_thresh)
     )
 
     return mask_bad

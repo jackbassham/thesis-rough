@@ -55,11 +55,11 @@ def run_eval(config, model_name: str) -> None:
     )
 
     # Mask invalid points in model output before evaluation
-    upred = np.where(mask_eval, np.nan, upred)
-    vpred = np.where(mask_eval, np.nan, vpred)
+    upred = np.where(mask_bad, np.nan, upred)
+    vpred = np.where(mask_bad, np.nan, vpred)
 
-    utrue = np.where(mask_eval, np.nan, utrue)
-    vtrue = np.where(mask_eval, np.nan, vtrue)
+    utrue = np.where(mask_bad, np.nan, utrue)
+    vtrue = np.where(mask_bad, np.nan, vtrue)
 
     # Get uncertainty from test split and remove channel dimension
     ri_test = np.squeeze(splits['test']['ri_t0'], axis=1)
