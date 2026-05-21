@@ -43,15 +43,23 @@ def run_eval(config, model_name: str) -> None:
     # Load current ensemble splits
     splits = load_member_splits(config)
 
-    # Get mask for test split from last feature channel
-    mask_bad = np.squeeze(splits['test']['mask'], axis=1)
+    # Get mask of bad points for test split from inputs
+    mask_bad = np.squeeze(splits['test']['mask_bad'], axis=1)
+
+    # Get monthly fixed evaluation mask for test split from inputs
+    mask_fixed_monthly = np.squeeze(splits['test']['mask_fixed_monthly'], axis=1)
+
+    mask_eval = (
+        mask_bad
+        | mask_fixed_monthly
+    )
 
     # Mask invalid points in model output before evaluation
-    upred = np.where(mask_bad, np.nan, upred)
-    vpred = np.where(mask_bad, np.nan, vpred)
+    upred = np.where(mask_eval, np.nan, upred)
+    vpred = np.where(mask_eval, np.nan, vpred)
 
-    utrue = np.where(mask_bad, np.nan, utrue)
-    vtrue = np.where(mask_bad, np.nan, vtrue)
+    utrue = np.where(mask_eval, np.nan, utrue)
+    vtrue = np.where(mask_eval, np.nan, vtrue)
 
     # Get uncertainty from test split and remove channel dimension
     ri_test = np.squeeze(splits['test']['ri_t0'], axis=1)
