@@ -56,7 +56,7 @@ def load_and_mask_member_preds(
         ri_t0s.append(ri_t0)
 
     # Return lists of preds and trues for each member
-    return preds, trues
+    return preds, trues, ri_t0s
 
 
 def load_member_preds(n_members, base_source_path):

@@ -63,7 +63,7 @@ def main():
         'rmse'
     ]
 
-    preds_list, trues_list = helpers.load_member_preds(
+    preds_list, trues_list, ri_t0s_list = helpers.load_member_preds(
         N_MEMBERS,
         BASE_SOURCE_PATH,
     )
@@ -85,11 +85,55 @@ def main():
 
         metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
 
+        all_members = []
+
+        # Initialize dict for extra uncertainty keyword argument for weighted metrics
+        metric_kwargs = {}
+
         for m in range(N_MEMBERS):
 
+            pred = preds_list[m]
+            true = trues_list[m]
+            ri_t0 = ri_t0s_list[m]
+
+            if 'weighted' in metric_str:
+                # Add current month's uncertainties array to kword arguments
+                metric_kwargs['r'] = ri_t0s_list[m]
+
+            # Compute member memtric 
+            metric = metric_fcn(
+                pred,
+                true,
+                **metric_kwargs
+            )  # expected shape: (channel, height, width)
+
+            all_members.append(metric)
 
             print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
 
+        all_members = np.stack(all_members, axis=0)
+        # shape: (member, channel, height, width)
+
+        np.savez(
+            BASE_DEST_PATH / f'all_members_{metric_str}.npz',
+            all_members=all_members,
+        )
+
+        metric_mean = np.nanmean(all_members, axis=0)
+
+        if N_MEMBERS > 1:
+            metric_sem = np.nanstd(all_members, axis=0) / np.sqrt(N_MEMBERS)
+        else:
+            metric_sem = None
+
+        np.savez(
+            BASE_DEST_PATH / f'ensemble_{metric_str}.npz',
+            mean=metric_mean,
+            sem=metric_sem,
+        )
+
+        print(f'Saved all-member, mean, and SEM arrays for {metric_str}')
+        print('')
 
 
 
