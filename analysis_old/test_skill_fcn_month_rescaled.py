@@ -23,7 +23,7 @@ except (IndexError, ValueError):
 if model_idx is not None:
     MODEL_STR = MODEL_STRS[model_idx]
 else:
-    MODEL_STR = MODEL_STRS[3]
+    MODEL_STR = MODEL_STRS[0]
 
 HEMISPHERE = 'south'
 TIMESTAMP = '05082026_1807'
@@ -52,8 +52,10 @@ def main():
     metric_strs = ['skill']
     # metric_strs = ['rmse', 'weighted_rmse', 'mae', 'mean_misfit']
 
+    _metric_str = 'skill'
 
-    plot_path = ANALYSIS_PATH / 'test_skill_monthly_rescaled' / HEMISPHERE / MODEL_STR
+
+    plot_path = ANALYSIS_PATH / 'test_skill_monthly_rescaled' / HEMISPHERE / _metric_str / MODEL_STR
     # Make plot path if it doesn't yet exist
     plot_path.mkdir(parents=True, exist_ok=True)
 
@@ -185,6 +187,8 @@ def main():
 
         print(f'Global Monthly mean and SEM computed for {metric_str}')
 
+        cbar_label = 'cm/s'
+
         if 'misfit' in metric_str:
             cmap = cmo.cm.curl_r
             vmin = -5
@@ -194,6 +198,15 @@ def main():
             cmap = cmo.cm.balance_r
             vmin = -1
             vmax = 1
+            cbar_label = ' '
+
+        elif 'correlation' in metric_str:
+            cmap = cmo.cm.balance_r
+            vmin = -1
+            vmax = 1
+            cbar_label = r'$\rho$'
+
+
 
         else:
             cmap = cmo.cm.amp
@@ -214,7 +227,7 @@ def main():
                 n_cols=4,
                 n_rows=3,
                 cmap=cmap, 
-                cbar_label='cm_s',
+                cbar_label=cbar_label,
                 vmin=vmin,
                 vmax=vmax,
                 save_path=plot_path / f'{metric_str}_mean_{ch_name}.png',
@@ -233,7 +246,7 @@ def main():
                     n_cols=4,
                     n_rows=3,
                     cmap=cmo.cm.amp, 
-                    cbar_label='cm_s',  # better for uncertainty
+                    cbar_label=cbar_label,  # better for uncertainty
                     vmin=0,
                     vmax=0.5,
                     save_path=plot_path / f'{metric_str}_sem_{ch_name}.png',
