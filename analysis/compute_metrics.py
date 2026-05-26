@@ -76,6 +76,9 @@ def main():
     # Load test split indices for month bins
     test_indices = np.load(path_model_inputs / 'indices_test.npz')
 
+    # Load in masks
+    mask_bad = 
+    
 
 
 
