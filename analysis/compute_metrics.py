@@ -30,7 +30,6 @@ TIMESTAMP_REGRID = '05062026_1852'
 TIMESTAMP_MASK_NORM = '05062026_1852'
 TIMESTAMP_MODEL_INPUTS = '05082026_1807'
 
-
 N_MEMBERS = 10
 
 BASE_SOURCE_PATH = Path(
@@ -64,21 +63,32 @@ def main():
         'rmse'
     ]
 
-    # Load lists of predictions from each member
     preds_list, trues_list = helpers.load_member_preds(
         N_MEMBERS,
         BASE_SOURCE_PATH,
     )
 
     # Load path to model inputs
-    path_model_inputs = DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
+    path_model_inputs = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
 
-    # Load test split indices for month bins
-    test_indices = np.load(path_model_inputs / 'indices_test.npz')
-
-    # Load in masks
-    mask_bad = 
+    # Load lists of masked predictions and true values from each member
+    preds_list, trues_list = helpers.load_and_mask_member_preds(
+        N_MEMBERS,
+        BASE_SOURCE_PATH,
+        path_model_inputs,
+    )
     
+    # Compute metrics for each ensemble member
+    for metric_str in metric_strs:
+
+        print(f'~~~~~~~~~~~{metric_str.upper()}~~~~~~~~~~~~~~')
+
+        metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
+
+        for m in range(N_MEMBERS):
+
+
+            print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
 
 
 
