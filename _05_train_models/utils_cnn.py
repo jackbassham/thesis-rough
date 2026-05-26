@@ -38,7 +38,7 @@ def build_dataset(data_split, device, include_uncertainty=False, include_mask=Fa
     if include_mask:
         # Append mask to the list of tensors if it's included for masked loss
         tensors.append(
-            torch.from_numpy(data_split['mask']).bool().to(device)
+            torch.from_numpy(data_split['mask_bad']).bool().to(device)
         )
 
 
