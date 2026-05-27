@@ -109,3 +109,101 @@ def load_member_test_split(
         member_splits['test'][input_name] = array[test_indices[m_key]]
 
     return member_splits
+
+
+from pathlib import Path
+import numpy as np
+
+
+def load_all_metrics(
+    data_root,
+    model_strs,
+    metric_strs,
+    hemisphere,
+    timestamp,
+    monthly=False
+):
+    """
+    Returns
+    -------
+    metrics : dict
+
+    Non-monthly:
+        metrics[model_str][metric_str]['mean']
+        metrics[model_str][metric_str]['sem']
+
+    Monthly:
+        metrics[model_str][metric_str]['mean']
+        metrics[model_str][metric_str]['sem']
+        metrics[model_str][metric_str]['members']
+    """
+
+    # Initialize empty dict for all nested metrics
+    metrics = {}
+
+    # Loop through models
+    for model_str in model_strs:
+
+        if monthly:
+            base_path = (
+                Path(data_root)
+                / 'analysis'
+                / 'metrics_monthly'
+                / model_str
+                / hemisphere
+                / timestamp
+            )
+
+        else:
+            base_path = (
+                Path(data_root)
+                / 'analysis'
+                / 'metrics'
+                / model_str
+                / hemisphere
+                / timestamp
+            )
+
+        # Initialize empty nested dict for current model's metrics
+        metrics[model_str] = {}
+
+        for metric_str in metric_strs:
+
+            # Initialize empty nested dict for current metric
+            metrics[model_str][metric_str] = {}
+
+            # ---------- Ensemble Mean/ SEM ----------
+            ensemble_path = (
+                base_path
+                / f'ensemble_{metric_str}.npz'
+            )
+
+            if ensemble_path.exists():
+
+                ensemble_data = np.load(ensemble_path)
+
+                metrics[model_str][metric_str]['mean'] = (
+                    ensemble_data['mean']
+                )
+
+                metrics[model_str][metric_str]['sem'] = (
+                    ensemble_data['sem']
+                )
+
+            # ---------- All Members ----------
+            if monthly:
+
+                members_path = (
+                    base_path
+                    / f'all_members_{metric_str}.npz'
+                )
+
+                if members_path.exists():
+
+                    members_data = np.load(members_path)
+
+                    metrics[model_str][metric_str]['members'] = (
+                        members_data['members']
+                    )
+
+    return metrics
