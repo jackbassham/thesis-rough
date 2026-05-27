@@ -27,7 +27,7 @@ def weighted_correlation(pred, true, r, epsilon = 1e-4):
     
     """
 
-    w = 1 / (r + epsilon)
+    w = 1 / (r**2 + epsilon)
 
     def weighted_mean(x, w):
         return np.nansum(w * x, axis = 0) / np.nansum(w, axis = 0)
@@ -70,7 +70,7 @@ def skill(pred, true, epsilon = 1):
 def weighted_skill(pred, true, r, epsilon = 1):
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
-    w = 1 / (r + epsilon)
+    w = 1 / (r**2 + epsilon)
 
     mse = np.nanmean( w * (true - pred) ** 2, axis = 0) # mean square error
     # NOTE above is not equivalent to np.nanvar(true-pred), which excludes bias term
@@ -106,7 +106,7 @@ def weighted_mse(pred, true, r, eps=1e-4):
     # Weighted mse is used for the closed form solution!
 
     # Compute weights
-    w = 1 / (r + eps)
+    w = 1 / (r**2 + eps)
     
     # Compute weighted square error
     wse = w * (pred - true)**2

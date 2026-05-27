@@ -14,9 +14,9 @@ MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
 METRIC_STRS = [
     'skill',
     'weighted_skill',
+    'correlation',
     'weighted_correlation',
-    'weighted_correlation',
-    'weighted_skill',]
+    ]
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
 
@@ -122,8 +122,8 @@ def plot_global_monthly_ensemble_all_models(
                 yerr=2 * sem[:, 0],
                 color=model_colors[model_str],
                 linestyle="-",
-                linewidth=2.5,
-                capsize=3,
+                linewidth=2,
+                capsize=2.5,
                 clip_on=False,
             )
 
@@ -133,12 +133,11 @@ def plot_global_monthly_ensemble_all_models(
                 yerr=2 * sem[:, 1],
                 color=model_colors[model_str],
                 linestyle=":",
-                linewidth=2.5,
-                capsize=3,
+                linewidth=2,
+                capsize=2.5,
                 clip_on=False,
             )
 
-        ax.set_ylabel(ylabel, fontsize=12, fontweight="bold")
         ax.set_title(title, fontsize=12, fontweight="bold")
         ax.grid(True, alpha=0.25, linewidth=0.5)
 
@@ -154,10 +153,18 @@ def plot_global_monthly_ensemble_all_models(
         for ax in axs.flat:
             ax.set_xlim(1, 12)
 
-        axs[0, 0].set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
-        axs[0, 1].set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
-        axs[1, 0].set_yticks([0.0, 0.2, 0.4, 0.6, 0.8])
-        axs[1, 1].set_yticks([0.0, 0.2, 0.4, 0.6, 0.8])
+        axs[0,0].set_ylabel(r'$Skill$', fontsize=12, fontweight="bold")
+        axs[1,0].set_ylabel(r'$\rho$', fontsize=12, fontweight="bold")
+
+        axs[0, 0].set_ylim(-0.5, 0.7)
+        axs[0, 1].set_ylim(-0.5, 0.7)
+        axs[1, 0].set_ylim(0.15, 0.75)
+        axs[1, 1].set_ylim(0.15, 0.75)
+
+        axs[0, 0].set_yticks([-0.4, -0.2, 0.0, 0.2, 0.4, 0.6])
+        axs[0, 1].set_yticks([-0.4, -0.2, 0.0, 0.2, 0.4, 0.6])
+        axs[1, 0].set_yticks([0.2, 0.4, 0.6])
+        axs[1, 1].set_yticks([0.2, 0.4, 0.6])
 
     # ==================================================
     # COMBINED LEGEND
@@ -170,8 +177,8 @@ def plot_global_monthly_ensemble_all_models(
             yerr=[0.1],
             color=color,
             linestyle="-",
-            linewidth=2.5,
-            capsize=3,
+            linewidth=2,
+            capsize=2.5,
             label=label,
         )
 
@@ -205,7 +212,7 @@ def plot_global_monthly_ensemble_all_models(
     legend_texts = legend.get_texts()
 
     legend_texts[0].set_fontweight("bold")  # Models
-    legend_texts[4].set_fontweight("bold")  # Predictions
+    legend_texts[6].set_fontweight("bold")  # Predictions
 
     # ==================================================
     # FINAL FORMATTING
