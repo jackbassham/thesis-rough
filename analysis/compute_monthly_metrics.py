@@ -121,7 +121,7 @@ def main():
             print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
 
         monthly_all_members = np.stack(monthly_all_members, axis=0)
-        # shape: (member, channel, height, width)
+        # shape: (member, month, channel, height, width)
 
         np.savez(
             BASE_DEST_PATH / f'monthly_all_members_{metric_str}.npz',
