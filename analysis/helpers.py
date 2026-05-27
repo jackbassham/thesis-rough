@@ -35,13 +35,13 @@ def load_and_mask_member_preds(
 
         # Load masks and slice to member test indices
         mask_bad = input_arrays['mask_bad'][idx]
-        fixed_monthly_mask = input_arrays['fixed_monthly_mask'][idx]
+        mask_fixed_monthly = input_arrays['mask_fixed_monthly'][idx]
         
         # Load in uncertainty
         ri_t0 = input_arrays['ri_t0'][idx]
 
         # Combine bad point and fixed monthly masks
-        mask = mask_bad | fixed_monthly_mask
+        mask = mask_bad | mask_fixed_monthly
 
         # # Expand channel dimension
         # mask = mask[:, np.newaxis, :, :]
