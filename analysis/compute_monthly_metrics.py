@@ -1,3 +1,4 @@
+import calendar
 import numpy as np
 from pathlib import Path
 import sys
@@ -41,7 +42,7 @@ BASE_SOURCE_PATH = Path(
 BASE_DEST_PATH = Path(
     DATA_ROOT
     / 'analysis'
-    / 'metrics'
+    / 'metrics_monthly'
     / MODEL_STR
     / HEMISPHERE
     / TIMESTAMP
@@ -66,7 +67,7 @@ def main():
     path_model_inputs = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
 
     # Load lists of masked predictions and true values from each member
-    preds_list, trues_list = helpers.load_and_mask_member_preds(
+    preds_list, trues_list, ri_t0s_list = helpers.load_and_mask_member_preds(
         N_MEMBERS,
         BASE_SOURCE_PATH,
         path_model_inputs,
@@ -81,7 +82,7 @@ def main():
 
         metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
 
-        all_members = []
+        monthly_all_members = []
 
         # Initialize dict for extra uncertainty keyword argument for weighted metrics
         metric_kwargs = {}
@@ -90,7 +91,6 @@ def main():
 
             pred = preds_list[m]
             true = trues_list[m]
-            ri_t0 = ri_t0s_list[m]
 
             if 'weighted' in metric_str:
                 # Add current month's uncertainties array to kword arguments

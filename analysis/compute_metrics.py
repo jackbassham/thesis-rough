@@ -66,7 +66,7 @@ def main():
     path_model_inputs = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
 
     # Load lists of masked predictions and true values from each member
-    preds_list, trues_list = helpers.load_and_mask_member_preds(
+    preds_list, trues_list, ri_t0s_list = helpers.load_and_mask_member_preds(
         N_MEMBERS,
         BASE_SOURCE_PATH,
         path_model_inputs,
@@ -90,7 +90,6 @@ def main():
 
             pred = preds_list[m]
             true = trues_list[m]
-            ri_t0 = ri_t0s_list[m]
 
             if 'weighted' in metric_str:
                 # Add current month's uncertainties array to kword arguments
