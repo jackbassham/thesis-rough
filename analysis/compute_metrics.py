@@ -63,11 +63,6 @@ def main():
         'rmse'
     ]
 
-    preds_list, trues_list, ri_t0s_list = helpers.load_member_preds(
-        N_MEMBERS,
-        BASE_SOURCE_PATH,
-    )
-
     # Load path to model inputs
     path_model_inputs = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
 
@@ -77,6 +72,8 @@ def main():
         BASE_SOURCE_PATH,
         path_model_inputs,
     )
+
+    print(f'~~~~~All member masked preds and trues loaded~~~~~')
     
     # Compute metrics for each ensemble member
     for metric_str in metric_strs:
@@ -136,8 +133,8 @@ def main():
         print('')
 
 
-
-
+if __name__ == '__main__':
+    main()
 
 
 
