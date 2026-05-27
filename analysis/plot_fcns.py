@@ -18,6 +18,7 @@ def plot_cartopy_map(
         vmin=-1,
         vmax=1,
         save_path=None,
+        annotate_means=False
 ):
     
     # Set longitude bounds for plot (full zonal coverage)
@@ -87,6 +88,12 @@ def plot_cartopy_map(
 
     # Shared colorbar
     fig.colorbar(pcm, ax=axs[:n_plots], orientation="vertical", shrink=0.8, label=cbar_label)
+
+    if annotate_means:
+        # Add text with means (only valid for meridional, zonal plots)
+        fig.text(0, -0.05, f"mean zonal: {np.nanmean(data[0]):.4f}")
+        fig.text(0.5, -0.05, f"mean meridional: {np.nanmean(data[1]):.4f}")
+
 
     if suptitle:
         fig.suptitle(suptitle, fontweight="bold")

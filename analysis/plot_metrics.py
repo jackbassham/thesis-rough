@@ -124,6 +124,7 @@ def main():
                 n_cols=2,
                 n_rows=1,
                 save_path=mean_save_path,
+                annotate_mean=True,
                 **settings,
             )
 
@@ -153,6 +154,7 @@ def main():
                     n_cols=2,
                     n_rows=1,
                     save_path=sem_save_path,
+                    annotate_mean=True,
                     **sem_settings,
                 )
 
