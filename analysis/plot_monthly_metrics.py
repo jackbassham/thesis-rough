@@ -110,6 +110,10 @@ def main():
 
             settings = metric_plot_settings(metric_str)
 
+            print('metric_mean shape:', metric_mean.shape)
+            print('selected data shape:', metric_mean[:, ch].shape)
+            print('lon shape:', lon.shape)
+            print('lat shape:', lat.shape)
 
             # ------------------
             # Mean ensemble plot
