@@ -110,7 +110,6 @@ def main():
 
             settings = metric_plot_settings(metric_str)
 
-            titles = ['u', 'v']
 
             # ------------------
             # Mean ensemble plot
@@ -130,7 +129,7 @@ def main():
                     data_channel_axis=0,
                     n_cols=4,
                     n_rows=3,
-                    save_path=model_plot_path / f'{metric_str}_mean_{ch_name}.png',
+                    save_path=model_plot_path / f'ensemble_mean_{metric_str}_{ch_name}.png',
                     **settings
                 )
 
@@ -160,7 +159,7 @@ def main():
                     data_channel_axis=0,
                     n_cols=4,
                     n_rows=3,
-                    save_path=model_plot_path / f'{metric_str}_mean_{ch_name}.png',
+                    save_path=model_plot_path / f'ensemble_sem_{metric_str}_{ch_name}.png',
                     **settings
                 )
 

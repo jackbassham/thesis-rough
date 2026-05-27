@@ -187,7 +187,7 @@ def metric_fcn_month(pred, true, time, metric_fcn, ri_t0=None):
         monthly_metrics.append(month_metric)
 
     # Return stacked array of montly metrics along first (month) axis
-    return(np.stack(monthly_metrics, axis=0)) # (month, height, width)
+    return(np.stack(monthly_metrics, axis=0)) # (month, channel, height, width)
 
 
 if __name__ == '__main__':
