@@ -24,7 +24,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/rough_plots/metrics')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/rough_plots/metrics_monthly')
 
 
 def metric_plot_settings(metric_str):
