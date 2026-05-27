@@ -113,7 +113,7 @@ def main():
                 true,
                 time_t0[test_indices[f'{m:02d}']],
                 metric_fcn,
-                **metric_kwargs
+                metric_kwargs
             )  # expected shape: (channel, height, width)
 
             monthly_all_members.append(monthly_metric)
