@@ -28,6 +28,7 @@ HEMISPHERE = 'south'
 TIMESTAMP = '05222026_1652'
 
 TIMESTAMP_MODEL_INPUTS = TIMESTAMP
+TIMESTAMP_REGRID = TIMESTAMP
 
 N_MEMBERS = 10
 
@@ -67,11 +68,18 @@ def main():
     path_model_inputs = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
 
     # Load lists of masked predictions and true values from each member
-    preds_list, trues_list, ri_t0s_list = helpers.load_and_mask_member_preds(
+    preds_list, trues_list, ri_t0s_list, test_indices = helpers.load_and_mask_member_preds(
         N_MEMBERS,
         BASE_SOURCE_PATH,
         path_model_inputs,
+        return_indices=True,
     )
+
+    # Load time from cordinates file
+    time_t0 = np.load(
+        Path(DATA_ROOT / 'regrid' / HEMISPHERE / TIMESTAMP_REGRID)
+        / 'coordinatess.npz'
+    )['time_t0']
 
     # Make destination path if it does not already exist
     BASE_DEST_PATH.mkdir(parents=True, exist_ok=True)
@@ -100,28 +108,30 @@ def main():
                 metric_kwargs['r'] = ri_t0s_list[m]
 
             # Compute member memtric 
-            metric = metric_fcn(
+            monthly_metric = metric_fcn(
                 pred,
                 true,
+                time_t0[test_indices[f'{m:02d}']],
+                metric_fcn,
                 **metric_kwargs
             )  # expected shape: (channel, height, width)
 
-            all_members.append(metric)
+            monthly_all_members.append(monthly_metric)
 
             print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
 
-        all_members = np.stack(all_members, axis=0)
+        monthly_all_members = np.stack(monthly_all_members, axis=0)
         # shape: (member, channel, height, width)
 
         np.savez(
-            BASE_DEST_PATH / f'all_members_{metric_str}.npz',
-            all_members=all_members,
+            BASE_DEST_PATH / f'monthly_all_members_{metric_str}.npz',
+            monthly_all_members=monthly_all_members,
         )
 
-        metric_mean = np.nanmean(all_members, axis=0)
+        metric_mean = np.nanmean(monthly_all_members, axis=0)
 
         if N_MEMBERS > 1:
-            metric_sem = np.nanstd(all_members, axis=0) / np.sqrt(N_MEMBERS)
+            metric_sem = np.nanstd(monthly_all_members, axis=0) / np.sqrt(N_MEMBERS)
         else:
             metric_sem = None
 
@@ -133,6 +143,41 @@ def main():
 
         print(f'Saved all-member, mean, and SEM arrays for {metric_str}')
         print('')
+
+
+def metric_fcn_month(pred, true, time, metric_fcn, metric_kwargs):
+    """
+    
+    """
+
+    # Define number of month bins
+    n_months = 12
+
+    # Get month numbers from time array
+    months = (time.astype('datetime64[M]').astype(int) % 12) + 1
+
+    # Initialize list for monthly metrics
+    monthly_metrics = []
+
+    # Loop through months
+    for i in range(n_months):
+
+        # Get current month's time indices
+        month_indices = months == (i + 1)
+
+        # Compute metric for the current month and include uncertainty kwarg if weighted metric
+        # (height, width)
+        month_metric = metric_fcn(
+            pred[month_indices],
+            true[month_indices],
+            **metric_kwargs,
+        )
+
+        # Append to the list of monthly metrics
+        monthly_metrics.append(month_metric)
+
+    # Return stacked array of montly metrics along first (month) axis
+    return(np.stack(monthly_metrics, axis=0)) # (month, height, width)
 
 
 if __name__ == '__main__':

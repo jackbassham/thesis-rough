@@ -5,6 +5,7 @@ def load_and_mask_member_preds(
         n_members,
         base_source_path,
         model_inputs_path,
+        return_indices=False,
 ):
     """
     Load predictions/truths for each ensemble member and apply
@@ -55,8 +56,13 @@ def load_and_mask_member_preds(
         trues.append(y_true)
         ri_t0s.append(ri_t0)
 
-    # Return lists of preds and trues for each member
-    return preds, trues, ri_t0s
+    if return_indices:
+        # Return lists of preds, trues, uncertainties, and indices for each member
+        return preds, trues, ri_t0s, test_indices
+    
+    else:
+        # Return lists of preds, trues, and uncertainties for each member
+        return preds, trues, ri_t0s
 
 
 def load_member_preds(n_members, base_source_path):
