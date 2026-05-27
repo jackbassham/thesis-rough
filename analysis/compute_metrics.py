@@ -43,6 +43,7 @@ BASE_SOURCE_PATH = Path(
 BASE_DEST_PATH = Path(
     DATA_ROOT
     / 'analysis'
+    / 'metrics'
     / MODEL_STR
     / HEMISPHERE
     / TIMESTAMP
