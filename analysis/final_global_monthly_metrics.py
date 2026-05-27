@@ -62,7 +62,7 @@ def compute_global_monthly_metrics(metrics, n_members):
     Compute global monthly mean and 2*SEM for each model/metric.
 
     Input:
-        metrics[model_str][metric_str]['members']
+        metrics[model_str][metric_str]['all_members']
             shape: (member, month, channel, lat, lon)
             or     (member, month, lat, lon)
 
@@ -79,7 +79,11 @@ def compute_global_monthly_metrics(metrics, n_members):
 
         for metric_str, metric_data in model_metrics.items():
 
-            monthly_all_members = metric_data['members']
+            print()
+            print(model_str, metric_str, metric_data.keys())
+            print()
+
+            monthly_all_members = metric_data['all_members']
 
             # Spatial mean for each member/month/channel
             global_per_member = np.nanmean(
@@ -94,8 +98,7 @@ def compute_global_monthly_metrics(metrics, n_members):
             )
 
             global_monthly_sem = (
-                2
-                * np.nanstd(global_per_member, axis=0)
+                np.nanstd(global_per_member, axis=0)
                 / np.sqrt(n_members)
             )
 
@@ -147,8 +150,7 @@ def plot_global_monthly_ensemble_all_models(
     for model_str in model_strs:
 
         global_mean = global_metrics[model_str][metric_str]["mean"]
-        # NOTE 2 sigma for error bars
-        global_sem = 2 * global_metrics[model_str][metric_str]["sem"]
+        global_sem = global_metrics[model_str][metric_str]["sem"]
 
         for ch, channel in enumerate(channels):
 

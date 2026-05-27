@@ -195,7 +195,7 @@ def load_all_metrics(
 
                 members_path = (
                     base_path
-                    / f'all_members_{metric_str}.npz'
+                    / f'monthly_all_members_{metric_str}.npz'
                 )
 
                 if members_path.exists():
@@ -203,7 +203,10 @@ def load_all_metrics(
                     members_data = np.load(members_path)
 
                     metrics[model_str][metric_str]['all_members'] = (
-                        members_data['all_members']
+                        members_data['monthly_all_members']
                     )
+
+                else:
+                    raise ValueError(f'Members path: {members_path} DNE')
 
     return metrics
