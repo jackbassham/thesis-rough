@@ -273,62 +273,30 @@ def plot_global_monthly_ensemble_all_models(
     # COMBINED LEGEND
     # ==================================================
 
+    def errorbar_proxy(color, label):
+        return ax1.errorbar(
+            [np.nan],
+            [np.nan],
+            yerr=[0.1],
+            color=color,
+            linestyle="-",
+            linewidth=2.5,
+            capsize=3,
+            label=label,
+        )
+
     legend_handles = [
-
-    # --------------------------------------------------
-    # MODELS
-    # --------------------------------------------------
-
         Line2D([], [], linestyle="none", label="Models"),
 
-        Line2D(
-            [0],
-            [0],
-            color=model_colors["cnn_pt_wtd"],
-            lw=2.5,
-            label="WCNN",
-        ),
-
-        Line2D(
-            [0],
-            [0],
-            color=model_colors["lr_cf_wtd"],
-            lw=2.5,
-            label="WLR",
-        ),
-
-        Line2D(
-            [0],
-            [0],
-            color=model_colors["ps"],
-            lw=2.5,
-            label="PS",
-        ),
-
-        # --------------------------------------------------
-        # COMPONENTS
-        # --------------------------------------------------
+        errorbar_proxy(model_colors["cnn_pt_wtd"], "WCNN"),
+        errorbar_proxy(model_colors["lr_cf_wtd"], "WLR"),
+        errorbar_proxy(model_colors["ps"], "PS"),
 
         Line2D([], [], linestyle="none", label="Predictions"),
 
-        Line2D(
-            [0],
-            [0],
-            color="black",
-            linestyle="-",
-            lw=2,
-            label=r'$u_{i,t}$',
-        ),
-
-        Line2D(
-            [0],
-            [0],
-            color="black",
-            linestyle=":",
-            lw=2,
-            label=r'$v_{i,t}$',
-        ),
-]
+        Line2D([0], [0], color="black", linestyle="-", lw=2, label=r"$u_{i,t}$"),
+        Line2D([0], [0], color="black", linestyle=":", lw=2, label=r"$v_{i,t}$"),
+    ]
 
     legend = fig.legend(
         handles=legend_handles,
