@@ -50,20 +50,19 @@ def main():
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
-    for metric_str in METRIC_STRS:
-        plot_global_monthly_ensemble_all_models(
+    plot_global_monthly_ensemble_all_models(
             global_metrics=global_metrics,
             model_strs=MODEL_STRS,
             month_labels=month_labels,
-            metric_str=metric_str,
-            save_path=PLOT_PATH / f'global_monthly_{metric_str}_all_models.png',
+            metric_str=['weighted_correlation', 'weighted_skill'],
+            save_path=PLOT_PATH / f'global_monthly_all_models.png',
             ylabel="Skill",
     )
 
 
 def compute_global_monthly_metrics(metrics, n_members):
     """
-    Compute global monthly mean and SEM for each model/metric.
+    Compute global monthly mean and 2*SEM for each model/metric.
 
     Input:
         metrics[model_str][metric_str]['all_members']
@@ -117,23 +116,13 @@ def compute_global_monthly_metrics(metrics, n_members):
 def plot_global_monthly_ensemble_all_models(
         global_metrics,
         model_strs,
+        metric_strs,
         month_labels,
-        metric_str,
         save_path,
-        ylabel=None,
-        title_prefix="Global monthly",
         channels=("u", "v"),
         model_colors=None,
-        figsize=(10, 5),
+        figsize=(12, 10),
     ):
-    """
-    Plot global monthly ensemble means with SEM error bars for all models.
-
-    Expected input structure
-    ------------------------
-    global_metrics[model_str][metric_str]['mean']  # (month, channel)
-    global_metrics[model_str][metric_str]['sem']   # (month, channel)
-    """
 
     months = np.arange(1, 13)
 
@@ -149,41 +138,55 @@ def plot_global_monthly_ensemble_all_models(
         "v": "--",
     }
 
-    fig, ax = plt.subplots(figsize=figsize)
+    n_metrics = len(metric_strs)
 
-    for model_str in model_strs:
-
-        global_mean = global_metrics[model_str][metric_str]["mean"]
-        # NOTE using 2 sigma
-        global_sem = 2 * global_metrics[model_str][metric_str]["sem"]
-
-        for ch, channel in enumerate(channels):
-
-            ax.errorbar(
-                months,
-                global_mean[:, ch],
-                yerr=global_sem[:, ch],
-                label=f"{model_str} {channel}",
-                color=model_colors[model_str],
-                linestyle=linestyles[channel],
-                capsize=3,
-                linewidth=2,
-            )
-
-    ax.set_xticks(months)
-    ax.set_xticklabels(month_labels, rotation=45)
-
-    ax.set_xlabel("Month")
-    ax.set_ylabel(ylabel if ylabel is not None else metric_str.upper())
-
-    ax.set_title(
-        f"{title_prefix} {metric_str.upper()}: all models",
-        fontweight="bold"
+    fig, axs = plt.subplots(
+        n_metrics,
+        1,
+        figsize=figsize,
+        sharex=True,
     )
 
+    # Handle single subplot case
+    if n_metrics == 1:
+        axs = [axs]
+
+    for ax, metric_str in zip(axs, metric_strs):
+
+        for model_str in model_strs:
+
+            global_mean = global_metrics[model_str][metric_str]["mean"]
+
+            # NOTE using 2 sigma
+            global_sem = (
+                2 * global_metrics[model_str][metric_str]["sem"]
+            )
+
+            for ch, channel in enumerate(channels):
+
+                ax.errorbar(
+                    months,
+                    global_mean[:, ch],
+                    yerr=global_sem[:, ch],
+                    color=model_colors[model_str],
+                    linestyle=linestyles[channel],
+                    capsize=3,
+                    linewidth=2,
+                )
+
+        ax.set_ylabel(metric_str.upper())
+        ax.grid(True, alpha=0.3)
+
+    # Bottom axis only
+    axs[-1].set_xticks(months)
+    axs[-1].set_xticklabels(month_labels, rotation=45)
+    axs[-1].set_xlabel("Month")
+
     # -----------------------
-    # Model legend (colors)
+    # Shared legends
     # -----------------------
+    from matplotlib.lines import Line2D
+
     model_handles = [
         Line2D(
             [0], [0],
@@ -194,9 +197,6 @@ def plot_global_monthly_ensemble_all_models(
         for model_str in model_strs
     ]
 
-    # -----------------------
-    # Channel legend (styles)
-    # -----------------------
     channel_handles = [
         Line2D(
             [0], [0],
@@ -208,24 +208,32 @@ def plot_global_monthly_ensemble_all_models(
         for channel in channels
     ]
 
-    # First legend: models
-    legend1 = ax.legend(
+    legend1 = fig.legend(
         handles=model_handles,
         title="Model",
-        loc="upper left",
+        loc="upper center",
+        bbox_to_anchor=(0.4, 0.98),
+        ncol=len(model_strs),
     )
 
-    # Keep first legend when adding second
-    ax.add_artist(legend1)
+    fig.add_artist(legend1)
 
-    # Second legend: channels
-    ax.legend(
+    fig.legend(
         handles=channel_handles,
         title="Channel",
-        loc="upper right",
+        loc="upper center",
+        bbox_to_anchor=(0.9, 0.98),
+        ncol=len(channels),
     )
 
-    plt.tight_layout()
+    fig.suptitle(
+        "Global Monthly Metrics",
+        fontweight="bold",
+        fontsize=14,
+    )
+
+    plt.tight_layout(rect=[0, 0, 1, 0.93])
+
     plt.savefig(save_path, dpi=200)
     plt.close()
 
