@@ -108,7 +108,7 @@ def main():
                 metric_kwargs['r'] = ri_t0s_list[m]
 
             # Compute member memtric 
-            monthly_metric = metric_fcn(
+            monthly_metric = metric_fcn_month(
                 pred,
                 true,
                 time_t0[test_indices[f'{m:02d}']],
