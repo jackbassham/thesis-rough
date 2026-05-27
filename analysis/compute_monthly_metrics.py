@@ -78,7 +78,7 @@ def main():
     # Load time from cordinates file
     time_t0 = np.load(
         Path(DATA_ROOT / 'regrid' / HEMISPHERE / TIMESTAMP_REGRID)
-        / 'coordinatess.npz'
+        / 'coordinates.npz'
     )['time_t0']
 
     # Make destination path if it does not already exist
