@@ -54,7 +54,7 @@ def main():
             global_metrics=global_metrics,
             model_strs=MODEL_STRS,
             month_labels=month_labels,
-            metric_str=['weighted_correlation', 'weighted_skill'],
+            metric_strs=['weighted_correlation', 'weighted_skill'],
             save_path=PLOT_PATH / f'global_monthly_all_models.png',
             ylabel="Skill",
     )
