@@ -169,6 +169,7 @@ def plot_global_monthly_ensemble_all_models(
             linestyle="-",
             linewidth=2.5,
             capsize=3,
+            clip_on=False,
         )
 
         # v component
@@ -180,6 +181,7 @@ def plot_global_monthly_ensemble_all_models(
             linestyle=":",
             linewidth=2.5,
             capsize=3,
+            clip_on=False,
         )
 
     ax1.set_ylabel(r"$Skill$", fontsize=12, fontweight='bold')
@@ -219,6 +221,7 @@ def plot_global_monthly_ensemble_all_models(
             linestyle="-",
             linewidth=2.5,
             capsize=3,
+            clip_on=False,
         )
 
         # v component
@@ -230,6 +233,7 @@ def plot_global_monthly_ensemble_all_models(
             linestyle=":",
             linewidth=2.5,
             capsize=3,
+            clip_on=False,
         )
 
     ax2.set_ylabel(r'$\rho$', fontsize=12, fontweight='bold')
@@ -261,6 +265,7 @@ def plot_global_monthly_ensemble_all_models(
         ha="right",
         fontweight='bold'
     )
+    ax2.set_xlim(1, 12)
 
     # ax2.set_xlabel("Month", fontsize=12)
 
@@ -312,7 +317,7 @@ def plot_global_monthly_ensemble_all_models(
             color="black",
             linestyle="-",
             lw=2,
-            label=r"",
+            label=r'$u_{i,t}$',
         ),
 
         Line2D(
@@ -321,14 +326,14 @@ def plot_global_monthly_ensemble_all_models(
             color="black",
             linestyle=":",
             lw=2,
-            label="Meridional (v)",
+            label=r'$v_{i,t}$',
         ),
 ]
 
     legend = fig.legend(
         handles=legend_handles,
         loc="center left",
-        bbox_to_anchor=(0.90, 0.5),
+        bbox_to_anchor=(0.85, 0.5),
         frameon=True,
         edgecolor="black",
         facecolor="white",
