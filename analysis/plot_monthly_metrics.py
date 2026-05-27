@@ -113,7 +113,6 @@ def main():
             # ------------------
             # Mean ensemble plot
             # ------------------
-            mean_save_path = model_plot_path / f'ensemble_mean_{metric_str}.png'
 
             for ch, ch_name in enumerate(['u', 'v']):
 
@@ -132,7 +131,7 @@ def main():
                     **settings
                 )
 
-            print(f'Saved {mean_save_path}')
+            print(f'Saved {model_plot_path / f'ensemble_mean_{metric_str}_{ch_name}.png'}')
 
             # ------------------
             # SEM plot
@@ -162,7 +161,7 @@ def main():
                     **settings
                 )
 
-                print(f'Saved {sem_save_path}')
+                print(f'Saved {model_plot_path / f'ensemble_sem_{metric_str}_{ch_name}.png'}')
 
             print('')
 
