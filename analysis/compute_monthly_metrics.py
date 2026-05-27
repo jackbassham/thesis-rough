@@ -75,6 +75,16 @@ def main():
         return_indices=True,
     )
 
+    # Load path to masked normalized data
+    path_mask_norm = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
+                          
+    Ui_t0 = np.load(path_mask_norm / 'global_stds.npz')['Ui_t0']
+
+    # Rescale the uncertainties
+    ri_t0s_list = [ri_t0 * Ui_t0 for ri_t0 in ri_t0s_list]
+
+    print(f'~~~~~All member masked preds and trues loaded~~~~~')
+
     # Load time from cordinates file
     time_t0 = np.load(
         Path(DATA_ROOT / 'regrid' / HEMISPHERE / TIMESTAMP_REGRID)
@@ -84,7 +94,6 @@ def main():
     # Make destination path if it does not already exist
     BASE_DEST_PATH.mkdir(parents=True, exist_ok=True)
 
-    print(f'~~~~~All member masked preds and trues loaded~~~~~')
     
     # Compute metrics for each ensemble member
     for metric_str in metric_strs:

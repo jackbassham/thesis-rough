@@ -72,6 +72,14 @@ def main():
         path_model_inputs,
     )
 
+    # Load path to masked normalized data
+    path_mask_norm = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
+                          
+    Ui_t0 = np.load(path_mask_norm / 'global_stds.npz')['Ui_t0']
+
+    # Rescale the uncertainties
+    ri_t0s_list = [ri_t0 * Ui_t0 for ri_t0 in ri_t0s_list]
+
     print(f'~~~~~All member masked preds and trues loaded~~~~~')
 
     # Make destination path if it does not already exist
