@@ -73,6 +73,9 @@ def main():
         path_model_inputs,
     )
 
+    # Make destination path if it does not already exist
+    BASE_DEST_PATH.mkdir(parents=True, exist_ok=True)
+
     print(f'~~~~~All member masked preds and trues loaded~~~~~')
     
     # Compute metrics for each ensemble member

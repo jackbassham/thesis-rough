@@ -73,7 +73,10 @@ def main():
     )
 
     print(f'~~~~~All member masked preds and trues loaded~~~~~')
-    
+
+    # Make destination path if it does not already exist
+    BASE_DEST_PATH.mkdir(parents=True, exist_ok=True)
+
     # Compute metrics for each ensemble member
     for metric_str in metric_strs:
 
