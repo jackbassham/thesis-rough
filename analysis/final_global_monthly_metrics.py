@@ -1,12 +1,16 @@
 import calendar
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 from pathlib import Path
 
 from analysis import plot_fcns, helpers
 
 
-MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
+# MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
+MODEL_STRS = ['ps', 'lr_cf_wtd', 'cnn_pt_wtd']
+# MODEL_STRS = ['ps', 'lr_cf', 'cnn_pt']
+
 
 METRIC_STRS = [
     'correlation',
@@ -23,7 +27,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/rough_plots/global_metrics_monthly')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/global_metrics_monthly_wtd_models')
 
 
 def main():
@@ -59,7 +63,7 @@ def main():
 
 def compute_global_monthly_metrics(metrics, n_members):
     """
-    Compute global monthly mean and 2*SEM for each model/metric.
+    Compute global monthly mean and SEM for each model/metric.
 
     Input:
         metrics[model_str][metric_str]['all_members']
@@ -177,8 +181,49 @@ def plot_global_monthly_ensemble_all_models(
         fontweight="bold"
     )
 
-    ax.legend(ncol=2)
-    ax.grid(True, alpha=0.3)
+    # -----------------------
+    # Model legend (colors)
+    # -----------------------
+    model_handles = [
+        Line2D(
+            [0], [0],
+            color=model_colors[model_str],
+            lw=2,
+            label=model_str
+        )
+        for model_str in model_strs
+    ]
+
+    # -----------------------
+    # Channel legend (styles)
+    # -----------------------
+    channel_handles = [
+        Line2D(
+            [0], [0],
+            color="black",
+            lw=2,
+            linestyle=linestyles[channel],
+            label=channel
+        )
+        for channel in channels
+    ]
+
+    # First legend: models
+    legend1 = ax.legend(
+        handles=model_handles,
+        title="Model",
+        loc="upper left",
+    )
+
+    # Keep first legend when adding second
+    ax.add_artist(legend1)
+
+    # Second legend: channels
+    ax.legend(
+        handles=channel_handles,
+        title="Channel",
+        loc="upper right",
+    )
 
     plt.tight_layout()
     plt.savefig(save_path, dpi=200)
