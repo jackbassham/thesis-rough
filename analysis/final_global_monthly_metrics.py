@@ -150,7 +150,8 @@ def plot_global_monthly_ensemble_all_models(
     for model_str in model_strs:
 
         global_mean = global_metrics[model_str][metric_str]["mean"]
-        global_sem = global_metrics[model_str][metric_str]["sem"]
+        # NOTE using 2 sigma
+        global_sem = 2 * global_metrics[model_str][metric_str]["sem"]
 
         for ch, channel in enumerate(channels):
 
@@ -161,7 +162,6 @@ def plot_global_monthly_ensemble_all_models(
                 label=f"{model_str} {channel}",
                 color=model_colors[model_str],
                 linestyle=linestyles[channel],
-                marker="o",
                 capsize=3,
                 linewidth=2,
             )
