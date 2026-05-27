@@ -42,7 +42,7 @@ BASE_SOURCE_PATH = Path(
 
 BASE_DEST_PATH = Path(
     DATA_ROOT
-    / 'analysis'
+    / 'analysis2'
     / 'metrics_monthly'
     / MODEL_STR
     / HEMISPHERE
@@ -76,7 +76,7 @@ def main():
     )
 
     # Load path to masked normalized data
-    path_mask_norm = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
+    path_mask_norm = Path(DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
                           
     Ui_t0 = np.load(path_mask_norm / 'global_stds.npz')['Ui_t0']
 

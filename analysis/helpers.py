@@ -147,7 +147,7 @@ def load_all_metrics(
         if monthly:
             base_path = (
                 Path(data_root)
-                / 'analysis'
+                / 'analysis2'
                 / 'metrics_monthly'
                 / model_str
                 / hemisphere
