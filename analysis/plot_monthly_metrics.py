@@ -84,7 +84,7 @@ def main():
         metric_path = (
             ROOT
             / 'analysis'
-            / 'metrics'
+            / 'metrics_monthly'
             / model_str
             / HEMISPHERE
             / TIMESTAMP
@@ -109,11 +109,6 @@ def main():
             metric_sem = data['sem']
 
             settings = metric_plot_settings(metric_str)
-
-            print('metric_mean shape:', metric_mean.shape)
-            print('selected data shape:', metric_mean[:, ch].shape)
-            print('lon shape:', lon.shape)
-            print('lat shape:', lat.shape)
 
             # ------------------
             # Mean ensemble plot
