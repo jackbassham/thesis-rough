@@ -67,7 +67,7 @@ def skill(pred, true, epsilon = 1):
     return skill
 
 
-def weighted_skill(pred, true, r, epsilon = 1e-4):
+def weighted_skill(pred, true, r, epsilon = 1):
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
     w = 1 / (r + epsilon)

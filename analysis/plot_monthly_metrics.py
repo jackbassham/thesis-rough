@@ -178,11 +178,11 @@ def main():
                         data_channel_axis=0,
                         n_cols=4,
                         n_rows=3,
-                        save_path=model_plot_path / f'ensemble_sem_{metric_str}_{ch_name}.png',
+                        save_path=mean_sem_path,
                         **settings
                     )
 
-                    print(f'Saved {model_plot_path / f'ensemble_sem_{metric_str}_{ch_name}.png'}')
+                    print(f'Saved {mean_sem_path}')
 
                 print('')
 
