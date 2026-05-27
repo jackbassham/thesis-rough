@@ -166,6 +166,9 @@ def plot_global_monthly_ensemble_all_models(
         axs[1, 0].set_yticks([0.2, 0.4, 0.6])
         axs[1, 1].set_yticks([0.2, 0.4, 0.6])
 
+        axs[0, 1].set_yticklabels([])
+        axs[1, 1].set_yticklabels([])
+
     # ==================================================
     # COMBINED LEGEND
     # ==================================================
