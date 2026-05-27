@@ -139,6 +139,7 @@ def main():
                 sem_settings = settings.copy()
                 sem_settings['vmin'] = 0
                 sem_settings['vmax'] = None
+                sem_settings['cmap'] = cmo.cm.amp
                 sem_settings['cbar_label'] = f'SEM {settings["cbar_label"]}'
 
                 plot_fcns.plot_cartopy_map(
