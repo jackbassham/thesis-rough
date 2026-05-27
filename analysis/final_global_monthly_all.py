@@ -8,15 +8,15 @@ from pathlib import Path
 from analysis import plot_fcns, helpers
 
 
-# MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
-MODEL_STRS = ['ps', 'lr_cf_wtd', 'cnn_pt_wtd']
-# MODEL_STRS = ['ps', 'lr_cf', 'cnn_pt']
+MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
 
 
 METRIC_STRS = [
-    'weighted_correlation',
+    'skill',
     'weighted_skill',
-]
+    'weighted_correlation',
+    'weighted_correlation',
+    'weighted_skill',]
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
 
@@ -25,7 +25,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/global_metrics_monthly_wtd_models')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/global_metrics_monthly_all_models')
 
 
 def main():
@@ -55,7 +55,7 @@ def main():
         global_metrics,
         MODEL_STRS,
         month_labels,
-        PLOT_PATH / 'wtd_corr_skill.png',
+        PLOT_PATH / 'all_metrics.png',
         figsize=(10, 7),
     )
 
@@ -80,147 +80,91 @@ def plot_global_monthly_ensemble_all_models(
 
     model_colors = {
         "ps": '#000000',         
+        "lr_cf": "#009E73",  
         "lr_cf_wtd": "#56B4E9",  
+        "cnn_pt": "#CC79A7",
         "cnn_pt_wtd": "#E69F00",
+
     }
 
     # --------------------------------------------------
     # Figure setup
     # --------------------------------------------------
 
-    fig, (ax1, ax2) = plt.subplots(
+    fig, axs = plt.subplots(
         2,
-        1,
+        2,
         figsize=figsize,
         sharex=True,
     )
 
     # ==================================================
-    # TOP PANEL
+    # TOP LEFT
     # ==================================================
 
-    metric_str = "weighted_skill"
+    metric_panels = [
+        ("skill",                axs[0, 0], r"$Skill$", "Skill"),
+        ("weighted_skill",       axs[0, 1], r"$Skill$", "Weighted Skill"),
+        ("weighted_correlation", axs[1, 1], r"$\rho$",  "Weighted Correlation"),
+        ("correlation",          axs[1, 0], r"$\rho$",  "Correlation"),
+    ]
 
-    for model_str in model_strs:
+    for metric_str, ax, ylabel, title in metric_panels:
 
-        mean = global_metrics[model_str][metric_str]["mean"]
-        sem  = global_metrics[model_str][metric_str]["sem"]
+        for model_str in model_strs:
 
-        # u component
-        ax1.errorbar(
-            months,
-            mean[:, 0],
-            yerr=2 * sem[:, 0],
-            color=model_colors[model_str],
-            linestyle="-",
-            linewidth=2.5,
-            capsize=3,
-            clip_on=False,
-        )
+            mean = global_metrics[model_str][metric_str]["mean"]
+            sem  = global_metrics[model_str][metric_str]["sem"]
 
-        # v component
-        ax1.errorbar(
-            months,
-            mean[:, 1],
-            yerr=2 * sem[:, 1],
-            color=model_colors[model_str],
-            linestyle=":",
-            linewidth=2.5,
-            capsize=3,
-            clip_on=False,
-        )
+            ax.errorbar(
+                months,
+                mean[:, 0],
+                yerr=2 * sem[:, 0],
+                color=model_colors[model_str],
+                linestyle="-",
+                linewidth=2.5,
+                capsize=3,
+                clip_on=False,
+            )
 
-    ax1.set_ylabel(r"$Skill$", fontsize=12, fontweight='bold')
-    ax1.set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
-    ax1.set_title('Weighted Skill', fontsize=12, fontweight='bold')
+            ax.errorbar(
+                months,
+                mean[:, 1],
+                yerr=2 * sem[:, 1],
+                color=model_colors[model_str],
+                linestyle=":",
+                linewidth=2.5,
+                capsize=3,
+                clip_on=False,
+            )
 
-    # ax1.axhline(
-    #     0,
-    #     color="black",
-    #     linewidth=1,
-    #     alpha=0.5,
-    # )
+        ax.set_ylabel(ylabel, fontsize=12, fontweight="bold")
+        ax.set_title(title, fontsize=12, fontweight="bold")
+        ax.grid(True, alpha=0.25, linewidth=0.5)
 
-    ax1.grid(
-        True,
-        alpha=0.25,
-        linewidth=0.5,
-    )
+        for ax in axs[1, :]:
+            ax.set_xticks(months)
+            ax.set_xticklabels(
+                month_labels,
+                rotation=45,
+                ha="right",
+                fontweight="bold",
+            )
 
-    # ==================================================
-    # BOTTOM PANEL
-    # ==================================================
+        for ax in axs.flat:
+            ax.set_xlim(1, 12)
 
-    metric_str = "weighted_correlation"
-
-    for model_str in model_strs:
-
-        mean = global_metrics[model_str][metric_str]["mean"]
-        sem  = global_metrics[model_str][metric_str]["sem"]
-
-        # u component
-        ax2.errorbar(
-            months,
-            mean[:, 0],
-            yerr=2 * sem[:, 0],
-            color=model_colors[model_str],
-            linestyle="-",
-            linewidth=2.5,
-            capsize=3,
-            clip_on=False,
-        )
-
-        # v component
-        ax2.errorbar(
-            months,
-            mean[:, 1],
-            yerr=2 * sem[:, 1],
-            color=model_colors[model_str],
-            linestyle=":",
-            linewidth=2.5,
-            capsize=3,
-            clip_on=False,
-        )
-
-    ax2.set_ylabel(r'$\rho$', fontsize=12, fontweight='bold')
-    ax2.set_yticks([0.0, 0.2, 0.4, 0.6, 0.8])
-    ax2.set_title('Weighted Correlation', fontsize=12, fontweight='bold')
-
-
-    # ax2.axhline(
-    #     0,
-    #     color="black",
-    #     linewidth=1,
-    #     alpha=0.5,
-    # )
-
-    ax2.grid(
-        True,
-        alpha=0.25,
-        linewidth=0.5,
-    )
-
-    # ==================================================
-    # X AXIS
-    # ==================================================
-
-    ax2.set_xticks(months)
-    ax2.set_xticklabels(
-        month_labels,
-        rotation=45,
-        ha="right",
-        fontweight='bold'
-    )
-    ax2.set_xlim(1, 12)
-
-    # ax2.set_xlabel("Month", fontsize=12)
+        axs[0, 0].set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
+        axs[0, 1].set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
+        axs[1, 0].set_yticks([0.0, 0.2, 0.4, 0.6, 0.8])
+        axs[1, 1].set_yticks([0.0, 0.2, 0.4, 0.6, 0.8])
 
     # ==================================================
     # COMBINED LEGEND
     # ==================================================
 
     def errorbar_proxy(color, label):
-        return ax1.errorbar(
+        return axs[0,0].errorbar(
             [np.nan],
             [np.nan],
             yerr=[0.1],
@@ -235,7 +179,9 @@ def plot_global_monthly_ensemble_all_models(
         Line2D([], [], linestyle="none", label="Models"),
 
         errorbar_proxy(model_colors["cnn_pt_wtd"], "WCNN"),
+        errorbar_proxy(model_colors["cnn_pt"], "CNN"),
         errorbar_proxy(model_colors["lr_cf_wtd"], "WLR"),
+        errorbar_proxy(model_colors["lr_cf"], "LR"),
         errorbar_proxy(model_colors["ps"], "PS"),
 
         Line2D([], [], linestyle="none", label="Predictions"),
