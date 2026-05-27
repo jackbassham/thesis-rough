@@ -122,8 +122,9 @@ def main():
             global_per_member = np.nanmean(monthly_all_members, axis=(-1, -2))  # (member, month, channel)
 
             # Compute the global mean and SEM of the field across members for each month
+            # NOTE 2 sigma error bars
             global_monthly_mean = np.nanmean(global_per_member, axis=0)
-            global_monthly_sem  = np.nanstd(global_per_member, axis=0) / np.sqrt(N_MEMBERS)
+            global_monthly_sem  = 2 * np.nanstd(global_per_member, axis=0) / np.sqrt(N_MEMBERS)
 
             settings = metric_plot_settings(metric_str)
 
@@ -191,8 +192,8 @@ def main():
             global_sem=global_monthly_sem,
             month_labels=month_labels,
             metric_str=metric_str,
-            model_str=MODEL_STR,
-            save_path=plot_path / f"{metric_str}_global_monthly.png",
+            model_str=model_str,
+            save_path=model_plot_path / f"{metric_str}_global_monthly.png",
             )
 
 
