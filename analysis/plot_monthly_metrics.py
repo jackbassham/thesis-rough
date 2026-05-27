@@ -1,3 +1,4 @@
+import calendar
 import cmocean as cmo
 import numpy as np
 from pathlib import Path
@@ -75,6 +76,9 @@ def main():
     # Make base plot directory
     PLOT_PATH.mkdir(parents=True, exist_ok=True)
 
+    # Month labels for titles
+    month_labels = [calendar.month_abbr[i+1] for i in range(12)]
+
     for model_str in model_strs:
 
         metric_path = (
@@ -113,19 +117,22 @@ def main():
             # ------------------
             mean_save_path = model_plot_path / f'ensemble_mean_{metric_str}.png'
 
-            plot_fcns.plot_cartopy_map(
-                metric_mean,
-                lon,
-                lat,
-                hemisphere=HEMISPHERE,
-                titles=titles,
-                suptitle=f'{model_str.upper()} ensemble mean {metric_str}',
-                data_channel_axis=0,
-                n_cols=2,
-                n_rows=1,
-                save_path=mean_save_path,
-                **settings,
-            )
+            for ch, ch_name in enumerate(['u', 'v']):
+
+                # -------- Mean plots --------
+                plot_fcns.plot_cartopy_map(
+                    data=metric_mean[:, ch],   # (month, lat, lon)
+                    lon=lon,
+                    lat=lat,
+                    hemisphere=HEMISPHERE,
+                    titles=month_labels,
+                    suptitle=f'{metric_str.upper()} MEAN ({ch_name}): {model_str} {TIMESTAMP}',
+                    data_channel_axis=0,
+                    n_cols=4,
+                    n_rows=3,
+                    save_path=model_plot_path / f'{metric_str}_mean_{ch_name}.png',
+                    **settings
+                )
 
             print(f'Saved {mean_save_path}')
 
@@ -142,18 +149,19 @@ def main():
                 sem_settings['cmap'] = cmo.cm.amp
                 sem_settings['cbar_label'] = f'SEM {settings["cbar_label"]}'
 
+                # -------- Mean plots --------
                 plot_fcns.plot_cartopy_map(
-                    metric_sem,
-                    lon,
-                    lat,
+                    data=metric_sem[:, ch],   # (month, lat, lon)
+                    lon=lon,
+                    lat=lat,
                     hemisphere=HEMISPHERE,
-                    titles=titles,
-                    suptitle=f'{model_str.upper()} ensemble SEM {metric_str}',
+                    titles=month_labels,
+                    suptitle=f'{metric_str.upper()} SEM ({ch_name}): {model_str} {TIMESTAMP}',
                     data_channel_axis=0,
-                    n_cols=2,
-                    n_rows=1,
-                    save_path=sem_save_path,
-                    **sem_settings,
+                    n_cols=4,
+                    n_rows=3,
+                    save_path=model_plot_path / f'{metric_str}_mean_{ch_name}.png',
+                    **settings
                 )
 
                 print(f'Saved {sem_save_path}')

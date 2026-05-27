@@ -105,7 +105,10 @@ def main():
 
             if 'weighted' in metric_str:
                 # Add current month's uncertainties array to kword arguments
-                metric_kwargs['r'] = ri_t0s_list[m]
+                r_input = ri_t0s_list[m]
+
+            else:
+                r_input = None
 
             # Compute member memtric 
             monthly_metric = metric_fcn_month(
@@ -113,7 +116,7 @@ def main():
                 true,
                 time_t0[test_indices[f'{m:02d}']],
                 metric_fcn,
-                metric_kwargs
+                ri_t0=r_input
             )  # expected shape: (channel, height, width)
 
             monthly_all_members.append(monthly_metric)
@@ -145,7 +148,7 @@ def main():
         print('')
 
 
-def metric_fcn_month(pred, true, time, metric_fcn, metric_kwargs):
+def metric_fcn_month(pred, true, time, metric_fcn, ri_t0=None):
     """
     
     """
@@ -159,11 +162,18 @@ def metric_fcn_month(pred, true, time, metric_fcn, metric_kwargs):
     # Initialize list for monthly metrics
     monthly_metrics = []
 
+    # Initialize dict for metric function keyword arguments (uncertainty)
+    metric_kwargs = {}
+
     # Loop through months
     for i in range(n_months):
 
         # Get current month's time indices
         month_indices = months == (i + 1)
+
+        if ri_t0 is not None:
+            # Get uncertainty month indices
+            metric_kwargs['r'] = ri_t0[month_indices]
 
         # Compute metric for the current month and include uncertainty kwarg if weighted metric
         # (height, width)
