@@ -210,3 +210,56 @@ def load_all_metrics(
                     raise ValueError(f'Members path: {members_path} DNE')
 
     return metrics
+
+
+def compute_global_monthly_metrics(metrics, n_members):
+    """
+    Compute global monthly mean and 2*SEM for each model/metric.
+
+    Input:
+        metrics[model_str][metric_str]['all_members']
+            shape: (member, month, channel, lat, lon)
+            or     (member, month, lat, lon)
+
+    Output:
+        global_metrics[model_str][metric_str]['mean']
+        global_metrics[model_str][metric_str]['sem']
+    """
+
+    global_metrics = {}
+
+    for model_str, model_metrics in metrics.items():
+
+        global_metrics[model_str] = {}
+
+        for metric_str, metric_data in model_metrics.items():
+
+            print()
+            print(model_str, metric_str, metric_data.keys())
+            print()
+
+            monthly_all_members = metric_data['all_members']
+
+            # Spatial mean for each member/month/channel
+            global_per_member = np.nanmean(
+                monthly_all_members,
+                axis=(-1, -2)
+            )
+
+            # Ensemble statistics across members
+            global_monthly_mean = np.nanmean(
+                global_per_member,
+                axis=0
+            )
+
+            global_monthly_sem = (
+                np.nanstd(global_per_member, axis=0)
+                / np.sqrt(n_members)
+            )
+
+            global_metrics[model_str][metric_str] = {
+                'mean': global_monthly_mean,
+                'sem': global_monthly_sem,
+            }
+
+    return global_metrics
