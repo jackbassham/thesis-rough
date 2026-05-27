@@ -56,7 +56,6 @@ def main():
             month_labels=month_labels,
             metric_strs=['weighted_correlation', 'weighted_skill'],
             save_path=PLOT_PATH / f'global_monthly_all_models.png',
-            ylabel="Skill",
     )
 
 
@@ -135,6 +134,129 @@ def plot_global_monthly_ensemble_all_models(
 
     linestyles = {
         "u": "-",
+        "v": ":",
+    }
+
+    n_metrics = len(metric_strs)
+
+    fig, axs = plt.subplots(
+        n_metrics,
+        1,
+        figsize=figsize,
+        sharex=True,
+    )
+
+    # Handle single subplot case
+    if n_metrics == 1:
+        axs = [axs]
+
+    for ax, metric_str in zip(axs, metric_strs):
+
+        for model_str in model_strs:
+
+            global_mean = global_metrics[model_str][metric_str]["mean"]
+
+            # NOTE using 2 sigma
+            global_sem = (
+                2 * global_metrics[model_str][metric_str]["sem"]
+            )
+
+            for ch, channel in enumerate(channels):
+
+                ax.errorbar(
+                    months,
+                    global_mean[:, ch],
+                    yerr=global_sem[:, ch],
+                    color=model_colors[model_str],
+                    linestyle=linestyles[channel],
+                    capsize=3,
+                    linewidth=2,
+                )
+
+        ax.set_ylabel(metric_str.upper())
+        ax.grid(True, alpha=0.3)
+
+    # Bottom axis only
+    axs[-1].set_xticks(months)
+    axs[-1].set_xticklabels(month_labels, rotation=45)
+    axs[-1].set_xlabel("Month")
+
+    # -----------------------
+    # Shared legends
+    # -----------------------
+    model_handles = [
+        Line2D(
+            [0], [0],
+            color=model_colors[model_str],
+            lw=2,
+            label=model_str
+        )
+        for model_str in model_strs
+    ]
+
+    channel_handles = [
+        Line2D(
+            [0], [0],
+            color="black",
+            lw=2,
+            linestyle=linestyles[channel],
+            label=channel
+        )
+        for channel in channels
+    ]
+
+    legend1 = fig.legend(
+        handles=model_handles,
+        title="Model",
+        loc="upper center",
+        bbox_to_anchor=(0.4, 0.98),
+        ncol=len(model_strs),
+    )
+
+    fig.add_artist(legend1)
+
+    fig.legend(
+        handles=channel_handles,
+        title="Channel",
+        loc="upper center",
+        bbox_to_anchor=(0.9, 0.98),
+        ncol=len(channels),
+    )
+
+    fig.suptitle(
+        "Global Monthly Metrics",
+        fontweight="bold",
+        fontsize=14,
+    )
+
+    plt.tight_layout(rect=[0, 0, 1, 0.93])
+
+    plt.savefig(save_path, dpi=200)
+    plt.close()
+
+
+def old_plot_global_monthly_ensemble_all_models(
+        global_metrics,
+        model_strs,
+        metric_strs,
+        month_labels,
+        save_path,
+        channels=("u", "v"),
+        model_colors=None,
+        figsize=(12, 10),
+    ):
+
+    months = np.arange(1, 13)
+
+    if model_colors is None:
+        default_colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
+        model_colors = {
+            model_str: default_colors[i % len(default_colors)]
+            for i, model_str in enumerate(model_strs)
+        }
+
+    linestyles = {
+        "u": "-",
         "v": "--",
     }
 
@@ -185,8 +307,6 @@ def plot_global_monthly_ensemble_all_models(
     # -----------------------
     # Shared legends
     # -----------------------
-    from matplotlib.lines import Line2D
-
     model_handles = [
         Line2D(
             [0], [0],
