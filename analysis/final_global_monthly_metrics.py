@@ -23,7 +23,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/global_metrics_monthly')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/rough_plots/global_metrics_monthly')
 
 
 def main():
@@ -46,15 +46,15 @@ def main():
     # Month labels for titles
     month_labels = [calendar.month_abbr[i+1] for i in range(12)]
 
-
-    plot_global_monthly_ensemble_all_models(
-        global_metrics=global_metrics,
-        model_strs=MODEL_STRS,
-        month_labels=month_labels,
-        metric_str="skill",
-        save_path=PLOT_PATH / "global_monthly_skill_all_models.png",
-        ylabel="Skill",
-)
+    for metric_str in METRIC_STRS:
+        plot_global_monthly_ensemble_all_models(
+            global_metrics=global_metrics,
+            model_strs=MODEL_STRS,
+            month_labels=month_labels,
+            metric_str=metric_str,
+            save_path=PLOT_PATH / f'global_monthly_{metric_str}_all_models.png',
+            ylabel="Skill",
+    )
 
 
 def compute_global_monthly_metrics(metrics, n_members):
