@@ -156,15 +156,15 @@ def plot_global_monthly_ensemble_all_models(
         axs[0,0].set_ylabel(r'$Skill$', fontsize=12, fontweight="bold")
         axs[1,0].set_ylabel(r'$\rho$', fontsize=12, fontweight="bold")
 
-        axs[0, 0].set_ylim(-0.5, 0.7)
-        axs[0, 1].set_ylim(-0.5, 0.7)
-        axs[1, 0].set_ylim(0.15, 0.75)
-        axs[1, 1].set_ylim(0.15, 0.75)
+        axs[0, 0].set_ylim(-0.8, 0.6)
+        axs[0, 1].set_ylim(-0.8, 0.6)
+        axs[1, 0].set_ylim(0.1, 0.8)
+        axs[1, 1].set_ylim(0.1, 0.8)
 
-        axs[0, 0].set_yticks([-0.4, -0.2, 0.0, 0.2, 0.4, 0.6])
-        axs[0, 1].set_yticks([-0.4, -0.2, 0.0, 0.2, 0.4, 0.6])
-        axs[1, 0].set_yticks([0.2, 0.4, 0.6])
-        axs[1, 1].set_yticks([0.2, 0.4, 0.6])
+        axs[0, 0].set_yticks([-0.6, -0.4, -0.2, 0.0, 0.2, 0.4, 0.6])
+        axs[0, 1].set_yticks([-0.6, -0.4, -0.2, 0.0, 0.2, 0.4, 0.6])
+        axs[1, 0].set_yticks([0.2, 0.4, 0.6, 0.8])
+        axs[1, 1].set_yticks([0.2, 0.4, 0.6, 0.8])
 
         axs[0, 1].set_yticklabels([])
         axs[1, 1].set_yticklabels([])

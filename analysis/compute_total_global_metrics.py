@@ -99,7 +99,8 @@ def main():
             ensemble_mean = np.nanmean(member_global_means)
 
             if N_MEMBERS > 1:
-                ensemble_sem = np.nanstd(member_global_means) / np.sqrt(N_MEMBERS)
+                # ddof for sample standard deviation
+                ensemble_sem = np.nanstd(member_global_means, ddof=1) / np.sqrt(N_MEMBERS)
             else:
                 ensemble_sem = np.nan
 
