@@ -107,7 +107,7 @@ def weighted_skill(pred, true, r, epsilon_wts=1e-4, epsilon_var=1):
 
     w = 1 / (r**2 + epsilon_wts)
 
-    wsum = np.nansum(w, axis=0) + epsilon_wts
+    wsum = np.nansum(w, axis=0)
 
     wmse = np.nansum( w * (true - pred) ** 2, axis = 0) / wsum # weighted mean square error
 
