@@ -68,10 +68,6 @@ def plot_global_monthly_ensemble_all_models(
         figsize=(10, 7),
     ):
 
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib.lines import Line2D
-
     months = np.arange(1, 13)
 
     # --------------------------------------------------
