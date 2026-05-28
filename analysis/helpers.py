@@ -5,6 +5,7 @@ def load_and_mask_member_preds(
         n_members,
         base_source_path,
         model_inputs_path,
+        mask_norm_path,
         return_indices=False,
 ):
     """
@@ -19,6 +20,8 @@ def load_and_mask_member_preds(
     preds = []
     trues = []
     ri_t0s = []
+
+    Ui_t0 = np.load(mask_norm_path / 'global_stds.npz')['Ui_t0']
 
     for m in range(n_members):
 
@@ -41,11 +44,16 @@ def load_and_mask_member_preds(
         # Load in uncertainty
         ri_t0 = input_arrays['ri_t0'][idx]
 
-        # Combine bad point and fixed monthly masks
-        mask = mask_bad | mask_fixed_monthly
+        # Rescale uncertainty
+        ri_t0 = ri_t0 * Ui_t0
 
-        # # Expand channel dimension
-        # mask = mask[:, np.newaxis, :, :]
+        # Combine masks
+        mask = (
+            mask_bad
+            | mask_fixed_monthly
+            | (ri_t0 >= 100)
+            | (ri_t0 == 0)
+        )
 
         # Apply mask
         y_pred = np.where(mask, np.nan, y_pred)
