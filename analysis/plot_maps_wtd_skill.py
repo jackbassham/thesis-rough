@@ -88,7 +88,7 @@ def plot_ensemble_all_models(
     # Set latitude bounds and projection based on hemisphere
     if hemisphere.lower().strip() == 'south':
         lat_min = -90
-        lat_max = -60
+        lat_max = -62
         projection = ccrs.SouthPolarStereo()
     elif hemisphere.lower().strip() == 'north':
         lat_min = 65
@@ -140,7 +140,10 @@ def plot_ensemble_all_models(
         ax.set_extent(data_extent, crs=data_crs)
         ax.coastlines()
 
-        ax.gridlines()
+        gl = ax.gridlines(
+            draw_labels=False,
+            alpha=0.2,
+        )
 
         # Compute a circle in axes coordinates, which we can use as a boundary
         # for the map. We can pan/zoom as much as we like - the boundary will be
@@ -163,10 +166,14 @@ def plot_ensemble_all_models(
             norm=norm,
         )
 
-        ax.set_title(title, fontweight='bold')
+        ax.set_title(
+            title, 
+            loc='left', 
+            fontweight='bold'
+            )
 
     # Set position [left, bottom, width, height] of colorbar in figure coordinates
-    cbar_ax = fig.add_axes([0.84, 0.18, 0.025, 0.64])
+    cbar_ax = fig.add_axes([0.78, 0.18, 0.025, 0.64])
 
     cbar = fig.colorbar(
         pcm,
@@ -177,7 +184,7 @@ def plot_ensemble_all_models(
 
     # vector graphics for publications
     plt.savefig(
-        save_path,
+        save_path / 'wtd_skill.png',
         dpi=300,
         bbox_inches="tight",
     )
