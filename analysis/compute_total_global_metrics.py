@@ -101,11 +101,12 @@ def main():
             if N_MEMBERS > 1:
                 # ddof for sample standard deviation
                 ensemble_sem = np.nanstd(member_global_means, ddof=1) / np.sqrt(N_MEMBERS)
+                emsemble_2sigma = 2 * ensemble_sem
             else:
                 ensemble_sem = np.nan
 
             summary_lines.append(
-                f'  {metric_str}: mean = {ensemble_mean:.6f}, SEM = {ensemble_sem:.6f}'
+                f'  {metric_str}: mean = {ensemble_mean:.6f}, SEM = {ensemble_sem:.6f}, 2sigma = {emsemble_2sigma:.2f}'
             )
 
         summary_lines.append('')

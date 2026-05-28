@@ -124,7 +124,8 @@ def main():
         metric_mean = np.nanmean(all_members, axis=0)
 
         if N_MEMBERS > 1:
-            metric_sem = np.nanstd(all_members, axis=0) / np.sqrt(N_MEMBERS)
+            # NOTE sample std for sem
+            metric_sem = np.nanstd(all_members, axis=0, ddof=1) / np.sqrt(N_MEMBERS)
         else:
             metric_sem = None
 
