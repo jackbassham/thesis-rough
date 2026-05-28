@@ -10,7 +10,6 @@ from analysis import plot_fcns, helpers
 
 MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
 
-
 METRIC_STRS = [
     'skill',
     'weighted_skill',
@@ -25,7 +24,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots2/global_metrics_monthly_all_models')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/maps_wtd_metrics_wtd')
 
 
 def main():
@@ -39,8 +38,31 @@ def main():
         TIMESTAMP,
     )
 
+    # Load in coordinate variables
+    coordinates = np.load(
+        ROOT
+        / 'regrid'
+        / HEMISPHERE
+        / TIMESTAMP_REGRID
+        / 'coordinates.npz'
+    )
+    
+    lon = coordinates['lon']
+    lat = coordinates['lat']
+
     # Make base plot directory
     PLOT_PATH.mkdir(parents=True, exist_ok=True)
+
+    plot_ensemble_all_models(
+        metrics,
+        lon,
+        lat,
+        HEMISPHERE,
+        PLOT_PATH,
+        figsize=(10,10),
+        cmap=cmo.cm.balance_r,
+        boundaries=np.arange(-0.8, 0.6+0.1, 0.1)
+        )
 
 
 def plot_ensemble_all_models(
@@ -91,12 +113,12 @@ def plot_ensemble_all_models(
     # Panel set up
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
-        ('cnn_pt_wtd', 'weighted_skill', 0, axs[0,0], r'(a) $u_{i,t}$')
-        ('cnn_pt_wtd', 'weighted_skill', 1, axs[0,1], r'(a) $v_{i,t}$')
-        ('lr_cf_wtd', 'weighted_skill', 0, axs[1,0], r'(b) $u_{i,t}$')
-        ('lr_cf_wtd', 'weighted_skill', 1, axs[1,1], r'(b) $v_{i,t}$')
-        ('ps', 'weighted_skill', 0, axs[2,0], r'(c) $u_{i,t}$')
-        ('ps', 'weighted_skill', 1, axs[2,1], r'(c) $v_{i,t}$')
+        ('cnn_pt_wtd', 'weighted_skill', 0, axs[0,0], r'(a) $u_{i,t}$'),
+        ('cnn_pt_wtd', 'weighted_skill', 1, axs[0,1], r'(a) $v_{i,t}$'),
+        ('lr_cf_wtd', 'weighted_skill', 0, axs[1,0], r'(b) $u_{i,t}$'),
+        ('lr_cf_wtd', 'weighted_skill', 1, axs[1,1], r'(b) $v_{i,t}$'),
+        ('ps', 'weighted_skill', 0, axs[2,0], r'(c) $u_{i,t}$'),
+        ('ps', 'weighted_skill', 1, axs[2,1], r'(c) $v_{i,t}$'),
     ]
 
     for model_str, metric_str, channel, ax, title in panels:
@@ -133,4 +155,8 @@ def plot_ensemble_all_models(
     )
 
     plt.close()
+
+
+if __name__ == '__main__':
+    main()
 
