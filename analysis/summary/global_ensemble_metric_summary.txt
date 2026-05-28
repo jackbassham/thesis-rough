@@ -4,36 +4,36 @@ Timestamp: 05222026_1652
 N members: 10
 
 Model: ps
-  correlation: mean = 0.422175, SEM = 0.003957
-  weighted_correlation: mean = 0.409426, SEM = 0.004213
-  skill: mean = -0.125314, SEM = 0.007786
-  weighted_skill: mean = -0.183992, SEM = 0.008453
-  rmse: mean = 9.158116, SEM = 0.048156
+  correlation: mean = 0.421895, SEM = 0.004121
+  weighted_correlation: mean = 0.409000, SEM = 0.004323
+  skill: mean = -0.132627, SEM = 0.008408
+  weighted_skill: mean = -0.187961, SEM = 0.008767
+  rmse: mean = 9.105970, SEM = 0.044356
 
 Model: lr_cf
-  correlation: mean = 0.608026, SEM = 0.002362
-  weighted_correlation: mean = 0.593587, SEM = 0.002783
-  skill: mean = 0.385674, SEM = 0.002600
-  weighted_skill: mean = 0.368610, SEM = 0.003668
-  rmse: mean = 6.719731, SEM = 0.026978
+  correlation: mean = 0.613739, SEM = 0.002587
+  weighted_correlation: mean = 0.595417, SEM = 0.002835
+  skill: mean = 0.393036, SEM = 0.002841
+  weighted_skill: mean = 0.370703, SEM = 0.003738
+  rmse: mean = 6.617749, SEM = 0.022200
 
 Model: lr_cf_wtd
-  correlation: mean = 0.607467, SEM = 0.002381
-  weighted_correlation: mean = 0.593611, SEM = 0.002773
-  skill: mean = 0.372787, SEM = 0.002415
-  weighted_skill: mean = 0.374595, SEM = 0.002830
-  rmse: mean = 6.788127, SEM = 0.029001
+  correlation: mean = 0.613245, SEM = 0.002602
+  weighted_correlation: mean = 0.595474, SEM = 0.002823
+  skill: mean = 0.380280, SEM = 0.002493
+  weighted_skill: mean = 0.377070, SEM = 0.002866
+  rmse: mean = 6.684942, SEM = 0.023943
 
 Model: cnn_pt
-  correlation: mean = 0.723246, SEM = 0.001828
-  weighted_correlation: mean = 0.700862, SEM = 0.002084
-  skill: mean = 0.529461, SEM = 0.002148
-  weighted_skill: mean = 0.501868, SEM = 0.002933
-  rmse: mean = 5.789113, SEM = 0.017964
+  correlation: mean = 0.725052, SEM = 0.001924
+  weighted_correlation: mean = 0.701011, SEM = 0.002112
+  skill: mean = 0.531788, SEM = 0.002277
+  weighted_skill: mean = 0.501850, SEM = 0.002971
+  rmse: mean = 5.718822, SEM = 0.015485
 
 Model: cnn_pt_wtd
-  correlation: mean = 0.718117, SEM = 0.001894
-  weighted_correlation: mean = 0.699209, SEM = 0.002157
-  skill: mean = 0.521968, SEM = 0.002050
-  weighted_skill: mean = 0.503241, SEM = 0.002788
-  rmse: mean = 5.837298, SEM = 0.019916
+  correlation: mean = 0.720703, SEM = 0.002011
+  weighted_correlation: mean = 0.699705, SEM = 0.002187
+  skill: mean = 0.525793, SEM = 0.002114
+  weighted_skill: mean = 0.503912, SEM = 0.002811
+  rmse: mean = 5.757627, SEM = 0.016872
