@@ -135,7 +135,7 @@ def plot_ensemble_all_models(
             lat,
             mean,
             transform=data_crs,
-            cmap=cmo.cm.balanc_r,
+            cmap=cmap,
             norm=norm,
         )
 
