@@ -1,0 +1,39 @@
+Global ensemble metric summary
+Hemisphere: south
+Timestamp: 05222026_1652
+N members: 10
+
+Model: ps
+  correlation: mean = 0.422175, SEM = 0.003957
+  weighted_correlation: mean = 0.409426, SEM = 0.004213
+  skill: mean = -0.125314, SEM = 0.007786
+  weighted_skill: mean = -0.183992, SEM = 0.008453
+  rmse: mean = 9.158116, SEM = 0.048156
+
+Model: lr_cf
+  correlation: mean = 0.608026, SEM = 0.002362
+  weighted_correlation: mean = 0.593587, SEM = 0.002783
+  skill: mean = 0.385674, SEM = 0.002600
+  weighted_skill: mean = 0.368610, SEM = 0.003668
+  rmse: mean = 6.719731, SEM = 0.026978
+
+Model: lr_cf_wtd
+  correlation: mean = 0.607467, SEM = 0.002381
+  weighted_correlation: mean = 0.593611, SEM = 0.002773
+  skill: mean = 0.372787, SEM = 0.002415
+  weighted_skill: mean = 0.374595, SEM = 0.002830
+  rmse: mean = 6.788127, SEM = 0.029001
+
+Model: cnn_pt
+  correlation: mean = 0.723246, SEM = 0.001828
+  weighted_correlation: mean = 0.700862, SEM = 0.002084
+  skill: mean = 0.529461, SEM = 0.002148
+  weighted_skill: mean = 0.501868, SEM = 0.002933
+  rmse: mean = 5.789113, SEM = 0.017964
+
+Model: cnn_pt_wtd
+  correlation: mean = 0.718117, SEM = 0.001894
+  weighted_correlation: mean = 0.699209, SEM = 0.002157
+  skill: mean = 0.521968, SEM = 0.002050
+  weighted_skill: mean = 0.503241, SEM = 0.002788
+  rmse: mean = 5.837298, SEM = 0.019916
