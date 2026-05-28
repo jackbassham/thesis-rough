@@ -1,135 +1,122 @@
 import numpy as np
 from pathlib import Path
-import sys
-
 
 import _06_evaluate.metric_fcns
-from analysis import (plot_fcns, helpers)
+from analysis import helpers
 
 
-
-MODEL_STRS = [ 'ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd',]
+MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
 
 DATA_ROOT = Path('/data/globus/jbassham/thesis-rough')
-
 HEMISPHERE = 'south'
-
 TIMESTAMP = '05222026_1652'
-
 TIMESTAMP_MODEL_INPUTS = TIMESTAMP
-
 N_MEMBERS = 10
 
-base_source_path = Path(
-    DATA_ROOT
-    / 'model-output'
-    / model_str
-    / HEMISPHERE
-    / TIMESTAMP
-)
-
-# base_dest_path = Path(
-#     DATA_ROOT
-#     / 'analysis2'
-#     / 'metrics'
-#     / model_str
-#     / HEMISPHERE
-#     / TIMESTAMP
-# )
-
+METRIC_STRS = [
+    'correlation',
+    'weighted_correlation',
+    'skill',
+    'weighted_skill',
+    'rmse',
+]
 
 ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
 
+BASE_DEST_PATH = (
+    ANALYSIS_PATH
+    / 'summary'
+)
+
+
 def main():
 
-    # Define list of metric strings
-    metric_strs = [
-        'correlation',
-        'weighted_correlation', 
-        'skill', 
-        'weighted_skill', 
-        'rmse'
-    ]
-
-    # Load path to model inputs
-    path_model_inputs = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
-
-    # Load lists of masked predictions and true values from each member
-    preds_list, trues_list, ri_t0s_list = helpers.load_and_mask_member_preds(
-        N_MEMBERS,
-        BASE_SOURCE_PATH,
-        path_model_inputs,
-    )
-
-    # Load path to masked normalized data
-    path_mask_norm = Path(DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
-                          
-    Ui_t0 = np.load(path_mask_norm / 'global_stds.npz')['Ui_t0']
-
-    # Rescale the uncertainties
-    ri_t0s_list = [ri_t0 * Ui_t0 for ri_t0 in ri_t0s_list]
-
-    print(f'~~~~~All member masked preds and trues loaded~~~~~')
-
-    # Make destination path if it does not already exist
     BASE_DEST_PATH.mkdir(parents=True, exist_ok=True)
 
-    # Compute metrics for each ensemble member
-    for metric_str in metric_strs:
+    path_model_inputs = DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
+    path_mask_norm = DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
 
-        print(f'~~~~~~~~~~~{metric_str.upper()}~~~~~~~~~~~~~~')
+    Ui_t0 = np.load(path_mask_norm / 'global_stds.npz')['Ui_t0']
 
-        metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
+    summary_lines = []
+    summary_lines.append(f'Global ensemble metric summary')
+    summary_lines.append(f'Hemisphere: {HEMISPHERE}')
+    summary_lines.append(f'Timestamp: {TIMESTAMP}')
+    summary_lines.append(f'N members: {N_MEMBERS}')
+    summary_lines.append('')
 
-        all_members = []
+    for model_str in MODEL_STRS:
 
-        # Initialize dict for extra uncertainty keyword argument for weighted metrics
-        metric_kwargs = {}
+        print(f'========== {model_str} ==========')
 
-        for m in range(N_MEMBERS):
-
-            pred = preds_list[m]
-            true = trues_list[m]
-
-            if 'weighted' in metric_str:
-                # Add current month's uncertainties array to kword arguments
-                metric_kwargs['r'] = ri_t0s_list[m]
-
-            # Compute member memtric 
-            metric = metric_fcn(
-                pred,
-                true,
-                **metric_kwargs
-            )  # expected shape: (channel, height, width)
-
-            all_members.append(metric)
-
-            print(f'Finished member {m} of {N_MEMBERS} for {metric_str}')
-
-        all_members = np.stack(all_members, axis=0)
-        # shape: (member, channel, height, width)
-
-        np.savez(
-            BASE_DEST_PATH / f'all_members_{metric_str}.npz',
-            all_members=all_members,
+        base_source_path = (
+            DATA_ROOT
+            / 'model-output'
+            / model_str
+            / HEMISPHERE
+            / TIMESTAMP
         )
 
-        metric_mean = np.nanmean(all_members, axis=0)
-
-        if N_MEMBERS > 1:
-            metric_sem = np.nanstd(all_members, axis=0) / np.sqrt(N_MEMBERS)
-        else:
-            metric_sem = None
-
-        np.savez(
-            BASE_DEST_PATH / f'ensemble_{metric_str}.npz',
-            mean=metric_mean,
-            sem=metric_sem,
+        preds_list, trues_list, ri_t0s_list = helpers.load_and_mask_member_preds(
+            N_MEMBERS,
+            base_source_path,
+            path_model_inputs,
         )
 
-        print(f'Saved all-member, mean, and SEM arrays for {metric_str}')
-        print('')
+        ri_t0s_list = [ri_t0 * Ui_t0 for ri_t0 in ri_t0s_list]
+
+        summary_lines.append(f'Model: {model_str}')
+
+        for metric_str in METRIC_STRS:
+
+            print(f'Computing {metric_str}')
+
+            metric_fcn = getattr(_06_evaluate.metric_fcns, metric_str)
+
+            member_global_means = []
+
+            for m in range(N_MEMBERS):
+
+                pred = preds_list[m]
+                true = trues_list[m]
+
+                metric_kwargs = {}
+
+                if 'weighted' in metric_str:
+                    metric_kwargs['r'] = ri_t0s_list[m]
+
+                metric = metric_fcn(
+                    pred,
+                    true,
+                    **metric_kwargs,
+                )
+
+                # scalar mean over channel, lat, lon
+                member_global_mean = np.nanmean(metric)
+                member_global_means.append(member_global_mean)
+
+            member_global_means = np.array(member_global_means)
+
+            ensemble_mean = np.nanmean(member_global_means)
+
+            if N_MEMBERS > 1:
+                ensemble_sem = np.nanstd(member_global_means) / np.sqrt(N_MEMBERS)
+            else:
+                ensemble_sem = np.nan
+
+            summary_lines.append(
+                f'  {metric_str}: mean = {ensemble_mean:.6f}, SEM = {ensemble_sem:.6f}'
+            )
+
+        summary_lines.append('')
+
+    summary_path = BASE_DEST_PATH / 'global_ensemble_metric_summary.txt'
+
+    with open(summary_path, 'w') as f:
+        f.write('\n'.join(summary_lines))
+
+    print(f'Saved summary to: {summary_path}')
 
 
 if __name__ == '__main__':
