@@ -56,7 +56,7 @@ def main():
         MODEL_STRS,
         month_labels,
         PLOT_PATH / 'wtd_corr_skill.png',
-        figsize=(10, 7),
+        figsize=(7, 7),
     )
 
 
