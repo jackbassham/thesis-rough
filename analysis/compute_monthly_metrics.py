@@ -55,33 +55,34 @@ ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
 
 def main():
 
+    # # Define list of metric strings
+    # metric_strs = [
+    #     'correlation',
+    #     'weighted_correlation', 
+    #     'skill', 
+    #     'weighted_skill', 
+    #     'rmse'
+    # ]
+
     # Define list of metric strings
     metric_strs = [
-        'correlation',
-        'weighted_correlation', 
-        'skill', 
         'weighted_skill', 
-        'rmse'
     ]
 
     # Load path to model inputs
     path_model_inputs = Path(DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
+
+    # Load path to masked normalized data
+    path_mask_norm = Path(DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
 
     # Load lists of masked predictions and true values from each member
     preds_list, trues_list, ri_t0s_list, test_indices = helpers.load_and_mask_member_preds(
         N_MEMBERS,
         BASE_SOURCE_PATH,
         path_model_inputs,
+        path_mask_norm,
         return_indices=True,
     )
-
-    # Load path to masked normalized data
-    path_mask_norm = Path(DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
-                          
-    Ui_t0 = np.load(path_mask_norm / 'global_stds.npz')['Ui_t0']
-
-    # Rescale the uncertainties
-    ri_t0s_list = [ri_t0 * Ui_t0 for ri_t0 in ri_t0s_list]
 
     print(f'~~~~~All member masked preds and trues loaded~~~~~')
 
