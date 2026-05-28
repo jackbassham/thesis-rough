@@ -1,5 +1,7 @@
 import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 import cmocean as cmo
+import matplotlib.path as mpath
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
@@ -86,7 +88,7 @@ def plot_ensemble_all_models(
     # Set latitude bounds and projection based on hemisphere
     if hemisphere.lower().strip() == 'south':
         lat_min = -90
-        lat_max = -65
+        lat_max = -60
         projection = ccrs.SouthPolarStereo()
     elif hemisphere.lower().strip() == 'north':
         lat_min = 65
@@ -137,6 +139,18 @@ def plot_ensemble_all_models(
 
         ax.set_extent(data_extent, crs=data_crs)
         ax.coastlines()
+
+        ax.gridlines()
+
+        # Compute a circle in axes coordinates, which we can use as a boundary
+        # for the map. We can pan/zoom as much as we like - the boundary will be
+        # permanently circular.
+        theta = np.linspace(0, 2*np.pi, 100)
+        center, radius = [0.5, 0.5], 0.5
+        verts = np.vstack([np.sin(theta), np.cos(theta)]).T
+        circle = mpath.Path(verts * radius + center)
+
+        ax.set_boundary(circle, transform=ax.transAxes)
 
         norm = mcolors.BoundaryNorm(boundaries, cmap.N)
 
