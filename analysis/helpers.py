@@ -157,7 +157,7 @@ def load_all_metrics(
         else:
             base_path = (
                 Path(data_root)
-                / 'analysis'
+                / 'analysis2'
                 / 'metrics'
                 / model_str
                 / hemisphere
