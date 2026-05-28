@@ -37,7 +37,6 @@ def main():
     path_model_inputs = DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
     path_mask_norm = DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
 
-    Ui_t0 = np.load(path_mask_norm / 'global_stds.npz')['Ui_t0']
 
     summary_lines = []
     summary_lines.append(f'Global ensemble metric summary')
@@ -57,9 +56,6 @@ def main():
             / HEMISPHERE
             / TIMESTAMP
         )
-
-        # Load path to masked normalized data
-        path_mask_norm = Path(DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
 
         preds_list, trues_list, ri_t0s_list = helpers.load_and_mask_member_preds(
             N_MEMBERS,
