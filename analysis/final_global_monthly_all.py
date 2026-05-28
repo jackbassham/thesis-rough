@@ -25,7 +25,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/global_metrics_monthly_all_models')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots2/global_metrics_monthly_all_models')
 
 
 def main():

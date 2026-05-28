@@ -19,7 +19,7 @@ def correlation(pred, true):
     return correlation
 
 
-def weighted_correlation(pred, true, r, epsilon = 1e-4):
+def weighted_correlation(pred, true, r, epsilon_wts=1e-4):
 
     """
     Weighted Pearson Correlation referenced from:
@@ -27,7 +27,7 @@ def weighted_correlation(pred, true, r, epsilon = 1e-4):
     
     """
 
-    w = 1 / (r**2 + epsilon)
+    w = 1 / (r**2 + epsilon_wts)
 
     def weighted_mean(x, w):
         return np.nansum(w * x, axis = 0) / np.nansum(w, axis = 0)
@@ -45,7 +45,7 @@ def weighted_correlation(pred, true, r, epsilon = 1e-4):
     return correlation
 
 
-def skill(pred, true, epsilon = 1):
+def skill(pred, true, epsilon_var=1):
     # NOTE excluding epsilon = 1e-4 from denominator for now
 
     mse = np.nanmean((true - pred)**2, axis = 0) # mean square error
@@ -62,15 +62,15 @@ def skill(pred, true, epsilon = 1):
 
     # print(f'Using VarTrue (NOTE print is mean over grid) {np.nanmean(vartrue)}')
 
-    skill = 1 - mse / (vartrue + (epsilon)**2)
+    skill = 1 - mse / (vartrue + (epsilon_var)**2)
 
     return skill
 
 
-def weighted_skill(pred, true, r, epsilon = 1):
+def weighted_skill(pred, true, r, epsilon_wts=1e-4, epsilon_var=1):
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
-    w = 1 / (r**2 + epsilon)
+    w = 1 / (r**2 + epsilon_wts)
 
     mse = np.nanmean( w * (true - pred) ** 2, axis = 0) # mean square error
     # NOTE above is not equivalent to np.nanvar(true-pred), which excludes bias term
@@ -80,9 +80,27 @@ def weighted_skill(pred, true, r, epsilon = 1):
     vartrue = np.nanmean( w * (true - truebar) ** 2, axis = 0) # variance in true
     # NOTE above is equivalent to np.nanvar()
 
-    weighted_skill = 1 - mse / (vartrue + epsilon)
+    weighted_skill = 1 - mse / (vartrue + epsilon_var)
 
     return weighted_skill
+
+
+# def weighted_skill(pred, true, r, epsilon = 1):
+#     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
+
+#     w = 1 / (r**2 + epsilon)
+
+#     mse = np.nanmean( w * (true - pred) ** 2, axis = 0) # mean square error
+#     # NOTE above is not equivalent to np.nanvar(true-pred), which excludes bias term
+
+#     truebar = np.nanmean(true, axis = 0) # mean true
+
+#     vartrue = np.nanmean( w * (true - truebar) ** 2, axis = 0) # variance in true
+#     # NOTE above is equivalent to np.nanvar()
+
+#     weighted_skill = 1 - mse / (vartrue + epsilon)
+
+#     return weighted_skill
 
 
 def rmse(pred, true):
@@ -98,7 +116,7 @@ def rmse(pred, true):
     return rmse
 
 
-def weighted_mse(pred, true, r, eps=1e-4):
+def weighted_mse(pred, true, r, epsilon_wts=1e-4):
     """
 
     """
@@ -106,16 +124,16 @@ def weighted_mse(pred, true, r, eps=1e-4):
     # Weighted mse is used for the closed form solution!
 
     # Compute weights
-    w = 1 / (r**2 + eps)
+    w = 1 / (r**2 + epsilon_wts)
     
     # Compute weighted square error
     wse = w * (pred - true)**2
 
     # Return weighted mean square error
-    return np.nansum(wse) / (np.nansum(w) + eps)
+    return np.nansum(wse) / (np.nansum(w) + epsilon_wts)
 
 
-def weighted_rmse(pred, true, r, eps=1e-4):
+def weighted_rmse(pred, true, r, epsilon_wts=1e-4):
     """
     # NOTE rmse puts units back 
     """
@@ -123,15 +141,14 @@ def weighted_rmse(pred, true, r, eps=1e-4):
     # Weighted mse is used for the closed form solution!
 
     # Compute weights
-    w = 1 / (r**2 + eps)
+    w = 1 / (r**2 + epsilon_wts)
     
     # Compute weighted square error
     wse = w * (pred - true)**2
 
-    wmse = np.nansum(wse, axis = 0) / (np.nansum(w, axis = 0) + eps)
+    wmse = np.nansum(wse, axis = 0) / (np.nansum(w, axis = 0) + epsilon_wts)
 
     return np.sqrt(wmse)
-
 
 
 def nrmse(pred, true, epsilon = 1e-4):

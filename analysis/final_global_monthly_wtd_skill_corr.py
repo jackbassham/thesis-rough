@@ -25,7 +25,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/global_metrics_monthly_wtd_models')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots2/global_metrics_monthly_wtd_models')
 
 
 def main():
@@ -131,7 +131,7 @@ def plot_global_monthly_ensemble_all_models(
         )
 
     ax1.set_ylabel(r"$Skill$", fontsize=12, fontweight='bold')
-    ax1.set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
+    # ax1.set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
     ax1.set_title('Weighted Skill', fontsize=12, fontweight='bold')
 
     # ax1.axhline(
