@@ -58,13 +58,15 @@ def main():
             / TIMESTAMP
         )
 
+        # Load path to masked normalized data
+        path_mask_norm = Path(DATA_ROOT / 'mask_norm' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS)
+
         preds_list, trues_list, ri_t0s_list = helpers.load_and_mask_member_preds(
             N_MEMBERS,
             base_source_path,
             path_model_inputs,
+            path_mask_norm
         )
-
-        ri_t0s_list = [ri_t0 * Ui_t0 for ri_t0 in ri_t0s_list]
 
         summary_lines.append(f'Model: {model_str}')
 
