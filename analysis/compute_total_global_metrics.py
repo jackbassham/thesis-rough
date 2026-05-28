@@ -104,9 +104,10 @@ def main():
                 emsemble_2sigma = 2 * ensemble_sem
             else:
                 ensemble_sem = np.nan
+                ensemble_2_sigma = np.nan
 
             summary_lines.append(
-                f'  {metric_str}: mean = {ensemble_mean:.6f}, SEM = {ensemble_sem:.6f}, 2sigma = {emsemble_2sigma:.2f}'
+                f'  {metric_str}: mean = {ensemble_mean:.6f}, SEM = {ensemble_sem:.6f}, 2sigma = {emsemble_2sigma:.6f}'
             )
 
         summary_lines.append('')
