@@ -67,6 +67,41 @@ def skill(pred, true, epsilon_var=1):
     return skill
 
 
+# def weighted_skill(pred, true, r, epsilon_wts=1e-4, epsilon_var=1):
+#     w = 1 / (r**2 + epsilon_wts)
+
+#     # Ignore weights where true/pred/r are invalid
+#     valid = np.isfinite(pred) & np.isfinite(true) & np.isfinite(r)
+#     w = np.where(valid, w, np.nan)
+
+#     wsum = np.nansum(w, axis=0)
+
+#     wmse_num = np.nansum(w * (true - pred)**2, axis=0)
+#     wmse = np.divide(
+#         wmse_num, wsum,
+#         out=np.full_like(wmse_num, np.nan, dtype=float),
+#         where=wsum > 0
+#     )
+
+#     wtruebar_num = np.nansum(w * true, axis=0)
+#     wtruebar = np.divide(
+#         wtruebar_num, wsum,
+#         out=np.full_like(wtruebar_num, np.nan, dtype=float),
+#         where=wsum > 0
+#     )
+
+#     wvar_num = np.nansum(w * (true - wtruebar)**2, axis=0)
+#     wvartrue = np.divide(
+#         wvar_num, wsum,
+#         out=np.full_like(wvar_num, np.nan, dtype=float),
+#         where=wsum > 0
+#     )
+
+#     weighted_skill = 1 - wmse / (wvartrue + epsilon_var)
+
+#     return weighted_skill
+
+
 def weighted_skill(pred, true, r, epsilon_wts=1e-4, epsilon_var=1):
     # NOTE including epsilon = 1e-4 in the weights in case of uncertainty r ~ 0
 
