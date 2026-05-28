@@ -72,13 +72,13 @@ def weighted_skill(pred, true, r, epsilon_wts=1e-4, epsilon_var=1):
 
     w = 1 / (r**2 + epsilon_wts)
 
-    w_sum = np.nansum(w, axis=0)
+    wsum = np.nansum(w, axis=0)
 
-    wmse = np.nansum( w * (true - pred) ** 2, axis = 0) / w_sum # weighted mean square error
+    wmse = np.nansum( w * (true - pred) ** 2, axis = 0) / wsum # weighted mean square error
 
-    wtruebar = np.nansum(w * true, axis = 0) / w_sum # weighted mean true
+    wtruebar = np.nansum(w * true, axis = 0) / wsum # weighted mean true
 
-    wvartrue = np.nanmean( w * (true - wtruebar) ** 2, axis = 0) / w_sum # weighted variance in true
+    wvartrue = np.nanmean( w * (true - wtruebar) ** 2, axis = 0) / wsum # weighted variance in true
     # NOTE above is equivalent to np.nanvar()
 
     weighted_skill = 1 - wmse / (wvartrue + epsilon_var)
