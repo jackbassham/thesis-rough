@@ -71,7 +71,7 @@ def plot_ensemble_all_models(
         lat,
         hemisphere,
         save_path,
-        figsize=(10,10),
+        figsize=(8,10), # (Width, Height)
         cmap=cmo.cm.balance_r,
         boundaries=np.arange(-0.8, 0.6+0.1, 0.1)
     ):
@@ -106,7 +106,17 @@ def plot_ensemble_all_models(
         2,
         figsize=figsize,
         subplot_kw={"projection": projection},
-        constrained_layout=True,
+        # constrained_layout=True,
+    )
+
+    # Reduce space between map panels
+    fig.subplots_adjust(
+        left=0.05,
+        right=0.82,   # Adjust to leave room for colorbar
+        bottom=0.04,
+        top=0.96,
+        wspace=-0.3,  # Adjust for horizontal space between columns
+        hspace=0.20,  # Adjust for vertical space between rows
     )
 
     #~~~~~~~~~~~~~~~~~~~~~
@@ -141,10 +151,14 @@ def plot_ensemble_all_models(
 
         ax.set_title(title, fontweight='bold')
 
-    fig.colorbar(pcm, ax=axs, orientation='vertical', shrink=0.8, label=r'$Skill$')
+    # Set position [left, bottom, width, height] of colorbar in figure coordinates
+    cbar_ax = fig.add_axes([0.84, 0.18, 0.025, 0.64])
 
-    plt.tight_layout(
-        rect=[0, 0, 0.86, 0.96]
+    cbar = fig.colorbar(
+        pcm,
+        cax=cbar_ax,
+        orientation='vertical',
+        label=r'$Skill$',
     )
 
     # vector graphics for publications
