@@ -99,7 +99,7 @@ def plot_global_monthly_ensemble_all_models(
     )
 
     # ==================================================
-    # TOP LEFT
+    # All metric pannels
     # ==================================================
 
     metric_panels = [
