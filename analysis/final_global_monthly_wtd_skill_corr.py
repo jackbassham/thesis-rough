@@ -131,7 +131,7 @@ def plot_global_monthly_ensemble_all_models(
         )
 
     ax1.set_ylabel(r"$Skill$", fontsize=12, fontweight='bold')
-    # ax1.set_yticks([-0.2, 0.0, 0.2, 0.4, 0.6, 0.8])
+    ax1.set_yticks([-0.8, -0.4, 0.0, 0.4])
     ax1.set_title('Weighted Skill', fontsize=12, fontweight='bold')
 
     # ax1.axhline(
