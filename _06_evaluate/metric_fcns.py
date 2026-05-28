@@ -1,5 +1,8 @@
 import numpy as np
 
+def weighted_mean(x, w):
+    return np.nansum(w * x, axis = 0) / np.nansum(w, axis = 0)
+
 def correlation(pred, true):
 
     """
@@ -28,9 +31,6 @@ def weighted_correlation(pred, true, r, epsilon_wts=1e-4):
     """
 
     w = 1 / (r**2 + epsilon_wts)
-
-    def weighted_mean(x, w):
-        return np.nansum(w * x, axis = 0) / np.nansum(w, axis = 0)
 
     predbar = weighted_mean(pred, w) # weighted mean predicted
     truebar = weighted_mean(true, w) # weighted mean true
@@ -72,15 +72,16 @@ def weighted_skill(pred, true, r, epsilon_wts=1e-4, epsilon_var=1):
 
     w = 1 / (r**2 + epsilon_wts)
 
-    mse = np.nanmean( w * (true - pred) ** 2, axis = 0) # mean square error
-    # NOTE above is not equivalent to np.nanvar(true-pred), which excludes bias term
+    w_sum = np.nansum(w, axis=0)
 
-    truebar = np.nanmean(true, axis = 0) # mean true
+    wmse = np.nansum( w * (true - pred) ** 2, axis = 0) / w_sum # weighted mean square error
 
-    vartrue = np.nanmean( w * (true - truebar) ** 2, axis = 0) # variance in true
+    wtruebar = np.nansum(w * true, axis = 0) / w_sum # weighted mean true
+
+    wvartrue = np.nanmean( w * (true - wtruebar) ** 2, axis = 0) / w_sum # weighted variance in true
     # NOTE above is equivalent to np.nanvar()
 
-    weighted_skill = 1 - mse / (vartrue + epsilon_var)
+    weighted_skill = 1 - wmse / (wvartrue + epsilon_var)
 
     return weighted_skill
 
