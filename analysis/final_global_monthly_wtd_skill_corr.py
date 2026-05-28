@@ -75,7 +75,7 @@ def plot_global_monthly_ensemble_all_models(
     months = np.arange(1, 13)
 
     # --------------------------------------------------
-    # Colorblind-safe colors
+    # Okabi-ito color scale
     # --------------------------------------------------
 
     model_colors = {
