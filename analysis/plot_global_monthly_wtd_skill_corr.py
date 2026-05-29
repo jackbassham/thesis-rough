@@ -55,7 +55,7 @@ def main():
         global_metrics,
         MODEL_STRS,
         month_labels,
-        PLOT_PATH / 'wtd_corr_skill.png',
+        PLOT_PATH,
         figsize=(7, 7),
     )
 
@@ -275,10 +275,16 @@ def plot_global_monthly_ensemble_all_models(
         rect=[0, 0, 0.86, 0.96]
     )
 
+    # # vector graphics for publications
+    # plt.savefig(
+    #     save_path,
+    #     dpi=300,
+    #     bbox_inches="tight",
+    # )
+
     # vector graphics for publications
     plt.savefig(
-        save_path,
-        dpi=300,
+        save_path / 'wtd_corr_skill_glob_month.pdf', 
         bbox_inches="tight",
     )
 
