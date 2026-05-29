@@ -214,6 +214,16 @@ def load_all_metrics(
                         members_data['monthly_all_members']
                     )
 
+                    metrics[model_str][metric_str]['mean'] = (
+                        members_data['mean']
+                    )
+
+                    metrics[model_str][metric_str]['sem'] = (
+                        members_data['sem']
+                    )
+
+                    
+
                 else:
                     raise ValueError(f'Members path: {members_path} DNE')
 

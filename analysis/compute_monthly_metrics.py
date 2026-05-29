@@ -136,7 +136,7 @@ def main():
             monthly_all_members=monthly_all_members,
         )
 
-        metric_mean = np.nanmean(monthly_all_members, axis=0)
+        metric_mean = np.nanmean(monthly_all_members, axis=0) # (month, channel, height, width)
 
         if N_MEMBERS > 1:
             # NOTE sample std for sem
