@@ -38,6 +38,7 @@ def main():
         METRIC_STRS,
         HEMISPHERE,
         TIMESTAMP,
+        monthly=True,
     )
 
     # Load in coordinate variables
@@ -98,7 +99,7 @@ def plot_ensemble_all_models(
         model_str,
         hemisphere,
         save_path,
-        figsize=(8,10), # (Width, Height)
+        figsize=(16,3), # (Width, Height)
         cmap=cmo.cm.balance_r,
         boundaries=np.arange(-0.8, 0.8+0.1, 0.1)
     ):
@@ -138,12 +139,12 @@ def plot_ensemble_all_models(
 
     # Reduce space between map panels
     fig.subplots_adjust(
-        left=0.05,
-        right=0.82,   # Adjust to leave room for colorbar
-        bottom=0.04,
-        top=0.96,
-        wspace=-0.3,  # Adjust for horizontal space between columns
-        hspace=0.20,  # Adjust for vertical space between rows
+        left=0.03,
+        right=0.88,   # Adjust to leave room for colorbar
+        bottom=0.03,
+        top=0.90,
+        wspace=-0.15,  # Adjust for horizontal space between columns
+        hspace=-0.35,  # Adjust for vertical space between rows
     )
 
     #~~~~~~~~~~~~~~~~~~~~~
@@ -164,7 +165,7 @@ def plot_ensemble_all_models(
         ('weighted_skill', 11, axs[1,5], 'Dec'),
     ]
 
-    for model_str, metric_str, month_idx, ax, title in panels:
+    for metric_str, month_idx, ax, title in panels:
 
         mean = metrics[model_str][metric_str]['mean'][month_idx][channel_idx]
 
@@ -204,7 +205,7 @@ def plot_ensemble_all_models(
             )
 
     # Set position [left, bottom, width, height] of colorbar in figure coordinates
-    cbar_ax = fig.add_axes([0.78, 0.18, 0.025, 0.64])
+    cbar_ax = fig.add_axes([0.90, 0.18, 0.025, 0.64])
 
     cbar = fig.colorbar(
         pcm,
@@ -213,7 +214,12 @@ def plot_ensemble_all_models(
         label=r'$Skill_w$',
     )
 
-    plt.suptitle(suptitle, fontweight='bold', loc='left')
+    fig.suptitle(
+        suptitle,
+        fontweight='bold',
+        x=0.05,
+        ha='left'
+    )
 
     # vector graphics for publications
     plt.savefig(

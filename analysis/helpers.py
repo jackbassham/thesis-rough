@@ -214,6 +214,13 @@ def load_all_metrics(
                         members_data['monthly_all_members']
                     )
 
+                    members_path = (
+                        base_path
+                        / f'ensemble_{metric_str}.npz'
+                    )
+
+                    members_data = np.load(members_path)
+
                     metrics[model_str][metric_str]['mean'] = (
                         members_data['mean']
                     )
