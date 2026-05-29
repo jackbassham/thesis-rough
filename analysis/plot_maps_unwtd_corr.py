@@ -26,7 +26,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/maps_wtd_metrics_wtd')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/maps_unwtd_metrics_unwtd')
 
 
 def main():
@@ -125,12 +125,12 @@ def plot_ensemble_all_models(
     # Panel set up
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
-        ('cnn_pt_wtd', 'weighted_correlation', 0, axs[0,0], r'(a) $u_{i,t}$'),
-        ('cnn_pt_wtd', 'weighted_correlation', 1, axs[0,1], r'(a) $v_{i,t}$'),
-        ('lr_cf_wtd', 'weighted_correlation', 0, axs[1,0], r'(b) $u_{i,t}$'),
-        ('lr_cf_wtd', 'weighted_correlation', 1, axs[1,1], r'(b) $v_{i,t}$'),
-        ('ps', 'weighted_correlation', 0, axs[2,0], r'(c) $u_{i,t}$'),
-        ('ps', 'weighted_correlation', 1, axs[2,1], r'(c) $v_{i,t}$'),
+        ('cnn_pt', 'correlation', 0, axs[0,0], r'(a) $u_{i,t}$'),
+        ('cnn_pt', 'correlation', 1, axs[0,1], r'(a) $v_{i,t}$'),
+        ('lr_cf', 'correlation', 0, axs[1,0], r'(b) $u_{i,t}$'),
+        ('lr_cf', 'correlation', 1, axs[1,1], r'(b) $v_{i,t}$'),
+        ('ps', 'correlation', 0, axs[2,0], r'(c) $u_{i,t}$'),
+        ('ps', 'correlation', 1, axs[2,1], r'(c) $v_{i,t}$'),
     ]
 
     for model_str, metric_str, channel, ax, title in panels:
@@ -179,7 +179,7 @@ def plot_ensemble_all_models(
         pcm,
         cax=cbar_ax,
         orientation='vertical',
-        label=r'$\rho_w$',
+        label=r'$\rho$',
     )
 
     #~~~~~~~~~~~~~~~~
@@ -190,7 +190,7 @@ def plot_ensemble_all_models(
     #~~~~~~~~~~~~~~~~
 
     plt.savefig(
-        save_path / 'wtd_corr.png',
+        save_path / 'unwtd_corr.png',
         dpi=300,
         bbox_inches="tight",
     )
