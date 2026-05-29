@@ -73,7 +73,7 @@ def plot_ensemble_all_models(
         lat,
         hemisphere,
         save_path,
-        figsize=(8,10), # (Width, Height)
+        figsize=(10,10), # (Width, Height)
         cmap=cmo.cm.balance_r,
         boundaries=np.arange(-0.8, 0.8+0.1, 0.1)
     ):
@@ -105,7 +105,7 @@ def plot_ensemble_all_models(
 
     fig, axs = plt.subplots(
         3,
-        2,
+        4,
         figsize=figsize,
         subplot_kw={"projection": projection},
         # constrained_layout=True,
@@ -114,11 +114,11 @@ def plot_ensemble_all_models(
     # Reduce space between map panels
     fig.subplots_adjust(
         left=0.05,
-        right=0.82,   # Adjust to leave room for colorbar
+        right=1.0,   # Adjust to leave room for colorbar
         bottom=0.04,
         top=0.96,
-        wspace=-0.3,  # Adjust for horizontal space between columns
-        hspace=0.20,  # Adjust for vertical space between rows
+        wspace=0.1,  # Adjust for horizontal space between columns
+        hspace=0.1,  # Adjust for vertical space between rows
     )
 
     #~~~~~~~~~~~~~~~~~~~~~
@@ -127,10 +127,16 @@ def plot_ensemble_all_models(
     panels = [
         ('cnn_pt', 'skill', 0, axs[0,0], r'(a) $u_{i,t}$'),
         ('cnn_pt', 'skill', 1, axs[0,1], r'(a) $v_{i,t}$'),
+        ('cnn_pt', 'weighted_skill', 0, axs[0,2], r'(d) $u_{i,t}$'),
+        ('cnn_pt', 'weighted_skill', 1, axs[0,3], r'(d) $v_{i,t}$'),
         ('lr_cf', 'skill', 0, axs[1,0], r'(b) $u_{i,t}$'),
         ('lr_cf', 'skill', 1, axs[1,1], r'(b) $v_{i,t}$'),
+        ('lr_cf', 'weighted_skill', 0, axs[1,2], r'(e) $u_{i,t}$'),
+        ('lr_cf', 'weighted_skill', 1, axs[1,3], r'(e) $v_{i,t}$'),
         ('ps', 'skill', 0, axs[2,0], r'(c) $u_{i,t}$'),
         ('ps', 'skill', 1, axs[2,1], r'(c) $v_{i,t}$'),
+        ('ps', 'weighted_skill', 0, axs[2,2], r'(f) $u_{i,t}$'),
+        ('ps', 'weighted_skill', 1, axs[2,3], r'(f) $v_{i,t}$'),
     ]
 
     for model_str, metric_str, channel, ax, title in panels:
@@ -173,7 +179,7 @@ def plot_ensemble_all_models(
             )
 
     # Set position [left, bottom, width, height] of colorbar in figure coordinates
-    cbar_ax = fig.add_axes([0.78, 0.18, 0.025, 0.64])
+    cbar_ax = fig.add_axes([1.05, 0.18, 0.025, 0.64])
 
     cbar = fig.colorbar(
         pcm,
