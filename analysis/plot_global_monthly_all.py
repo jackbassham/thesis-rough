@@ -55,7 +55,7 @@ def main():
         global_metrics,
         MODEL_STRS,
         month_labels,
-        PLOT_PATH / 'all_metrics.png',
+        PLOT_PATH,
         figsize=(10, 7),
     )
 
@@ -229,8 +229,7 @@ def plot_global_monthly_ensemble_all_models(
 
     # vector graphics for publications
     plt.savefig(
-        save_path,
-        dpi=300,
+        save_path / 'all_metrics.pdf', 
         bbox_inches="tight",
     )
 
