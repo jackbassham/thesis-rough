@@ -79,6 +79,62 @@ def main():
         save_path='ui_t0.png'
     )
 
+    plot_schematic_feature(
+        vi_t0,
+        lon,
+        lat,
+        HEMISPHERE,
+        title=None,
+        cmap=cmo.delta,
+        vmin=-1,
+        vmax=1,
+        save_path='vi_t0.png'
+    )
+
+    plot_schematic_feature(
+        ci_t1,
+        lon,
+        lat,
+        HEMISPHERE,
+        title=None,
+        cmap=cmo.ice,
+        save_path='ci_t1.png'
+    )
+
+    plot_schematic_feature(
+        ua_t0,
+        lon,
+        lat,
+        HEMISPHERE,
+        title=None,
+        cmap=cmo.balance,
+        vmin=-1,
+        vmax=1,
+        save_path='ua_t0.png'
+    )
+
+    plot_schematic_feature(
+        va_t0,
+        lon,
+        lat,
+        HEMISPHERE,
+        title=None,
+        cmap=cmo.balance,
+        vmin=-1,
+        vmax=1,
+        save_path='va_t0.png'
+    )
+
+    plot_schematic_feature(
+        mask_bad,
+        lon,
+        lat,
+        HEMISPHERE,
+        title=None,
+        cmap=cmo.gray_r,
+        save_path='mask.png'
+    )
+
 
 def plot_schematic_feature(
     data,
@@ -153,3 +209,7 @@ def plot_schematic_feature(
         )
 
     return fig, ax
+
+
+if __name__ == '__main__':
+    main()
