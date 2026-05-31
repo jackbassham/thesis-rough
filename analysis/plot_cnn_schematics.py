@@ -73,7 +73,7 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.delta,
+        cmap=cmo.cm.delta,
         vmin=-1,
         vmax=1,
         save_path='ui_t0.png'
@@ -85,7 +85,7 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.delta,
+        cmap=cmo.cm.delta,
         vmin=-1,
         vmax=1,
         save_path='vi_t0.png'
@@ -97,7 +97,7 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.ice,
+        cmap=cmo.cm.ice,
         save_path='ci_t1.png'
     )
 
@@ -107,7 +107,7 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.balance,
+        cmap=cmo.cm.delta,
         vmin=-1,
         vmax=1,
         save_path='ua_t0.png'
@@ -119,7 +119,7 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.balance,
+        cmap=cmo.cm.delta,
         vmin=-1,
         vmax=1,
         save_path='va_t0.png'
@@ -131,7 +131,7 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.gray_r,
+        cmap=cmo.cm.gray_r,
         save_path='mask.png'
     )
 
