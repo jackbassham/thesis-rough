@@ -40,9 +40,6 @@ def main():
         TIMESTAMP,
     )
 
-    u_del_wtd_skill = metrics['cnn_pt_wtd']['weighted_skill']['mean'][0] - metrics['lr_cf_wtd']['weighted_skill']['mean'][0]
-    v_del_wtd_skill = metrics['cnn_pt_wtd']['weighted_skill']['mean'][1] - metrics['lr_cf_wtd']['weighted_skill']['mean'][1]
-
     u_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_correlation']['mean'][0] - metrics['lr_cf_wtd']['weighted_correlation']['mean'][0]
     v_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_correlation']['mean'][1] - metrics['lr_cf_wtd']['weighted_correlation']['mean'][1]
 
