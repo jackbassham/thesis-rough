@@ -59,7 +59,8 @@ def main():
     PLOT_PATH.mkdir(parents=True, exist_ok=True)
 
     plot_ensemble_all_models(
-        metrics,
+        u_del_wtd_corr,
+        v_del_wtd_corr,
         lon,
         lat,
         HEMISPHERE,
@@ -71,7 +72,8 @@ def main():
 
 
 def plot_ensemble_all_models(
-        metrics,
+        u_del_wtd_corr,
+        v_del_wtd_corr,
         lon,
         lat,
         hemisphere,
@@ -128,17 +130,11 @@ def plot_ensemble_all_models(
     # Panel set up
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
-        ('cnn_pt_wtd', 'weighted_correlation', 0, axs[0,0], r'(a) $u_{i,t}$'),
-        ('cnn_pt_wtd', 'weighted_correlation', 1, axs[0,1], r'(a) $v_{i,t}$'),
-        ('lr_cf_wtd', 'weighted_correlation', 0, axs[1,0], r'(b) $u_{i,t}$'),
-        ('lr_cf_wtd', 'weighted_correlation', 1, axs[1,1], r'(b) $v_{i,t}$'),
-        ('ps', 'weighted_correlation', 0, axs[2,0], r'(c) $u_{i,t}$'),
-        ('ps', 'weighted_correlation', 1, axs[2,1], r'(c) $v_{i,t}$'),
+        (u_del_wtd_corr,  axs[0, 0], r'(a) $u_{i,t}$'),
+        (v_del_wtd_corr,  axs[0, 1], r'(b) $v_{i,t}$'),
     ]
 
-    for model_str, metric_str, channel, ax, title in panels:
-
-        mean = metrics[model_str][metric_str]['mean'][channel]
+    for delmetric, ax, title in panels:
 
         ax.set_extent(data_extent, crs=data_crs)
         ax.coastlines()
@@ -163,7 +159,7 @@ def plot_ensemble_all_models(
         pcm = ax.pcolormesh(
             lon,
             lat,
-            mean,
+            delmetric,
             transform=data_crs,
             cmap=cmap,
             norm=norm,
@@ -182,7 +178,7 @@ def plot_ensemble_all_models(
         pcm,
         cax=cbar_ax,
         orientation='vertical',
-        label=r'$\rho_w$',
+        label=r'$\Delta \rho_w$',
     )
 
     #~~~~~~~~~~~~~~~~
@@ -193,7 +189,7 @@ def plot_ensemble_all_models(
     #~~~~~~~~~~~~~~~~
 
     plt.savefig(
-        save_path / 'wtd_corr.png',
+        save_path / 'del_wtd_corr.png',
         dpi=300,
         bbox_inches="tight",
     )
