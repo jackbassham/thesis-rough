@@ -63,7 +63,7 @@ def main():
         PLOT_PATH,
         figsize=(10,10),
         cmap=cmo.cm.balance_r,
-        boundaries=np.arange(-1.0, 1.0+0.1, 0.2)
+        boundaries=np.arange(-0.8, 0.8+0.1, 0.1)
     )
 
 
