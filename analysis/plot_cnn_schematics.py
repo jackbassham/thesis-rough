@@ -51,20 +51,20 @@ def main():
         / TIMESTAMP_REGRID
     )
 
+    tf = np.load(path_model_inputs / "targets_features.npz", mmap_mode="r")
 
-    # Load target/ feature variables
-    tf = np.load(path_model_inputs / 'targets_features.npz')
-
-    # Get one day of each target feature variable
     t_idx = 180
 
-    ui_t0 = tf['y'][t_idx,0,:,:]
-    vi_t0 = tf['y'][t_idx,1,:,:]
+    x_day = tf["x"][t_idx]
+    y_day = tf["y"][t_idx]
 
-    ua_t0 = tf['x'][t_idx,0,:,:]
-    va_t0 = tf['x'][t_idx,1,:,:]
-    ci_t1 = tf['x'][t_idx,2,:,:]
-    mask_bad = tf['x'][t_idx,3,:,:]
+    ui_t0 = y_day[0]
+    vi_t0 = y_day[1]
+
+    ua_t0 = x_day[0]
+    va_t0 = x_day[1]
+    ci_t1 = x_day[2]
+    mask_bad = x_day[3]
     
 
     plot_schematic_feature(
@@ -73,10 +73,10 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.cm.delta,
+        cmap=cmo.cm.curl,
         vmin=-1,
         vmax=1,
-        save_path='ui_t0.png'
+        save_path=PLOT_PATH / 'ui_t0.png'
     )
 
     plot_schematic_feature(
@@ -85,10 +85,10 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.cm.delta,
+        cmap=cmo.cm.curl,
         vmin=-1,
         vmax=1,
-        save_path='vi_t0.png'
+        save_path=PLOT_PATH / 'vi_t0.png'
     )
 
     plot_schematic_feature(
@@ -97,8 +97,10 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
+        vmin=0,
+        vmax=1,
         cmap=cmo.cm.ice,
-        save_path='ci_t1.png'
+        save_path=PLOT_PATH / 'ci_t1.png'
     )
 
     plot_schematic_feature(
@@ -107,10 +109,10 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.cm.delta,
+        cmap=cmo.cm.curl,
         vmin=-1,
         vmax=1,
-        save_path='ua_t0.png'
+        save_path=PLOT_PATH / 'ua_t0.png'
     )
 
     plot_schematic_feature(
@@ -119,10 +121,10 @@ def main():
         lat,
         HEMISPHERE,
         title=None,
-        cmap=cmo.cm.delta,
+        cmap=cmo.cm.curl,
         vmin=-1,
         vmax=1,
-        save_path='va_t0.png'
+        save_path=PLOT_PATH / 'va_t0.png'
     )
 
     plot_schematic_feature(
@@ -132,7 +134,7 @@ def main():
         HEMISPHERE,
         title=None,
         cmap=cmo.cm.gray_r,
-        save_path='mask.png'
+        save_path=PLOT_PATH / 'mask.png'
     )
 
 
@@ -154,14 +156,14 @@ def plot_schematic_feature(
     """
 
     if hemisphere.lower() == "south":
-        lat_min, lat_max = -90, -62
+        lat_min, lat_max = -80, -62
     elif hemisphere.lower() == "north":
         lat_min, lat_max = 65, 90
     else:
         raise ValueError('hemisphere must be "north" or "south"')
 
     fig, ax = plt.subplots(
-        figsize=(4, 2),
+        figsize=(3, 2),
         subplot_kw={"projection": ccrs.PlateCarree()},
     )
 
@@ -180,12 +182,11 @@ def plot_schematic_feature(
         crs=ccrs.PlateCarree(),
     )
 
-    # coastlines only
-    ax.coastlines(
-        resolution="110m",
-        linewidth=0.5,
-        color="black",
-    )
+    # Fill the axes box instead of preserving geographic aspect ratio
+    ax.set_aspect("auto")
+
+    # coastlines 
+    ax.coastlines()
 
     # remove everything else
     ax.set_xticks([])
