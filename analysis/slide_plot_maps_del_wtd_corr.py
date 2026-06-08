@@ -26,7 +26,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/maps_wtd_metrics_wtd')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/slide_plots')
 
 
 def main():
@@ -129,8 +129,8 @@ def plot_ensemble_all_models(
     # Panel set up
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
-        (u_del_wtd_corr,  axs[0], r'(a) $u_{i,t}$'),
-        (v_del_wtd_corr,  axs[1], r'(b) $v_{i,t}$'),
+        (u_del_wtd_corr,  axs[0], r'$\Delta \rho_w$ (WCNN, WLR), $u_{i,t}$'),
+        (v_del_wtd_corr,  axs[1], r'$\Delta \rho_w$ (WCNN, WLR), $v_{i,t}$'),
     ]
 
     for delmetric, ax, title in panels:

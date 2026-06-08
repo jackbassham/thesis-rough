@@ -7,13 +7,13 @@ import numpy.typing as npt
 from pathlib import Path
 
 
-from analysis.plot import plot_cartopy_map, plot_contour_cartopy_map
+from analysis_old.plot import plot_cartopy_map, plot_contour_cartopy_map
 import helpers
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
 
 HEMISPHERE = 'south'
-TIMESTAMP_REGRID = '05062026_1852'
+TIMESTAMP_REGRID = '05222026_1652'
 TIMESTAMP_MASK_NORM = TIMESTAMP_REGRID
 
 
@@ -34,7 +34,7 @@ BASE_NORMALIZED_PATH = Path(
 )
 
 
-ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
+ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis_old')
 
 SAVE_PATH = ANALYSIS_PATH / 'monthly_stats'
 SAVE_PATH.mkdir(parents=True, exist_ok=True)
@@ -131,12 +131,12 @@ def main():
         lat=lat,
         hemisphere=HEMISPHERE,
         titles=month_labels,
-        suptitle='Mean(ci, raw): (1989-2020)',
+        suptitle='Mean Sea Ice Concentration (1989-2020)',
         data_channel_axis=0,
         n_cols=4,
         n_rows=3,
         cmap=cmo.cm.ice,
-        cbar_label='concentration (Frac)',
+        cbar_label='Areal Fraction',
         vmin=0,
         vmax=1,
         levels=np.arange(0.0, 1.1, 0.1),

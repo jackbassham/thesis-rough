@@ -16,7 +16,7 @@ METRIC_STRS = [
     'skill',
     'weighted_skill',
     'correlation',
-    'weighted_correlation',
+    'weighted_skillelation',
     ]
 
 ROOT = Path('/data/globus/jbassham/thesis-rough')
@@ -26,7 +26,7 @@ TIMESTAMP = '05222026_1652'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/maps_wtd_metrics_wtd')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/slide_plots')
 
 
 def main():
@@ -40,8 +40,8 @@ def main():
         TIMESTAMP,
     )
 
-    u_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_correlation']['mean'][0] - metrics['lr_cf_wtd']['weighted_correlation']['mean'][0]
-    v_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_correlation']['mean'][1] - metrics['lr_cf_wtd']['weighted_correlation']['mean'][1]
+    u_del_wtd_skill = metrics['cnn_pt_wtd']['weighted_skill']['mean'][0] - metrics['lr_cf_wtd']['weighted_skill']['mean'][0]
+    v_del_wtd_skill = metrics['cnn_pt_wtd']['weighted_skill']['mean'][1] - metrics['lr_cf_wtd']['weighted_skill']['mean'][1]
 
     # Load in coordinate variables
     coordinates = np.load(
@@ -59,8 +59,8 @@ def main():
     PLOT_PATH.mkdir(parents=True, exist_ok=True)
 
     plot_ensemble_all_models(
-        u_del_wtd_corr,
-        v_del_wtd_corr,
+        u_del_wtd_skill,
+        v_del_wtd_skill,
         lon,
         lat,
         HEMISPHERE,
@@ -72,8 +72,8 @@ def main():
 
 
 def plot_ensemble_all_models(
-        u_del_wtd_corr,
-        v_del_wtd_corr,
+        u_del_wtd_skill,
+        v_del_wtd_skill,
         lon,
         lat,
         hemisphere,
@@ -129,8 +129,8 @@ def plot_ensemble_all_models(
     # Panel set up
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
-        (u_del_wtd_corr,  axs[0], r'(a) $u_{i,t}$'),
-        (v_del_wtd_corr,  axs[1], r'(b) $v_{i,t}$'),
+        (u_del_wtd_skill,  axs[0], r'$\Delta Skill_w$ (WCNN, WLR), $u_{i,t}$'),
+        (v_del_wtd_skill,  axs[1], r'$\Delta Skill_w$ (WCNN, WLR), $v_{i,t}$'),
     ]
 
     for delmetric, ax, title in panels:
@@ -177,7 +177,7 @@ def plot_ensemble_all_models(
         pcm,
         cax=cbar_ax,
         orientation='vertical',
-        label=r'$\Delta \rho_w$',
+        label=r'$\Delta Skill_w$',
     )
 
     #~~~~~~~~~~~~~~~~
@@ -188,7 +188,7 @@ def plot_ensemble_all_models(
     #~~~~~~~~~~~~~~~~
 
     plt.savefig(
-        save_path / 'del_wtd_corr.png',
+        save_path / 'del_wtd_skill.png',
         dpi=300,
         bbox_inches="tight",
     )
