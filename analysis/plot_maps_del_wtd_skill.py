@@ -40,8 +40,8 @@ def main():
         TIMESTAMP,
     )
 
-    u_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_correlation']['mean'][0] - metrics['lr_cf_wtd']['weighted_correlation']['mean'][0]
-    v_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_correlation']['mean'][1] - metrics['lr_cf_wtd']['weighted_correlation']['mean'][1]
+    u_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_skill']['mean'][0] - metrics['lr_cf_wtd']['weighted_skill']['mean'][0]
+    v_del_wtd_corr = metrics['cnn_pt_wtd']['weighted_skill']['mean'][1] - metrics['lr_cf_wtd']['weighted_skill']['mean'][1]
 
     # Load in coordinate variables
     coordinates = np.load(
@@ -129,8 +129,8 @@ def plot_ensemble_all_models(
     # Panel set up
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
-        (u_del_wtd_corr,  axs[0], r'$\Delta \rho_w$ (WCNN, WLR), $u_{i,t}$'),
-        (v_del_wtd_corr,  axs[1], r'$\Delta \rho_w$ (WCNN, WLR), $v_{i,t}$'),
+        (u_del_wtd_corr,  axs[0], r'$\Delta Skill_w$ (WCNN, WLR), $u_{i,t}$'),
+        (v_del_wtd_corr,  axs[1], r'$\Delta Skill_w$ (WCNN, WLR), $v_{i,t}$'),
     ]
 
     for delmetric, ax, title in panels:
@@ -177,7 +177,7 @@ def plot_ensemble_all_models(
         pcm,
         cax=cbar_ax,
         orientation='vertical',
-        label=r'$\Delta \rho_w$',
+        label=r'$\Delta Skill_w$',
     )
 
 #     fig.suptitle(
@@ -197,7 +197,7 @@ def plot_ensemble_all_models(
     #~~~~~~~~~~~~~~~~
 
     plt.savefig(
-        save_path / 'del_wtd_corr.png',
+        save_path / 'del_wtd_skill.png',
         dpi=300,
         bbox_inches="tight",
     )
