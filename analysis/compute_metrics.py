@@ -8,7 +8,7 @@ from analysis import (plot_fcns, helpers)
 
 
 
-MODEL_STRS = [ 'ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt',]
+MODEL_STRS = [ 'ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
 
 DATA_ROOT = Path('/data/globus/jbassham/thesis-rough')
 
