@@ -9,7 +9,7 @@ MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
 
 DATA_ROOT = Path('/data/globus/jbassham/thesis-rough')
 HEMISPHERE = 'south'
-TIMESTAMP = '05222026_1652'
+TIMESTAMP = '06082026_1154'
 TIMESTAMP_MODEL_INPUTS = TIMESTAMP
 N_MEMBERS = 10
 
@@ -21,7 +21,7 @@ METRIC_STRS = [
     'rmse',
 ]
 
-ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis')
+ANALYSIS_PATH = Path('/home/jbassham/jack/thesis-rough/analysis3')
 
 
 BASE_DEST_PATH = (
@@ -104,7 +104,7 @@ def main():
                 emsemble_2sigma = 2 * ensemble_sem
             else:
                 ensemble_sem = np.nan
-                ensemble_2_sigma = np.nan
+                ensemble_2sigma = np.nan
 
             summary_lines.append(
                 f'  {metric_str}: mean = {ensemble_mean:.6f}, SEM = {ensemble_sem:.6f}, 2sigma = {emsemble_2sigma:.6f}'

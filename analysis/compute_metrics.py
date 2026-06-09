@@ -20,7 +20,7 @@ except (IndexError, ValueError):
 if model_idx is not None:
     MODEL_STR = MODEL_STRS[model_idx]
 else:
-    MODEL_STR = MODEL_STRS[0]
+    MODEL_STR = MODEL_STRS[4]
 
 HEMISPHERE = 'south'
 
