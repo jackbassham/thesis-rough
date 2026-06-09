@@ -125,12 +125,12 @@ def plot_ensemble_all_models(
     # Panel set up
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
-        ('cnn_pt_wtd', 'weighted_skill', 0, axs[0,0], r'(a) $u_{i,t}$'),
-        ('cnn_pt_wtd', 'weighted_skill', 1, axs[0,1], r'(a) $v_{i,t}$'),
-        ('lr_cf_wtd', 'weighted_skill', 0, axs[1,0], r'(b) $u_{i,t}$'),
-        ('lr_cf_wtd', 'weighted_skill', 1, axs[1,1], r'(b) $v_{i,t}$'),
-        ('ps', 'weighted_skill', 0, axs[2,0], r'(c) $u_{i,t}$'),
-        ('ps', 'weighted_skill', 1, axs[2,1], r'(c) $v_{i,t}$'),
+        ('cnn_pt_wtd', 'weighted_skill', 0, axs[0,0], r'WCNN, $u_{i,t}$'),
+        ('cnn_pt_wtd', 'weighted_skill', 1, axs[0,1], r'WCNN, $v_{i,t}$'),
+        ('lr_cf_wtd', 'weighted_skill', 0, axs[1,0], r'WLR, $u_{i,t}$'),
+        ('lr_cf_wtd', 'weighted_skill', 1, axs[1,1], r'WLR, $v_{i,t}$'),
+        ('ps', 'weighted_skill', 0, axs[2,0], r'PS, $u_{i,t}$'),
+        ('ps', 'weighted_skill', 1, axs[2,1], r'PS, $v_{i,t}$'),
     ]
 
     for model_str, metric_str, channel, ax, title in panels:
