@@ -22,11 +22,11 @@ METRIC_STRS = [
 ROOT = Path('/data/globus/jbassham/thesis-rough')
 
 HEMISPHERE = 'south'
-TIMESTAMP = '05222026_1652'
+TIMESTAMP = '06082026_1154'
 TIMESTAMP_REGRID = TIMESTAMP
 N_MEMBERS = 10
 
-PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis/final_plots/maps_unwtd_metrics_unwtd')
+PLOT_PATH = Path('/home/jbassham/jack/thesis-rough/analysis3/final_plots/maps_unwtd_metrics_unwtd')
 
 
 def main():

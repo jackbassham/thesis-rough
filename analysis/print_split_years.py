@@ -25,9 +25,11 @@ def main():
 
     path_model_inputs = DATA_ROOT / 'model_inputs' / HEMISPHERE / TIMESTAMP_MODEL_INPUTS
 
-    train_meta = np.load(path_model_inputs / 'train_years_meta.npz')
-    val_meta = np.load(path_model_inputs / 'val_years_meta.npz')
-    test_meta = np.load(path_model_inputs / 'test_years_meta.npz')
+    fnam_pfx = 'split_years_meta_'
+
+    train_meta = np.load(path_model_inputs / (fnam_pfx + 'train.npz'))
+    val_meta = np.load(path_model_inputs / (fnam_pfx + 'val.npz'))
+    test_meta = np.load(path_model_inputs / (fnam_pfx + 'test.npz'))
 
 
     summary_lines = []
@@ -55,7 +57,7 @@ def main():
         )
 
         summary_lines.append(
-            f'Test: {val_meta[m_str]}'
+            f'Test: {test_meta[m_str]}'
         )
 
         summary_lines.append('')
