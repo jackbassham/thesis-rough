@@ -130,8 +130,8 @@ def plot_ensemble_all_models(
     data_extent = [lon_min, lon_max, lat_min, lat_max]
 
     fig, axs = plt.subplots(
-        2,
         6,
+        2,
         figsize=figsize,
         subplot_kw={"projection": projection},
         # constrained_layout=True,
@@ -152,17 +152,17 @@ def plot_ensemble_all_models(
     #~~~~~~~~~~~~~~~~~~~~~
     panels = [
         ('weighted_skill', 0, axs[0,0], 'Jan'),
-        ('weighted_skill', 1, axs[0,1], 'Feb'),
-        ('weighted_skill', 2, axs[0,2], 'Mar'),
-        ('weighted_skill', 3, axs[0,3], 'Apr'),
-        ('weighted_skill', 4, axs[0,4], 'May'),
-        ('weighted_skill', 5, axs[0,5], 'Jun'),
-        ('weighted_skill', 6, axs[1,0], 'Jul'),
+        ('weighted_skill', 1, axs[1,0], 'Feb'),
+        ('weighted_skill', 2, axs[2,0], 'Mar'),
+        ('weighted_skill', 3, axs[3,0], 'Apr'),
+        ('weighted_skill', 4, axs[4,0], 'May'),
+        ('weighted_skill', 5, axs[5,0], 'Jun'),
+        ('weighted_skill', 6, axs[0,1], 'Jul'),
         ('weighted_skill', 7, axs[1,1], 'Aug'),
-        ('weighted_skill', 8, axs[1,2], 'Sep'),
-        ('weighted_skill', 9, axs[1,3], 'Oct'),
-        ('weighted_skill', 10, axs[1,4], 'Nov'),
-        ('weighted_skill', 11, axs[1,5], 'Dec'),
+        ('weighted_skill', 8, axs[2,1], 'Sep'),
+        ('weighted_skill', 9, axs[3,1], 'Oct'),
+        ('weighted_skill', 10, axs[4,1], 'Nov'),
+        ('weighted_skill', 11, axs[5,1], 'Dec'),
     ]
 
     for metric_str, month_idx, ax, title in panels:
