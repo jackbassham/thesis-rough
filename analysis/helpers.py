@@ -165,7 +165,7 @@ def load_all_metrics(
         else:
             base_path = (
                 Path(data_root)
-                / 'analysis2'
+                / 'analysis3'
                 / 'metrics'
                 / model_str
                 / hemisphere
@@ -198,6 +198,9 @@ def load_all_metrics(
                     ensemble_data['sem']
                 )
 
+            else:
+                raise FileNotFoundError(f'Ensemble path does not exist: {ensemble_path}')
+
             # ---------- All Members ----------
             if monthly:
 
@@ -229,10 +232,9 @@ def load_all_metrics(
                         members_data['sem']
                     )
 
-                    
-
                 else:
-                    raise ValueError(f'Members path: {members_path} DNE')
+                    raise FileNotFoundError(f'Ensemble path does not exist: {ensemble_path}')
+
 
     return metrics
 

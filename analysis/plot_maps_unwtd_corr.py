@@ -10,7 +10,7 @@ from pathlib import Path
 from analysis import plot_fcns, helpers
 
 
-MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd']
+MODEL_STRS = ['ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt',]
 
 METRIC_STRS = [
     'skill',
@@ -63,7 +63,7 @@ def main():
         PLOT_PATH,
         figsize=(10,10),
         cmap=cmo.cm.balance_r,
-        boundaries=np.arange(-1.0, 1.0+0.1, 0.2)
+        boundaries=np.arange(-1.0, 1.0+0.2, 0.2)
     )
 
 
@@ -185,6 +185,8 @@ def plot_ensemble_all_models(
         pcm,
         cax=cbar_ax,
         orientation='vertical',
+        boundaries=boundaries,
+        ticks=np.arange(-1.0, 1.01, 0.2),
         label=r'$\rho$',
     )
 

@@ -7,7 +7,7 @@ from analysis import helpers
 
 DATA_ROOT = Path('/data/globus/jbassham/thesis-rough')
 HEMISPHERE = 'south'
-TIMESTAMP = '05222026_1652'
+TIMESTAMP = '06082026_1154'
 TIMESTAMP_MODEL_INPUTS = TIMESTAMP
 N_MEMBERS = 10
 
