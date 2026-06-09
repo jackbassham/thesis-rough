@@ -9,7 +9,7 @@ from analysis import (plot_fcns, helpers)
 
 
 
-MODEL_STRS = [ 'ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt', 'cnn_pt_wtd',]
+MODEL_STRS = [ 'ps', 'lr_cf', 'lr_cf_wtd', 'cnn_pt',]
 
 DATA_ROOT = Path('/data/globus/jbassham/thesis-rough')
 
@@ -25,7 +25,7 @@ else:
 
 HEMISPHERE = 'south'
 
-TIMESTAMP = '05222026_1652'
+TIMESTAMP = '06082026_1154'
 
 TIMESTAMP_MODEL_INPUTS = TIMESTAMP
 TIMESTAMP_REGRID = TIMESTAMP
@@ -42,7 +42,7 @@ BASE_SOURCE_PATH = Path(
 
 BASE_DEST_PATH = Path(
     DATA_ROOT
-    / 'analysis2'
+    / 'analysis3'
     / 'metrics_monthly'
     / MODEL_STR
     / HEMISPHERE
