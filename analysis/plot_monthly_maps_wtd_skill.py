@@ -67,7 +67,6 @@ def main():
         model_str='cnn_pt_wtd',
         hemisphere=HEMISPHERE,
         save_path=PLOT_PATH,
-        figsize=(10,10),
         cmap=cmo.cm.balance_r,
         boundaries=np.arange(-0.8, 0.8+0.1, 0.1)
         )
@@ -83,7 +82,6 @@ def main():
         model_str='cnn_pt_wtd',
         hemisphere=HEMISPHERE,
         save_path=PLOT_PATH,
-        figsize=(10,10),
         cmap=cmo.cm.balance_r,
         boundaries=np.arange(-0.8, 0.8+0.1, 0.1)
         )
@@ -99,7 +97,7 @@ def plot_ensemble_all_models(
         model_str,
         hemisphere,
         save_path,
-        figsize=(16,3), # (Width, Height)
+        figsize=(12,14), # (Width, Height)
         cmap=cmo.cm.balance_r,
         boundaries=np.arange(-0.8, 0.8+0.1, 0.1)
     ):
@@ -137,14 +135,22 @@ def plot_ensemble_all_models(
         # constrained_layout=True,
     )
 
-    # Reduce space between map panels
+    # fig.subplots_adjust(
+    #     left=0.02,      # less whitespace on left side
+    #     right=0.88,     # leave room for colorbar
+    #     bottom=0.03,
+    #     top=0.96,
+    #     wspace=0.02,    # reduce gap between Jan-Jun and Jul-Dec columns
+    #     hspace=0.10     # reduce vertical spacing between months
+    # )
+
     fig.subplots_adjust(
-        left=0.03,
-        right=0.88,   # Adjust to leave room for colorbar
+        left=0.02,      # less whitespace on left side
+        right=0.88,     # leave room for colorbar
         bottom=0.03,
-        top=0.90,
-        wspace=-0.15,  # Adjust for horizontal space between columns
-        hspace=-0.35,  # Adjust for vertical space between rows
+        top=0.96,
+        wspace=0.02,    # reduce gap between Jan-Jun and Jul-Dec columns
+        hspace=0.10     # reduce vertical spacing between months
     )
 
     #~~~~~~~~~~~~~~~~~~~~~
