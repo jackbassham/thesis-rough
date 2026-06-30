@@ -171,7 +171,9 @@ def plot_ensemble_all_models(
             )
 
     # Set position [left, bottom, width, height] of colorbar in figure coordinates
-    cbar_ax = fig.add_axes([0.84, 0.08, 0.025, 0.75])
+    # cbar_ax = fig.add_axes([0.84, 0.08, 0.025, 0.75])
+    cbar_ax = fig.add_axes([0.84, 0.18, 0.025, 0.625])
+
 
     cbar = fig.colorbar(
         pcm,
