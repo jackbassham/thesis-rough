@@ -14,7 +14,7 @@ def main(cfg):
     y_test = splits['test']['y']
 
     # Instantiate one day persistence baseline model
-    model = models.PersistenceBaseline()
+    model = models.Persistence()
 
     # Get predictions on test splilt
     y_pred = model.predict(y_test)

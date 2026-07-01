@@ -21,7 +21,7 @@ def main():
         'make_coordinates': step_make_coordinates,
         'mask_normalize': step_mask_normalize,
         'process_inputs': step_process_inputs,
-        'baseline': step_baseline,
+        'ps': step_ps,
         'lr_cf': step_lr_cf,
         'lr_cf_wtd': step_lr_cf_wtd,
         'cnn': step_cnn,
@@ -145,8 +145,8 @@ def step_process_inputs(config):
     main(config)
 
 
-def step_baseline(config):
-    from _05_train_models.train_baseline import main
+def step_ps(config):
+    from _05_train_models.train_ps import main
     from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
 
