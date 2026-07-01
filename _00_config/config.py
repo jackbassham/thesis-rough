@@ -339,8 +339,8 @@ class PathConfig:
         'ps',
         'lr_cf',
         'lr_cf_wtd',
-        'cnn_pt',
-        'cnn_pt_wtd',
+        'cnn',
+        'cnn_wtd',
     ]
 
     # Pass in instances of data and version configurations

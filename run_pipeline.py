@@ -22,8 +22,8 @@ def main():
         'mask_normalize': step_mask_normalize,
         'process_inputs': step_process_inputs,
         'baseline': step_baseline,
-        'lr': step_lr,
-        'lr_wtd': step_lr_wtd,
+        'lr_cf': step_lr_cf,
+        'lr_cf_wtd': step_lr_cf_wtd,
         'cnn': step_cnn,
         'cnn_wtd': step_cnn_wtd,
     }
@@ -129,6 +129,7 @@ def step_regrid_wind(config):
     from _02_regrid.regrid_wind import main
     main(config)
 
+
 def step_make_coordinates(config):
     from _02_regrid.make_coordinates import main
     main(config)
@@ -156,7 +157,7 @@ def step_baseline(config):
     run_ensemble(config, wrapped)
 
 
-def step_lr(config):
+def step_lr_cf(config):
     from _05_train_models.train_lr import main
     from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
@@ -168,7 +169,7 @@ def step_lr(config):
     run_ensemble(config, wrapped)
 
 
-def step_lr_wtd(config):
+def step_lr_cf_wtd(config):
     from _05_train_models.train_weighted_lr import main
     from _05_train_models.ensemble import run_ensemble
     from _06_evaluate.quick_eval import run_eval
@@ -187,7 +188,7 @@ def step_cnn(config):
 
     def wrapped(config):
         main(config)
-        run_eval(config, 'cnn_pt')
+        run_eval(config, 'cnn')
 
     run_ensemble(config, wrapped)
 
@@ -199,7 +200,7 @@ def step_cnn_wtd(config):
 
     def wrapped(config):
         main(config)
-        run_eval(config, 'cnn_pt_wtd')
+        run_eval(config, 'cnn_wtd')
 
     run_ensemble(config, wrapped)
 
