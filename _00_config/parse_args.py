@@ -13,7 +13,7 @@ def parse_args():
     parser.add_argument('--timestamp_regrid')
     parser.add_argument('--timestamp_coordinates')
     parser.add_argument('--timestamp_mask_norm')
-    parser.add_argument('--timestamp_model_inputs')
+    parser.add_argument('--timestamp_model_input')
     parser.add_argument('--timestamp_model_output')
 
     # Define command line argument for pipeline start point (optional partial run)

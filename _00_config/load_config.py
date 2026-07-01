@@ -76,7 +76,7 @@ def load_config(user_config_path=None):
             or args.timestamp_regrid
         ),
         timestamp_mask_norm = args.timestamp_mask_norm,
-        timestamp_model_inputs = args.timestamp_model_inputs,
+        timestamp_model_input = args.timestamp_model_input,
         timestamp_model_output = args.timestamp_model_output,
     )
 

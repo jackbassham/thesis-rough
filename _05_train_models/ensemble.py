@@ -24,7 +24,7 @@ def load_member_splits(config):
     """
 
     # Get path to model inputs
-    path = config.path_config.data_stage_path('model_inputs')
+    path = config.path_config.data_stage_path('model_input')
 
     # Load target feature input arrays
     input_arrays = np.load(path / 'targets_features.npz')
