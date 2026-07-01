@@ -288,18 +288,18 @@ Data used for training and evaluation are stored to disk for multiple stages und
 ├── <model_input>/
 ├── <model_output>/
     ├── <ps>/
-    ├── <lr-cf>/
-    ├── <lr-cf-wtd>/
-    ├── <cnn-pt>/
-    ├── <cnn-pt-wtd>/
+    ├── <lr_cf>/
+    ├── <lr_cf_wtd>/
+    ├── <cnn_pt>/
+    ├── <cnn_pt_wtd>/
 
 <plots>
 ├── <quick_eval>/
     ├── <ps>/
-    ├── <lr-cf>/
-    ├── <lr-cf-wtd>/
-    ├── <cnn-pt>/
-    ├── <cnn-pt-wtd>/
+    ├── <lr_cf>/
+    ├── <lr_cf_wtd>/
+    ├── <cnn_pt>/
+    ├── <cnn_pt_wtd>/
 ```
 
 **Description:**
@@ -313,10 +313,10 @@ Data used for training and evaluation are stored to disk for multiple stages und
 
 *Models*
 - `ps` - Persistence
-- `lr-cf` - Closed Form Linear Regression
-- `lr-cf-wtd` - Weighted Closed Form Linear Regression
-- `cnn-pt` - CNN (via PyTorch)
-- `cnn-pt-wtd` - Weighted CNN (via PyTorch)
+- `lr_cf` - Closed Form Linear Regression
+- `lr_cf_wtd` - Weighted Closed Form Linear Regression
+- `cnn_pt` - CNN (via PyTorch)
+- `cnn_pt_wtd` - Weighted CNN (via PyTorch)
 
 *Plots*
 - `quick_eval` - Spatial plots generated for post-training model evaluation metrics
