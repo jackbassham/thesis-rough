@@ -340,7 +340,7 @@ Versioned datasets then are stored within each stage or model under the followin
 
 <!-- TODO 1. Before getting started, make accounts for to access data..., make a file with account info -->
 
-### 1. Configure Data Parameters
+### 1. Configure Data Parameter Presets
 
 Parameters dictating the spatial and temporal coverage of the data used for the ML pipeline,
 as well as the path to the root data directory can be modified in the yaml file `./_00_config/user_config.yaml`.
@@ -349,9 +349,9 @@ as well as the path to the root data directory can be modified in the yaml file 
 active_preset: <preset>
 ```
 A number of preset configurations exist:
-  * `weddell_sea_test` Use this small sample configuration for minimal runtime, RAM, disk space; or when using the [sample raw dataset](#option-a-download-sample-set-provided).
-  * `full_southern_ocean`, `full_arctic` Use these larger subsets for full reprodcution. *Caution: expect extensive runtime, RAM, and disk usage*
-  * `custom_config` Replace the null values to create a custom subset.
+  * `weddell_sea_test` Use this small sample configuration for minimal runtime, memory, and disk requirements; or when using the [sample raw dataset](#option-a-download-sample-set-provided).
+  * `full_southern_ocean`, `full_arctic` Use these larger subsets for full reprodcution. *Caution: Requires extensive runtime, memory, and disk resources*
+  * `custom_config` Replace the `null` values to create a custom subset.
 
 2. *Optional* Change `user_data_root` from `null` to specify the path to an external data directory. Leaving `null` defaults data storage to the project's root directory. 
 

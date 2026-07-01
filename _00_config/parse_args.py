@@ -37,7 +37,7 @@ def parse_args():
         '--model_name',
         type = str,
         default = None,
-        help = 'Argument for name of model (ie: "cnn_pt"), for plotting, etc.'
+        help = 'Argument for name of model (ie: "cnn"), for plotting, etc.'
     )
 
     # Return the arguments

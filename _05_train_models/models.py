@@ -6,7 +6,7 @@ from tqdm import tqdm
 import scipy
 
 
-class PersistenceBaseline:
+class Persistence:
     def __init__(self):
         pass
 
