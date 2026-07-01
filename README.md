@@ -111,62 +111,75 @@
 
 ### System Requirements
 
-**Note** If running the pipeline from a laptop, it is recommended to use the configuration for a small sample subset of data from the Weddell Sea, demonstrated [here](#example-data-config-setup). 
-Data downloaded to disk, along with processed data and model outputs, will take at least 6 GB of space. The raw data download steps may take several hours (Notably the ERA5 wind data). 
-Models will not be as skillfull with this subset, that uses only two years for the training split. For configuring any larger subsets of data, it is recommended to run the current version of this ML pipeline on an external server using a persistent session 
-(*ie: screen*) to maintain fluid runtime. 
+If running the pipeline on a laptop, it is recommended to use the small Weddell Sea sample dataset configuration, demonstrated [here](#example-data-config-setup). *Model performance will be limitted by this smaller subset because it only includes two years in the training split.*
 
+Downloading the raw datasets, along with storing processed data and model outputs, requires as least **6 GB** of available disk space. The raw data download stage may take several hours, particularly for the ERA5 wind data. 
 
-<!-- This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ``` -->
+Running the pipeline with larger datasets and multiple ensemble members can take several days and require substantial memory and disk resources. In these cases, it is recommended to run the pipeline on a remote server using a persistent terminal session (e.g. screen) to prevent interuptions. 
+
+### Prerequisites
+
+* Python 3.10
+* Conda
+* Git
+
+The pipeline requires Python 3.10 and uses several scientific Python packages, including:
+
+* Cartopy
+* cdsapi
+* cftime
+* cfgrib
+* cmocean
+* Matplotlib
+* NumPy
+* PyTorch
+* PyYAML
+* Requests
+* SciPy
+* tqdm
+* Xarray
+* h5netcdf
+* h5py
+
+All packages and their compatible versions are managed by a [conda virtual environment](#create-a-conda-virtual-environment) and are specified in `environment.yml`.
 
 ### Installation
 
-1. Clone the repo
+1. Clone the repo:
    ```sh
    git clone git@github.com:jackbassham/thesis-rough.git
    ```
 
-2. Change git remote url to avoid accidental pushes to base project
+2. Navigate to the project directory:
+   ```sh
+   cd thesis-rough
+   ```
+
+### (*Optional*) Configure Git Remote URL
+
+If working from a fork and planning to contribute changes, configure your Git remotes to prevent accidentally pushing to the original repository.
+
+1. Change the `origin` remote to your fork:
+
    ```sh
    git remote set-url origin git@github.com:<YOUR_USERNAME>/thesis-rough.git
    ```
 
-3. Add the original repo as the upstream remote url to pull any updates to base project
+2. Add the original repository as the `upstream` remote to receive future updates:
+
    ```sh
    git remote add upstream git@github.com:jackbassham/thesis-rough.git
-   git remote -v # confirm the changes
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+3. Verify the remote configuration:
 
-### Requirements
+   ```sh
+   git remote -v
+   ```
 
-  <!-- NOTE versions -->
+### Create a Conda Virtual Environment
 
- * Python 
- * cartopy
- * cdsapi
- * cmocean
- * matplotlib
- * numpy
- * pyyaml
- * Requests
- * scipy
- * torch
- * tqdm
- * xarray
- * cftime
- * cfgrib
- * h5netcdf
- * h5py
-
-### Option A: Create a Conda Virtual Environment *(recommended)*
-
-1. If you haven't already, install conda or miniconda:
+1. If you haven't already, install Miniconda:
 https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 
 2. Navigate to the root directory:
@@ -187,12 +200,7 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
     conda activate thesisrough
     ```
 
-<!-- ### Option B: DONT DO THIS YET Use PIP
-1. Install dependencies:
-
-   ```sh
-   pip install -requirements.txt
-   ``` -->
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Data Access
 
