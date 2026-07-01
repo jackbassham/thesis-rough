@@ -241,7 +241,7 @@ machine urs.earthdata.nasa.gov
 login <YOUR_LOGIN>
 password <YOUR_PASSWORD>
 ```
-Hit `esc`, type `:wq`, and `return` to write the file.
+Hit `esc` and enter `:wq` to write the file.
 
 3. Enable permissions:
 ```sh
@@ -265,16 +265,7 @@ Type `i` for insert and enter the following:
 url: https://cds.climate.copernicus.eu/api
 key: <YOUR_API_KEY>
 ```
-Hit `esc`, type `:wq`, and `return` to write the file.
-
-<!-- *-Or paste the following-*
-
-```sh
-cat << EOF > ~/.cdsapirc
-url: https://cds.climate.copernicus.eu/api
-key: <YOUR_API_KEY>
-EOF
-``` -->
+Hit `esc` and enter `:wq` to write the file.
 
 4. Accept the dataset agreement [here](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=download) before runnning code.
 
