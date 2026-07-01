@@ -285,7 +285,7 @@ Data used for training and evaluation are stored to disk for multiple stages und
 ├── <raw>/
 ├── <regrid>/
 ├── <mask_norm>/
-├── <model_inputs>/
+├── <model_input>/
 ├── <model_output>/
     ├── <ps>/
     ├── <lr-cf>/
@@ -308,8 +308,8 @@ Data used for training and evaluation are stored to disk for multiple stages und
 - `raw` - Original datasets, downloaded from the source
 - `regrid` - Data projected to a common grid within configuration bounds
 - `mask-norm` - Masked and normalized data
-- `model_inputs` - Processed training, validation, and testing inputs
-- `model_outputs` - Model weights and predictions
+- `model_input` - Processed training, validation, and testing inputs
+- `model_output` - Model weights and predictions
 
 *Models*
 - `ps` - Persistence
@@ -430,7 +430,7 @@ A timestamp version, with format 'MMDDYYYY_HHMM', must be assigned to specify pr
 - `--timestamp_raw` Specifies version of raw data
 - `--timestamp_regrid` Specifies version of regrid data  
 - `--timestamp_mask_norm` Specifies version of masked and normalized data
-- `--timestamp_model_inputs` Specifies version of training, validation, and testing split inputs
+- `--timestamp_model_input` Specifies version of training, validation, and testing split inputs
 - `--timestamp_model_output` Specifies version of model output
 
 

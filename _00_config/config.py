@@ -258,7 +258,7 @@ class VersionConfig:
     timestamp_regrid: Optional[str] = None
     timestamp_coordinates: Optional[str] = None
     timestamp_mask_norm: Optional[str] = None
-    timestamp_model_inputs: Optional[str] = None
+    timestamp_model_input: Optional[str] = None
     timestamp_model_output: Optional[str] = None
 
 
@@ -288,7 +288,7 @@ class VersionConfig:
             'timestamp_regrid',
             'timestamp_coordinates',
             'timestamp_mask_norm',
-            'timestamp_model_inputs',
+            'timestamp_model_input',
             'timestamp_model_output',
         ]:
             
@@ -330,7 +330,7 @@ class PathConfig:
         'regrid',
         'coordinates',
         'mask_norm',
-        'model_inputs',
+        'model_input',
         'model_output',
     ]
 
@@ -434,7 +434,7 @@ class PathConfig:
             # Return path for the current ensemble member's model outputs
             return Path(
                 self.data_root
-                / 'model-output'
+                / 'model_output'
                 / base
                 / member_str
             )
